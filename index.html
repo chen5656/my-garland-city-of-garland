@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>One Address - City of Garland</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    dojoConfig = {
+      parseOnLoad: false
+    }
+  </script>
+
+</head>
+
+<body>
+
+  <main>
+    <div class='container-fluid'>
+      <div class="row">
+        <div class=" col-12 overflow-hidden relative ">
+          <div id="viewDiv" style="width: 100%; height: 350px;">
+
+          </div>
+          <div class="absolute">
+            <h2>City of Garland</h2>
+            <hr style=" border-color: #b2b2b2;  border-width: 2px;">
+          </div>
+        </div>
+      </div>
+
+      <div class=' justify-content-md-center mt-5'>
+        <!-- search bar -->
+        <div id="search"></div>
+
+      </div>
+
+      <div class=' text-center mt-3'>
+        Enter a City of Garland, TX Street Address to look up Permit, Crime, Code Violations, and Other City data.
+      </div>
+
+
+      <div>
+        <div class='row'>
+          <!-- result -->
+
+        </div>
+        <div class='row'>
+          <!-- FAQs, Open Data -->
+
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <footer>
+    <!--facebook twitter info -->
+  </footer>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+  <script src='https://use.fontawesome.com/releases/v5.0.7/js/all.js'></script>
+
+
+  <!-- ArcGIS JS -->
+  <script>
+    var dojoConfig = {
+      has: {
+        "esri-promise-compatibility": 1
+      }
+    };
+  </script>
+  <script src="https://js.arcgis.com/4.6/"></script>
+
+
+  <script src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>
