@@ -80,7 +80,7 @@ require([
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
       }),
       singleLineFieldName: "Single Line Input",
-      name: "GARLAND_ROAD_LOCATOR",
+      name: "GARLAND_ADDRESS_LOCATOR",
       placeholder: "Enter a City of Garland Address",
       locationEnabled: false,
       maxSuggestions: 8,
