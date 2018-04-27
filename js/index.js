@@ -42,32 +42,8 @@ require([
   So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
-  var nearestFeatureList = [{
-      "title": "Police Station",
-      "nearestFeature": {
-        "name": "Garland Police Department",
-        "location": "1891 Forest Ln, Garland, TX 75042",
-        "lat": 32.910855,
-        "long": -96.654807,
-        "x": 2534713.03125,
-        "y": 7019288.16197917
-      }
-    },
-    {
-      "title": "Municipal Court",
-      "nearestFeature": {
-        "name": "Garland Municipal Court",
-        "location": "1791 W Avenue B, Garland, TX 75042",
-        "lat": 32.910286,
-        "long": -96.655733,
-        "x": 2534432.5390625,
-        "y": 7019076.21458334
-      }
-    }
-  ];
-
+  var nearestFeatureList = [];
   var serviceZone = [];
-
 
   var cityFacilityList = [];
   prepareCityFacilityList();
@@ -127,31 +103,19 @@ require([
       console.log("Address valid by address locator");
 
       // projecting using geometry service:
-      console.log("project search result, make it under stateplane. ");
+      //"project search result, make it under stateplane. ");
       var params = new ProjectParameters({
         geometries: [e.result.feature.geometry],
         outSpatialReference: spatialReference2276
       });
       var geometries = geometryService.project(params).then(function (geometries) {
-        console.log("Finding nearest city facilities and get distance");
+        //console.log("Finding nearest city facilities and get distance");
         //police station and court
-        for (i in nearestFeatureList) {
-          if (!nearestFeatureList[i].distance) {
-            var point = {
-              x: nearestFeatureList[i].nearestFeature.x,
-              y: nearestFeatureList[i].nearestFeature.y
-            };
-            var facilityPnt = {
-              x: geometries[0].x,
-              y: geometries[0].y
-            };
-            var distance = distanceBetweenTwoPointInStatePlan(facilityPnt, point);
-            nearestFeatureList[i].distance = distance;
-          }
-        }
+        var arr=distanceToPoliceStationAndCourt(geometries[0]);
+        nearestFeatureList = nearestFeatureList.concat(arr);
 
         for (i in cityFacilityList) {
-            findNearest(geometries[0], cityFacilityList[i]);
+          findNearest(geometries[0], cityFacilityList[i]);
         }
 
         for (i in cityServiceList) {
@@ -167,6 +131,47 @@ require([
 
   });
 
+  function distanceToPoliceStationAndCourt(geometry) {
+    var userPnt = {
+      x: geometry.x,
+      y: geometry.y
+    };
+    var featureList = [{
+        "title": "Police Station",
+        "nearestFeature": {
+          "name": "Garland Police Department",
+          "location": "1891 Forest Ln, Garland, TX 75042",
+          "lat": 32.910855,
+          "long": -96.654807,
+          "x": 2534713.03125,
+          "y": 7019288.16197917
+        }
+      },
+      {
+        "title": "Municipal Court",
+        "nearestFeature": {
+          "name": "Garland Municipal Court",
+          "location": "1791 W Avenue B, Garland, TX 75042",
+          "lat": 32.910286,
+          "long": -96.655733,
+          "x": 2534432.5390625,
+          "y": 7019076.21458334
+        }
+      }
+    ];
+    return featureList.map(function (val) {
+      var facilityPnt = {
+        x: val.nearestFeature.x,
+        y: val.nearestFeature.y
+      };
+      return {
+        "title": val.title,
+        "nearestFeature": val.nearestFeature,
+        "distance": distanceBetweenTwoPointInStatePlan(userPnt, facilityPnt)
+      };
+    });
+  }
+
   function findContainerPolygon(geometry, featureSet) {
     var query = new Query();
     query.returnGeometry = true;
@@ -177,13 +182,12 @@ require([
       url: featureSet.url
     });
     queryTask.execute(query).then(function (e) {
-      var result ={
+      var result = {
         title: featureSet.name,
         serviceZone: e.features[0].attributes,
         displayFieldName: e.displayFieldName
-      };      
+      };
       serviceZone.push(result);
-      console.log(serviceZone);
     });
   }
 
@@ -191,7 +195,6 @@ require([
     var distance;
     var minDistance;
     var minFeature;
-    console.log("Finding ", featureSet.name);
     for (var i in featureSet.features) {
       distance = geometryEngine.distance(geometry, featureSet.features[i].geometry, "miles");
       if (distance < minDistance | !minDistance) {
@@ -199,19 +202,17 @@ require([
         minFeature = featureSet.features[i];
       }
     }
-    var result= {
+    var result = {
       title: featureSet.name,
       nearestFeature: minFeature.attributes,
       distance: minDistance.toFixed(2)
     };
     nearestFeatureList.push(result);
-    console.log(nearestFeatureList);
   }
 
   function distanceBetweenTwoPointInStatePlan(pnt1, pnt2) {
     var result = (Math.sqrt(Math.pow((pnt1.x - pnt2.x), 2) + Math.pow((pnt1.y - pnt2.y), 2)) / 5280).toFixed(2);
     return result;
-
   }
 
   function prepareCityFacilityList() {
