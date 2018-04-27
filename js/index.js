@@ -7,6 +7,8 @@ require([
   "esri/widgets/Search",
   "esri/tasks/Locator",
 
+  "esri/geometry/Point",
+
   "esri/geometry/SpatialReference",
   "esri/tasks/GeometryService",
   "esri/geometry/geometryEngine",
@@ -22,6 +24,7 @@ require([
 ], function (
   Map, MapView, MapImageLayer,
   Search, Locator,
+  Point,
   SpatialReference, GeometryService, geometryEngine, projection, ProjectParameters,
   Query, QueryTask,
 
@@ -39,9 +42,37 @@ require([
   So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
+  var nearestFeatureList = [{
+      "title": "Police Station",
+      "nearestFeature": {
+        "name": "Garland Police Department",
+        "location": "1891 Forest Ln, Garland, TX 75042",
+        "lat": 32.910855,
+        "long": -96.654807,
+        "x": 2534713.03125,
+        "y": 7019288.16197917
+      }
+    },
+    {
+      "title": "Municipal Court",
+      "nearestFeature": {
+        "name": "Garland Municipal Court",
+        "location": "1791 W Avenue B, Garland, TX 75042",
+        "lat": 32.910286,
+        "long": -96.655733,
+        "x": 2534432.5390625,
+        "y": 7019076.21458334
+      }
+    }
+  ];
+
+  var serviceZone = [];
+
+
   var cityFacilityList = [];
-  var nearestFeatureList = [];
   prepareCityFacilityList();
+  var cityServiceList = [];
+  prepareCityServiceList();
 
   var spatialReference2276 = new SpatialReference({
     wkid: 2276
@@ -79,6 +110,7 @@ require([
       locator: new Locator({
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
       }),
+      outFields: ["Ref_ID"], // Ref_ID is addressID
       singleLineFieldName: "Single Line Input",
       name: "GARLAND_ADDRESS_LOCATOR",
       placeholder: "Enter a City of Garland Address",
@@ -87,10 +119,12 @@ require([
       minSuggestCharacters: 3
     }]
   });
+
   search.on("select-result", function (e) {
+    var i, result;
     view.zoom = 12;
     if (e.result) {
-      console.log("Address valid");
+      console.log("Address valid by address locator");
 
       // projecting using geometry service:
       console.log("project search result, make it under stateplane. ");
@@ -99,24 +133,65 @@ require([
         outSpatialReference: spatialReference2276
       });
       var geometries = geometryService.project(params).then(function (geometries) {
-        console.log("Finding nearest");
-        for (var i in cityFacilityList) {
-          var result = findNearest(geometries[0], cityFacilityList[i]);
-          nearestFeatureList.push(result);
+        console.log("Finding nearest city facilities and get distance");
+        //police station and court
+        for (i in nearestFeatureList) {
+          if (!nearestFeatureList[i].distance) {
+            var point = {
+              x: nearestFeatureList[i].nearestFeature.x,
+              y: nearestFeatureList[i].nearestFeature.y
+            };
+            var facilityPnt = {
+              x: geometries[0].x,
+              y: geometries[0].y
+            };
+            var distance = distanceBetweenTwoPointInStatePlan(facilityPnt, point);
+            nearestFeatureList[i].distance = distance;
+          }
         }
-        console.log(nearestFeatureList);
+
+        for (i in cityFacilityList) {
+            findNearest(geometries[0], cityFacilityList[i]);
+        }
+
+        for (i in cityServiceList) {
+          findContainerPolygon(geometries[0], cityServiceList[i]);
+        }
+
       }, function (error) {
         console.log(error);
       });
     }
+
+    //get information from parcel layer
+
   });
 
+  function findContainerPolygon(geometry, featureSet) {
+    var query = new Query();
+    query.returnGeometry = true;
+    query.outFields = ["*"];
+    query.geometry = geometry;
+    query.spatialRelationship = "intersects";
+    var queryTask = new QueryTask({
+      url: featureSet.url
+    });
+    queryTask.execute(query).then(function (e) {
+      var result ={
+        title: featureSet.name,
+        serviceZone: e.features[0].attributes,
+        displayFieldName: e.displayFieldName
+      };      
+      serviceZone.push(result);
+      console.log(serviceZone);
+    });
+  }
 
   function findNearest(geometry, featureSet) {
     var distance;
     var minDistance;
     var minFeature;
-    console.log("Finding " + featureSet.name);
+    console.log("Finding ", featureSet.name);
     for (var i in featureSet.features) {
       distance = geometryEngine.distance(geometry, featureSet.features[i].geometry, "miles");
       if (distance < minDistance | !minDistance) {
@@ -124,64 +199,97 @@ require([
         minFeature = featureSet.features[i];
       }
     }
-    return {
+    var result= {
       title: featureSet.name,
       nearestFeature: minFeature.attributes,
       distance: minDistance.toFixed(2)
     };
+    nearestFeatureList.push(result);
+    console.log(nearestFeatureList);
+  }
+
+  function distanceBetweenTwoPointInStatePlan(pnt1, pnt2) {
+    var result = (Math.sqrt(Math.pow((pnt1.x - pnt2.x), 2) + Math.pow((pnt1.y - pnt2.y), 2)) / 5280).toFixed(2);
+    return result;
+
   }
 
   function prepareCityFacilityList() {
     //Police Station
-    var sourceList = [{
-      name: "LIBRARY",
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/0",
-      where: "DEPT = 'LIBRARY'"
-    }, {
-      name: "Fire Station",
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
-      where: "1=1"
-    }];
+    var sourceList = [
+      //   {
+      //   name: "LIBRARY",
+      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/0",
+      //   where: "DEPT = 'LIBRARY'"
+      // },
+      {
+        name: "Fire Station",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
+        where: "NUM>0"
+      }
+    ];
 
     for (var i in sourceList) {
-      runQuery(sourceList[i]);
-    }
-
-    function runQuery(queryParameter) {
-      var query = new Query();
-      var queryTask = new QueryTask({
-        url: queryParameter.url
-      });
-      query.where = queryParameter.where;
-      //query.outSpatialReference = spatialReference2276;
-      query.returnGeometry = true;
-      query.outFields = ["*"];
-      queryTask.execute(query).then(function (results) {
-        // Results.graphics contains the graphics returned from query
-        cityFacilityList.push({
-          name: queryParameter.name,
-          features: results.features
-        });
-      });
-
+      runQuery(sourceList[i], cityFacilityList);
     }
 
   }
 
-  function prepareCityServiceList(){
+  function prepareCityServiceList() {
     var sourceList = [{
-      name: "LIBRARY",
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/0",
-      where: "DEPT = 'LIBRARY'"
-    }, {
-      name: "Fire Station",
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
-      where: "1=1"
-    }];
-
-    for (var i in sourceList) {
-      runQuery(sourceList[i]);
-    }
+        name: "Police Districts",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/4"
+      }, {
+        name: "Police Sectors",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
+      }, {
+        name: "Police Beats",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/3"
+      }, {
+        name: "Fire Districts",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/0"
+      }, {
+        name: "Fire Alarm Grids",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
+      },
+      {
+        name: "EWS Brush Route Days",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/12"
+      }, {
+        name: "EWS Recycling Route Days",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
+      }, {
+        name: "EWS Trash Route Days",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
+      }
+    ];
+    cityServiceList = sourceList;
+    // for (var i in sourceList) {
+    //   runQuery(sourceList[i], cityServiceList);
+    // }
   }
+
+
+  function runQuery(queryParameter, targetList) {
+    var query = new Query();
+    var queryTask = new QueryTask({
+      url: queryParameter.url
+    });
+    query.where = queryParameter.where;
+    //query.outSpatialReference = spatialReference2276;
+    query.returnGeometry = true;
+    query.outFields = ["*"];
+    queryTask.execute(query).then(function (results) {
+      // Results.graphics contains the graphics returned from query
+      targetList.push({
+        name: queryParameter.name,
+        features: results.features
+      });
+    });
+
+  }
+
+  //Crime data
+  // https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_date=2018-04-26&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242&sandbox=false&start_date=2018-04-12&start_time=0&zoom=14
 
 });
