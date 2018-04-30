@@ -44,6 +44,7 @@ require([
   */
   var nearestFeatureList = [];
   var serviceZone = [];
+  var inforFromParcelLayer;
 
   var cityFacilityList = [];
   prepareCityFacilityList();
@@ -82,6 +83,10 @@ require([
     view: view,
     container: "search",
     allPlaceholder: ".",
+    locationEnabled: false,
+    suggestionsEnabled: true,
+    maxSuggestions: 8,
+    minSuggestCharacters: 3,
     sources: [{
       locator: new Locator({
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
@@ -90,9 +95,6 @@ require([
       singleLineFieldName: "Single Line Input",
       name: "GARLAND_ADDRESS_LOCATOR",
       placeholder: "Enter a City of Garland Address",
-      locationEnabled: false,
-      maxSuggestions: 8,
-      minSuggestCharacters: 3
     }]
   });
 
@@ -101,6 +103,9 @@ require([
     view.zoom = 12;
     if (e.result) {
       console.log("Address valid by address locator");
+
+      //get information from parcel layer by Ref_ID(addressID)
+      getInforByAddressID(e.result.feature.attributes.Ref_ID);
 
       // projecting using geometry service:
       //"project search result, make it under stateplane. ");
@@ -111,7 +116,7 @@ require([
       var geometries = geometryService.project(params).then(function (geometries) {
         //console.log("Finding nearest city facilities and get distance");
         //police station and court
-        var arr=distanceToPoliceStationAndCourt(geometries[0]);
+        var arr = distanceToPoliceStationAndCourt(geometries[0]);
         nearestFeatureList = nearestFeatureList.concat(arr);
 
         for (i in cityFacilityList) {
@@ -130,6 +135,36 @@ require([
     //get information from parcel layer
 
   });
+
+  function getInforByAddressID(addressID) {
+    var query = new Query();
+    var queryTask = new QueryTask({
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/1" //Layer: Address (ID: 1)
+    });
+    query.where = "ADDRESSID =" + addressID;
+    //query.outSpatialReference = spatialReference2276;
+    query.returnGeometry = false;
+    query.outFields = ["PARCELID"];
+    queryTask.execute(query).then(function (results) {
+      // Results.graphics contains the graphics returned from query
+      if (results.features[0].attributes.PARCELID) {
+        var parcelID = results.features[0].attributes.PARCELID;
+        var query = new Query();
+        var queryTask = new QueryTask({
+          url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/2" //Layer: Parcel (ID: 2)
+        });
+        query.where = "PARCELID  =" + parcelID;
+        //query.outSpatialReference = spatialReference2276;
+        query.returnGeometry = false;
+        query.outFields = ["*"];
+        queryTask.execute(query).then(function (results) {
+          inforFromParcelLayer=results.features[0].attributes;
+        });
+      }else{
+        console.log("error getInforByAddressID:" ,addressID);
+      }``
+    });
+  }
 
   function distanceToPoliceStationAndCourt(geometry) {
     var userPnt = {
