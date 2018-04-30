@@ -48,8 +48,8 @@ require([
 
   var cityFacilityList = [];
   prepareCityFacilityList();
-  var cityServiceList = [];
-  prepareCityServiceList();
+  var PolygonList = [];
+  preparePolygonList();
 
   var spatialReference2276 = new SpatialReference({
     wkid: 2276
@@ -84,9 +84,6 @@ require([
     container: "search",
     allPlaceholder: ".",
     locationEnabled: false,
-    suggestionsEnabled: true,
-    maxSuggestions: 8,
-    minSuggestCharacters: 3,
     sources: [{
       locator: new Locator({
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
@@ -95,6 +92,9 @@ require([
       singleLineFieldName: "Single Line Input",
       name: "GARLAND_ADDRESS_LOCATOR",
       placeholder: "Enter a City of Garland Address",
+      suggestionsEnabled: true,
+      maxSuggestions: 8,
+      minSuggestCharacters: 3
     }]
   });
 
@@ -123,8 +123,8 @@ require([
           findNearest(geometries[0], cityFacilityList[i]);
         }
 
-        for (i in cityServiceList) {
-          findContainerPolygon(geometries[0], cityServiceList[i]);
+        for (i in PolygonList) {
+          findPolygon(geometries[0], PolygonList[i]);
         }
 
       }, function (error) {
@@ -158,11 +158,11 @@ require([
         query.returnGeometry = false;
         query.outFields = ["*"];
         queryTask.execute(query).then(function (results) {
-          inforFromParcelLayer=results.features[0].attributes;
+          inforFromParcelLayer = results.features[0].attributes;
         });
-      }else{
-        console.log("error getInforByAddressID:" ,addressID);
-      }``
+      } else {
+        console.log("error getInforByAddressID:", addressID);
+      }
     });
   }
 
@@ -207,7 +207,7 @@ require([
     });
   }
 
-  function findContainerPolygon(geometry, featureSet) {
+  function findPolygon(geometry, featureSet) {
     var query = new Query();
     query.returnGeometry = true;
     query.outFields = ["*"];
@@ -217,13 +217,46 @@ require([
       url: featureSet.url
     });
     queryTask.execute(query).then(function (e) {
-      var result = {
-        title: featureSet.name,
-        serviceZone: e.features[0].attributes,
-        displayFieldName: e.displayFieldName
-      };
+      var result;
+      if (e.features.length > 0) {
+        result = {
+          title: featureSet.name,
+          serviceZone: e.features[0].attributes,
+          displayFieldName: e.displayFieldName,
+          containerID: featureSet.containerID, //"1_2",
+          displayID: featureSet.displayID, //"1",
+          queryPolygonCount: e.features.length
+        };
+      } else {
+        //no polygon returns.
+        result = {
+          title: featureSet.name,
+          queryPolygonCount: e.features.length
+        };
+
+      }
       serviceZone.push(result);
+      var containerIDs = [1, 2, 3];
+      for (var i in containerIDs) {
+        var sourceArr = serviceZone.filter(function (val) {
+          return val.containerID == containerIDs[i];
+        });
+        var targetArr = PolygonList.filter(function (val) {
+          return val.containerID == containerIDs[i];
+        });
+        if (sourceArr.length == targetArr.length) {
+          //displayID
+          renderData(targetArr, containerIDs[i]);
+        }
+      }
+
     });
+  }
+
+  function renderData(data, containerID) {
+    console.log(data);
+    console.log(containerID);
+
   }
 
   function findNearest(geometry, featureSet) {
@@ -271,40 +304,79 @@ require([
 
   }
 
-  function prepareCityServiceList() {
-    var sourceList = [{
+  function preparePolygonList() {
+    var containerID = [1, 2, 3];
+
+    PolygonList = [{
         name: "Police Districts",
+        containerID: containerID[1],
+        displayID: "1",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/4"
       }, {
         name: "Police Sectors",
+        containerID: containerID[1],
+        displayID: "2",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
       }, {
         name: "Police Beats",
+        containerID: containerID[1],
+        displayID: "3",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/3"
       }, {
         name: "Fire Districts",
+        containerID: containerID[1],
+        displayID: "4",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/0"
       }, {
         name: "Fire Alarm Grids",
+        containerID: containerID[1],
+        displayID: "5",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
       },
       {
         name: "EWS Brush Route Days",
+        containerID: containerID[1],
+        displayID: "6",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/12"
       }, {
         name: "EWS Recycling Route Days",
+        containerID: containerID[1],
+        displayID: "7",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
       }, {
         name: "EWS Trash Route Days",
+        containerID: containerID[1],
+        displayID: "8",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
+      }, {
+        name: "Neighborhood Watches",
+        containerID: containerID[2],
+        displayID: "1",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/8"
+      }, {
+        name: "Neighborhood Associations",
+        containerID: containerID[2],
+        displayID: "2",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/9"
+      }, {
+        name: "Subdivision",
+        containerID: containerID[3],
+        displayID: "1",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/0"
+      }, {
+        name: "GDC Zoining",
+        containerID: containerID[3],
+        displayID: "3",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/2"
+      }, {
+        name: "Land Use",
+        containerID: containerID[3],
+        displayID: "2",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/1"
       }
-    ];
-    cityServiceList = sourceList;
-    // for (var i in sourceList) {
-    //   runQuery(sourceList[i], cityServiceList);
-    // }
-  }
 
+    ];
+  }
 
   function runQuery(queryParameter, targetList) {
     var query = new Query();
