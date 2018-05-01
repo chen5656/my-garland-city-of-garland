@@ -19,6 +19,7 @@ require([
   'dojo/on',
   'dojo/dom',
   'dojo/_base/array',
+  "dojo/dom-class",
 
   'dojo/domReady!'
 ], function (
@@ -28,7 +29,7 @@ require([
   SpatialReference, GeometryService, geometryEngine, projection, ProjectParameters,
   Query, QueryTask,
 
-  on, dom, array
+  on, dom, array,domClass
 ) {
 
   'use strict';
@@ -104,6 +105,9 @@ require([
     if (e.result) {
       console.log("Address valid by address locator");
 
+      //show result
+      domClass.remove('nodeResult','d-none');
+      
       //get information from parcel layer by Ref_ID(addressID)
       getInforByAddressID(e.result.feature.attributes.Ref_ID);
 
