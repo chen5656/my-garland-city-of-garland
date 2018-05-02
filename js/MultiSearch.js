@@ -4,14 +4,16 @@ require([
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "esri/geometry/SpatialReference",
-  "esri/geometry/geometryEngine",
+  "esri/geometry/geometryEngineAsync",
+  // "esri/geometry/geometryEngine",
   "dojo/_base/lang",
-  "dojo/promise/all","dojo/topic",
+  "dojo/promise/all", "dojo/topic",
   "dojo/_base/declare", "dojo/dom-construct", "dojo/parser", "dojo/ready", "dijit/_WidgetBase", "dijit/_TemplatedMixin"
 ], function (
   dom, array,
-  Query, QueryTask, SpatialReference, geometryEngine,
-  lang, all,topic,
+  Query, QueryTask, SpatialReference, geometryEngineAsync,
+  //geometryEngine, 
+  lang, all, topic,
   declare, domConstruct, parser, ready, _WidgetBase, _TemplatedMixin) {
   declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
 
@@ -110,29 +112,33 @@ require([
       //police station and court
       var arr = distanceToPoliceStationAndCourt(this.geometry);
       this.searchResult.nearestCityFacilityList = this.searchResult.nearestCityFacilityList.concat(arr);
-
       for (var i in this.cityFacilityList) {
-        var result = findNearest(this.geometry, this.cityFacilityList[i]);
-        that.searchResult.nearestCityFacilityList.push(result);
+        findNearest(this.geometry, this.cityFacilityList[i]);
       }
 
       function findNearest(geometry, featureSet) {
-        var distance;
-        var minDistance;
-        var minFeature;
+        var distanceRequestList = [];
         for (var i in featureSet.features) {
-          distance = geometryEngine.distance(geometry, featureSet.features[i].geometry, "miles");
-          if (distance < minDistance | !minDistance) {
-            minDistance = distance;
-            minFeature = featureSet.features[i];
-          }
+          var request = geometryEngineAsync.distance(geometry, featureSet.features[i].geometry, "miles");
+          distanceRequestList.push(request);
         }
-        return {
-          title: featureSet.name,
-          displayID: featureSet.displayID,
-          nearestFeature: minFeature.attributes,
-          distance: minDistance.toFixed(2)
-        };
+        var promises = new all(distanceRequestList);
+        promises.then(lang.hitch(this, function (response) {
+          var minDistance = Math.min.apply(null, response);
+          var minIndex = response.indexOf(minDistance);
+          var minFeature = featureSet.features[minIndex];
+
+          var result = {
+            title: featureSet.name,
+            displayID: featureSet.displayID,
+            nearestFeature: minFeature.attributes,
+            distance: minDistance.toFixed(2)
+          };
+          that.searchResult.nearestCityFacilityList.push(result);
+        })).catch(function (e) {
+          console.log("Get layer info error on ", e.details.url, ". Error message:", e.message);
+        });
+
       }
 
 
