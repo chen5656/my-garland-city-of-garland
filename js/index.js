@@ -29,7 +29,7 @@ require([
   SpatialReference, GeometryService, geometryEngine, projection, ProjectParameters,
   Query, QueryTask,
 
-  on, dom, array,domClass
+  on, dom, array, domClass
 ) {
 
   'use strict';
@@ -106,8 +106,8 @@ require([
       console.log("Address valid by address locator");
 
       //show result
-      domClass.remove('nodeResult','d-none');
-      
+      domClass.remove('nodeResult', 'd-none');
+
       //get information from parcel layer by Ref_ID(addressID)
       getInforByAddressID(e.result.feature.attributes.Ref_ID);
 
@@ -126,6 +126,7 @@ require([
         for (i in cityFacilityList) {
           findNearest(geometries[0], cityFacilityList[i]);
         }
+        showLocationData(nearestFeatureList);
 
         for (i in PolygonList) {
           findPolygon(geometries[0], PolygonList[i]);
@@ -139,6 +140,28 @@ require([
     //get information from parcel layer
 
   });
+
+  function showLocationData(list) {
+debugger;
+    console.log(list);
+    list= list.sort(function(a,b){
+      return a.displayID - b.displayID;
+    }).map(function(data){
+      var obj= {
+        title:data.title,
+        name:data.nearestFeature.name,
+        address:data.nearestFeature.location,
+        distance:data.distance
+      };
+    });
+  }
+
+  function findTarget(arr, title) {
+    var result = arr.find(function (e) {
+      return e.title == title;
+    });
+    return result;
+  }
 
   function getInforByAddressID(addressID) {
     var query = new Query();
@@ -177,6 +200,7 @@ require([
     };
     var featureList = [{
         "title": "Police Station",
+        "displayID": "1",
         "nearestFeature": {
           "name": "Garland Police Department",
           "location": "1891 Forest Ln, Garland, TX 75042",
@@ -188,6 +212,7 @@ require([
       },
       {
         "title": "Municipal Court",
+        "displayID": "2",
         "nearestFeature": {
           "name": "Garland Municipal Court",
           "location": "1791 W Avenue B, Garland, TX 75042",
@@ -205,6 +230,7 @@ require([
       };
       return {
         "title": val.title,
+        "displayID": val.displayID,
         "nearestFeature": val.nearestFeature,
         "distance": distanceBetweenTwoPointInStatePlan(userPnt, facilityPnt)
       };
@@ -276,6 +302,7 @@ require([
     }
     var result = {
       title: featureSet.name,
+      displayID: featureSet.displayID,
       nearestFeature: minFeature.attributes,
       distance: minDistance.toFixed(2)
     };
@@ -298,14 +325,34 @@ require([
       {
         name: "Fire Station",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
-        where: "NUM>0"
+        where: "NUM>0",
+        displayID: "3"
       }
     ];
 
     for (var i in sourceList) {
-      runQuery(sourceList[i], cityFacilityList);
+      runQuery(sourceList[i]);
     }
 
+    function runQuery(queryParameter) {
+      var query = new Query({
+        where : queryParameter.where,
+        returnGeometry : true,
+        outFields : ["*"]
+      });
+      var queryTask = new QueryTask({
+        url: queryParameter.url
+      });
+      queryTask.execute(query).then(function (results) {
+        // Results.graphics contains the graphics returned from query
+        cityFacilityList.push({
+          name: queryParameter.name,
+          displayID:queryParameter.displayID,
+          features: results.features
+        });
+      });
+
+    }
   }
 
   function preparePolygonList() {
@@ -382,24 +429,7 @@ require([
     ];
   }
 
-  function runQuery(queryParameter, targetList) {
-    var query = new Query();
-    var queryTask = new QueryTask({
-      url: queryParameter.url
-    });
-    query.where = queryParameter.where;
-    //query.outSpatialReference = spatialReference2276;
-    query.returnGeometry = true;
-    query.outFields = ["*"];
-    queryTask.execute(query).then(function (results) {
-      // Results.graphics contains the graphics returned from query
-      targetList.push({
-        name: queryParameter.name,
-        features: results.features
-      });
-    });
 
-  }
 
   //Crime data
   // https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_date=2018-04-26&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242&sandbox=false&start_date=2018-04-12&start_time=0&zoom=14
