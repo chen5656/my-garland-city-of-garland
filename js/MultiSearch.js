@@ -76,6 +76,7 @@ require([
 
 
     getInforByAddressID: function () {
+      console.log("getInforByAddressID function");
       var that = this;
       var query = new Query();
       var queryTask = new QueryTask({
@@ -107,6 +108,7 @@ require([
     },
 
     getNearestCityFacilityList: function () {
+      console.log("getNearestCityFacilityList Function");
       var that = this;
 
       //police station and court
@@ -141,13 +143,11 @@ require([
 
       }
 
-
       function distanceToPoliceStationAndCourt(geometry) {
         var userPnt = {
           x: geometry.x,
           y: geometry.y
         };
-
         var arr = that.individualCityFacility.map(function (val) {
           var facilityPnt = {
             x: val.nearestFeature.x,
@@ -160,7 +160,6 @@ require([
             "distance": distanceBetweenTwoPointInStatePlan(userPnt, facilityPnt)
           };
         });
-
         return arr;
       }
 
@@ -172,20 +171,62 @@ require([
     },
 
     getServiceZoneList: function () {
+      console.log("getServiceZoneList Function");
       var that = this;
+
+      var query = new Query({
+        returnGeometry: true,
+        outFields: ["*"],
+        spatialRelationship: "intersects"
+      });
+      query.geometry = this.geometry;
+
+      var queryRequest = [];
+
       for (var i in this.serviceZoneSourceList) {
-        findServiceZone(this.geometry, this.serviceZoneSourceList[i]);
+        // findServiceZone(this.geometry, this.serviceZoneSourceList[i]);
+        var queryTask = new QueryTask({
+          url: this.serviceZoneSourceList[i].url
+        });
+        //Assign the esriRequest execute function to a variable
+        var request = queryTask.execute(query);
+        //add the function variable to a array
+        queryRequest.push(request);
       }
 
+      var promises = new all(queryRequest);
+      promises.then(function (response) {
+        console.log(response);
+        for (var i in response) {
+          var featureSet=that.serviceZoneSourceList[i];
+          var result;
+          if (response[i].features.length > 0) {
+            result = {
+              title: featureSet.name,
+              serviceZone: response[i].features[0].attributes,
+              displayFieldName: response[i].displayFieldName,
+              containerID: featureSet.containerID, //"1_2",
+              displayID: featureSet.displayID, //"1",
+              queryPolygonCount: response[i].features.length
+            };
+          } else {
+            //no polygon returns.
+            result = {
+              title: featureSet.name,
+              queryPolygonCount: response[i].features.length
+            };
+          }
+          that.searchResult.serviceZoneList.push(result);
+        }
+//time to display data
+
+      }).catch(function (e) {
+        console.log("Get getServiceZoneList error. Error message:", e.message);
+      });
+
       function findServiceZone(geometry, featureSet) {
-        var query = new Query();
-        query.returnGeometry = true;
-        query.outFields = ["*"];
-        query.geometry = geometry;
-        query.spatialRelationship = "intersects";
-        var queryTask = new QueryTask({
-          url: featureSet.url
-        });
+
+
         queryTask.execute(query).then(function (e) {
           var result;
           if (e.features.length > 0) {

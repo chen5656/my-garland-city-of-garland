@@ -222,6 +222,7 @@ require([
         outSpatialReference: multiSearch.spatialReference
       });
       var geometries = geometryService.project(params).then(function (geometries) {
+        console.log('get geometry');
         multiSearch.geometry = geometries[0];
         //console.log("Finding nearest city facilities and get distance");
         multiSearch.getNearestCityFacilityList();
