@@ -16,6 +16,7 @@ require([
   'dojo/on',
   'dojo/dom',
   'dojo/_base/array',
+  "dojo/topic",
   "dojo/dom-class",
 
   'dojo/domReady!'
@@ -25,7 +26,7 @@ require([
   Search, Locator,
   GeometryService, projection, ProjectParameters,
 
-  on, dom, array, domClass
+  on, dom, array,topic, domClass
 ) {
 
   'use strict';
@@ -224,6 +225,9 @@ require([
         multiSearch.geometry = geometries[0];
         //console.log("Finding nearest city facilities and get distance");
         multiSearch.getNearestCityFacilityList();
+        //add result to page directly. Because no Async involved.
+
+
         multiSearch.getServiceZoneList();
 
       }, function (error) {

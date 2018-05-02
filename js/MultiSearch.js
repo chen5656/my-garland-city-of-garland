@@ -6,12 +6,12 @@ require([
   "esri/geometry/SpatialReference",
   "esri/geometry/geometryEngine",
   "dojo/_base/lang",
-  "dojo/promise/all",
+  "dojo/promise/all","dojo/topic",
   "dojo/_base/declare", "dojo/dom-construct", "dojo/parser", "dojo/ready", "dijit/_WidgetBase", "dijit/_TemplatedMixin"
 ], function (
   dom, array,
-  Query, QueryTask, SpatialReference, geometryEngine, 
-  lang, all,
+  Query, QueryTask, SpatialReference, geometryEngine,
+  lang, all,topic,
   declare, domConstruct, parser, ready, _WidgetBase, _TemplatedMixin) {
   declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
 
@@ -36,12 +36,12 @@ require([
     },
 
     startNewSearch: function () {
-      this.searchResult={
-        address:null,
-        addressID:null,        
-        nearestCityFacilityList:[],
-        serviceZoneList:[],
-        parcelInfo:null
+      this.searchResult = {
+        address: null,
+        addressID: null,
+        nearestCityFacilityList: [],
+        serviceZoneList: [],
+        parcelInfo: null
       };
     },
 
@@ -112,7 +112,8 @@ require([
       this.searchResult.nearestCityFacilityList = this.searchResult.nearestCityFacilityList.concat(arr);
 
       for (var i in this.cityFacilityList) {
-        findNearest(this.geometry, this.cityFacilityList[i]);
+        var result = findNearest(this.geometry, this.cityFacilityList[i]);
+        that.searchResult.nearestCityFacilityList.push(result);
       }
 
       function findNearest(geometry, featureSet) {
@@ -126,13 +127,12 @@ require([
             minFeature = featureSet.features[i];
           }
         }
-        var result = {
+        return {
           title: featureSet.name,
           displayID: featureSet.displayID,
           nearestFeature: minFeature.attributes,
           distance: minDistance.toFixed(2)
         };
-        that.searchResult.nearestCityFacilityList.push(result);
       }
 
 
