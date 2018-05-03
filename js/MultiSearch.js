@@ -25,7 +25,7 @@ require([
 
     buildRendering: function () {
       //create the DOM for this widget --- must keep
-      const html =
+      var html =
         '<div class="GetMultiSearch"></div>';
       this.domNode = domConstruct.toDom(html);
     },

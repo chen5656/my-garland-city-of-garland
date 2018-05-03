@@ -40,7 +40,7 @@ require([
   So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
- getCrimeData(1);
+  getCrimeData(1);
   var map, view;
   var nearestFeatureList = [];
   var serviceZone = [];
@@ -243,8 +243,8 @@ require([
 
   function getCrimeData(val) {
 
-    var lat =1;// val.lat;
-    var long =1;// val.long;
+    var lat = 1; // val.lat;
+    var long = 1; // val.long;
     var numberX = 0.03265857696533;
     var numberY = 0.02179533454397;
 
@@ -254,14 +254,25 @@ require([
     var long2 = long - numberX;
 
     var today = new Date();
-    var severDaysAgo=new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
-    var start_date="".concat(severDaysAgo.getFullYear(),"-",severDaysAgo.getMonth()+1,"-",severDaysAgo.getDate());
-    var end_date="".concat(today.getFullYear(),"-",today.getMonth()+1,"-",today.getDate());
-    
+    var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
+    var end_date = "".concat(today.getFullYear(), "-", today.getMonth() + 1, "-", today.getDate());
+
     var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=2018-04-12&end_date=2018-04-26&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242";
+
+    var flickerAPI = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+    $.ajax({
+      type: "GET",
+      url: url,
+      crossDomain: true,
+      success: function (data) {
+        console.log(data);
+      },
+      dataType: 'json'
+    });
 
   }
   //var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_date=2018-04-26&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242&sandbox=false&start_date=2018-04-12&start_time=0&zoom=15";
