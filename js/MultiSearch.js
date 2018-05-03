@@ -100,6 +100,9 @@ require([
           query.outFields = ["*"];
           queryTask.execute(query).then(function (results) {
             that.searchResult.parcelInfo = results.features[0].attributes;
+            topic.publish("multiSearch/parcelInfoUpdated", {
+              parcelID: parcelID
+            });
           });
         } else {
           console.log("error getInforByAddressID: ", that.searchResult.addressID);
@@ -137,6 +140,12 @@ require([
             distance: minDistance.toFixed(2)
           };
           that.searchResult.nearestCityFacilityList.push(result);
+          if ( that.searchResult.nearestCityFacilityList.length==that.cityFacilityList.length+that.individualCityFacility.length) {
+            //time to display data
+            topic.publish("multiSearch/nearestCityFacilityUpdated", {
+              count:that.searchResult.nearestCityFacilityList.length
+            });
+          }
         })).catch(function (e) {
           console.log("Error - findNearest: ", e);
         });
@@ -218,10 +227,9 @@ require([
           that.searchResult.serviceZoneList.push(result);
         }
 
-
         //time to display data
-        topic.publish("some/topic", {
-          msg: "hello world"
+        topic.publish("multiSearch/serviceZoneListUpdated", {
+          count: response.length
         });
       }).catch(function (e) {
         console.log("Error - getServiceZoneList:", e);

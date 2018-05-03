@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset='UTF-8'>
   <title>One Address - City of Garland</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/css/main.css">
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
+    crossorigin='anonymous'>
+  <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel='stylesheet' href='css/style.css'>
   <script>
     dojoConfig = {
       parseOnLoad: false
@@ -21,64 +21,83 @@
 
   <main>
     <div class='container-fluid'>
-      <div class="row">
-        <div class=" col-12 overflow-hidden relative ">
-          <div id="viewDiv" style="width: 100%; height: 350px;">
+      <div class='row'>
+        <div class=' col-12 overflow-hidden relative '>
+          <div id='viewDiv' style='width: 100%; height: 350px;'>
 
           </div>
-          <div class="absolute">
+          <div class='absolute'>
             <h2>City of Garland</h2>
-            <hr style=" border-color: #b2b2b2;  border-width: 2px;">
+            <hr style=' border-color: #b2b2b2;  border-width: 2px;'>
           </div>
         </div>
       </div>
-
-      <div class=' justify-content-md-center mt-5'>
-        <!-- search bar -->
-        <div id="search"></div>
-
-      </div>
-
-      <div class=' text-center mt-3'>
-        Enter a City of Garland, TX Street Address to look up Permit, Crime, Code Violations, and Other City data.
-      </div>
-
-      <div id="widget" >
-      </div>
-      <div>
-        <!-- <div class='row d-none' id='nodeResult'> -->
-        <div class='row ' id='nodeResult'>
-          <div class='col-lg-4 col-md-6 col-sm-12'>
-            <div class='r-subtitle'>
-              Location Data
-            </div>
-            <div class='r-content'>
-              Nearby City Facilities Services Reference Neighborhoods Planning Development / Zoning
-            </div>
-          </div>
-          <div class='col-lg-4 col-md-6 col-sm-12'>
-            <div class='r-subtitle'>
-              Crime Data
-            </div>
-            <div class='r-content'>
-              Crime
-            </div>
-          </div>
-          <div class='col-lg-4 col-md-12 col-sm-12'>
-            <div class='r-subtitle'>
-              Map Data
-            </div>
-            <div class='r-content'>
-              Map
-            </div>
-          </div>
+      <div class='row r-search-box'>
+        <div class=' justify-content-md-center mt-5'>
+          <!-- search bar -->
+          <div id='search'></div>
 
         </div>
-        <div class='row'>
-          <!-- FAQs, Open Data -->
 
-
+        <div class=' text-center mt-3'>
+          Enter a City of Garland, TX Street Address to look up Permit, Crime, Code Violations, and Other City data.
         </div>
+      </div>
+      <div class='row d-none' id='nodeResult'>
+        <!-- <div class='row ' id='nodeResult'> -->
+        <div class='col-lg-4 col-md-12 col-sm-12'>
+          <div class='r-title'>
+            Location Data
+          </div>
+          <div class='r-content'>
+            <div class='r-subtitle'>Nearby City Facilities</div>
+            <div id='nearestCityFacility'>
+              <div class='load-wrapp'></div>
+            </div>
+            <div class='r-subtitle'>Services</div>
+            <div id='serviceZone'>
+              <div class='load-wrapp'></div>
+            </div>
+            <div class='r-subtitle'>Neighborhoods</div>
+            <div id='xcx'>
+              <div class='load-wrapp'></div>
+            </div>
+            <div class='r-subtitle'>Planning &amp; Development / Zoning</div>
+            <div id='zxc'>
+              <div class='load-wrapp'></div>
+            </div>
+          </div>
+        </div>
+        <div class='col-lg-4 col-md-12 col-sm-12'>
+          <div class='r-title'>
+            Reference Data
+          </div>
+          <div class='r-content'>
+            <div class='r-subtitle'>Reference</div>
+            <div id='parcelInfo'>
+              <div class='load-wrapp'></div>
+            </div>
+            <div class='r-subtitle'>Crime</div>
+            <div id='crimeData'>
+              <div class='load-wrapp'></div>
+            </div>
+          </div>
+        </div>
+        <div class='col-lg-4 col-md-12 col-sm-12'>
+          <div class='r-title'>
+            Map Data
+          </div>
+          <div class='r-content'>
+            <div class='load-wrapp'></div>
+            Map
+          </div>
+        </div>
+
+      </div>
+      <div class='row'>
+        <!-- FAQs, Open Data -->
+
+
       </div>
     </div>
   </main>
@@ -95,14 +114,14 @@
   <script>
     var dojoConfig = {
       has: {
-        "esri-promise-compatibility": 1
+        'esri-promise-compatibility': 1
       }
     };
   </script>
-  <script src="https://js.arcgis.com/4.7/"></script>
-  <script src="js/MultiSearch.js"></script>
-  <script src="js/index.js"></script>
-  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src='https://js.arcgis.com/4.7/'></script>
+  <script src='js/MultiSearch.js'></script>
+  <script src='js/index.js'></script>
+  <script src='https://code.jquery.com/jquery-1.10.2.js'></script>
 
 </body>
 

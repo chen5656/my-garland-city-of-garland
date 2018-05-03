@@ -28,7 +28,7 @@ require([
   GeometryService, projection, ProjectParameters, esriConfig,
 
   on, dom, array, topic,
-   domClass
+  domClass
 ) {
 
   'use strict';
@@ -42,8 +42,6 @@ require([
   So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
-  getCrimeData(1);
-  
   var map, view;
   var nearestFeatureList = [];
   var serviceZone = [];
@@ -129,7 +127,7 @@ require([
         "displayID": "1",
         "nearestFeature": {
           "name": "Garland Police Department",
-          "location": "1891 Forest Ln, Garland, TX 75042",
+          "ADDRESS": "1891 Forest Ln, Garland, TX 75042",
           "lat": 32.910855,
           "long": -96.654807,
           "x": 2534713.03125,
@@ -141,7 +139,7 @@ require([
         "displayID": "2",
         "nearestFeature": {
           "name": "Garland Municipal Court",
-          "location": "1791 W Avenue B, Garland, TX 75042",
+          "ADDRESS": "1791 W Avenue B, Garland, TX 75042",
           "lat": 32.910286,
           "long": -96.655733,
           "x": 2534432.5390625,
@@ -212,14 +210,11 @@ require([
       console.log("Address valid by address locator");
       //show result
       domClass.remove('nodeResult', 'd-none');
-      console.log(multiSearch);
       multiSearch.startNewSearch();
       //get information from parcel layer by Ref_ID(addressID)
       multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
       multiSearch.searchResult.address = e.result.name;
       multiSearch.getInforByAddressID();
-      //open crime page
-      //getCrimeData(e.result.feature.geometry);
 
       // projecting using geometry service:
       //"project search result, make it under stateplane. ");
@@ -241,15 +236,40 @@ require([
   });
 
   //display data
-  topic.subscribe("some/topic", function () {
-    console.log("received:", arguments);
+  topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
+    console.log("service zone:", arguments[0], multiSearch.searchResult.serviceZoneList);
+  });
+  topic.subscribe("multiSearch/parcelInfoUpdated", function () {
+    console.log("parcel info:", arguments[0], multiSearch.searchResult.parcelInfo);
+  });
+  topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
+
+    var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
+      return a.displayID - b.displayID;
+    }).map(function (val) {
+      var obj = {
+        title: "Nearest " + val.title,
+        name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
+        address_title: "Nearest " + val.title + " Address",
+        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
+        distance: val.distance
+      };
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.name, "</span></li>",
+        "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " mi.)</span>", "</li>");
+      return str;
+    });
+
+    document.getElementById("nearestCityFacility").innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+
+    debugger;
+
   });
 
-
+  //open crime page
+  //getCrimeData(e.result.feature.geometry);
   function getCrimeData(val) {
-    esriConfig.request.corsEnabledServers.push("https://www.crimereports.com");
-    var lat = 32; // val.latitude;
-    var long = -96; // val.longitude;
+    var lat = val.latitude;
+    var long = val.longitude;
     var numberX = 0.03265857696533;
     var numberY = 0.02179533454397;
 
@@ -266,24 +286,14 @@ require([
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(today.getFullYear(), "-", today.getMonth() + 1, "-", today.getDate());
 
-    var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=".concat(start_date, "&end_date=", end_date, "&lat1=", lat1, "&lat2=", lat2, "&lng1=", long1, "&lng2=", long2);
+    // var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=".concat(start_date, "&end_date=", end_date, "&lat1=", lat1, "&lat2=", lat2, "&lng1=", long1, "&lng2=", long2);
 
-    //var url="https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=",val.latitude,"&lng=",val.longitude);
-    // openInNewTab(url);
+    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
+    openInNewTab(url);
 
-    // function openInNewTab(url) {
-    //    window.open(url, '_blank');
-    // }
-
-    $.ajax({
-      type: "GET",
-      url: url,
-      crossDomain: true,
-      success: function (data) {
-        console.log(data);
-      },
-      dataType: 'json'
-    });
+    function openInNewTab(url) {
+      window.open(url, '_blank');
+    }
 
   }
 
