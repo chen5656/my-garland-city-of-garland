@@ -138,7 +138,7 @@ require([
           };
           that.searchResult.nearestCityFacilityList.push(result);
         })).catch(function (e) {
-          console.log("Get layer info error on ", e.details.url, ". Error message:", e.message);
+          console.log("Error - findNearest: ", e);
         });
 
       }
@@ -196,9 +196,8 @@ require([
 
       var promises = new all(queryRequest);
       promises.then(function (response) {
-        console.log(response);
         for (var i in response) {
-          var featureSet=that.serviceZoneSourceList[i];
+          var featureSet = that.serviceZoneSourceList[i];
           var result;
           if (response[i].features.length > 0) {
             result = {
@@ -218,10 +217,14 @@ require([
           }
           that.searchResult.serviceZoneList.push(result);
         }
-//time to display data
 
+
+        //time to display data
+        topic.publish("some/topic", {
+          msg: "hello world"
+        });
       }).catch(function (e) {
-        console.log("Get getServiceZoneList error. Error message:", e.message);
+        console.log("Error - getServiceZoneList:", e);
       });
 
       function findServiceZone(geometry, featureSet) {

@@ -1,6 +1,6 @@
 require([
 
-  '/js/MultiSearch.js',
+  'js/MultiSearch.js',
 
   'esri/Map',
   'esri/views/MapView',
@@ -12,6 +12,7 @@ require([
   "esri/tasks/GeometryService",
   "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
+  "esri/config",
 
   'dojo/on',
   'dojo/dom',
@@ -24,9 +25,10 @@ require([
   MultiSearch,
   Map, MapView, MapImageLayer,
   Search, Locator,
-  GeometryService, projection, ProjectParameters,
+  GeometryService, projection, ProjectParameters, esriConfig,
 
-  on, dom, array, topic, domClass
+  on, dom, array, topic,
+   domClass
 ) {
 
   'use strict';
@@ -41,6 +43,7 @@ require([
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
   getCrimeData(1);
+  
   var map, view;
   var nearestFeatureList = [];
   var serviceZone = [];
@@ -215,6 +218,8 @@ require([
       multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
       multiSearch.searchResult.address = e.result.name;
       multiSearch.getInforByAddressID();
+      //open crime page
+      //getCrimeData(e.result.feature.geometry);
 
       // projecting using geometry service:
       //"project search result, make it under stateplane. ");
@@ -227,24 +232,24 @@ require([
         multiSearch.geometry = geometries[0];
         //console.log("Finding nearest city facilities and get distance");
         multiSearch.getNearestCityFacilityList();
-        //add result to page directly. Because no Async involved.
-
-
         multiSearch.getServiceZoneList();
-
       }, function (error) {
         console.log(error);
       });
     }
 
-    //get information from parcel layer
-
   });
 
-  function getCrimeData(val) {
+  //display data
+  topic.subscribe("some/topic", function () {
+    console.log("received:", arguments);
+  });
 
-    var lat = 1; // val.lat;
-    var long = 1; // val.long;
+
+  function getCrimeData(val) {
+    esriConfig.request.corsEnabledServers.push("https://www.crimereports.com");
+    var lat = 32; // val.latitude;
+    var long = -96; // val.longitude;
     var numberX = 0.03265857696533;
     var numberY = 0.02179533454397;
 
@@ -261,9 +266,15 @@ require([
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(today.getFullYear(), "-", today.getMonth() + 1, "-", today.getDate());
 
-    var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=2018-04-12&end_date=2018-04-26&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242";
+    var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=".concat(start_date, "&end_date=", end_date, "&lat1=", lat1, "&lat2=", lat2, "&lng1=", long1, "&lng2=", long2);
 
-    var flickerAPI = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+    //var url="https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=",val.latitude,"&lng=",val.longitude);
+    // openInNewTab(url);
+
+    // function openInNewTab(url) {
+    //    window.open(url, '_blank');
+    // }
+
     $.ajax({
       type: "GET",
       url: url,
@@ -275,7 +286,6 @@ require([
     });
 
   }
-  //var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_date=2018-04-26&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&lat1=32.941195641371934&lat2=32.878505940128846&lng1=-96.59351348876953&lng2=-96.66715621948242&sandbox=false&start_date=2018-04-12&start_time=0&zoom=15";
 
 
 });
