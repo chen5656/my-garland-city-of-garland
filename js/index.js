@@ -19,6 +19,8 @@ require([
   'dojo/_base/array',
   "dojo/topic",
   "dojo/dom-class",
+  "dojo/query",
+  "dojo/dom-attr",
 
   'dojo/domReady!'
 ], function (
@@ -28,7 +30,7 @@ require([
   GeometryService, projection, ProjectParameters, esriConfig,
 
   on, dom, array, topic,
-  domClass
+  domClass, domQuery, domAttr
 ) {
 
   'use strict';
@@ -45,6 +47,15 @@ require([
   var map, view;
   var nearestFeatureList = [];
   var serviceZone = [];
+
+  var collapsedButtons = domQuery(".collapsed", "nodeResult");
+  console.log(collapsedButtons);
+  collapsedButtons.forEach(function (btn) {
+    btn.onclick = function () {
+      var card = dom.byId(domAttr.get(this, "aria-controls"));
+      domClass.toggle(card, "show");
+    };
+  });
 
   //create multisearch widget.
   var multiSearch = new GetMultiSearch({
@@ -276,9 +287,9 @@ require([
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
       return str;
     });
-    var node=document.getElementById("parcelInfo");
+    var node = dom.byId("parcelInfo");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-    domClass.add(node.parentElement, "r-subcontent-ready"); 
+    domClass.add(node.parentElement, "r-subcontent-ready");
     console.log(node.parentElement);
 
   });
@@ -299,11 +310,10 @@ require([
       return str;
     });
 
-    var node= document.getElementById("nearestCityFacility");
+    var node = dom.byId("nearestCityFacility");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-    domClass.add(node.parentElement, "r-subcontent-ready"); 
+    //  domClass.add(node.parentElement, "r-subcontent-ready"); 
     console.log(node.parentElement);
-
   });
 
   //open crime page

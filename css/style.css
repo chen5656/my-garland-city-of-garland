@@ -82,9 +82,9 @@ div.absolute {
   font-weight: 600;
 }
 
-/* .r-content {  
-  padding: 20px ;
-} */
+ .r-content {  
+  padding: 2px ;
+} 
 
 .r-subtitle {
   font-size: 24px;
@@ -92,13 +92,13 @@ div.absolute {
   margin-left: 10px;
 }
 
-.r-subcontent-ready {
+/* .r-subcontent-ready {
   background-color: rgb(235, 235, 235);
   padding: 15px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 1px solid #666;
-}
+} */
 
 .location-data-tag {
   font-weight: 500;
