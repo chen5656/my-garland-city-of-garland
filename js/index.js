@@ -236,11 +236,51 @@ require([
   });
 
   //display data
+  var parcelInfo_obj2;
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("service zone:", arguments[0], multiSearch.searchResult.serviceZoneList);
   });
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("parcel info:", arguments[0], multiSearch.searchResult.parcelInfo);
+    var item = multiSearch.searchResult.parcelInfo;
+    var obj = {
+      "Zip Code": item.ZIP_CODE,
+      //"County":
+      "Mapsco Grid": item.MAPSCO,
+      "SCHOOL_DISTRICT": item.SCHOOL_DISTRICT,
+      "City Council District": item.COUNCIL_ID,
+      //City Council District Member
+      "Census Tract": item.CENSUS_TRACT
+    };
+    var obj2 = {
+      "FIRE DIST": item.FIRE_DIST,
+      "LANDUSE": item.LANDUSE,
+      "NEIGHBORHOOD": item.NEIGHBORHOOD,
+      "POLICE_BEAT": item.POLICE_BEAT,
+      "POLICE_DIST": item.POLICE_DIST,
+      "HEALTH_COMPLAINT": item.HEALTH_COMPLAINT,
+      "ZONING": item.ZONING
+    };
+    parcelInfo_obj2 = obj2;
+
+    var arr = [];
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        arr.push({
+          title: key,
+          value: obj[key]
+        });
+      }
+    }
+    arr = arr.map(function (obj) {
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
+      return str;
+    });
+    var node=document.getElementById("parcelInfo");
+    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+    domClass.add(node.parentElement, "r-subcontent-ready"); 
+    console.log(node.parentElement);
+
   });
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
 
@@ -259,9 +299,10 @@ require([
       return str;
     });
 
-    document.getElementById("nearestCityFacility").innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-
-    debugger;
+    var node= document.getElementById("nearestCityFacility");
+    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+    domClass.add(node.parentElement, "r-subcontent-ready"); 
+    console.log(node.parentElement);
 
   });
 
