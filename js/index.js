@@ -2,6 +2,7 @@ require([
 
   'js/MultiSearch.js',
 
+  "esri/Basemap",
   'esri/Map',
   'esri/views/MapView',
   "esri/layers/MapImageLayer",
@@ -25,7 +26,7 @@ require([
   'dojo/domReady!'
 ], function (
   MultiSearch,
-  Map, MapView, MapImageLayer,
+  Basemap, Map, MapView, MapImageLayer,
   Search, Locator,
   GeometryService, projection, ProjectParameters, esriConfig,
 
@@ -44,7 +45,7 @@ require([
   So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
   Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
   */
-  var map, view;
+  var map, view, subMap, subView;
   var nearestFeatureList = [];
   var serviceZone = [];
   var parcelInfo_obj2;
@@ -212,14 +213,27 @@ require([
     }]
   });
 
+  search.on("search-start", function (e) {
+    domClass.add('nodeResult', 'd-none');
+    multiSearch.startNewSearch();
+
+    var cardBodies = domQuery(".card-body>div", "nodeResult");
+    cardBodies.forEach(function (node) {
+      node.innerHTML="<div class='load-wrapp'></div>";
+    }); 
+  
+  });
+
   search.on("select-result", function (e) {
+
     var i, result;
     view.zoom = 12;
     if (e.result) {
       console.log("Address valid by address locator");
       //show result
       domClass.remove('nodeResult', 'd-none');
-      multiSearch.startNewSearch();
+
+
       //get information from parcel layer by Ref_ID(addressID)
       multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
       multiSearch.searchResult.address = e.result.name;
@@ -250,7 +264,6 @@ require([
 
   //display data
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
-    console.log("service zone:", arguments[0], multiSearch.searchResult.serviceZoneList);
     var arr = multiSearch.searchResult.serviceZoneList;
     if (parcelInfo_obj2.length > 0) {
       arr = arr.concat(parcelInfo_obj2);
@@ -281,7 +294,6 @@ require([
 
   });
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
-    console.log("parcel info:", arguments[0], multiSearch.searchResult.parcelInfo);
     var item = multiSearch.searchResult.parcelInfo;
     var obj = {
       "Zip Code": item.ZIP_CODE,
@@ -367,6 +379,7 @@ require([
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
 
   });
+
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
 
     var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
@@ -388,8 +401,10 @@ require([
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
 
+
   //open crime page
   function getCrimeData(val) {
+
     var lat = val.latitude;
     var long = val.longitude;
     var numberX = 0.03265857696533;
@@ -417,11 +432,42 @@ require([
     //   window.open(url, '_blank');
     // }
     var node = dom.byId("crimeData");
-    node.innerHTML = "".concat("<iframe src='", url, "' height='400' width='100%'></iframe>");
-
-
+    node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
   }
 
-  
+  function showSubMap(val) {
+    var node = dom.byId("subMap");
+    node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
 
+    var lat = val.latitude;
+    var long = val.longitude;
+    var mapImageLayerList1 = new MapImageLayer({
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
+      sublayers: [{
+        id: 3,
+        visible: true
+      }, {
+        id: 2,
+        visible: true
+      }, {
+        id: 1,
+        visible: true
+      }]
+    });
+
+    console.log(mapImageLayerList1);
+    var map1 = new Map({
+      basemap: "topo",
+      layers: [mapImageLayerList1]
+    });
+    var view1 = new MapView({
+      container: 'subMapView',
+      map: map1,
+      zoom: 18,
+      center: [long, lat],
+      constraints: {
+        rotationEnabled: false
+      }
+    });
+  }
 });
