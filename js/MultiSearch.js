@@ -221,6 +221,8 @@ require([
             //no polygon returns.
             result = {
               title: featureSet.name,
+              containerID: featureSet.containerID, //"1_2",
+              displayID: featureSet.displayID, //"1",
               queryPolygonCount: response[i].features.length
             };
           }

@@ -47,9 +47,9 @@ require([
   var map, view;
   var nearestFeatureList = [];
   var serviceZone = [];
+  var parcelInfo_obj2;
 
   var collapsedButtons = domQuery(".collapsed", "nodeResult");
-  console.log(collapsedButtons);
   collapsedButtons.forEach(function (btn) {
     btn.onclick = function () {
       var card = dom.byId(domAttr.get(this, "aria-controls"));
@@ -65,73 +65,71 @@ require([
       where: "NUM>0",
       displayID: "3"
     }],
-    serviceZoneSourceList: [{
-        name: "Police Districts",
-        containerID: 1,
-        displayID: "1",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/4"
-      }, {
+    serviceZoneSourceList: [ {
         name: "Police Sectors",
         containerID: 1,
-        displayID: "2",
+        displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
-      }, {
-        name: "Police Beats",
-        containerID: 1,
-        displayID: "3",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/3"
-      }, {
-        name: "Fire Districts",
-        containerID: 1,
-        displayID: "4",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/0"
-      }, {
+      }, 
+      // {
+      //   name: "Police Districts",
+      //   containerID: 1,
+      //   displayID: 1,
+      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/4"
+      // }, {
+      // //   name: "Police Beats",
+      //   containerID: 1,
+      //   displayID: 3,
+      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/3"
+      // }, {
+      //   name: "Fire Districts",
+      //   containerID: 1,
+      //   displayID: 4,
+      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/0"
+      // },
+      {
         name: "Fire Alarm Grids",
         containerID: 1,
-        displayID: "5",
+        displayID: 5,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
       },
       {
         name: "EWS Brush Route Days",
         containerID: 1,
-        displayID: "6",
+        displayID: 6,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/12"
       }, {
         name: "EWS Recycling Route Days",
         containerID: 1,
-        displayID: "7",
+        displayID: 7,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
       }, {
         name: "EWS Trash Route Days",
         containerID: 1,
-        displayID: "8",
+        displayID: 8,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
       }, {
         name: "Neighborhood Watches",
         containerID: 2,
-        displayID: "1",
+        displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/8"
       }, {
         name: "Neighborhood Associations",
         containerID: 2,
-        displayID: "2",
+        displayID: 3,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/9"
-      }, {
-        name: "Subdivision",
-        containerID: 3,
-        displayID: "1",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/0"
       }, {
         name: "GDC Zoining",
         containerID: 3,
-        displayID: "3",
+        displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/2"
-      }, {
-        name: "Land Use",
-        containerID: 3,
-        displayID: "2",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/1"
       }
+      // , {
+      //   name: "Land Use",
+      //   containerID: 3,
+      //   displayID: 1,
+      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/1"
+      // }
     ],
     individualCityFacility: [{
         "title": "Police Station",
@@ -247,9 +245,36 @@ require([
   });
 
   //display data
-  var parcelInfo_obj2;
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("service zone:", arguments[0], multiSearch.searchResult.serviceZoneList);
+    var arr = multiSearch.searchResult.serviceZoneList;
+    if (parcelInfo_obj2.length > 0) {
+      arr = arr.concat(parcelInfo_obj2);
+    }
+    var containerID = [1, 2, 3];
+    for (var i in containerID) {
+      var subArr = arr.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        return a.displayID - b.displayID;
+      });
+      subArr = subArr.map(function (val) {
+        var title = val.title;
+        var value;
+        if (val.displayFieldName) {
+          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+        } else {
+          value = "NULL";
+        }
+        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
+        return str;
+      });
+      var node = dom.byId("serviceZone".concat(containerID[i]));
+      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
+    }
+
+
+
   });
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("parcel info:", arguments[0], multiSearch.searchResult.parcelInfo);
@@ -261,17 +286,64 @@ require([
       "SCHOOL_DISTRICT": item.SCHOOL_DISTRICT,
       "City Council District": item.COUNCIL_ID,
       //City Council District Member
-      "Census Tract": item.CENSUS_TRACT
+      "Census Tract": item.CENSUS_TRACT,
+      "Health Complaint": item.HEALTH_COMPLAINT
     };
-    var obj2 = {
-      "FIRE DIST": item.FIRE_DIST,
-      "LANDUSE": item.LANDUSE,
-      "NEIGHBORHOOD": item.NEIGHBORHOOD,
-      "POLICE_BEAT": item.POLICE_BEAT,
-      "POLICE_DIST": item.POLICE_DIST,
-      "HEALTH_COMPLAINT": item.HEALTH_COMPLAINT,
-      "ZONING": item.ZONING
-    };
+    var obj2 = [{
+      title: "Fire Districts",
+      containerID: 1,
+      displayFieldName: "FIRE_DISTRICT",
+      displayID: 4,
+      queryPolygonCount: 1,
+      serviceZone: {
+        FIRE_DISTRICT: item.FIRE_DIST
+      }
+    }, {
+      title: "Land Use",
+      containerID: 3,
+      displayFieldName: "value",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.LANDUSE
+      }
+    }, {
+      title: "ZONING",
+      containerID: 3,
+      displayFieldName: "value",
+      displayID: 2,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.ZONING
+      }
+    }, {
+      title: "Neighborhood",
+      containerID: 2,
+      displayID: 1,
+      displayFieldName: "value",
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.NEIGHBORHOOD
+      }
+    }, {
+      title: "Police Beats",
+      containerID: 1,
+      displayFieldName: "BEAT",
+      displayID: 3,
+      queryPolygonCount: 1,
+      serviceZone: {
+        BEAT: item.POLICE_BEAT
+      }
+    }, {
+      title: "Police Districts",
+      containerID: 1,
+      displayFieldName: "DISTRICTS",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        DISTRICTS: item.POLICE_DIST
+      }
+    }];
     parcelInfo_obj2 = obj2;
 
     var arr = [];
@@ -289,8 +361,6 @@ require([
     });
     var node = dom.byId("parcelInfo");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-    domClass.add(node.parentElement, "r-subcontent-ready");
-    console.log(node.parentElement);
 
   });
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
@@ -312,8 +382,6 @@ require([
 
     var node = dom.byId("nearestCityFacility");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-    //  domClass.add(node.parentElement, "r-subcontent-ready"); 
-    console.log(node.parentElement);
   });
 
   //open crime page
