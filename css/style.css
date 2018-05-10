@@ -117,3 +117,7 @@ div.absolute {
 .location-data-value {
   font-size: 18px;
 }
+
+.btn-secondary-right {
+  float: right;
+}
