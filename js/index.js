@@ -35,16 +35,7 @@ require([
 ) {
 
   'use strict';
-  /*
-  About projection.
-  In this file, search, locator, and query are used, and in different spatial reference(SR).
-  The original SR for locator and query is 2276. //EPSG:2276: NAD83 / Texas North Central (ftUS)
-  The original SR for search widget is 4326 (WGS 84).
-  I can easily set the outSpatialReference for query to 4326. (I can also set the out SR for locator, but it won't change the result SR when uses the search widget. When uses locator directly, the result will be the out SR.)
-  When calculate distance, it requires the inputs under the same Spatial Reference. 
-  So I can either setup the out SR for query as 4326, or re-projection the search result to 2276.
-  Because 4326 is radian degree, and I also need to show the distance as mileage. So in this code, I kept query output as 2276, and re-projection the search result.
-  */
+
   var map, view, subMap, subView;
   var nearestFeatureList = [];
   var serviceZone = [];
