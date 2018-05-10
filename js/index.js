@@ -404,7 +404,7 @@ require([
 
   //open crime page
   function getCrimeData(val) {
-
+console.log("crime map:");
     var lat = val.latitude;
     var long = val.longitude;
     var numberX = 0.03265857696533;
@@ -426,6 +426,7 @@ require([
     // var url = "https://www.crimereports.com/api/crimes/details.json?agency_id=41082&days=sunday,monday,tuesday,wednesday,thursday,friday,saturday&end_time=23&incident_types=Assault,Assault+with+Deadly+Weapon,Breaking+%26+Entering,Disorder,Drugs,Homicide,Kidnapping,Liquor,Other+Sexual+Offense,Property+Crime,Property+Crime+Commercial,Property+Crime+Residential,Quality+of+Life,Robbery,Sexual+Assault,Sexual+Offense,Theft,Theft+from+Vehicle,Theft+of+Vehicle&include_sex_offenders=false&sandbox=false&start_time=0&zoom=15&start_date=".concat(start_date, "&end_date=", end_date, "&lat1=", lat1, "&lat2=", lat2, "&lng1=", long1, "&lng2=", long2);
 
     var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
+    console.log("crime map:",url);
     // openInNewTab(url);
 
     // function openInNewTab(url) {
@@ -441,7 +442,7 @@ require([
 
     var lat = val.latitude;
     var long = val.longitude;
-    var mapImageLayerList1 = new MapImageLayer({
+    var mapImageLayerList = new MapImageLayer({
       url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
       sublayers: [{
         id: 3,
@@ -454,15 +455,13 @@ require([
         visible: true
       }]
     });
-
-    console.log(mapImageLayerList1);
-    var map1 = new Map({
+    var map= new Map({
       basemap: "topo",
-      layers: [mapImageLayerList1]
+      layers: [mapImageLayerList]
     });
-    var view1 = new MapView({
+    var view = new MapView({
       container: 'subMapView',
-      map: map1,
+      map: map,
       zoom: 18,
       center: [long, lat],
       constraints: {
