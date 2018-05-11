@@ -19,9 +19,9 @@ define([
 
     mapService: null, //need address map service and parcel map service
 
-    individualCityFacility: [], //Police Station,Court ...
-    cityFacilitySourceList: [],
-    serviceZoneSourceList: [],
+    individualCityFacility: null, //Police Station,Court ...
+    cityFacilitySourceList: null,
+    serviceZoneSourceList: null,
 
     buildRendering: function () {
       //create the DOM for this widget --- must keep
@@ -35,6 +35,9 @@ define([
         wkid: 2276
       });
       this.cityFacilityList = [];
+      this.individualCityFacility= []; //Police Station,Court ...
+      this.cityFacilitySourceList =[];
+      this.serviceZoneSourceList= [];
     },
 
     startNewSearch: function () {
