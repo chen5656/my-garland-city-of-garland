@@ -25,7 +25,7 @@ require([
 
   'dojo/domReady!'
 ], function (
-  MultiSearch,
+  nameMultiSearch,
   Basemap, Map, MapView, MapImageLayer,
   Search, Locator,
   GeometryService, projection, ProjectParameters, esriConfig,

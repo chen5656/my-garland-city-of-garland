@@ -1,4 +1,4 @@
-require([
+define([
   'dojo/dom',
   'dojo/_base/array',
   "esri/tasks/support/Query",
@@ -15,7 +15,7 @@ require([
   //geometryEngine, 
   lang, all, topic,
   declare, domConstruct, parser, ready, _WidgetBase, _TemplatedMixin) {
-  declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
+ return declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
 
     mapService: null, //need address map service and parcel map service
 
