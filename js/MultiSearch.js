@@ -21,7 +21,9 @@ define([
 
     individualCityFacility: null, //Police Station,Court ...
     cityFacilitySourceList: null,
+    cityFacilityList:null,
     serviceZoneSourceList: null,
+    spatialReference :null,
 
     buildRendering: function () {
       //create the DOM for this widget --- must keep
@@ -34,10 +36,6 @@ define([
       this.spatialReference = new SpatialReference({
         wkid: 2276
       });
-      this.cityFacilityList = [];
-      this.individualCityFacility= []; //Police Station,Court ...
-      this.cityFacilitySourceList =[];
-      this.serviceZoneSourceList= [];
     },
 
     startNewSearch: function () {
@@ -52,6 +50,8 @@ define([
 
     prepareCityFacilityList: function () {
       var that = this;
+
+      that.cityFacilityList=[];
 
       for (var i in this.cityFacilitySourceList) {
         runQuery(this.cityFacilitySourceList[i]);
