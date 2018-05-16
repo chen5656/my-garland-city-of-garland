@@ -200,7 +200,7 @@ require([
       placeholder: "Enter a City of Garland Address",
       suggestionsEnabled: true,
       maxSuggestions: 8,
-      minSuggestCharacters: 3
+      minSuggestCharacters: 5
     }]
   });
 
@@ -214,9 +214,13 @@ require([
     });
 
   });
+  search.on("search-complete",function(e){
+console.log(e);
+  });
+  
 
   search.on("select-result", function (e) {
-
+console.log(1);
     var i, result;
     view.zoom = 12;
     if (e.result) {
