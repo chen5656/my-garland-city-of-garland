@@ -13,11 +13,13 @@ require([
 
   "esri/widgets/Search",
   "esri/tasks/Locator",
+  "esri/tasks/support/Query",
+  "esri/tasks/QueryTask",
 
   "esri/tasks/GeometryService",
   "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
-  
+
   'js/MultiSearch.js',
 
   'dojo/domReady!'
@@ -26,8 +28,8 @@ require([
   domClass, domQuery, domAttr,
 
   Map, MapView, MapImageLayer,
-  Search, Locator,
-  GeometryService, projection, ProjectParameters, 
+  Search, Locator, Query, QueryTask,
+  GeometryService, projection, ProjectParameters,
 
   nameMultiSearch
 ) {
@@ -37,6 +39,46 @@ require([
   var nearestFeatureList = [];
   var serviceZone = [];
   var parcelInfo_obj2;
+
+  //draw map
+  (function () {
+    var mapImageLayerList = new MapImageLayer({
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
+      sublayers: [{
+        id: 0,
+        visible: true
+      }]
+    });
+    map = new Map({
+      basemap: 'gray',
+      layers: [mapImageLayerList]
+    });
+    view = new MapView({
+      container: 'viewDiv',
+      map: map,
+      zoom: 12,
+      center: [-96.636269, 32.91676]
+    });
+  })();
+
+  var search = new Search({
+    view: view,
+    container: "search",
+    allPlaceholder: ".",
+    locationEnabled: false,
+    sources: [{
+      locator: new Locator({
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
+      }),
+      outFields: ["Ref_ID"], // Ref_ID is addressID
+      singleLineFieldName: "Single Line Input",
+      name: "GARLAND_ADDRESS_LOCATOR",
+      placeholder: "Enter a City of Garland Address",
+      suggestionsEnabled: true,
+      maxSuggestions: 8,
+      minSuggestCharacters: 6
+    }]
+  });
 
   var collapsedButtons = domQuery(".collapsed", "nodeResult");
   collapsedButtons.forEach(function (btn) {
@@ -159,47 +201,11 @@ require([
   var geometryService;
   geometryService = new GeometryService(geometryServiceUrl);
 
-  //draw map
-  (function () {
-    var mapImageLayerList = new MapImageLayer({
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
-      sublayers: [{
-        id: 0,
-        visible: true
-      }]
-    });
-    map = new Map({
-      basemap: 'gray',
-      layers: [mapImageLayerList]
-    });
-    view = new MapView({
-      container: 'viewDiv',
-      map: map,
-      zoom: 12,
-      center: [-96.636269, 32.91676]
-    });
-  })();
+
 
   //query can get a list of features inside a distance.
 
-  var search = new Search({
-    view: view,
-    container: "search",
-    allPlaceholder: ".",
-    locationEnabled: false,
-    sources: [{
-      locator: new Locator({
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
-      }),
-      outFields: ["Ref_ID"], // Ref_ID is addressID
-      singleLineFieldName: "Single Line Input",
-      name: "GARLAND_ADDRESS_LOCATOR",
-      placeholder: "Enter a City of Garland Address",
-      suggestionsEnabled: true,
-      maxSuggestions: 8,
-      minSuggestCharacters: 5
-    }]
-  });
+
 
   search.on("search-start", function (e) {
     domClass.add('nodeResult', 'd-none');
@@ -214,32 +220,91 @@ require([
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
       //no result found. Suggestion the nearest result
-      var str = e.searchTerm.split(" ");
-      if (str.length > 1) {
-        var AddrNumber = str[0];
-        var AddrRoad = str[1];
-
-        var query = new Query({
-          where: queryParameter.where,
-          returnGeometry: true,
-          outFields: ["*"]
-        });
-        var queryTask = new QueryTask({
-          url: queryParameter.url
-        });
-        queryTask.execute(query).then(function (results) {
-          // Results.graphics contains the graphics returned from query
-          that.cityFacilityList.push({
-            name: queryParameter.name,
-            displayID: queryParameter.displayID,
-            features: results.features
-          });
-        });
-
+      var AddrRoad, AddrNumber;
+      var str = e.searchTerm.trim().toUpperCase();
+      var subStr = str.split(" ");
+      if (subStr.length > 1) {
+        var str1 = subStr[0];
+        if (str1 != parseInt(str1, 10)) {
+          //not a number, try to use it as street name
+          AddrRoad = str.split(",")[0].trim();
+          AddrNumber = 1;
+        } else {
+          AddrRoad = str.split(str1)[1].trim().split(",")[0].trim();
+          AddrNumber = str1;
+        }
+      } else {
+        // try to use it as street name
+        AddrRoad = str;
+        AddrNumber = 1;
       }
+
+      var query = new Query({
+        where: "STREETLABEL LIKE '%".concat(AddrRoad, "%'"),
+        returnGeometry: false,
+        outFields: ["*"]
+      });
+      console.log(query.where);
+      var queryTask = new QueryTask({
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/1"
+      });
+      queryTask.execute(query).then(function (results) {
+        var AddList = [];
+        if (results.features.length > 0) {
+          //street entered correct
+
+          AddList = results.features.map(function (val) {
+            return {
+              streetNumber: val.attributes.STREETNUM,
+              streetLabel: val.attributes.STREETLABEL
+            };
+          }).sort(function (a, b) {
+            return a.streetNumber - b.streetNumber;
+          });
+          console.log(AddList);
+
+          //find close nums
+          var closestAddressList = closestNums(AddrNumber, AddList);
+          closestAddressList=closestAddressList.map(function (val) {
+            return "".concat(val.streetNumber , " ", val.streetLabel);
+          });
+          console.log(closestAddressList.join(", "));
+return; 
+          //esri-search__warning-text
+          var searchWarningTxt = domQuery(".esri-search__warning-text");
+          searchWarningTxt.innerHTML = "There were no results found for input address. Do you want to try the following addresses: ".concat(closestAddressList.join(" "));
+          debugger;
+        } else {
+          //street wrong
+
+        }
+      });
     }
 
   });
+
+  function closestNums(num, arr) {
+    var numsIndex = arr.length - 1;
+    if (arr.length > 5) {
+      for (var i = 0; i < arr.length; i++) {
+        if (num < arr[i].streetNumber) {
+          if (arr.length - (i + 3) < 0) {
+            numsIndex = arr.length - 1;
+          } else {
+            numsIndex = i + 2;
+          }
+          break;
+        }
+      }
+      if (numsIndex < 4) {
+        numsIndex = 4;
+      }
+      return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+
+    } else {
+      return arr;
+    }
+  }
 
 
   search.on("select-result", function (e) {

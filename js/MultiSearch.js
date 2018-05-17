@@ -15,15 +15,15 @@ define([
   //geometryEngine, 
   lang, all, topic,
   declare, domConstruct, parser, ready, _WidgetBase, _TemplatedMixin) {
- return declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
+  return declare("GetMultiSearch", [_WidgetBase, _TemplatedMixin], {
 
     mapService: null, //need address map service and parcel map service
 
     individualCityFacility: null, //Police Station,Court ...
     cityFacilitySourceList: null,
-    cityFacilityList:null,
+    cityFacilityList: null,
     serviceZoneSourceList: null,
-    spatialReference :null,
+    spatialReference: null,
 
     buildRendering: function () {
       //create the DOM for this widget --- must keep
@@ -51,7 +51,7 @@ define([
     prepareCityFacilityList: function () {
       var that = this;
 
-      that.cityFacilityList=[];
+      that.cityFacilityList = [];
 
       for (var i in this.cityFacilitySourceList) {
         runQuery(this.cityFacilitySourceList[i]);
@@ -143,10 +143,10 @@ define([
             distance: minDistance.toFixed(2)
           };
           that.searchResult.nearestCityFacilityList.push(result);
-          if ( that.searchResult.nearestCityFacilityList.length==that.cityFacilityList.length+that.individualCityFacility.length) {
+          if (that.searchResult.nearestCityFacilityList.length == that.cityFacilityList.length + that.individualCityFacility.length) {
             //time to display data
             topic.publish("multiSearch/nearestCityFacilityUpdated", {
-              count:that.searchResult.nearestCityFacilityList.length
+              count: that.searchResult.nearestCityFacilityList.length
             });
           }
         })).catch(function (e) {

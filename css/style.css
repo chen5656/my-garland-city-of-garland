@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color: rgb(196, 196, 196);
+  background-color: rgb(153, 9, 9);
 }
 
 .r-search-box {
@@ -12,9 +12,11 @@ body {
   padding: 50px 5px 50px 5px;
   border-top: 30px solid rgb(196, 196, 196);
   text-align: center;
+  z-index: 99;
+  position: relative;
+  /* z-index will only apply to elements with a position rule other than the default 
+   add z-index, so the suggested address dropdown will be in the top of other elements.*/
 }
-
-
 
 #search {
   width: 100%;
@@ -34,11 +36,6 @@ body {
   color: #08c;
   border: 1px solid #08c;
   box-shadow: 0px 1px 0px rgba(255, 255, 255, .25), inset 0px 3px 6px rgba(0, 0, 0, .25);
-  
-}
-
-.r-card {
-  z-index:-1;
 }
 
 .overflow-hidden {
@@ -58,7 +55,7 @@ div.absolute {
 }
 
 .title {
-  font-family:  'Lobster', monospace, Sans-Serif;
+  font-family: 'Lobster', monospace, Sans-Serif;
   font-weight: 400;
   font-size: 48px;
   padding-left: 20px;
@@ -86,7 +83,13 @@ div.absolute {
 }
 
 #nodeResult {
-  margin-top: 30px;
+  padding-top: 30px;
+  background-color: rgb(196, 196, 196);
+}
+
+#nodeLinks {
+  background-color: rgb(196, 196, 196);
+  padding: 30px 0px 0px 0px;
 }
 
 .r-title {
@@ -96,23 +99,15 @@ div.absolute {
   font-weight: 600;
 }
 
- .r-content {  
-  padding: 2px ;
-} 
+.r-content {
+  padding: 2px;
+}
 
 .r-subtitle {
   font-size: 24px;
   color: rgb(29, 29, 65);
   margin-left: 10px;
 }
-
-/* .r-subcontent-ready {
-  background-color: rgb(235, 235, 235);
-  padding: 15px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #666;
-} */
 
 .location-data-tag {
   font-weight: 500;
@@ -125,4 +120,25 @@ div.absolute {
 
 .btn-secondary-right {
   float: right;
+}
+
+footer {
+  color: #333333;
+  margin: 20px 10px 0px 10px;
+}
+.copyright {
+  font-style: italic;
+  
+  line-height: 1.42857;
+  font-weight: 400;
+  font-size: 14px;
+  margin:0 0 10px;
+}
+
+.copyright-content {  
+  font-size: 70%;  
+  margin-bottom: 20px;
+  font-weight: 300;
+  line-height: 1.4;  
+  margin:0 0 10px;
 }

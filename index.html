@@ -8,7 +8,7 @@
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
     crossorigin='anonymous'>
   <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
-  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
   <script>
     dojoConfig = {
@@ -35,15 +35,15 @@
       </div>
       <div class='  row  justify-content-md-center  r-search-box'>
         <div class=' col-lg-4  col-md-6'>
-            <div class='mb-3 col-12'>
-                Enter a valid City of Garland Address to look up City data.
-              </div>
+          <div class='mb-3 col-12'>
+            Enter a valid City of Garland Address to look up City data.
+          </div>
           <!-- search bar -->
           <div id='search'></div>
 
         </div>
 
-     
+
       </div>
       <div class='row d-none' id='nodeResult'>
         <!-- <div class='row ' id='nodeResult'> -->
@@ -53,33 +53,33 @@
             Location Data
           </div>
           <div class='r-content'>
-            <div id="accordion">
-              <div class="card">
-                <div class="card-header" id="headingOne">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseOne">
-                      <i class="fas fa-plus-square"></i> Nearby City Facilities
+            <div id='accordion'>
+              <div class='card'>
+                <div class='card-header' id='headingOne'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
+                      <i class='fas fa-plus-square'></i> Nearby City Facilities
                     </button>
                   </h5>
                 </div>
-                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseOne' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='nearestCityFacility'>
                       <div class='load-wrapp'></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseTwo">
-                      <i class="fas fa-plus-square"></i> Services
+              <div class='card'>
+                <div class='card-header' id='headingTwo'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseTwo'>
+                      <i class='fas fa-plus-square'></i> Services
                     </button>
                   </h5>
                 </div>
-                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseTwo' class='collapse show' aria-labelledby='headingTwo' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='serviceZone1'>
                       <div class='load-wrapp'></div>
                     </div>
@@ -95,49 +95,49 @@
             Reference Data
           </div>
           <div class='r-content'>
-            <div id="accordion">
-              <div class="card">
-                <div class="card-header" id="headingFour">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseFour">
-                      <i class="fas fa-plus-square"></i> Reference
+            <div id='accordion'>
+              <div class='card'>
+                <div class='card-header' id='headingFour'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFour'>
+                      <i class='fas fa-plus-square'></i> Reference
                     </button>
                   </h5>
                 </div>
-                <div id="collapseFour" class="collapse show" aria-labelledby="headingFour" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseFour' class='collapse show' aria-labelledby='headingFour' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='parcelInfo'>
                       <div class='load-wrapp'></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="card">
-                <div class="card-header" id="headingFive">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseFive">
-                      <i class="fas fa-plus-square"></i> Neighborhoods
+              <div class='card'>
+                <div class='card-header' id='headingFive'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFive'>
+                      <i class='fas fa-plus-square'></i> Neighborhoods
                     </button>
                   </h5>
                 </div>
-                <div id="collapseFive" class="collapse show" aria-labelledby="headingFive" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseFive' class='collapse show' aria-labelledby='headingFive' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='serviceZone2'>
                       <div class='load-wrapp'></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="card">
-                <div class="card-header" id="headingThree">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseThree">
-                      <i class="fas fa-plus-square"></i> Planning &amp; Development / Zoning
+              <div class='card'>
+                <div class='card-header' id='headingThree'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseThree'>
+                      <i class='fas fa-plus-square'></i> Planning &amp; Development / Zoning
                     </button>
                   </h5>
                 </div>
-                <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseThree' class='collapse show' aria-labelledby='headingThree' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='serviceZone3'>
                       <div class='load-wrapp'></div>
                     </div>
@@ -153,34 +153,36 @@
             Map Data
           </div>
           <div class='r-content'>
-            <div id="accordion">
-              <div class="card">
-                <div class="card-header" id="headingSeven">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseSeven">
-                      <i class="fas fa-plus-square"></i> Detail
+            <div id='accordion'>
+              <div class='card'>
+                <div class='card-header' id='headingSeven'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSeven'>
+                      <i class='fas fa-plus-square'></i> Detail
                     </button>
                   </h5>
                 </div>
-                <div id="collapseSeven" class="collapse show" aria-labelledby="headingSeven" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseSeven' class='collapse show' aria-labelledby='headingSeven' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='subMap'>
                       <div class='load-wrapp'></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="card">
-                <div class="card-header" id="headingSix">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" aria-controls="collapseSix" id="crime-map-title">
-                      <i class="fas fa-plus-square"></i> Crime
+              <div class='card'>
+                <div class='card-header' id='headingSix'>
+                  <h5 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix' id='crime-map-title'>
+                      <i class='fas fa-plus-square'></i> Crime
                     </button>
-                    <button type="button" class="btn btn-secondary btn-secondary-right" id="open-crime-map"><i class="fas fa-external-link-alt"></i></button>
+                    <button type='button' class='btn btn-secondary btn-secondary-right' id='open-crime-map'>
+                      <i class='fas fa-external-link-alt'></i>
+                    </button>
                   </h5>
                 </div>
-                <div id="collapseSix" class="collapse show" aria-labelledby="headingSix" data-parent="#accordion">
-                  <div class="card-body">
+                <div id='collapseSix' class='collapse show' aria-labelledby='headingSix' data-parent='#accordion'>
+                  <div class='card-body'>
                     <div id='crimeData'>
                       <div class='load-wrapp'></div>
 
@@ -193,7 +195,7 @@
         </div>
 
       </div>
-      <div class='row'>
+      <div class='row' id='nodeLinks'>
         <!-- FAQs, Open Data -->
 
 
@@ -204,6 +206,10 @@
 
   <footer>
     <!--facebook twitter info -->
+    <p class='copyright'> Copyright 2018. City of Garland. </p>
+    <p class='copyright-content'>Texas Government Code § 2051.102 (2011): This product is for informational purposes and may not have been prepared for or
+    be suitable for legal, engineering, or surveying purposes. It does not represent an on-the-ground survey and represents
+    only the approximate relative location of property boundaries.</p>
   </footer>
   </script>
   <script src='https://js.arcgis.com/4.7/'></script>
