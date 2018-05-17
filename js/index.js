@@ -214,13 +214,38 @@ require([
     });
 
   });
-  search.on("search-complete",function(e){
-console.log(e);
+  search.on("search-complete", function (e) {
+    if (e.numResults == 0) {
+      //no result found. Suggestion the nearest result
+      var str = e.searchTerm.split(" ");
+      if(str.length>1){
+        var AddrNumber = str[0];
+        var AddrRoad = str[1];
+
+        var query = new Query({
+          where: queryParameter.where,
+          returnGeometry: true,
+          outFields: ["*"]
+        });
+        var queryTask = new QueryTask({
+          url: queryParameter.url
+        });
+        queryTask.execute(query).then(function (results) {
+          // Results.graphics contains the graphics returned from query
+          that.cityFacilityList.push({
+            name: queryParameter.name,
+            displayID: queryParameter.displayID,
+            features: results.features
+          });
+        });
+
+      }
+    }
+
   });
-  
+
 
   search.on("select-result", function (e) {
-console.log(1);
     var i, result;
     view.zoom = 12;
     if (e.result) {
@@ -252,6 +277,8 @@ console.log(1);
         multiSearch.getServiceZoneList();
       }, function (error) {
         console.log(error);
+        
+        alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
       });
     }
 
@@ -411,12 +438,12 @@ console.log(1);
     var long2 = long - numberX;
 
     var today = new Date();
-    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
+    today.setHours(0,0,0);
+    console.log(today);
+    var yesterday=new Date(today.getTime() - 1 * 1000); //yesterday 24:59:59
+    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);//7 days ago 00:00:00
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
-    var end_date = "".concat(today.getFullYear(), "-", today.getMonth() + 1, "-", today.getDate());
+    var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
 
     var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
     console.log("crime map:", url);
@@ -427,7 +454,7 @@ console.log(1);
 
     var nodeBtn = dom.byId("open-crime-map");
     nodeBtn.onclick = function () {
-        window.open(url, '_blank');
+      window.open(url, '_blank');
     };
   }
 
