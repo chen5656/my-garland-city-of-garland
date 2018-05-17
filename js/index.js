@@ -1,8 +1,12 @@
 require([
+  'dojo/on',
+  'dojo/dom',
+  'dojo/_base/array',
+  "dojo/topic",
+  "dojo/dom-class",
+  "dojo/query",
+  "dojo/dom-attr",
 
-  'js/MultiSearch.js',
-
-  "esri/Basemap",
   'esri/Map',
   'esri/views/MapView',
   "esri/layers/MapImageLayer",
@@ -13,25 +17,19 @@ require([
   "esri/tasks/GeometryService",
   "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
-  "esri/config",
-
-  'dojo/on',
-  'dojo/dom',
-  'dojo/_base/array',
-  "dojo/topic",
-  "dojo/dom-class",
-  "dojo/query",
-  "dojo/dom-attr",
+  
+  'js/MultiSearch.js',
 
   'dojo/domReady!'
 ], function (
-  nameMultiSearch,
-  Basemap, Map, MapView, MapImageLayer,
-  Search, Locator,
-  GeometryService, projection, ProjectParameters, esriConfig,
-
   on, dom, array, topic,
-  domClass, domQuery, domAttr
+  domClass, domQuery, domAttr,
+
+  Map, MapView, MapImageLayer,
+  Search, Locator,
+  GeometryService, projection, ProjectParameters, 
+
+  nameMultiSearch
 ) {
 
   'use strict';
@@ -218,7 +216,7 @@ require([
     if (e.numResults == 0) {
       //no result found. Suggestion the nearest result
       var str = e.searchTerm.split(" ");
-      if(str.length>1){
+      if (str.length > 1) {
         var AddrNumber = str[0];
         var AddrRoad = str[1];
 
@@ -277,7 +275,7 @@ require([
         multiSearch.getServiceZoneList();
       }, function (error) {
         console.log(error);
-        
+
         alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
       });
     }
@@ -438,10 +436,10 @@ require([
     var long2 = long - numberX;
 
     var today = new Date();
-    today.setHours(0,0,0);
+    today.setHours(0, 0, 0);
     console.log(today);
-    var yesterday=new Date(today.getTime() - 1 * 1000); //yesterday 24:59:59
-    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);//7 days ago 00:00:00
+    var yesterday = new Date(today.getTime() - 1 * 1000); //yesterday 24:59:59
+    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000); //7 days ago 00:00:00
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
 
