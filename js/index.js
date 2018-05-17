@@ -33,7 +33,6 @@ require([
 ) {
 
   'use strict';
-alert(1);
   var map, view, subMap, subView;
   var nearestFeatureList = [];
   var serviceZone = [];
