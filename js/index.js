@@ -80,15 +80,14 @@ require([
     }]
   });
 
-   domQuery(".collapsed", "nodeResult").forEach(function (btn) {
+  domQuery(".collapsed", "nodeResult").forEach(function (btn) {
     btn.onclick = function () {
       var card = dom.byId(this.getAttribute("aria-controls"));
       domClass.toggle(card, "show");
     };
   });
 
-  var closeButtons = domQuery(".closeButton", "main-content");
-  closeButtons.forEach(function (btn) {
+  domQuery(".closeButton", "main-content").forEach(function (btn) {
     btn.onclick = function () {
       var card = dom.byId(this.getAttribute("aria-controls"));
       domClass.add(card, "d-none");
@@ -219,8 +218,8 @@ require([
     domClass.add('suggestedAddresses', 'd-none');
     multiSearch.startNewSearch();
 
-    var cardBodies = domQuery(".card-body>div", "nodeResult");
-    cardBodies.forEach(function (node) {
+    //cardBodies
+    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
       node.innerHTML = "<div class='load-wrapp'></div>";
     });
 
@@ -276,11 +275,9 @@ require([
           //display data
           domClass.remove('suggestedAddresses', 'd-none');
           dom.byId("address-links").innerHTML = "".concat("<ul>", closestAddressList.join(" "), "</ul>");
-          var collapsedButtons = domQuery(".collapsed", "nodeResult");
-          collapsedButtons.forEach(function (btn) {
+          domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
             btn.onclick = function () {
-              var card = dom.byId(this.getAttribute("aria-controls"));
-              domClass.toggle(card, "show");
+            search.search(this.textContent);
             };
           });
         } else {
