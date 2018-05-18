@@ -2,8 +2,8 @@
   box-sizing: border-box
 }
 
-body {
-  background-color: rgb(153, 9, 9);
+.grey-background {
+  background-color: rgb(196, 196, 196);
 }
 
 .r-search-box {
@@ -58,7 +58,6 @@ div.absolute {
   font-family: 'Lobster', monospace, Sans-Serif;
   font-weight: 400;
   font-size: 48px;
-  padding-left: 20px;
 }
 
 .load-wrapp {
@@ -80,16 +79,6 @@ div.absolute {
   100% {
     transform: rotate(360deg);
   }
-}
-
-#nodeResult {
-  padding-top: 30px;
-  background-color: rgb(196, 196, 196);
-}
-
-#nodeLinks {
-  background-color: rgb(196, 196, 196);
-  padding: 30px 0px 0px 0px;
 }
 
 .r-title {
@@ -124,21 +113,21 @@ div.absolute {
 
 footer {
   color: #333333;
-  margin: 20px 10px 0px 10px;
 }
+
 .copyright {
   font-style: italic;
-  
   line-height: 1.42857;
   font-weight: 400;
   font-size: 14px;
-  margin:0 0 10px;
 }
 
-.copyright-content {  
-  font-size: 70%;  
-  margin-bottom: 20px;
+.copyright-content {
+  font-size: 70%;
   font-weight: 300;
-  line-height: 1.4;  
-  margin:0 0 10px;
+  line-height: 1.4;
+}
+
+.btn-tooltip {
+  background-color: #fff;
 }

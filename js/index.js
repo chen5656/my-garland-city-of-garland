@@ -2,10 +2,6 @@ require([
   'dojo/on',
   'dojo/dom',
   'dojo/_base/array',
-  "dojo/topic",
-  "dojo/dom-class",
-  "dojo/query",
-  "dojo/dom-attr",
 
   'esri/Map',
   'esri/views/MapView',
@@ -20,17 +16,21 @@ require([
   "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
 
+  "dojo/topic",
+  "dojo/dom-class",
+  "dojo/query",
+
   'js/MultiSearch.js',
 
   'dojo/domReady!'
 ], function (
-  on, dom, array, topic,
-  domClass, domQuery, domAttr,
-
+  on, dom, array,
   Map, MapView, MapImageLayer,
+
   Search, Locator, Query, QueryTask,
   GeometryService, projection, ProjectParameters,
 
+  topic, domClass, domQuery,
   nameMultiSearch
 ) {
 
@@ -80,11 +80,18 @@ require([
     }]
   });
 
-  var collapsedButtons = domQuery(".collapsed", "nodeResult");
-  collapsedButtons.forEach(function (btn) {
+   domQuery(".collapsed", "nodeResult").forEach(function (btn) {
     btn.onclick = function () {
-      var card = dom.byId(domAttr.get(this, "aria-controls"));
+      var card = dom.byId(this.getAttribute("aria-controls"));
       domClass.toggle(card, "show");
+    };
+  });
+
+  var closeButtons = domQuery(".closeButton", "main-content");
+  closeButtons.forEach(function (btn) {
+    btn.onclick = function () {
+      var card = dom.byId(this.getAttribute("aria-controls"));
+      domClass.add(card, "d-none");
     };
   });
 
@@ -209,6 +216,7 @@ require([
 
   search.on("search-start", function (e) {
     domClass.add('nodeResult', 'd-none');
+    domClass.add('suggestedAddresses', 'd-none');
     multiSearch.startNewSearch();
 
     var cardBodies = domQuery(".card-body>div", "nodeResult");
@@ -261,19 +269,20 @@ require([
           }).sort(function (a, b) {
             return a.streetNumber - b.streetNumber;
           });
-          console.log(AddList);
-
           //find close nums
-          var closestAddressList = closestNums(AddrNumber, AddList);
-          closestAddressList=closestAddressList.map(function (val) {
-            return "".concat(val.streetNumber , " ", val.streetLabel);
+          var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
+            return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
           });
-          console.log(closestAddressList.join(", "));
-return; 
-          //esri-search__warning-text
-          var searchWarningTxt = domQuery(".esri-search__warning-text");
-          searchWarningTxt.innerHTML = "There were no results found for input address. Do you want to try the following addresses: ".concat(closestAddressList.join(" "));
-          debugger;
+          //display data
+          domClass.remove('suggestedAddresses', 'd-none');
+          dom.byId("address-links").innerHTML = "".concat("<ul>", closestAddressList.join(" "), "</ul>");
+          var collapsedButtons = domQuery(".collapsed", "nodeResult");
+          collapsedButtons.forEach(function (btn) {
+            btn.onclick = function () {
+              var card = dom.byId(this.getAttribute("aria-controls"));
+              domClass.toggle(card, "show");
+            };
+          });
         } else {
           //street wrong
 
