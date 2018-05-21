@@ -194,8 +194,11 @@ require([
       }
     ],
     mapService: {
-      address: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/1", //used to get parcel id,
-      parcel: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/2"
+      cityLimit: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/0",
+      address: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/1", //used to get parcel id,
+      parcel: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/2",
+      road: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/3",
+      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/4"
     }
   });
   multiSearch.startup();
@@ -235,7 +238,7 @@ require([
         if (str1 != parseInt(str1, 10)) {
           //not a number, try to use it as street name
           AddrRoad = str.split(",")[0].trim();
-          AddrNumber = 1;
+          AddrNumber = 0;
         } else {
           AddrRoad = str.split(str1)[1].trim().split(",")[0].trim();
           AddrNumber = str1;
@@ -243,8 +246,10 @@ require([
       } else {
         // try to use it as street name
         AddrRoad = str;
-        AddrNumber = 1;
+        AddrNumber = 0;
       }
+
+      AddrRoad = findArrayInAliasExtend(AddrRoad);
 
       var query = new Query({
         where: "STREETLABEL LIKE '%".concat(AddrRoad, "%'"),
@@ -253,7 +258,7 @@ require([
       });
       console.log(query.where);
       var queryTask = new QueryTask({
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer/1"
+        url: multiSearch.mapService.address
       });
       queryTask.execute(query).then(function (results) {
         var AddList = [];
@@ -274,15 +279,62 @@ require([
           });
           //display data
           domClass.remove('suggestedAddresses', 'd-none');
-          dom.byId("address-links").innerHTML = "".concat("<ul>", closestAddressList.join(" "), "</ul>");
+          dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
           domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
             btn.onclick = function () {
-            search.search(this.textContent);
+              search.search(this.textContent);
             };
           });
         } else {
           //street wrong
 
+          console.log(AddrRoad);
+          var str = AddrRoad.split(" ");
+          if (str.length < 2) {
+            domClass.remove('suggestedAddresses', 'd-none');
+            dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
+
+          } else {
+            var longestStr = str[0];
+            for (var i = 1; i < str.length; i++) {
+              if (longestStr.length < str[i].length) {
+                longestStr = str[i];
+              }
+            }
+            console.log(longestStr);
+            var query = new Query({
+              where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
+              returnGeometry: false,
+              outFields: ["*"]
+            });
+            console.log(query.where);
+            var queryTask = new QueryTask({
+              url: multiSearch.mapService.road
+            });
+            queryTask.execute(query).then(function (results) {
+              if (results.features.length > 0) {
+                var arr = results.features;
+
+                //get unique value
+                var unique = {};
+                var distinct = [];
+                for (var i in arr) {
+                  if (typeof (unique[arr[i].attributes.STREETLABEL]) == "undefined") {
+                    distinct.push(arr[i].attributes.STREETLABEL);
+                  }
+                  unique[arr[i].attributes.STREETLABEL] = 0;
+                }
+
+                console.log(distinct);
+                console.log(AddrNumber);
+                debugger;
+              } else {
+                domClass.remove('suggestedAddresses', 'd-none');
+                dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
+              }
+            });
+
+          }
         }
       });
     }
@@ -310,6 +362,55 @@ require([
     } else {
       return arr;
     }
+  }
+
+  function findArrayInAliasExtend(AddrRoad) {
+    var AliasExtend = {
+      "1ST": "FIRST",
+      "2ND": "SECOND",
+      "3RD": "THIRD",
+      "4TH": "FOURTH",
+      "5TH": "FIFTH",
+      "6TH": "SIXTH",
+      "7TH": "SEVENTH",
+      "9TH": "NINTH",
+      "10TH": "TENTH",
+      "11TH": "ELEVENTH",
+      "12TH": "TWELFTH",
+      "13TH": "THIRTEENTH",
+      "15TH": "FIFTEENTH",
+      "16TH": "SIXTEENTH",
+      "17TH": "SEVENTEENTH",
+      "1": "FIRST",
+      "2": "SECOND",
+      "3": "THIRD",
+      "4": "FOURTH",
+      "5": "FIFTH",
+      "6": "SIXTH",
+      "7": "SEVENTH",
+      "9": "NINTH",
+      "10": "TENTH",
+      "11": "ELEVENTH",
+      "12": "TWELFTH",
+      "13": "THIRTEENTH",
+      "15": "FIFTEENTH",
+      "16": "SIXTEENTH",
+      "17": "SEVENTEENTH",
+    };
+
+
+    var str = AddrRoad.split(" ");
+    str = str.map(function (val) {
+      if (AliasExtend[val]) {
+        return AliasExtend[val];
+      } else {
+        return val;
+      }
+
+    });
+    console.log(str.join(" ").trim());
+    return str.join(" ").trim();
+
   }
 
 

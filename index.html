@@ -4,6 +4,7 @@
 <head>
   <meta charset='UTF-8'>
   <title>My Garland</title>
+  <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
   <link rel='stylesheet' href='css/style.css'>
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
     crossorigin='anonymous'>
@@ -177,9 +178,16 @@
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix' id='crime-map-title'>
                         <i class='fas fa-plus-square'></i> Crime
                       </button>
-                      <button type='button' class='btn btn-secondary btn-secondary-right' id='open-crime-map'>
-                        <i class='fas fa-external-link-alt'></i>
-                      </button>
+
+
+                      <abbr title="Open CrimeReport.com">
+                        <button type='button' class='btn btn-secondary btn-secondary-right' id='open-crime-map'>
+                          <i class='fas fa-external-link-alt'></i>
+                        </button>
+                      </abbr>
+
+
+
                     </h5>
                   </div>
                   <div id='collapseSix' class='collapse show' aria-labelledby='headingSix' data-parent='#accordion'>
@@ -196,21 +204,19 @@
           </div>
 
         </div>
-        <div class='row  justify-content-md-center  pt-4 grey-background' id='suggestedAddresses'>
+        <div class='row  justify-content-md-center  pt-4 d-none grey-background' id='suggestedAddresses'>
           <div class='col-lg-4 col-md-8 col-sm-12'>
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title pb-3" >
-                    <span>Address not find.</span>
-                    <abbr title="Close this card">
-                      <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls="suggestedAddresses">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </abbr>
-                  </h5>
-                <div class="card-text ">
-                  <p>Did you mean?</p>
-                  <p id="address-links"></p>
+                <h5 class="card-title pb-3">
+                  <span>Address not find.</span>
+                  <abbr title="Close this card">
+                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls="suggestedAddresses">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </abbr>
+                </h5>
+                <div class="card-text" id="address-links">
                 </div>
               </div>
             </div>
