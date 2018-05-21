@@ -103,39 +103,39 @@ require([
       displayID: "3"
     }],
     serviceZoneSourceList: [{
-        name: "Police Sectors",
+        name: "Police Sector",
         containerID: 1,
         displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
       },
       {
-        name: "Fire Alarm Grids",
+        name: "Fire Alarm Grid",
         containerID: 1,
         displayID: 5,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
       },
       {
-        name: "EWS Brush Route Days",
+        name: "EWS Brush Route Day",
         containerID: 1,
         displayID: 6,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/12"
       }, {
-        name: "EWS Recycling Route Days",
+        name: "EWS Recycling Route Day",
         containerID: 1,
         displayID: 7,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
       }, {
-        name: "EWS Trash Route Days",
+        name: "EWS Trash Route Day",
         containerID: 1,
         displayID: 8,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
       }, {
-        name: "Neighborhood Watches",
+        name: "Neighborhood Watch",
         containerID: 2,
         displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/8"
       }, {
-        name: "Neighborhood Associations",
+        name: "Neighborhood Association",
         containerID: 2,
         displayID: 3,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/9"
@@ -507,7 +507,7 @@ require([
       "Health Complaint": item.HEALTH_COMPLAINT
     };
     var obj2 = [{
-      title: "Fire Districts",
+      title: "Fire District",
       containerID: 1,
       displayFieldName: "FIRE_DISTRICT",
       displayID: 4,
@@ -543,7 +543,7 @@ require([
         value: item.NEIGHBORHOOD
       }
     }, {
-      title: "Police Beats",
+      title: "Police Beat",
       containerID: 1,
       displayFieldName: "BEAT",
       displayID: 3,
@@ -552,7 +552,7 @@ require([
         BEAT: item.POLICE_BEAT
       }
     }, {
-      title: "Police Districts",
+      title: "Police District",
       containerID: 1,
       displayFieldName: "DISTRICTS",
       displayID: 1,
