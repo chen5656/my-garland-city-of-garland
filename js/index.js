@@ -108,22 +108,6 @@ require([
         displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
       },
-      // {
-      //   name: "Police Districts",
-      //   containerID: 1,
-      //   displayID: 1,
-      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/4"
-      // }, {
-      // //   name: "Police Beats",
-      //   containerID: 1,
-      //   displayID: 3,
-      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/3"
-      // }, {
-      //   name: "Fire Districts",
-      //   containerID: 1,
-      //   displayID: 4,
-      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/0"
-      // },
       {
         name: "Fire Alarm Grids",
         containerID: 1,
@@ -161,12 +145,6 @@ require([
         displayID: 2,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/2"
       }
-      // , {
-      //   name: "Land Use",
-      //   containerID: 3,
-      //   displayID: 1,
-      //   url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/1"
-      // }
     ],
     individualCityFacility: [{
         "title": "Police Station",
@@ -342,7 +320,6 @@ require([
   });
 
   function displayUniquleStreetList(features, AddrNumber) {
-    debugger;
     //get unique value
     var unique = {};
     var distinct = [];
@@ -360,7 +337,7 @@ require([
       tempAddrNum = "".concat(AddrNumber, " ");
     }
 
-    distinct = distinct.slice(0,5).map(function (val) {
+    distinct = distinct.slice(0, 5).map(function (val) {
       return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
     });
 
@@ -651,11 +628,10 @@ require([
     console.log("crime map:", url);
     var node = dom.byId("crimeData");
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
-    var nodeTitle = dom.byId("crime-map-title");
-    nodeTitle.innerHTML = "".concat(" <i class='fas fa-plus-square'></i> Crime ( ", start_date, " to ", end_date, " )");
 
-    var nodeBtn = dom.byId("open-crime-map");
-    nodeBtn.onclick = function () {
+    dom.byId("crime-map-title").innerHTML = "".concat(" <i class='fas fa-plus-square'></i> Crime ( ", start_date, " to ", end_date, " )");
+
+    dom.byId("open-crime-map").onclick = function () {
       window.open(url, '_blank');
     };
   }
@@ -692,5 +668,17 @@ require([
         rotationEnabled: false
       }
     });
+  }
+
+  function openInGoogleMap(location) {
+
+    var originAdd=location.originAdd; //2020+66+GARLAND+TX+75040
+    var destinationAdd=location.destinationAdd; //garland+police+department
+    var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
+    console.log("google map:", url);
+    nodeBtn.onclick = function () {
+      window.open(url, '_blank');
+    };
+
   }
 });
