@@ -583,6 +583,18 @@ require([
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
 
+    // var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
+    //   return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
+    // });
+    // //display data
+    // domClass.remove('suggestedAddresses', 'd-none');
+    // dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
+    // domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+    //   btn.onclick = function () {
+    //     search.search(this.textContent);
+    //   };
+    // });
+
     var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (val) {
@@ -593,7 +605,11 @@ require([
         address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
         distance: val.distance
       };
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.name, "</span></li>",
+      obj.googleLink = openInGoogleMap({
+        originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+        destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
+      });
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank'>", obj.name, "</a></span></li>",
         "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " mi.)</span>", "</li>");
       return str;
     });
@@ -671,14 +687,10 @@ require([
   }
 
   function openInGoogleMap(location) {
-
-    var originAdd=location.originAdd; //2020+66+GARLAND+TX+75040
-    var destinationAdd=location.destinationAdd; //garland+police+department
+    debugger;
+    var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
+    var destinationAdd = location.destinationAdd; //garland+police+department
     var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
-    console.log("google map:", url);
-    nodeBtn.onclick = function () {
-      window.open(url, '_blank');
-    };
-
+    return url;
   }
 });
