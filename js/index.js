@@ -231,16 +231,17 @@ require([
     if (e.numResults == 0) {
       //no result found. Suggestion the nearest result
       var AddrRoad, AddrNumber;
-      var str = e.searchTerm.trim().toUpperCase();
+      var str = e.searchTerm.split(",")[0].trim().toUpperCase();
       var subStr = str.split(" ");
       if (subStr.length > 1) {
         var str1 = subStr[0];
         if (str1 != parseInt(str1, 10)) {
           //not a number, try to use it as street name
-          AddrRoad = str.split(",")[0].trim();
+          AddrRoad = str;
           AddrNumber = 0;
         } else {
-          AddrRoad = str.split(str1)[1].trim().split(",")[0].trim();
+          subStr.shift();
+          AddrRoad = subStr.join(" ");
           AddrNumber = str1;
         }
       } else {
@@ -264,7 +265,7 @@ require([
         var AddList = [];
         if (results.features.length > 0) {
           //street entered correct
-
+          console.log("correct street label, wrong address number");
           AddList = results.features.map(function (val) {
             return {
               streetNumber: val.attributes.STREETNUM,
@@ -288,58 +289,90 @@ require([
         } else {
           //street wrong
 
-          console.log(AddrRoad);
           var str = AddrRoad.split(" ");
-          if (str.length < 2) {
-            domClass.remove('suggestedAddresses', 'd-none');
-            dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
 
-          } else {
-            var longestStr = str[0];
-            for (var i = 1; i < str.length; i++) {
-              if (longestStr.length < str[i].length) {
-                longestStr = str[i];
-              }
+          var longestStr = str[0];
+          for (var i = 1; i < str.length; i++) {
+            if (longestStr.length < str[i].length) {
+              longestStr = str[i];
             }
-            console.log(longestStr);
-            var query = new Query({
-              where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
-              returnGeometry: false,
-              outFields: ["*"]
-            });
-            console.log(query.where);
-            var queryTask = new QueryTask({
-              url: multiSearch.mapService.road
-            });
-            queryTask.execute(query).then(function (results) {
-              if (results.features.length > 0) {
-                var arr = results.features;
-
-                //get unique value
-                var unique = {};
-                var distinct = [];
-                for (var i in arr) {
-                  if (typeof (unique[arr[i].attributes.STREETLABEL]) == "undefined") {
-                    distinct.push(arr[i].attributes.STREETLABEL);
-                  }
-                  unique[arr[i].attributes.STREETLABEL] = 0;
-                }
-
-                console.log(distinct);
-                console.log(AddrNumber);
-                debugger;
-              } else {
-                domClass.remove('suggestedAddresses', 'd-none');
-                dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
-              }
-            });
-
           }
+          var query = new Query({
+            where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
+            returnGeometry: false,
+            outFields: ["*"]
+          });
+          console.log(query.where);
+          var queryTask = new QueryTask({
+            url: multiSearch.mapService.road
+          });
+          queryTask.execute(query).then(function (results) {
+            if (results.features.length > 0) {
+              console.log("wrong street label. find street name in road table");
+              displayUniquleStreetList(results.features, AddrNumber);
+            } else {
+              //check alias table
+              var query = new Query({
+                where: "STREETNAME LIKE '%".concat(longestStr, "%'"),
+                returnGeometry: false,
+                outFields: ["*"]
+              });
+              var queryTask = new QueryTask({
+                url: multiSearch.mapService.streetAlias
+              });
+              queryTask.execute(query).then(function (results) {
+                if (results.features.length > 0) {
+
+                  console.log("wrong street label. find street name in alias table");
+                  displayUniquleStreetList(results.features, AddrNumber);
+                } else {
+                  domClass.remove('suggestedAddresses', 'd-none');
+                  dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
+                }
+              });
+
+            }
+          });
+
+
         }
       });
     }
 
   });
+
+  function displayUniquleStreetList(features, AddrNumber) {
+    debugger;
+    //get unique value
+    var unique = {};
+    var distinct = [];
+    for (var i in features) {
+      if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+        distinct.push(features[i].attributes.STREETLABEL);
+      }
+      unique[features[i].attributes.STREETLABEL] = 0;
+    }
+
+    var tempAddrNum;
+    if (AddrNumber == 0) {
+      tempAddrNum = "";
+    } else {
+      tempAddrNum = "".concat(AddrNumber, " ");
+    }
+
+    distinct = distinct.slice(0,5).map(function (val) {
+      return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+    });
+
+
+    domClass.remove('suggestedAddresses', 'd-none');
+    dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
+    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+      btn.onclick = function () {
+        search.search(this.textContent);
+      };
+    });
+  }
 
   function closestNums(num, arr) {
     var numsIndex = arr.length - 1;
