@@ -1,6 +1,7 @@
 require([
   'dojo/on',
   'dojo/dom',
+  "dojo/dom-class",
   'dojo/_base/array',
 
   'esri/Map',
@@ -17,25 +18,24 @@ require([
   "esri/tasks/support/ProjectParameters",
 
   "dojo/topic",
-  "dojo/dom-class",
   "dojo/query",
 
   'js/MultiSearch.js',
 
   'dojo/domReady!'
 ], function (
-  on, dom, array,
+  on, dom, domClass, array,
   Map, MapView, MapImageLayer,
 
   Search, Locator, Query, QueryTask,
   GeometryService, projection, ProjectParameters,
 
-  topic, domClass, domQuery,
+  topic, domQuery,
   nameMultiSearch
 ) {
 
   'use strict';
-  
+
   domClass.remove('main-content', 'd-none');
 
   var map, view, subMap, subView;
@@ -179,7 +179,8 @@ require([
       address: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/1", //used to get parcel id,
       parcel: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/2",
       road: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/3",
-      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/4"
+      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/4",
+      geometry:"https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
     }
   });
   multiSearch.startup();
@@ -187,16 +188,11 @@ require([
 
 
   //set geometry service to match spatial reference on different service.
-  var geometryServiceUrl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer";
   var geometryService;
-  geometryService = new GeometryService(geometryServiceUrl);
-
+  geometryService = new GeometryService(multiSearch.mapService.geometry);
 
 
   //query can get a list of features inside a distance.
-
-
-
   search.on("search-start", function (e) {
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
@@ -458,7 +454,7 @@ require([
         multiSearch.getNearestCityFacilityList();
         multiSearch.getServiceZoneList();
       }, function (error) {
-        console.log(error);
+        console.log("Error on select search result:",error);
 
         alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
       });
@@ -638,12 +634,12 @@ require([
     var today = new Date();
     today.setHours(0, 0, 0);
     console.log(today);
-    var yesterday = new Date(today.getTime() - 1 * 1000); //yesterday 24:59:59
+    var yesterday = new Date(today.getTime() - 1 * 1000); //yesterday 23:59:59
     var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000); //7 days ago 00:00:00
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
 
-    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
+    var url = "https://www.crimereports.com/home/#!/dashboard?incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&start_date=".concat(start_date, "&end_date=", end_date, "&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false","&lat=", val.latitude, "&lng=", val.longitude,"&zoom=14&shapeIds=");
     console.log("crime map:", url);
     var node = dom.byId("crimeData");
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
@@ -690,7 +686,6 @@ require([
   }
 
   function openInGoogleMap(location) {
-    debugger;
     var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
     var destinationAdd = location.destinationAdd; //garland+police+department
     var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
