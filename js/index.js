@@ -180,7 +180,7 @@ require([
       parcel: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/2",
       road: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/3",
       streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/4",
-      geometry:"https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
+      geometry: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
     }
   });
   multiSearch.startup();
@@ -454,7 +454,7 @@ require([
         multiSearch.getNearestCityFacilityList();
         multiSearch.getServiceZoneList();
       }, function (error) {
-        console.log("Error on select search result:",error);
+        console.log("Error on select search result:", error);
 
         alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
       });
@@ -463,43 +463,14 @@ require([
   });
 
   //display data
-  topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
-    var arr = multiSearch.searchResult.serviceZoneList;
-    if (parcelInfo_obj2.length > 0) {
-      arr = arr.concat(parcelInfo_obj2);
-    }
-    var containerID = [1, 2, 3];
-    for (var i in containerID) {
-      var subArr = arr.filter(function (val) {
-        return val.containerID == containerID[i];
-      }).sort(function (a, b) {
-        return a.displayID - b.displayID;
-      });
-      subArr = subArr.map(function (val) {
-        var title = val.title;
-        var value;
-        if (val.displayFieldName) {
-          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
-        } else {
-          value = "NULL";
-        }
-        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
-        return str;
-      });
-      var node = dom.byId("serviceZone".concat(containerID[i]));
-      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
-    }
 
-
-
-  });
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     var item = multiSearch.searchResult.parcelInfo;
     var obj = {
       "Zip Code": item.ZIP_CODE,
       //"County":
       "Mapsco Grid": item.MAPSCO,
-      "SCHOOL_DISTRICT": item.SCHOOL_DISTRICT,
+      "School District": item.SCHOOL_DISTRICT,
       "City Council District": item.COUNCIL_ID,
       //City Council District Member
       "Census Tract": item.CENSUS_TRACT,
@@ -580,20 +551,38 @@ require([
 
   });
 
+  topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
+    var arr = multiSearch.searchResult.serviceZoneList;
+    if (parcelInfo_obj2.length > 0) {
+      arr = arr.concat(parcelInfo_obj2);
+    }
+    var containerID = [1, 2, 3];
+    for (var i in containerID) {
+      var subArr = arr.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        return a.displayID - b.displayID;
+      });
+      subArr = subArr.map(function (val) {
+        var title = val.title;
+        var value;
+        if (val.displayFieldName) {
+          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+        } else {
+          value = "NULL";
+        }
+        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
+        return str;
+      });
+      var node = dom.byId("serviceZone".concat(containerID[i]));
+      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
+    }
+
+
+
+  });
+
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-
-    // var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
-    //   return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
-    // });
-    // //display data
-    // domClass.remove('suggestedAddresses', 'd-none');
-    // dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
-    // domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-    //   btn.onclick = function () {
-    //     search.search(this.textContent);
-    //   };
-    // });
-
     var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (val) {
@@ -617,7 +606,6 @@ require([
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
 
-
   //open crime page
   function getCrimeData(val) {
     console.log("crime map:");
@@ -639,7 +627,7 @@ require([
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
 
-    var url = "https://www.crimereports.com/home/#!/dashboard?incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&start_date=".concat(start_date, "&end_date=", end_date, "&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false","&lat=", val.latitude, "&lng=", val.longitude,"&zoom=14&shapeIds=");
+    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
     console.log("crime map:", url);
     var node = dom.byId("crimeData");
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");

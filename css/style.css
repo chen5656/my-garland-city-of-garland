@@ -126,5 +126,9 @@ div.absolute {
   line-height: 1.4;
 }
 
+.card-body {
+  text-transform: capitalize;
+}
+
 
 
