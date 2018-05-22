@@ -24,7 +24,6 @@ define([
     cityFacilityList: null,
     serviceZoneSourceList: null,
     spatialReference: null,
-    inputLocation:null,
 
     buildRendering: function () {
       //create the DOM for this widget --- must keep

@@ -35,6 +35,9 @@ require([
 ) {
 
   'use strict';
+  
+  domClass.remove('main-content', 'd-none');
+
   var map, view, subMap, subView;
   var nearestFeatureList = [];
   var serviceZone = [];

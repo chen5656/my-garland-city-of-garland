@@ -2,6 +2,8 @@
   background-color: rgb(196, 196, 196);
 }
 
+
+
 .r-search-box {
   background-color: rgb(244, 244, 244);
   margin: 2px;
@@ -107,8 +109,8 @@ div.absolute {
   float: right;
 }
 
-footer {
-  color: #333333;
+.font-grey {
+  color: #4e4e4e;
 }
 
 .copyright {
@@ -123,4 +125,6 @@ footer {
   font-weight: 300;
   line-height: 1.4;
 }
+
+
 
