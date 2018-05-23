@@ -84,6 +84,7 @@ div.absolute {
   padding: 10px;
   color: white;
   font-weight: 600;
+  font-size: 20px;
 }
 
 .r-content {
@@ -91,7 +92,6 @@ div.absolute {
 }
 
 .r-subtitle {
-  font-size: 24px;
   color: rgb(29, 29, 65);
   margin-left: 10px;
 }

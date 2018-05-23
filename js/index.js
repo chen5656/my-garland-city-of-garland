@@ -20,7 +20,7 @@ require([
   "dojo/topic",
   "dojo/query",
 
-  'js/MultiSearch.js',
+  'js/multi-search.js',
 
   'dojo/domReady!'
 ], function (
@@ -33,6 +33,7 @@ require([
   topic, domQuery,
   nameMultiSearch
 ) {
+
 
   'use strict';
 
@@ -116,21 +117,15 @@ require([
         containerID: 1,
         displayID: 5,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
-      },
-      {
-        name: "EWS Brush Route Day",
-        containerID: 1,
-        displayID: 6,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/12"
       }, {
-        name: "EWS Recycling Route Day",
+        name: "EWS Recycling Pickup Day",
         containerID: 1,
         displayID: 7,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
       }, {
-        name: "EWS Trash Route Day",
+        name: "EWS Trash and Brush Pickup Day",
         containerID: 1,
-        displayID: 8,
+        displayID: 6,
         url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
       }, {
         name: "Neighborhood Watch",
@@ -404,7 +399,7 @@ require([
       "13": "THIRTEENTH",
       "15": "FIFTEENTH",
       "16": "SIXTEENTH",
-      "17": "SEVENTEENTH",
+      "17": "SEVENTEENTH"
     };
 
 
