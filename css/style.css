@@ -130,5 +130,35 @@ div.absolute {
   text-transform: capitalize;
 }
 
+.browser-compatibility-alert {
+  padding: 20px;
+  top: 150px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  text-align: center;
+} 
+
+.browser-compatibility-alert i {
+  position: absolute;
+  top: 50%;
+  left: 80px;
+  transform: translateY(-50%)
+} 
+
+.browser-compatibility-alert .browser-error {
+  font-size: 20px;
+  padding-left: 110px;
+}
+
+.btn-link span {
+  font-weight:900;
+  white-space: normal;
+  line-height: 1.25em;
+  font-size: 1.33333em;
+  text-align: left;
+  padding-left: 10px;
+}
 
 

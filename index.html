@@ -9,6 +9,8 @@
   <link rel='stylesheet' href='css/style.css'>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
     crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
 
   <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
   <link href="https://fonts.googleapis.com/css?family=Roboto|Signika" rel="stylesheet">
@@ -22,6 +24,18 @@
 </head>
 
 <body>
+    <div id="browser-check">
+      <noscript>
+        <div class="browser-compatibility-alert d-block bg-danger text-white">
+          <!-- <div class='col-lg-4 col-md-6 font-grey'> -->
+          <i class="fas fa-exclamation-triangle  fa-2x "></i>
+          <p class="browser-error">Your browser's Javascript functionality is turned off. Please turn it on so that you see the map and do the query.
+
+          </p>
+          <!-- </div> -->
+        </div>
+      </noscript>
+    </div>
 
   <main>
     <div class='container-fluid'>
@@ -37,14 +51,6 @@
         </div>
       </div>
 
-      <noscript>
-        <div class='row  justify-content-md-center  grey-background pt-5'>
-          <div class='col-lg-4 col-md-6 font-grey'>
-            <h3>My Garland requires JavaScript. </h3>
-            <h3>Sorry, your browser does not support JavaScript!</h3>
-          </div>
-        </div>
-      </noscript>
 
       <div id='main-content' class='d-none'>
         <div class=' row justify-content-md-center r-search-box'>
@@ -72,7 +78,7 @@
                   <div class='card-header' id='headingOne'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
-                        <i class='fas fa-plus-square'></i> Nearby City Facilities
+                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspNearby City Facilities</i> 
                       </button>
                     </h5>
                   </div>
@@ -88,7 +94,7 @@
                   <div class='card-header' id='headingTwo'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseTwo'>
-                        <i class='fas fa-plus-square'></i> Services
+                        <i class='fas fa-plus-square  fa-lg'>&nbsp&nbspServices</i> 
                       </button>
                     </h5>
                   </div>
@@ -114,7 +120,7 @@
                   <div class='card-header' id='headingFour'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFour'>
-                        <i class='fas fa-plus-square'></i> Reference
+                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspReference</i>
                       </button>
                     </h5>
                   </div>
@@ -130,7 +136,7 @@
                   <div class='card-header' id='headingFive'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFive'>
-                        <i class='fas fa-plus-square'></i> Neighborhoods
+                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspNeighborhoods</i>
                       </button>
                     </h5>
                   </div>
@@ -146,7 +152,7 @@
                   <div class='card-header' id='headingThree'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseThree'>
-                        <i class='fas fa-plus-square'></i> Planning &amp; Development / Zoning
+                        <i class='fas fa-plus-square fa-lg'>  </i><span class='fas fa-lg'>Planning &amp; Development / Zoning</span>
                       </button>
                     </h5>
                   </div>
@@ -172,7 +178,7 @@
                   <div class='card-header' id='headingSeven'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSeven'>
-                        <i class='fas fa-plus-square'></i> Detail
+                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspDetail</i>
                       </button>
                     </h5>
                   </div>
@@ -188,7 +194,7 @@
                   <div class='card-header' id='headingSix'>
                     <h5 class='mb-0'>
                       <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix' id='crime-map-title'>
-                        <i class='fas fa-plus-square'></i> Crime
+                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspCrime</i>
                       </button>
 
 
@@ -257,7 +263,6 @@
   <script src='https://js.arcgis.com/4.7/'></script>
   <!-- <script src='js/MultiSearch.js'></script> -->
   <script src='js/index.js'></script>
-  <script src='https://use.fontawesome.com/releases/v5.0.7/js/all.js'></script>
 
 </body>
 
