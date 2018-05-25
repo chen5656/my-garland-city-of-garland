@@ -592,7 +592,7 @@ require([
         originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
         destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
       });
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank'>", obj.name, "</a></span></li>",
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
         "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " mi.)</span>", "</li>");
       return str;
     });
@@ -628,9 +628,7 @@ require([
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
     dom.byId("crime-map-title").innerHTML = "".concat(" <i class='fas fa-plus-square fa-lg'>&nbsp&nbspCrime ( ", start_date.slice(5), " to ", end_date.slice(5), " )</i>");
 
-    dom.byId("open-crime-map").onclick = function () {
-      window.open(url, '_blank');
-    };
+    dom.byId("open-crime-map").setAttribute("href",url);
   }
 
   function showSubMap(val) {
