@@ -55,7 +55,6 @@ div.absolute {
 .title {
   font-family: 'Signika', sans-serif;
   font-weight: 900;
-  font-size: 48px;
 }
 
 .load-wrapp {
@@ -153,7 +152,6 @@ div.absolute {
 }
 
 .btn-link span {
-  font-weight:900;
   white-space: normal;
   line-height: 1.25em;
   font-size: 1.33333em;
