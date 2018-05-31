@@ -52,7 +52,7 @@ div.absolute {
   height: 100px;
 }
 
-.title {
+header h1 {
   font-family: 'Signika', sans-serif;
   font-weight: 900;
 }
