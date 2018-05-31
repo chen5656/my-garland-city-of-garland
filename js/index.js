@@ -84,10 +84,23 @@ require([
     }]
   });
 
-  domQuery(".collapsed", "nodeResult").forEach(function (btn) {
-    btn.onclick = function () {
+  domQuery(".collapsed", "nodeResult").forEach(function (title) {
+    title.onclick = function () {
+      debugger;
       var card = dom.byId(this.getAttribute("aria-controls"));
       domClass.toggle(card, "show");
+      var icon = this.firstElementChild;
+      if (
+        domClass.contains(icon, "fa-minus-square")) {
+        domClass.add(icon,  "fa-plus-square");
+        domClass.remove(icon,  "fa-minus-square");
+      } else {
+        domClass.add(icon,  "fa-minus-square");
+        domClass.remove(icon,  "fa-plus-square");
+
+      }
+
+
     };
   });
 
@@ -628,7 +641,7 @@ require([
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
     dom.byId("crime-map-title").innerHTML = "".concat("Crime ( ", start_date.slice(5), " to ", end_date.slice(5), " )");
 
-    dom.byId("open-crime-map").setAttribute("href",url);
+    dom.byId("open-crime-map").setAttribute("href", url);
   }
 
   function showSubMap(val) {
