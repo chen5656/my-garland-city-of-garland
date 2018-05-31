@@ -626,7 +626,7 @@ require([
     console.log("crime map:", url);
     var node = dom.byId("crimeData");
     node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
-    dom.byId("crime-map-title").innerHTML = "".concat(" <i class='fas fa-plus-square fa-lg'>&nbsp&nbspCrime ( ", start_date.slice(5), " to ", end_date.slice(5), " )</i>");
+    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( ", start_date.slice(5), " to ", end_date.slice(5), " )");
 
     dom.byId("open-crime-map").setAttribute("href",url);
   }

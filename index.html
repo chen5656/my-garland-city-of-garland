@@ -44,21 +44,22 @@
     </noscript>
   </div>
   <header>
-      <div class='overflow-hidden relative'>
-        <div id='viewDiv' style='width: 100%; height: 350px;'>
-        </div>
-        <div class='absolute'>
-          <h1 class='pl-4'>My Garland</h1>
-          <hr style=' border-color: #b2b2b2;  border-width: 2px;'>
-        </div>
+    <div class='overflow-hidden relative'>
+      <div id='viewDiv' style='width: 100%; height: 350px;'>
       </div>
+      <div class='absolute'>
+        <h1 class='pl-4'>My Garland</h1>
+        <hr style=' border-color: #b2b2b2;  border-width: 2px;'>
+      </div>
+    </div>
   </header>
 
   <main>
     <div class='container-fluid'>
       <div id='main-content' class='d-none'>
-        <!-- search bar -->
+
         <div class=' row justify-content-md-center r-search-box'>
+          <!-- search bar -->
           <div class=' col-lg-4 col-md-6'>
             <div class='mb-3 col-12'>
               Enter a valid City of Garland Address to look up City data.
@@ -66,184 +67,186 @@
             <div id='search'></div>
           </div>
         </div>
-        <article>
-          <div class='row grey-background py-4 d-none' id='nodeResult'>
-            <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
-              <h2 class='r-title'>
-                Location Data
-              </h2>
-              <div class='r-content' id='accordion'>
+        <article class='row grey-background py-4 d-none' id='nodeResult'>
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
+            <h2 class='r-title'>
+              Location Data
+            </h2>
+            <div class='r-content' id='accordion'>
 
-                <div class='card'>
-                  <div class='card-header' id='headingOne'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
-                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspNearby City Facilities</i>
-                      </button>
-                    </h3>
+              <section class='card'>
+                <div class='card-header' id='headingOne'>
+                  <div class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
+                      <i class='fas fa-plus-square fa-lg'></i>
+                    </button>
+                    <h3  class='fas fa-lg'>Nearby City Facilities</h3>
                   </div>
-                  <div id='collapseOne' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='nearestCityFacility'>
-                        <div class='load-wrapp'></div>
-                      </div>
+                </div>
+                <div id='collapseOne' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='nearestCityFacility'>
+                      <div class='load-wrapp'></div>
                     </div>
                   </div>
                 </div>
-                <div class='card'>
-                  <div class='card-header' id='headingTwo'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseTwo'>
-                        <i class='fas fa-plus-square  fa-lg'>&nbsp&nbspServices</i>
-                      </button>
-                    </h3>
-                  </div>
-                  <div id='collapseTwo' class='collapse show' aria-labelledby='headingTwo' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='serviceZone1'>
-                        <div class='load-wrapp'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </section>
-            <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
-              <h2 class='r-title'>
-                Reference Data
-              </h2>
-              <div class='r-content' id='accordion'>
-
-                <div class='card'>
-                  <div class='card-header' id='headingFour'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFour'>
-                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspReference</i>
-                      </button>
-                    </h3>
-                  </div>
-                  <div id='collapseFour' class='collapse show' aria-labelledby='headingFour' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='parcelInfo'>
-                        <div class='load-wrapp'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class='card'>
-                  <div class='card-header' id='headingFive'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFive'>
-                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspNeighborhoods</i>
-                      </button>
-                    </h3>
-                  </div>
-                  <div id='collapseFive' class='collapse show' aria-labelledby='headingFive' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='serviceZone2'>
-                        <div class='load-wrapp'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class='card'>
-                  <div class='card-header' id='headingThree'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseThree'>
-                        <i class='fas fa-plus-square fa-lg'> </i>
-                        <span class='fas fa-lg'>Planning &amp; Development / Zoning</span>
-                      </button>
-                    </h3>
-                  </div>
-                  <div id='collapseThree' class='collapse show' aria-labelledby='headingThree' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='serviceZone3'>
-                        <div class='load-wrapp'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-              </div>
-            </section>
-            <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
-              <h2 class='r-title'>
-                Map Data
-              </h2>
-              <div class='r-content' id='accordion'>
-
-                <div class='card'>
-                  <div class='card-header' id='headingSeven'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSeven'>
-                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspDetail</i>
-                      </button>
-                    </h3>
-                  </div>
-                  <div id='collapseSeven' class='collapse show' aria-labelledby='headingSeven' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='subMap'>
-                        <div class='load-wrapp'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class='card'>
-                  <div class='card-header' id='headingSix'>
-                    <h3 class='mb-0'>
-                      <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix' id='crime-map-title'>
-                        <i class='fas fa-plus-square fa-lg'>&nbsp&nbspCrime</i>
-                      </button>
-
-                      <a class='btn btn-secondary  btn-secondary-right' id='open-crime-map' title='Open CrimeReport.com' href='#' target='_blank'>
-                        <i class='fas fa-external-link-alt'></i>
-                      </a>
-
-                    </h3>
-                  </div>
-                  <div id='collapseSix' class='collapse show' aria-labelledby='headingSix' data-parent='#accordion'>
-                    <div class='card-body'>
-                      <div id='crimeData'>
-                        <div class='load-wrapp'></div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </section>
-
-          </div>
-          <div class='row justify-content-md-center pt-4 d-none grey-background' id='suggestedAddresses'>
-            <div class='col-lg-4 col-md-8 col-sm-12'>
-              <div class='card'>
-                <div class='card-body'>
-                  <h3 class='card-title pb-3'>
-                    <span>Address not find.</span>
-                    <abbr title='Close this card'>
-                      <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls='suggestedAddresses'>
-                        <i class='fas fa-times'></i>
-                      </button>
-                    </abbr>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingTwo'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseTwo'>
+                      <i class='fas fa-plus-square  fa-lg'></i>
+                      <span class='fas fa-lg'>Services</span>
+                    </button>
                   </h3>
-                  <div class='card-text' id='address-links'>
+                </div>
+                <div id='collapseTwo' class='collapse show' aria-labelledby='headingTwo' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='serviceZone1'>
+                      <div class='load-wrapp'></div>
+                    </div>
                   </div>
+                </div>
+              </section>
+
+            </div>
+          </section>
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
+            <h2 class='r-title'>
+              Reference Data
+            </h2>
+            <div class='r-content' id='accordion'>
+              <section class='card'>
+                <div class='card-header' id='headingFour'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFour'>
+                      <i class='fas fa-plus-square fa-lg'></i>
+                      <span class='fas fa-lg'>Reference</span>
+                    </button>
+                  </h3>
+                </div>
+                <div id='collapseFour' class='collapse show' aria-labelledby='headingFour' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='parcelInfo'>
+                      <div class='load-wrapp'></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingFive'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFive'>
+                      <i class='fas fa-plus-square fa-lg'></i>
+                      <span class='fas fa-lg'>Neighborhoods</span>
+                    </button>
+                  </h3>
+                </div>
+                <div id='collapseFive' class='collapse show' aria-labelledby='headingFive' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='serviceZone2'>
+                      <div class='load-wrapp'></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingThree'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseThree'>
+                      <i class='fas fa-plus-square fa-lg'> </i>
+                      <span class='fas fa-lg'>Planning &amp; Development / Zoning</span>
+                    </button>
+                  </h3>
+                </div>
+                <div id='collapseThree' class='collapse show' aria-labelledby='headingThree' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='serviceZone3'>
+                      <div class='load-wrapp'></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
+            <h2 class='r-title'>
+              Map Data
+            </h2>
+            <div class='r-content' id='accordion'>
+
+              <section class='card'>
+                <div class='card-header' id='headingSeven'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSeven'>
+                      <i class='fas fa-plus-square fa-lg'></i>
+                      <span class='fas fa-lg'>Detail</span>
+                    </button>
+                  </h3>
+                </div>
+                <div id='collapseSeven' class='collapse show' aria-labelledby='headingSeven' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='subMap'>
+                      <div class='load-wrapp'></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingSix'>
+                  <h3 class='mb-0'>
+                    <button class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix'>
+                      <i class='fas fa-plus-square fa-lg'></i>
+                      <span class='fas fa-lg'  id='crime-map-title'>Crime</span>
+                    </button>
+
+                    <a class='btn btn-secondary  btn-secondary-right' id='open-crime-map' title='Open CrimeReport.com' href='#' target='_blank'>
+                      <i class='fas fa-external-link-alt'></i>
+                    </a>
+
+                  </h3>
+                </div>
+                <div id='collapseSix' class='collapse show' aria-labelledby='headingSix' data-parent='#accordion'>
+                  <div class='card-body'>
+                    <div id='crimeData'>
+                      <div class='load-wrapp'></div>
+
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </section>
+
+        </article>
+        <article class='row justify-content-md-center pt-4 d-none grey-background relative' id='suggestedAddresses'>
+          <div class='col-lg-4 col-md-8 col-sm-12'>
+            <div class='card'>
+              <div class='card-body '>
+                <h2 class='card-title pb-3'>
+                  Address not find. </h2>
+                <div class='absolute float-right'>
+                  <abbr title='Close this card'>
+                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls='suggestedAddresses' aria-label="Close">
+                      <i class='fas fa-times'></i>
+                    </button>
+                  </abbr>
+                </div>
+                <div class='card-text' id='address-links'>
                 </div>
               </div>
             </div>
           </div>
         </article>
       </div>
- 
+
     </div>
     <div class='grey-background py-4' id='nodeLinks'>
-        <!-- FAQs, Open Data -->
+      <!-- FAQs, Open Data -->
 
 
-      </div>
+    </div>
   </main>
 
 
