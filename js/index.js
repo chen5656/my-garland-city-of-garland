@@ -86,7 +86,6 @@ require([
 
   domQuery(".collapsed", "nodeResult").forEach(function (title) {
     title.onclick = function () {
-      debugger;
       var card = dom.byId(this.getAttribute("aria-controls"));
       domClass.toggle(card, "show");
       var icon = this.firstElementChild;
