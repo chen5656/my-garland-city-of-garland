@@ -91,11 +91,11 @@ require([
       var icon = this.firstElementChild;
       if (
         domClass.contains(icon, "fa-minus-square")) {
-        domClass.add(icon,  "fa-plus-square");
-        domClass.remove(icon,  "fa-minus-square");
+        domClass.add(icon, "fa-plus-square");
+        domClass.remove(icon, "fa-minus-square");
       } else {
-        domClass.add(icon,  "fa-minus-square");
-        domClass.remove(icon,  "fa-plus-square");
+        domClass.add(icon, "fa-minus-square");
+        domClass.remove(icon, "fa-plus-square");
 
       }
 
@@ -207,7 +207,9 @@ require([
 
     //cardBodies
     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      node.innerHTML = "<div class='load-wrapp'></div>";
+      if (node.id != "crimeData") {
+        node.innerHTML = "<div class='load-wrapp'></div>";
+      }
     });
 
   });
@@ -636,9 +638,9 @@ require([
 
     var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
     console.log("crime map:", url);
-    var node = dom.byId("crimeData");
-    node.innerHTML = "".concat("<iframe id='crimeDataIFrame' src='", url, "' height='400' width='100%'></iframe>");
-    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( ", start_date.slice(5), " to ", end_date.slice(5), " )");
+    var node = dom.byId("crimeDataIFrame");
+    node.src = url;
+    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='",start_date," 00:00'>", start_date.slice(5), "</time> to <time datetime='",end_date," 23:59'>", end_date.slice(5), "</time> )");
 
     dom.byId("open-crime-map").setAttribute("href", url);
   }
