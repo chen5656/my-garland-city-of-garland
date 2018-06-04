@@ -607,7 +607,7 @@ require([
         destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
       });
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
-        "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " mi.)</span>", "</li>");
+        "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
       return str;
     });
 

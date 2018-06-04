@@ -128,9 +128,9 @@ header .absolute {
   line-height: 1.4;
 }
 
-.card-body {
+/* .card-body {
   text-transform: capitalize;
-}
+} */
 
 .browser-compatibility-alert {
   padding: 20px;
