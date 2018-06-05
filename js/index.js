@@ -85,10 +85,7 @@ require([
   });
 
   //autofocus on search tool box when load.
-  var ss=domQuery("input","search");
-  console.log(ss);
-  debugger;
-  domQuery("input","search")[0].autofocus=true;
+  domQuery("input", "search")[0].autofocus = true;
 
   domQuery(".collapsed", "nodeResult").forEach(function (title) {
     title.onclick = function () {
@@ -209,6 +206,7 @@ require([
   search.on("search-start", function (e) {
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
+
     multiSearch.startNewSearch();
 
     //cardBodies
@@ -624,6 +622,11 @@ require([
   //open crime page
   function getCrimeData(val) {
     console.log("crime map:");
+    if (dom.byId("crimeData")) {
+      console.log('iframe');
+      dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='#' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
+    }
+
     var lat = val.latitude;
     var long = val.longitude;
     var numberX = 0.03265857696533;
@@ -646,7 +649,7 @@ require([
     console.log("crime map:", url);
     var node = dom.byId("crimeDataIFrame");
     node.src = url;
-    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='",start_date," 00:00'>", start_date.slice(5), "</time> to <time datetime='",end_date," 23:59'>", end_date.slice(5), "</time> )");
+    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
 
     dom.byId("open-crime-map").setAttribute("href", url);
   }

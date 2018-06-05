@@ -154,7 +154,7 @@ header .absolute {
   padding-left: 110px;
 }
 
-.btn-link span {
+.btn-link h3 {
   white-space: normal;
   line-height: 1.25em;
   font-size: 1.33333em;
@@ -166,3 +166,4 @@ header .absolute {
   top: 15px;
   right: 15px;
 }
+
