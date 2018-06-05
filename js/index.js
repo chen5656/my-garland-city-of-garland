@@ -84,6 +84,12 @@ require([
     }]
   });
 
+  //autofocus on search tool box when load.
+  var ss=domQuery("input","search");
+  console.log(ss);
+  debugger;
+  domQuery("input","search")[0].autofocus=true;
+
   domQuery(".collapsed", "nodeResult").forEach(function (title) {
     title.onclick = function () {
       var card = dom.byId(this.getAttribute("aria-controls"));
