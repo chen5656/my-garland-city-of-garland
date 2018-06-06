@@ -116,10 +116,10 @@ require([
   //create multisearch widget.
   var multiSearch = new GetMultiSearch({
     cityFacilitySourceList: [{
-      name: "Fire Station",
+      name: "Nearest Fire Station",
       url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
       where: "NUM>0",
-      displayID: "3"
+      displayID: "4"
     }],
     serviceZoneSourceList: [{
         name: "Police Sector",
@@ -160,8 +160,31 @@ require([
       }
     ],
     individualCityFacility: [{
-        "title": "Police Station",
+        "title": "City Hall",
         "displayID": "1",
+        "nearestFeature": {
+          "name": "Garland City Hall",
+          "ADDRESS": "200 N Fifth St, Garland, TX 75040",
+          "lat": 32.913842,
+          "long": -96.636131,
+          "x": 2540451.901,
+          "y": 7020425.638
+        }
+      }, {
+        "title": "Customer Service",
+        "displayID": "5",
+        "nearestFeature": {
+          "name": "Garland Customer Service",
+          "ADDRESS": "217 N Fifth St, Garland, TX 75040",
+          "lat": 32.914230,
+          "long": -96.636957,
+          "x": 2540168.1046,
+          "y": 7020612.507
+        }
+      },
+      {
+        "title": "Police Station",
+        "displayID": "2",
         "nearestFeature": {
           "name": "Garland Police Department",
           "ADDRESS": "1891 Forest Ln, Garland, TX 75042",
@@ -173,7 +196,7 @@ require([
       },
       {
         "title": "Municipal Court",
-        "displayID": "2",
+        "displayID": "3",
         "nearestFeature": {
           "name": "Garland Municipal Court",
           "ADDRESS": "1791 W Avenue B, Garland, TX 75042",
@@ -600,15 +623,15 @@ require([
       return a.displayID - b.displayID;
     }).map(function (val) {
       var obj = {
-        title: "Nearest " + val.title,
+        title:  val.title,
         name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
-        address_title: "Nearest " + val.title + " Address",
+        address_title:  val.title + " Address",
         address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
         distance: val.distance
       };
       obj.googleLink = openInGoogleMap({
-        originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
+        destinationAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+        originAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
       });
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
         "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
