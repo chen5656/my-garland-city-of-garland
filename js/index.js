@@ -623,9 +623,9 @@ require([
       return a.displayID - b.displayID;
     }).map(function (val) {
       var obj = {
-        title:  val.title,
+        title: val.title,
         name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
-        address_title:  val.title + " Address",
+        address_title: val.title + " Address",
         address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
         distance: val.distance
       };
@@ -633,8 +633,10 @@ require([
         destinationAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
         originAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
       });
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
-        "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
+      // var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
+      //   "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
+      
       return str;
     });
 
