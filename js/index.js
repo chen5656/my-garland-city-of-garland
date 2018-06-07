@@ -37,6 +37,9 @@ require([
 
   'use strict';
 
+
+
+
   domClass.remove('main-content', 'd-none');
 
   var map, view, subMap, subView;
@@ -223,6 +226,153 @@ require([
   //set geometry service to match spatial reference on different service.
   var geometryService;
   geometryService = new GeometryService(multiSearch.mapService.geometry);
+
+
+  //display data
+
+  topic.subscribe("multiSearch/parcelInfoUpdated", function () {
+    var item = multiSearch.searchResult.parcelInfo;
+    var obj = {
+      "Zip Code": item.ZIP_CODE,
+      //"County":
+      "Mapsco Grid": item.MAPSCO,
+      "School District": item.SCHOOL_DISTRICT,
+      "City Council District": item.COUNCIL_ID,
+      //City Council District Member
+      "Census Tract": item.CENSUS_TRACT,
+      "Health Complaint": item.HEALTH_COMPLAINT
+    };
+    var obj2 = [{
+      title: "Fire District",
+      containerID: 1,
+      displayFieldName: "FIRE_DISTRICT",
+      displayID: 4,
+      queryPolygonCount: 1,
+      serviceZone: {
+        FIRE_DISTRICT: item.FIRE_DIST
+      }
+    }, {
+      title: "Land Use",
+      containerID: 3,
+      displayFieldName: "value",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.LANDUSE
+      }
+    }, {
+      title: "ZONING",
+      containerID: 3,
+      displayFieldName: "value",
+      displayID: 2,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.ZONING
+      }
+    }, {
+      title: "Neighborhood",
+      containerID: 2,
+      displayID: 1,
+      displayFieldName: "value",
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.NEIGHBORHOOD
+      }
+    }, {
+      title: "Police Beat",
+      containerID: 1,
+      displayFieldName: "BEAT",
+      displayID: 3,
+      queryPolygonCount: 1,
+      serviceZone: {
+        BEAT: item.POLICE_BEAT
+      }
+    }, {
+      title: "Police District",
+      containerID: 1,
+      displayFieldName: "DISTRICTS",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        DISTRICTS: item.POLICE_DIST
+      }
+    }];
+    parcelInfo_obj2 = obj2;
+
+    var arr = [];
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        arr.push({
+          title: key,
+          value: obj[key]
+        });
+      }
+    }
+    arr = arr.map(function (obj) {
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
+      return str;
+    });
+    var node = dom.byId("parcelInfo");
+    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+
+  });
+
+  topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
+    var arr = multiSearch.searchResult.serviceZoneList;
+    if (parcelInfo_obj2.length > 0) {
+      arr = arr.concat(parcelInfo_obj2);
+    }
+    var containerID = [1, 2, 3];
+    for (var i in containerID) {
+      var subArr = arr.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        return a.displayID - b.displayID;
+      });
+      subArr = subArr.map(function (val) {
+        var title = val.title;
+        var value;
+        if (val.displayFieldName) {
+          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+        } else {
+          value = "NULL";
+        }
+        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
+        return str;
+      });
+      var node = dom.byId("serviceZone".concat(containerID[i]));
+      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
+    }
+
+
+
+  });
+
+  topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
+    var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
+      return a.displayID - b.displayID;
+    }).map(function (val) {
+      var obj = {
+        title: val.title,
+        name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
+        address_title: val.title + " Address",
+        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
+        distance: val.distance
+      };
+      obj.googleLink = openInGoogleMap({
+        destinationAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+        originAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
+      });
+      // var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
+      //   "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
+
+      return str;
+    });
+
+    var node = dom.byId("nearestCityFacility");
+    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+  });
 
 
   //query can get a list of features inside a distance.
@@ -498,151 +648,6 @@ require([
 
   });
 
-  //display data
-
-  topic.subscribe("multiSearch/parcelInfoUpdated", function () {
-    var item = multiSearch.searchResult.parcelInfo;
-    var obj = {
-      "Zip Code": item.ZIP_CODE,
-      //"County":
-      "Mapsco Grid": item.MAPSCO,
-      "School District": item.SCHOOL_DISTRICT,
-      "City Council District": item.COUNCIL_ID,
-      //City Council District Member
-      "Census Tract": item.CENSUS_TRACT,
-      "Health Complaint": item.HEALTH_COMPLAINT
-    };
-    var obj2 = [{
-      title: "Fire District",
-      containerID: 1,
-      displayFieldName: "FIRE_DISTRICT",
-      displayID: 4,
-      queryPolygonCount: 1,
-      serviceZone: {
-        FIRE_DISTRICT: item.FIRE_DIST
-      }
-    }, {
-      title: "Land Use",
-      containerID: 3,
-      displayFieldName: "value",
-      displayID: 1,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.LANDUSE
-      }
-    }, {
-      title: "ZONING",
-      containerID: 3,
-      displayFieldName: "value",
-      displayID: 2,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.ZONING
-      }
-    }, {
-      title: "Neighborhood",
-      containerID: 2,
-      displayID: 1,
-      displayFieldName: "value",
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.NEIGHBORHOOD
-      }
-    }, {
-      title: "Police Beat",
-      containerID: 1,
-      displayFieldName: "BEAT",
-      displayID: 3,
-      queryPolygonCount: 1,
-      serviceZone: {
-        BEAT: item.POLICE_BEAT
-      }
-    }, {
-      title: "Police District",
-      containerID: 1,
-      displayFieldName: "DISTRICTS",
-      displayID: 1,
-      queryPolygonCount: 1,
-      serviceZone: {
-        DISTRICTS: item.POLICE_DIST
-      }
-    }];
-    parcelInfo_obj2 = obj2;
-
-    var arr = [];
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        arr.push({
-          title: key,
-          value: obj[key]
-        });
-      }
-    }
-    arr = arr.map(function (obj) {
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
-      return str;
-    });
-    var node = dom.byId("parcelInfo");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-
-  });
-
-  topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
-    var arr = multiSearch.searchResult.serviceZoneList;
-    if (parcelInfo_obj2.length > 0) {
-      arr = arr.concat(parcelInfo_obj2);
-    }
-    var containerID = [1, 2, 3];
-    for (var i in containerID) {
-      var subArr = arr.filter(function (val) {
-        return val.containerID == containerID[i];
-      }).sort(function (a, b) {
-        return a.displayID - b.displayID;
-      });
-      subArr = subArr.map(function (val) {
-        var title = val.title;
-        var value;
-        if (val.displayFieldName) {
-          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
-        } else {
-          value = "NULL";
-        }
-        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
-        return str;
-      });
-      var node = dom.byId("serviceZone".concat(containerID[i]));
-      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
-    }
-
-
-
-  });
-
-  topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-    var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
-      var obj = {
-        title: val.title,
-        name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
-        address_title: val.title + " Address",
-        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
-        distance: val.distance
-      };
-      obj.googleLink = openInGoogleMap({
-        destinationAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        originAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
-      });
-      // var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
-      //   "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
-      
-      return str;
-    });
-
-    var node = dom.byId("nearestCityFacility");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-  });
 
   //open crime page
   function getCrimeData(val) {
@@ -719,4 +724,23 @@ require([
     var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
     return url;
   }
+
+
+  if (getQueryVariable("address")) {
+    var address = getQueryVariable("address").replace(/%20/g, ' ');
+    search.search(address);
+  }
+
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    }
+    return (false);
+  }
+
 });
