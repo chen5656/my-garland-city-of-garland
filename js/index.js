@@ -19,6 +19,7 @@ require([
 
   "dojo/topic",
   "dojo/query",
+  "dojo/dom-attr",
 
   'js/multi-search.js',
 
@@ -30,7 +31,8 @@ require([
   Search, Locator, Query, QueryTask,
   GeometryService, projection, ProjectParameters,
 
-  topic, domQuery,
+  topic, domQuery, domAttr,
+
   nameMultiSearch
 ) {
 
@@ -377,6 +379,7 @@ require([
 
   //query can get a list of features inside a distance.
   search.on("search-start", function (e) {
+
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
 
@@ -390,8 +393,13 @@ require([
     });
 
   });
+
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
+      
+    //update url
+    window.history.pushState("new-address", "", "?");
+    
       //no result found. Suggestion the nearest result
       var AddrRoad, AddrNumber;
       var str = e.searchTerm.split(",")[0].trim().toUpperCase();
@@ -614,6 +622,12 @@ require([
     view.zoom = 12;
     if (e.result) {
       console.log("Address valid by address locator");
+
+      //update url
+      if (e.result.name) {
+        window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
+      }
+
       //show result
       domClass.remove('nodeResult', 'd-none');
 
@@ -654,7 +668,7 @@ require([
     console.log("crime map:");
     if (dom.byId("crimeData")) {
       console.log('iframe');
-      dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='#' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
+      dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='https://www.crimereports.com/' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
     }
 
     var lat = val.latitude;
@@ -670,8 +684,8 @@ require([
     var today = new Date();
     today.setHours(0, 0, 0);
     console.log(today);
-    var yesterday = new Date(today.getTime() - 1 * 1000); //yesterday 23:59:59
-    var severDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000); //7 days ago 00:00:00
+    var yesterday = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
+    var severDaysAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
     var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
 
@@ -726,12 +740,12 @@ require([
   }
 
 
-  if (getQueryVariable("address")) {
-    var address = getQueryVariable("address").replace(/%20/g, ' ');
+  if (getURLQueryVariable("address")) {
+    var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
   }
 
-  function getQueryVariable(variable) {
+  function getURLQueryVariable(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
     for (var i = 0; i < vars.length; i++) {
@@ -741,6 +755,16 @@ require([
       }
     }
     return (false);
+  }
+
+  function processAjaxData(response, urlPath) {
+    document.getElementById("content").innerHTML = response.html;
+    document.title = response.pageTitle;
+    window.history.pushState({
+      "html": response.html,
+      "pageTitle": response.pageTitle
+    }, "", urlPath);
+
   }
 
 });
