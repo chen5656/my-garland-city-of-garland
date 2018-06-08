@@ -70,6 +70,8 @@ require([
     });
   })();
 
+
+
   var search = new Search({
     view: view,
     container: "search",
@@ -88,6 +90,12 @@ require([
       minSuggestCharacters: 6
     }]
   });
+
+    // //get last add from localstorage
+    // var lastAddr= '';
+    // if (typeof (Storage) !== "undefined"&& localStorage.getItem("mygl-lastaddr")) {
+    //   lastAddr= localStorage.getItem("mygl-lastaddr");
+    // }
 
   //autofocus on search tool box when load.
   domQuery("input", "search")[0].autofocus = true;
@@ -396,10 +404,10 @@ require([
 
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
-      
-    //update url
-    window.history.pushState("new-address", "", "?");
-    
+
+      //update url
+      window.history.pushState("new-address", "", "?");
+
       //no result found. Suggestion the nearest result
       var AddrRoad, AddrNumber;
       var str = e.searchTerm.split(",")[0].trim().toUpperCase();
@@ -627,6 +635,11 @@ require([
       if (e.result.name) {
         window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
       }
+
+      // //update localStorage
+      // if (typeof (Storage) !== "undefined") {
+      //   localStorage.setItem("mygl-lastaddr", e.result.name);
+      // }
 
       //show result
       domClass.remove('nodeResult', 'd-none');
