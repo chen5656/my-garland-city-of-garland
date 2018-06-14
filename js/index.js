@@ -404,10 +404,6 @@ require([
 
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
-
-      //update url
-      window.history.pushState("new-address", "", "?");
-
       //no result found. Suggestion the nearest result
       var AddrRoad, AddrNumber;
       var str = e.searchTerm.split(",")[0].trim().toUpperCase();
@@ -768,16 +764,6 @@ require([
       }
     }
     return (false);
-  }
-
-  function processAjaxData(response, urlPath) {
-    document.getElementById("content").innerHTML = response.html;
-    document.title = response.pageTitle;
-    window.history.pushState({
-      "html": response.html,
-      "pageTitle": response.pageTitle
-    }, "", urlPath);
-
   }
 
 });
