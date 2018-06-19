@@ -134,18 +134,8 @@ require([
       where: "NUM>0",
       displayID: "4"
     }],
-    serviceZoneSourceList: [{
-        name: "Police Sector",
-        containerID: 1,
-        displayID: 2,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/5"
-      },
-      {
-        name: "Fire Alarm Grid",
-        containerID: 1,
-        displayID: 5,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/1"
-      }, {
+    serviceZoneSourceList: [
+  {
         name: "EWS Recycling Pickup Day",
         containerID: 1,
         displayID: 7,
@@ -242,26 +232,19 @@ require([
 
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     var item = multiSearch.searchResult.parcelInfo;
+    console.log(item);
     var obj = {
       "Zip Code": item.ZIP_CODE,
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": item.COUNCIL_ID,
+      "City Council District": "".concat("<a href='https://www.garlandtx.gov/gov/cd/council/bio/district",item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
+    
       //City Council District Member
-      "Census Tract": item.CENSUS_TRACT,
-      "Health Complaint": item.HEALTH_COMPLAINT
+      //"Census Tract": item.CENSUS_TRACT,
+      //"Health Complaint": item.HEALTH_COMPLAINT
     };
-    var obj2 = [{
-      title: "Fire District",
-      containerID: 1,
-      displayFieldName: "FIRE_DISTRICT",
-      displayID: 4,
-      queryPolygonCount: 1,
-      serviceZone: {
-        FIRE_DISTRICT: item.FIRE_DIST
-      }
-    }, {
+    var obj2 = [ {
       title: "Land Use",
       containerID: 3,
       displayFieldName: "value",
@@ -287,24 +270,6 @@ require([
       queryPolygonCount: 1,
       serviceZone: {
         value: item.NEIGHBORHOOD
-      }
-    }, {
-      title: "Police Beat",
-      containerID: 1,
-      displayFieldName: "BEAT",
-      displayID: 3,
-      queryPolygonCount: 1,
-      serviceZone: {
-        BEAT: item.POLICE_BEAT
-      }
-    }, {
-      title: "Police District",
-      containerID: 1,
-      displayFieldName: "DISTRICTS",
-      displayID: 1,
-      queryPolygonCount: 1,
-      serviceZone: {
-        DISTRICTS: item.POLICE_DIST
       }
     }];
     parcelInfo_obj2 = obj2;
