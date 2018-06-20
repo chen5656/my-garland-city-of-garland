@@ -52,9 +52,9 @@ require([
   //draw map
   (function () {
     var mapImageLayerList = new MapImageLayer({
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
       sublayers: [{
-        id: 0,
+        id: 1,
         visible: true
       }]
     });
@@ -91,11 +91,11 @@ require([
     }]
   });
 
-    // //get last add from localstorage
-    // var lastAddr= '';
-    // if (typeof (Storage) !== "undefined"&& localStorage.getItem("mygl-lastaddr")) {
-    //   lastAddr= localStorage.getItem("mygl-lastaddr");
-    // }
+  // //get last add from localstorage
+  // var lastAddr= '';
+  // if (typeof (Storage) !== "undefined"&& localStorage.getItem("mygl-lastaddr")) {
+  //   lastAddr= localStorage.getItem("mygl-lastaddr");
+  // }
 
   //autofocus on search tool box when load.
   domQuery("input", "search")[0].autofocus = true;
@@ -129,87 +129,66 @@ require([
   //create multisearch widget.
   var multiSearch = new GetMultiSearch({
     cityFacilitySourceList: [{
-      name: "Nearest Fire Station",
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Public_Safety/MapServer/2",
-      where: "NUM>0",
-      displayID: "4"
+        name: "City Hall",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "BLDG_NAME='CITY HALL'",
+        displayID: "1"
+
+      }, {
+        name: "Customer Service",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "BLDG_NAME='UTILITY SERVICES'",
+        displayID: "5"
+
+      },
+      {
+        name: "Police Station",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "BLDG_NAME='POLICE STATION'",
+        displayID: "2"
+
+      },
+      {
+        name: "Municipal Courts",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "DEPT='COURTS'",
+        displayID: "3",
+
+      },
+      {
+        name: "Nearest Fire Station",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
+        displayID: "4"
+      }
+    ],
+    serviceZoneSourceList: [{
+      name: "EWS Recycling Pickup Day",
+      containerID: 1,
+      displayID: 2,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
+    }, {
+      name: "EWS Trash and Brush Pickup Day",
+      containerID: 1,
+      displayID: 1,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
+    }, {
+      name: "Neighborhood Watch",
+      containerID: 2,
+      displayID: 2,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
+    }, {
+      name: "Neighborhood Association",
+      containerID: 2,
+      displayID: 3,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
+    }, {
+      name: "GDC Zoining",
+      containerID: 3,
+      displayID: 2,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
     }],
-    serviceZoneSourceList: [
-  {
-        name: "EWS Recycling Pickup Day",
-        containerID: 1,
-        displayID: 7,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/13"
-      }, {
-        name: "EWS Trash and Brush Pickup Day",
-        containerID: 1,
-        displayID: 6,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/City_Services/MapServer/14"
-      }, {
-        name: "Neighborhood Watch",
-        containerID: 2,
-        displayID: 2,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/8"
-      }, {
-        name: "Neighborhood Association",
-        containerID: 2,
-        displayID: 3,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Community_Neighborhood/MapServer/9"
-      }, {
-        name: "GDC Zoining",
-        containerID: 3,
-        displayID: 2,
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/Test/oneAddress/MapServer/2"
-      }
-    ],
-    individualCityFacility: [{
-        "title": "City Hall",
-        "displayID": "1",
-        "nearestFeature": {
-          "name": "Garland City Hall",
-          "ADDRESS": "200 N Fifth St, Garland, TX 75040",
-          "lat": 32.913842,
-          "long": -96.636131,
-          "x": 2540451.901,
-          "y": 7020425.638
-        }
-      }, {
-        "title": "Customer Service",
-        "displayID": "5",
-        "nearestFeature": {
-          "name": "Garland Customer Service",
-          "ADDRESS": "217 N Fifth St, Garland, TX 75040",
-          "lat": 32.914230,
-          "long": -96.636957,
-          "x": 2540168.1046,
-          "y": 7020612.507
-        }
-      },
-      {
-        "title": "Police Station",
-        "displayID": "2",
-        "nearestFeature": {
-          "name": "Garland Police Department",
-          "ADDRESS": "1891 Forest Ln, Garland, TX 75042",
-          "lat": 32.910855,
-          "long": -96.654807,
-          "x": 2534713.03125,
-          "y": 7019288.16197917
-        }
-      },
-      {
-        "title": "Municipal Court",
-        "displayID": "3",
-        "nearestFeature": {
-          "name": "Garland Municipal Court",
-          "ADDRESS": "1791 W Avenue B, Garland, TX 75042",
-          "lat": 32.910286,
-          "long": -96.655733,
-          "x": 2534432.5390625,
-          "y": 7019076.21458334
-        }
-      }
-    ],
+    individualCityFacility: [],
     mapService: {
       cityLimit: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/0",
       address: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/1", //used to get parcel id,
@@ -231,20 +210,20 @@ require([
   //display data
 
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
+    console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
-    console.log(item);
     var obj = {
       "Zip Code": item.ZIP_CODE,
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='https://www.garlandtx.gov/gov/cd/council/bio/district",item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
-    
+      "City Council District": "".concat("<a href='https://www.garlandtx.gov/gov/cd/council/bio/district", item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
+
       //City Council District Member
       //"Census Tract": item.CENSUS_TRACT,
       //"Health Complaint": item.HEALTH_COMPLAINT
     };
-    var obj2 = [ {
+    var obj2 = [{
       title: "Land Use",
       containerID: 3,
       displayFieldName: "value",
@@ -293,6 +272,7 @@ require([
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
+    console.log("multiSearch/serviceZoneListUpdated");
     var arr = multiSearch.searchResult.serviceZoneList;
     if (parcelInfo_obj2.length > 0) {
       arr = arr.concat(parcelInfo_obj2);
@@ -324,6 +304,7 @@ require([
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
+   console.log("multiSearch/nearestCityFacilityUpdated");
     var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (val) {
