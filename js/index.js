@@ -132,41 +132,41 @@ require([
         name: "City Hall",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='CITY HALL'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "1"
       }, {
         name: "Customer Service",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='UTILITY SERVICES'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "5"
       },
       {
         name: "Police Station",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='POLICE STATION'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "2"
       },
       {
         name: "Municipal Courts",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "DEPT='COURTS'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "3",
       },
       {
         name: "Nearest Fire Station",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "4"
       },
       {
         name: "Nearest Library",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "DEPT='LIBRARY'",
-        containerID: 0,
+        containerID: "nearestCityFacility",
         displayID: "6"
       }, {
         name: "Nearest Park",
@@ -240,7 +240,7 @@ require([
     };
     var obj2 = [{
       title: "Land Use",
-      containerID: 3,
+      containerID: "planning_development-zoning",
       displayFieldName: "value",
       displayID: 1,
       queryPolygonCount: 1,
@@ -249,7 +249,7 @@ require([
       }
     }, {
       title: "ZONING",
-      containerID: 3,
+      containerID: "planning_development-zoning",
       displayFieldName: "value",
       displayID: 2,
       queryPolygonCount: 1,
@@ -258,7 +258,7 @@ require([
       }
     }, {
       title: "Neighborhood",
-      containerID: 2,
+      containerID: "neighborhoods",
       displayID: 1,
       displayFieldName: "value",
       queryPolygonCount: 1,
@@ -325,7 +325,7 @@ require([
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
     console.log("multiSearch/nearestCityFacilityUpdated");
     var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
-      return val.containerID == 0;
+      return val.containerID == "nearestCityFacility";
     }).sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (val) {
