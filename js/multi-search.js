@@ -70,6 +70,7 @@ define([
           // Results.graphics contains the graphics returned from query
           that.cityFacilityList.push({
             name: queryParameter.name,
+            containerID:queryParameter.containerID,
             displayID: queryParameter.displayID,
             features: results.features
           });
@@ -117,13 +118,16 @@ define([
       console.log("getNearestCityFacilityList Function");
       var that = this;
 
-      //police station and court
-      var arr = distanceToPoliceStationAndCourt(this.geometry);
+      //individualCityFacility distance
+      var arr = distanceToIndividualCityFacility(this.geometry);
       this.searchResult.nearestCityFacilityList = this.searchResult.nearestCityFacilityList.concat(arr);
+
       for (var i in this.cityFacilityList) {
         findNearest(this.geometry, this.cityFacilityList[i]);
       }
 
+
+      
       function findNearest(geometry, featureSet) {
         var distanceRequestList = [];
         for (var i in featureSet.features) {
@@ -138,6 +142,7 @@ define([
 
           var result = {
             title: featureSet.name,
+            containerID:featureSet.containerID,
             displayID: featureSet.displayID,
             nearestFeature: minFeature.attributes,
             distance: minDistance.toFixed(2)
@@ -155,7 +160,7 @@ define([
 
       }
 
-      function distanceToPoliceStationAndCourt(geometry) {
+      function distanceToIndividualCityFacility(geometry) {
         var userPnt = {
           x: geometry.x,
           y: geometry.y

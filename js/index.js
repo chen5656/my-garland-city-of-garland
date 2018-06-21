@@ -132,45 +132,60 @@ require([
         name: "City Hall",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='CITY HALL'",
+        containerID: 0,
         displayID: "1"
-
       }, {
         name: "Customer Service",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='UTILITY SERVICES'",
+        containerID: 0,
         displayID: "5"
-
       },
       {
         name: "Police Station",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "BLDG_NAME='POLICE STATION'",
+        containerID: 0,
         displayID: "2"
-
       },
       {
         name: "Municipal Courts",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "DEPT='COURTS'",
+        containerID: 0,
         displayID: "3",
-
       },
       {
         name: "Nearest Fire Station",
         url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
+        containerID: 0,
         displayID: "4"
+      },
+      {
+        name: "Nearest Library",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        where: "DEPT='LIBRARY'",
+        containerID: 0,
+        displayID: "6"
+      }, {
+        name: "Nearest Park",
+        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/14",
+        where: "1=1",
+        containerID: "parks",
+        displayID: 1
       }
+
     ],
     serviceZoneSourceList: [{
-      name: "EWS Recycling Pickup Day",
+      name: "EWS Recycling Pickup Week",
       containerID: 1,
-      displayID: 2,
+      displayID: 3,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
     }, {
       name: "EWS Trash and Brush Pickup Day",
       containerID: 1,
-      displayID: 1,
+      displayID: 2,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
     }, {
       name: "Neighborhood Watch",
@@ -190,11 +205,11 @@ require([
     }],
     individualCityFacility: [],
     mapService: {
-      cityLimit: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/0",
-      address: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/1", //used to get parcel id,
-      parcel: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/2",
-      road: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/3",
-      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap_Other/myGarland/MapServer/4",
+      cityLimit: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1",
+      address: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4", //used to get parcel id,
+      parcel: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5",
+      road: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3",
+      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16",
       geometry: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
     }
   });
@@ -274,8 +289,12 @@ require([
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
     var arr = multiSearch.searchResult.serviceZoneList;
-    if (parcelInfo_obj2.length > 0) {
-      arr = arr.concat(parcelInfo_obj2);
+    if (parcelInfo_obj2) {
+      if (parcelInfo_obj2.length > 0) {
+        arr = arr.concat(parcelInfo_obj2);
+
+      }
+
     }
     var containerID = [1, 2, 3];
     for (var i in containerID) {
@@ -304,32 +323,47 @@ require([
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-   console.log("multiSearch/nearestCityFacilityUpdated");
-    var arr = multiSearch.searchResult.nearestCityFacilityList.sort(function (a, b) {
+    console.log("multiSearch/nearestCityFacilityUpdated");
+    var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
+      return val.containerID == 0;
+    }).sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (val) {
       var obj = {
         title: val.title,
-        name: (val.nearestFeature.name ? val.nearestFeature.name : val.nearestFeature.BLDG_NAME),
+        name: (val.nearestFeature.BLDG_NAME ? val.nearestFeature.BLDG_NAME : ""),
         address_title: val.title + " Address",
-        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : val.nearestFeature.LOCATION),
+        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : ""),
         distance: val.distance
       };
       obj.googleLink = openInGoogleMap({
-        destinationAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        originAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
+        type: "FindDireciton",
+        originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+        destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
       });
-      // var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'>", obj.name, "</a></span></li>",
-      //   "<li><span class='location-data-tag'>", obj.address_title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "</li>");
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
-
       return str;
     });
 
     var node = dom.byId("nearestCityFacility");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-  });
 
+    arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
+      return val.containerID == "parks";
+    }).sort(function (a, b) {
+      return a.displayID - b.displayID;
+    }).map(function (obj) {
+      var googleLink = openInGoogleMap({
+        type: "FindLocation",
+        originAdd : multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+        destinationAdd: "Garland+" + obj.nearestFeature.PARKS.replace(/\s|\t/g, "+")
+      });
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
+      return str;
+    });
+    node = dom.byId("nearestPark");
+    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+  });
 
   //query can get a list of features inside a distance.
   search.on("search-start", function (e) {
@@ -341,7 +375,7 @@ require([
 
     //cardBodies
     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.id != "crimeData") {
+      if (node.id != "crimeData" && node.id != "nearestPark") {
         node.innerHTML = "<div class='load-wrapp'></div>";
       }
     });
@@ -688,10 +722,16 @@ require([
   }
 
   function openInGoogleMap(location) {
-    var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
-    var destinationAdd = location.destinationAdd; //garland+police+department
-    var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
-    return url;
+    if (location.type == "FindDireciton") {
+      var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
+      var destinationAdd = location.destinationAdd; //garland+police+department
+      var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
+      return url;
+    } else if (location.type == "FindLocation") {
+      return "https://www.google.com/maps/search/".concat( location.destinationAdd);
+    }
+
+
   }
 
 
