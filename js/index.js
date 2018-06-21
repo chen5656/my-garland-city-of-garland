@@ -179,27 +179,27 @@ require([
     ],
     serviceZoneSourceList: [{
       name: "EWS Recycling Pickup Week",
-      containerID: 1,
+      containerID: "service",
       displayID: 3,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
     }, {
       name: "EWS Trash and Brush Pickup Day",
-      containerID: 1,
+      containerID: "service",
       displayID: 2,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
     }, {
       name: "Neighborhood Watch",
-      containerID: 2,
+      containerID: "neighborhoods",
       displayID: 2,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
     }, {
       name: "Neighborhood Association",
-      containerID: 2,
+      containerID: "neighborhoods",
       displayID: 3,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
     }, {
       name: "GDC Zoining",
-      containerID: 3,
+      containerID: "planning_development-zoning",
       displayID: 2,
       url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
     }],
@@ -296,7 +296,7 @@ require([
       }
 
     }
-    var containerID = [1, 2, 3];
+    var containerID = ["service", "neighborhoods", "planning_development-zoning"];
     for (var i in containerID) {
       var subArr = arr.filter(function (val) {
         return val.containerID == containerID[i];
@@ -314,7 +314,7 @@ require([
         var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
         return str;
       });
-      var node = dom.byId("serviceZone".concat(containerID[i]));
+      var node = dom.byId(containerID[i]);
       node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
     }
 
