@@ -637,7 +637,7 @@ require([
         outSpatialReference: multiSearch.spatialReference
       });
       var geometries = geometryService.project(params).then(function (geometries) {
-        console.log('get geometry');
+        console.log('get input geometry');
         multiSearch.geometry = geometries[0];
         //console.log("Finding nearest city facilities and get distance");
         multiSearch.getNearestCityFacilityList();
@@ -656,7 +656,6 @@ require([
   function getCrimeData(val) {
     console.log("crime map:");
     if (dom.byId("crimeData")) {
-      console.log('iframe');
       dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='https://www.crimereports.com/' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
     }
 
@@ -672,7 +671,6 @@ require([
 
     var today = new Date();
     today.setHours(0, 0, 0);
-    console.log(today);
     var yesterday = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
     var severDaysAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
     var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
