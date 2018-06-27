@@ -353,12 +353,10 @@ require([
     }).sort(function (a, b) {
       return a.displayID - b.displayID;
     }).map(function (obj) {
-      var googleLink = openInGoogleMap({
-        type: "FindLocation",
-        originAdd : multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        destinationAdd: "Garland+" + obj.nearestFeature.PARKS.replace(/\s|\t/g, "+")
-      });
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
+
+      var link = getParkLink(obj.nearestFeature.PARKS);
+
+      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
       return str;
     });
     node = dom.byId("nearestPark");
@@ -726,10 +724,20 @@ require([
       var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
       return url;
     } else if (location.type == "FindLocation") {
-      return "https://www.google.com/maps/search/".concat( location.destinationAdd);
+      return "https://www.google.com/maps/search/".concat(location.destinationAdd);
     }
 
 
+  }
+
+  function getParkLink(parkName) {
+    var url = "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/";
+    var parkList = ["ab", "cd", "efg", "hj", "klmnopq", "rst", "wxyz"];
+    var firstLetter = parkName.toLowerCase().charAt(0);
+    var str = parkList.filter(function (value) {
+      return value.indexOf(firstLetter)!=-1;
+    })[0];
+    return url.concat(str.charAt(0),str.slice(-1),"/default.asp");
   }
 
 
