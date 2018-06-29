@@ -39,9 +39,6 @@ require([
 
   'use strict';
 
-
-
-
   domClass.remove('main-content', 'd-none');
 
   var map, view, subMap, subView;
@@ -69,8 +66,6 @@ require([
       center: [-96.636269, 32.91676]
     });
   })();
-
-
 
   var search = new Search({
     view: view,
@@ -318,8 +313,8 @@ require([
       node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
     }
 
-
-
+    //update EWS-link
+    domClass.remove('EWS-link', 'd-none');
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
@@ -359,7 +354,8 @@ require([
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
       return str;
     });
-    node = dom.byId("nearestPark");
+    node = dom.byId("nearestPark");    
+    domClass.remove('nearestPark', 'd-none');
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
 
@@ -368,16 +364,19 @@ require([
 
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
+    domClass.add('nearestPark', 'd-none');
+    domClass.add('EWS-link', 'd-none');
+    
 
     multiSearch.startNewSearch();
 
     //cardBodies
+    // class='add-load-wrapp'
     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.id != "crimeData" && node.id != "nearestPark") {
+      if (node.classList.contains("add-load-wrapp")) {
         node.innerHTML = "<div class='load-wrapp'></div>";
       }
     });
-
   });
 
   search.on("search-complete", function (e) {
@@ -732,7 +731,7 @@ require([
 
   function getParkLink(parkName) {
     var url = "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/";
-    var parkList = ["ab", "cd", "efg", "hj", "klmnopq", "rst", "wxyz"];
+    var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
     var firstLetter = parkName.toLowerCase().charAt(0);
     var str = parkList.filter(function (value) {
       return value.indexOf(firstLetter)!=-1;
