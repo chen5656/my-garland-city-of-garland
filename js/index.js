@@ -36,8 +36,9 @@ require([
   nameMultiSearch
 ) {
 
-
   'use strict';
+
+  var serviceUrl=init();
 
   domClass.remove('main-content', 'd-none');
 
@@ -49,7 +50,7 @@ require([
   //draw map
   (function () {
     var mapImageLayerList = new MapImageLayer({
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
+      url: serviceUrl.Map_Server,
       sublayers: [{
         id: 1,
         visible: true
@@ -74,7 +75,7 @@ require([
     locationEnabled: false,
     sources: [{
       locator: new Locator({
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
+        url: serviceUrl.locator
       }),
       outFields: ["Ref_ID"], // Ref_ID is addressID
       singleLineFieldName: "Single Line Input",
@@ -125,47 +126,47 @@ require([
   var multiSearch = new GetMultiSearch({
     cityFacilitySourceList: [{
         name: "City Hall",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "BLDG_NAME='CITY HALL'",
         containerID: "nearestCityFacility",
         displayID: "1"
       }, {
         name: "Customer Service",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "BLDG_NAME='UTILITY SERVICES'",
         containerID: "nearestCityFacility",
         displayID: "5"
       },
       {
         name: "Police Station",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "BLDG_NAME='POLICE STATION'",
         containerID: "nearestCityFacility",
         displayID: "2"
       },
       {
         name: "Municipal Courts",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "DEPT='COURTS'",
         containerID: "nearestCityFacility",
         displayID: "3",
       },
       {
         name: "Nearest Fire Station",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
         containerID: "nearestCityFacility",
         displayID: "4"
       },
       {
         name: "Nearest Library",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+        url: serviceUrl.City_Facility,
         where: "DEPT='LIBRARY'",
         containerID: "nearestCityFacility",
         displayID: "6"
       }, {
         name: "Nearest Park",
-        url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/14",
+        url: serviceUrl.Parks_Pts,
         where: "1=1",
         containerID: "parks",
         displayID: 1
@@ -176,36 +177,36 @@ require([
       name: "EWS Recycling Pickup Week",
       containerID: "service",
       displayID: 3,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
+      url: serviceUrl.EWS_Recycling
     }, {
       name: "EWS Trash and Brush Pickup Day",
       containerID: "service",
       displayID: 2,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
+      url: serviceUrl.EWS_Trash_Brush
     }, {
       name: "Neighborhood Watch",
       containerID: "neighborhoods",
       displayID: 2,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
+      url: serviceUrl.Neighborhood_Watch
     }, {
       name: "Neighborhood Association",
       containerID: "neighborhoods",
       displayID: 3,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
+      url: serviceUrl.Neighborhood_Asso
     }, {
       name: "GDC Zoining",
       containerID: "planning_development-zoning",
       displayID: 2,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
+      url: serviceUrl.GDC_Zoning
     }],
     individualCityFacility: [],
     mapService: {
-      cityLimit: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1",
-      address: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4", //used to get parcel id,
-      parcel: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5",
-      road: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3",
-      streetAlias: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16",
-      geometry: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
+      cityLimit: serviceUrl.CityLimit,
+      address: serviceUrl.Address, //used to get parcel id,
+      parcel: serviceUrl.Parcel,
+      road: serviceUrl.Road,
+      streetAlias: serviceUrl.StreetAlias,
+      geometry: serviceUrl.geometry
     }
   });
   multiSearch.startup();
@@ -227,7 +228,7 @@ require([
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='https://www.garlandtx.gov/gov/cd/council/bio/district", item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
+      "City Council District": "".concat("<a href='", serviceUrl.CouncilDistrict,item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
 
       //City Council District Member
       //"Census Tract": item.CENSUS_TRACT,
@@ -354,7 +355,7 @@ require([
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
       return str;
     });
-    node = dom.byId("nearestPark");    
+    node = dom.byId("nearestPark");
     domClass.remove('nearestPark', 'd-none');
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
@@ -366,7 +367,7 @@ require([
     domClass.add('suggestedAddresses', 'd-none');
     domClass.add('nearestPark', 'd-none');
     domClass.add('EWS-link', 'd-none');
-    
+
 
     multiSearch.startNewSearch();
 
@@ -689,15 +690,15 @@ require([
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/BaseLayers/MapServer",
+      url: serviceUrl.Map_Server,
       sublayers: [{
         id: 3,
         visible: true
       }, {
-        id: 2,
+        id: 5,
         visible: true
       }, {
-        id: 1,
+        id: 4,
         visible: true
       }]
     });
@@ -730,13 +731,13 @@ require([
   }
 
   function getParkLink(parkName) {
-    var url = "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/";
+    var url = serviceUrl.Parks;
     var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
     var firstLetter = parkName.toLowerCase().charAt(0);
     var str = parkList.filter(function (value) {
-      return value.indexOf(firstLetter)!=-1;
+      return value.indexOf(firstLetter) != -1;
     })[0];
-    return url.concat(str.charAt(0),str.slice(-1),"/default.asp");
+    return url.concat(str.charAt(0), str.slice(-1), "/default.asp");
   }
 
 
@@ -758,3 +759,27 @@ require([
   }
 
 });
+
+function init() {
+  var map_Server = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/";
+  return {
+    Map_Server: map_Server,
+    City_Facility: map_Server.concat("2"),
+    Parks_Pts: map_Server.concat("14"),
+    EWS_Recycling: map_Server.concat("8"),
+    EWS_Trash_Brush: map_Server.concat("6"),
+    Neighborhood_Watch: map_Server.concat("9"),
+    Neighborhood_Asso: map_Server.concat("10"),
+    GDC_Zoning: map_Server.concat("11"),
+    CityLimit: map_Server.concat("1"),
+    Address: map_Server.concat("4"),
+    Parcel: map_Server.concat("5"),
+    Road: map_Server.concat("3"),
+    StreetAlias: map_Server.concat("16"),
+    CouncilDistrict: "https://www.garlandtx.gov/gov/cd/council/bio/district",
+    Parks: "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/",
+    geometry: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
+locator:"https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
+
+  };
+}
