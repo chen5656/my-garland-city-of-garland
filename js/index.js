@@ -24,6 +24,7 @@ require([
   "dojo/dom-attr",
 
   'js/multi-search.js',
+  "dojo/text!/setting/mapService.json",
 
   'dojo/domReady!'
 ], function (
@@ -36,12 +37,14 @@ require([
 
   topic, domQuery, domAttr,
 
-  nameMultiSearch
+  nameMultiSearch,mapService_json
+
 ) {
 
   'use strict';
 
-  var serviceUrl = init();
+ // var serviceUrl = init();
+ var serviceUrl =  JSON.parse(mapService_json);  
 
   domClass.remove('main-content', 'd-none');
 
@@ -768,8 +771,6 @@ require([
     } else if (location.type == "FindLocation") {
       return "https://www.google.com/maps/search/".concat(location.destinationAdd);
     }
-
-
   }
 
   function getParkLink(parkName) {
@@ -799,79 +800,4 @@ require([
     }
     return (false);
   }
-
 });
-
-function init() {
-  var map_Server = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/";
-  return {
-    Map_Server: {
-      id: 99,
-      url: map_Server
-    },
-    City_Facility: {
-      id: 2,
-      url: map_Server.concat("2")
-    },
-    Parks_Pts: {
-      id: 14,
-      url: map_Server.concat("14")
-    },
-    EWS_Recycling: {
-      id: 8,
-      url: map_Server.concat("8")
-    },
-    EWS_Trash_Brush: {
-      id: 6,
-      url: map_Server.concat("6")
-    },
-    Neighborhood_Watch: {
-      id: 9,
-      url: map_Server.concat("9")
-    },
-    Neighborhood_Asso: {
-      id: 10,
-      url: map_Server.concat("10")
-    },
-    GDC_Zoning: {
-      id: 11,
-      url: map_Server.concat("11")
-    },
-    CityLimit: {
-      id: 1,
-      url: map_Server.concat("1")
-    },
-    Address: {
-      id: 4,
-      url: map_Server.concat("4")
-    },
-    Parcel: {
-      id: 5,
-      url: map_Server.concat("5")
-    },
-    Road: {
-      id: 3,
-      url: map_Server.concat("3")
-    },
-    StreetAlias: {
-      id: 16,
-      url: map_Server.concat("16")
-    },
-    CouncilDistrict: {
-      id: 99,
-      url: "https://www.garlandtx.gov/gov/cd/council/bio/district"
-    },
-    Parks: {
-      id: 99,
-      url: "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/"
-    },
-    geometry: {
-      id: 99,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
-    },
-    locator: {
-      id: 99,
-      url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
-    }
-  };
-}
