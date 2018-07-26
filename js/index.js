@@ -41,7 +41,7 @@ require([
 
   'use strict';
 
-  var serviceUrl=init();
+  var serviceUrl = init();
 
   domClass.remove('main-content', 'd-none');
 
@@ -53,9 +53,9 @@ require([
   //draw map
   (function () {
     var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.Map_Server,
+      url: serviceUrl.Map_Server.url,
       sublayers: [{
-        id: 1,
+        id: serviceUrl.CityLimit.id,
         visible: true
       }]
     });
@@ -78,7 +78,7 @@ require([
     locationEnabled: false,
     sources: [{
       locator: new Locator({
-        url: serviceUrl.locator
+        url: serviceUrl.locator.url
       }),
       outFields: ["Ref_ID"], // Ref_ID is addressID
       singleLineFieldName: "Single Line Input",
@@ -129,47 +129,47 @@ require([
   var multiSearch = new GetMultiSearch({
     cityFacilitySourceList: [{
         name: "City Hall",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "BLDG_NAME='CITY HALL'",
         containerID: "nearestCityFacility",
         displayID: "1"
       }, {
         name: "Customer Service",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "BLDG_NAME='UTILITY SERVICES'",
         containerID: "nearestCityFacility",
         displayID: "5"
       },
       {
         name: "Police Station",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "BLDG_NAME='POLICE STATION'",
         containerID: "nearestCityFacility",
         displayID: "2"
       },
       {
         name: "Municipal Courts",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "DEPT='COURTS'",
         containerID: "nearestCityFacility",
         displayID: "3",
       },
       {
         name: "Nearest Fire Station",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
         containerID: "nearestCityFacility",
         displayID: "4"
       },
       {
         name: "Nearest Library",
-        url: serviceUrl.City_Facility,
+        url: serviceUrl.City_Facility.url,
         where: "DEPT='LIBRARY'",
         containerID: "nearestCityFacility",
         displayID: "6"
       }, {
         name: "Nearest Park",
-        url: serviceUrl.Parks_Pts,
+        url: serviceUrl.Parks_Pts.url,
         where: "1=1",
         containerID: "parks",
         displayID: 1
@@ -180,36 +180,36 @@ require([
       name: "EWS Recycling Pickup Week",
       containerID: "service",
       displayID: 3,
-      url: serviceUrl.EWS_Recycling
+      url: serviceUrl.EWS_Recycling.url
     }, {
       name: "EWS Trash and Brush Pickup Day",
       containerID: "service",
       displayID: 2,
-      url: serviceUrl.EWS_Trash_Brush
+      url: serviceUrl.EWS_Trash_Brush.url
     }, {
       name: "Neighborhood Watch",
       containerID: "neighborhoods",
       displayID: 2,
-      url: serviceUrl.Neighborhood_Watch
+      url: serviceUrl.Neighborhood_Watch.url
     }, {
       name: "Neighborhood Association",
       containerID: "neighborhoods",
       displayID: 3,
-      url: serviceUrl.Neighborhood_Asso
+      url: serviceUrl.Neighborhood_Asso.url
     }, {
       name: "GDC Zoining",
       containerID: "planning_development-zoning",
       displayID: 2,
-      url: serviceUrl.GDC_Zoning
+      url: serviceUrl.GDC_Zoning.url
     }],
     individualCityFacility: [],
     mapService: {
-      cityLimit: serviceUrl.CityLimit,
-      address: serviceUrl.Address, //used to get parcel id,
-      parcel: serviceUrl.Parcel,
-      road: serviceUrl.Road,
-      streetAlias: serviceUrl.StreetAlias,
-      geometry: serviceUrl.geometry
+      cityLimit: serviceUrl.CityLimit.url,
+      address: serviceUrl.Address.url, //used to get parcel id,
+      parcel: serviceUrl.Parcel.url,
+      road: serviceUrl.Road.url,
+      streetAlias: serviceUrl.StreetAlias.url,
+      geometry: serviceUrl.geometry.url
     }
   });
   multiSearch.startup();
@@ -231,7 +231,7 @@ require([
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='", serviceUrl.CouncilDistrict,item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
+      "City Council District": "".concat("<a href='", serviceUrl.CouncilDistrict.url, item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
 
       //City Council District Member
       //"Census Tract": item.CENSUS_TRACT,
@@ -625,7 +625,7 @@ require([
       //get information from parcel layer by Ref_ID(addressID)
       multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
       multiSearch.searchResult.address = e.result.name;
-      multiSearch.searchResult.addressGeometry=e.result.feature.geometry;
+      multiSearch.searchResult.addressGeometry = e.result.feature.geometry;
       multiSearch.getInforByAddressID();
 
 
@@ -690,19 +690,21 @@ require([
   function showSubMap(val) {
     var node = dom.byId("subMap");
     node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
-   
+
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.Map_Server,
-      sublayers: [{
-        id: 3,
+      url: serviceUrl.Map_Server.url,
+      sublayers: [
+      //   {
+      //   id: serviceUrl.Road.id,
+      //   visible: true
+      // },
+       {
+        id: serviceUrl.Parcel.id,
         visible: true
       }, {
-        id: 5,
-        visible: true
-      }, {
-        id: 4,
+        id: serviceUrl.Address.id,
         visible: true
       }]
     });
@@ -720,26 +722,26 @@ require([
       }
     });
 
-              //add a graphic point of the address
-        // // Create a symbol for drawing the point
-        
-        var markerSymbol = {
-          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-          color: [226, 119, 40]
-        };
-        var pntAtt = {
-          Title: "Geolocator result",
-          Info: multiSearch.searchResult.address ,
-          AddressID: multiSearch.searchResult.addressID 
-        };
+    //add a graphic point of the address
+    // // Create a symbol for drawing the point
 
-        // Create a graphic and add the geometry and symbol to it
-        var pointGraphic = new Graphic({
-          geometry: multiSearch.searchResult.addressGeometry,
-          symbol: markerSymbol,
-          attributes: pntAtt
-        });
-        subView.graphics.add(pointGraphic);
+    var markerSymbol = {
+      type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+      color: [226, 119, 40]
+    };
+    var pntAtt = {
+      Title: "Geolocator result",
+      Info: multiSearch.searchResult.address,
+      AddressID: multiSearch.searchResult.addressID
+    };
+
+    // Create a graphic and add the geometry and symbol to it
+    var pointGraphic = new Graphic({
+      geometry: multiSearch.searchResult.addressGeometry,
+      symbol: markerSymbol,
+      attributes: pntAtt
+    });
+    subView.graphics.add(pointGraphic);
   }
 
   function openInGoogleMap(location) {
@@ -756,7 +758,7 @@ require([
   }
 
   function getParkLink(parkName) {
-    var url = serviceUrl.Parks;
+    var url = serviceUrl.Parks.url;
     var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
     var firstLetter = parkName.toLowerCase().charAt(0);
     var str = parkList.filter(function (value) {
@@ -788,23 +790,73 @@ require([
 function init() {
   var map_Server = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/";
   return {
-    Map_Server: map_Server,
-    City_Facility: map_Server.concat("2"),
-    Parks_Pts: map_Server.concat("14"),
-    EWS_Recycling: map_Server.concat("8"),
-    EWS_Trash_Brush: map_Server.concat("6"),
-    Neighborhood_Watch: map_Server.concat("9"),
-    Neighborhood_Asso: map_Server.concat("10"),
-    GDC_Zoning: map_Server.concat("11"),
-    CityLimit: map_Server.concat("1"),
-    Address: map_Server.concat("4"),
-    Parcel: map_Server.concat("5"),
-    Road: map_Server.concat("3"),
-    StreetAlias: map_Server.concat("16"),
-    CouncilDistrict: "https://www.garlandtx.gov/gov/cd/council/bio/district",
-    Parks: "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/",
-    geometry: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
-locator:"https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
-
+    Map_Server: {
+      id: 99,
+      url: map_Server
+    },
+    City_Facility: {
+      id: 2,
+      url: map_Server.concat("2")
+    },
+    Parks_Pts: {
+      id: 14,
+      url: map_Server.concat("14")
+    },
+    EWS_Recycling: {
+      id: 8,
+      url: map_Server.concat("8")
+    },
+    EWS_Trash_Brush: {
+      id: 6,
+      url: map_Server.concat("6")
+    },
+    Neighborhood_Watch: {
+      id: 9,
+      url: map_Server.concat("9")
+    },
+    Neighborhood_Asso: {
+      id: 10,
+      url: map_Server.concat("10")
+    },
+    GDC_Zoning: {
+      id: 11,
+      url: map_Server.concat("11")
+    },
+    CityLimit: {
+      id: 1,
+      url: map_Server.concat("1")
+    },
+    Address: {
+      id: 4,
+      url: map_Server.concat("4")
+    },
+    Parcel: {
+      id: 5,
+      url: map_Server.concat("5")
+    },
+    Road: {
+      id: 3,
+      url: map_Server.concat("3")
+    },
+    StreetAlias: {
+      id: 16,
+      url: map_Server.concat("16")
+    },
+    CouncilDistrict: {
+      id: 99,
+      url: "https://www.garlandtx.gov/gov/cd/council/bio/district"
+    },
+    Parks: {
+      id: 99,
+      url: "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/"
+    },
+    geometry: {
+      id: 99,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
+    },
+    locator: {
+      id: 99,
+      url: "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
+    }
   };
 }
