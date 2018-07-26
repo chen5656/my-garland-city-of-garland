@@ -37,14 +37,14 @@ require([
 
   topic, domQuery, domAttr,
 
-  nameMultiSearch,mapService_json
+  nameMultiSearch, mapService_json
 
 ) {
 
   'use strict';
 
- // var serviceUrl = init();
- var serviceUrl =  JSON.parse(mapService_json);  
+  //reading setting file
+  var serviceUrl = JSON.parse(mapService_json);
 
   domClass.remove('main-content', 'd-none');
 
@@ -56,9 +56,9 @@ require([
   //draw map
   (function () {
     var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.Map_Server.url,
+      url: serviceUrl.otherurl.mapserver.url,
       sublayers: [{
-        id: serviceUrl.CityLimit.id,
+        id: serviceUrl.mapservice.citylimit.id,
         visible: true
       }]
     });
@@ -81,7 +81,7 @@ require([
     locationEnabled: false,
     sources: [{
       locator: new Locator({
-        url: serviceUrl.locator.url
+        url: serviceUrl.otherurl.locator.url
       }),
       outFields: ["Ref_ID"], // Ref_ID is addressID
       singleLineFieldName: "Single Line Input",
@@ -132,53 +132,53 @@ require([
   var multiSearch = new GetMultiSearch({
     cityFacilitySourceList: [{
         name: "City Hall",
-        url: serviceUrl.City_Facility.url,
+        url: getMapServiceUrl("cityfacility"),
         where: "BLDG_NAME='CITY HALL'",
         containerID: "nearestCityFacility",
         displayID: "1"
       }, {
         name: "Customer Service",
-        url: serviceUrl.City_Facility.url,
+        url: getMapServiceUrl("cityfacility"),
         where: "BLDG_NAME='UTILITY SERVICES'",
         containerID: "nearestCityFacility",
         displayID: "5"
       },
       {
         name: "Police Station",
-        url: serviceUrl.City_Facility.url,
+        url: getMapServiceUrl("cityfacility"),
         where: "BLDG_NAME='POLICE STATION'",
         containerID: "nearestCityFacility",
         displayID: "2"
       },
       {
         name: "Municipal Courts",
-        url: serviceUrl.City_Facility.url,
+        url:getMapServiceUrl("cityfacility"),
         where: "DEPT='COURTS'",
         containerID: "nearestCityFacility",
         displayID: "3",
       },
       {
         name: "Nearest Fire Station",
-        url: serviceUrl.City_Facility.url,
+        url: getMapServiceUrl("cityfacility"),
         where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
         containerID: "nearestCityFacility",
         displayID: "4"
       },
       {
         name: "Nearest Library",
-        url: serviceUrl.City_Facility.url,
+        url: getMapServiceUrl("cityfacility"),
         where: "DEPT='LIBRARY'",
         containerID: "nearestCityFacility",
         displayID: "6"
       }, {
         name: "Nearest Park",
-        url: serviceUrl.Parks_Pts.url,
+        url:getMapServiceUrl("parks"),
         where: "1=1",
         containerID: "nearestPark",
         displayID: 1
       }, {
         name: "Nearest Recreation Center",
-        url: serviceUrl.City_Facility.url,
+        url:  getMapServiceUrl("cityfacility"),
         where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
         containerID: "nearestPark",
         displayID: 7
@@ -189,36 +189,36 @@ require([
       name: "EWS Recycling Pickup Week",
       containerID: "service",
       displayID: 3,
-      url: serviceUrl.EWS_Recycling.url
+      url: getMapServiceUrl("ewsrecycling")
     }, {
       name: "EWS Trash and Brush Pickup Day",
       containerID: "service",
       displayID: 2,
-      url: serviceUrl.EWS_Trash_Brush.url
+      url: getMapServiceUrl("ewstrash")
     }, {
       name: "Neighborhood Watch",
       containerID: "neighborhoods",
       displayID: 2,
-      url: serviceUrl.Neighborhood_Watch.url
+      url: getMapServiceUrl("neighwatch")
     }, {
       name: "Neighborhood Association",
       containerID: "neighborhoods",
       displayID: 3,
-      url: serviceUrl.Neighborhood_Asso.url
+      url: getMapServiceUrl("neighasso")
     }, {
       name: "GDC Zoining",
       containerID: "planning_development-zoning",
       displayID: 2,
-      url: serviceUrl.GDC_Zoning.url
+      url: getMapServiceUrl("gdczoning")
     }],
     individualCityFacility: [],
     mapService: {
-      cityLimit: serviceUrl.CityLimit.url,
-      address: serviceUrl.Address.url, //used to get parcel id,
-      parcel: serviceUrl.Parcel.url,
-      road: serviceUrl.Road.url,
-      streetAlias: serviceUrl.StreetAlias.url,
-      geometry: serviceUrl.geometry.url
+      cityLimit: getMapServiceUrl("citylimit"),
+      address: getMapServiceUrl("address"), //used to get parcel id,
+      parcel: getMapServiceUrl("parcel"),
+      road: getMapServiceUrl("road"),
+      streetAlias: getMapServiceUrl("streetalias"),
+      geometry: serviceUrl.otherurl.geometry.url
     }
   });
   multiSearch.startup();
@@ -240,7 +240,7 @@ require([
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='", serviceUrl.CouncilDistrict.url, item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
+      "City Council District": "".concat("<a href='", serviceUrl.otherurl.councildistrict.url, item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
 
       //City Council District Member
       //"Census Tract": item.CENSUS_TRACT,
@@ -374,7 +374,6 @@ require([
       }
 
     });
-    debugger;
     node = dom.byId("nearestPark");
     domClass.remove('nearestPark', 'd-none');
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
@@ -711,17 +710,13 @@ require([
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.Map_Server.url,
+      url:serviceUrl.otherurl.mapserver.url      ,
       sublayers: [
-        //   {
-        //   id: serviceUrl.Road.id,
-        //   visible: true
-        // },
         {
-          id: serviceUrl.Parcel.id,
+          id: serviceUrl.mapservice.parcel.id,
           visible: true
         }, {
-          id: serviceUrl.Address.id,
+          id: serviceUrl.mapservice.address.id,
           visible: true
         }
       ]
@@ -774,7 +769,7 @@ require([
   }
 
   function getParkLink(parkName) {
-    var url = serviceUrl.Parks.url;
+    var url = serviceUrl.otherurl.parks.url;
     var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
     var firstLetter = parkName.toLowerCase().charAt(0);
     var str = parkList.filter(function (value) {
@@ -799,5 +794,11 @@ require([
       }
     }
     return (false);
+  }
+
+  function getMapServiceUrl(itemName) {
+   
+    var val = serviceUrl.mapservice[itemName];
+    return val.url.concat("/", val.id);
   }
 });
