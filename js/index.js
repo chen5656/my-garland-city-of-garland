@@ -171,13 +171,13 @@ require([
         name: "Nearest Park",
         url: serviceUrl.Parks_Pts.url,
         where: "1=1",
-        containerID: "parks",
+        containerID: "nearestPark",
         displayID: 1
       }, {
         name: "Nearest Recreation Center",
         url: serviceUrl.City_Facility.url,
         where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
-        containerID: "nearestCityFacility",
+        containerID: "nearestPark",
         displayID: 7
       }
 
@@ -328,12 +328,7 @@ require([
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-    console.log("multiSearch/nearestCityFacilityUpdated");
-    var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
-      return val.containerID == "nearestCityFacility";
-    }).sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
+    function getHtlmForNearestFacilitiesWithAddress(val) {
       var obj = {
         title: val.title,
         name: (val.nearestFeature.BLDG_NAME ? val.nearestFeature.BLDG_NAME : ""),
@@ -348,22 +343,35 @@ require([
       });
       var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
       return str;
+    }
+    console.log("multiSearch/nearestCityFacilityUpdated");
+    var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
+      return val.containerID == "nearestCityFacility";
+    }).sort(function (a, b) {
+      return a.displayID - b.displayID;
+    }).map(function (val) {
+      return getHtlmForNearestFacilitiesWithAddress(val);
     });
 
     var node = dom.byId("nearestCityFacility");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
 
     arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
-      return val.containerID == "parks";
+      return val.containerID == "nearestPark";
     }).sort(function (a, b) {
       return a.displayID - b.displayID;
-    }).map(function (obj) {
+    }).map(function (val) {
+      if (val.nearestFeature.PARKS) { //parks
+        var link = getParkLink(val.nearestFeature.PARKS);
 
-      var link = getParkLink(obj.nearestFeature.PARKS);
+        var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.PARKS, "</a></span></li>");
+        return str;
+      } else { //not parks
+        return getHtlmForNearestFacilitiesWithAddress(val);
+      }
 
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", obj.nearestFeature.PARKS, "</a></span></li>");
-      return str;
     });
+    debugger;
     node = dom.byId("nearestPark");
     domClass.remove('nearestPark', 'd-none');
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
