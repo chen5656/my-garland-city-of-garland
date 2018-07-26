@@ -17,6 +17,8 @@ require([
   "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
 
+  "esri/Graphic",
+
   "dojo/topic",
   "dojo/query",
   "dojo/dom-attr",
@@ -30,6 +32,7 @@ require([
 
   Search, Locator, Query, QueryTask,
   GeometryService, projection, ProjectParameters,
+  Graphic,
 
   topic, domQuery, domAttr,
 
@@ -622,6 +625,7 @@ require([
       //get information from parcel layer by Ref_ID(addressID)
       multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
       multiSearch.searchResult.address = e.result.name;
+      multiSearch.searchResult.addressGeometry=e.result.feature.geometry;
       multiSearch.getInforByAddressID();
 
 
@@ -686,7 +690,7 @@ require([
   function showSubMap(val) {
     var node = dom.byId("subMap");
     node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
-
+   
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
@@ -702,19 +706,40 @@ require([
         visible: true
       }]
     });
-    var map = new Map({
+    subMap = new Map({
       basemap: "topo",
       layers: [mapImageLayerList]
     });
-    var view = new MapView({
+    subView = new MapView({
       container: 'subMapView',
-      map: map,
+      map: subMap,
       zoom: 18,
       center: [long, lat],
       constraints: {
         rotationEnabled: false
       }
     });
+
+              //add a graphic point of the address
+        // // Create a symbol for drawing the point
+        
+        var markerSymbol = {
+          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+          color: [226, 119, 40]
+        };
+        var pntAtt = {
+          Title: "Geolocator result",
+          Info: multiSearch.searchResult.address ,
+          AddressID: multiSearch.searchResult.addressID 
+        };
+
+        // Create a graphic and add the geometry and symbol to it
+        var pointGraphic = new Graphic({
+          geometry: multiSearch.searchResult.addressGeometry,
+          symbol: markerSymbol,
+          attributes: pntAtt
+        });
+        subView.graphics.add(pointGraphic);
   }
 
   function openInGoogleMap(location) {
