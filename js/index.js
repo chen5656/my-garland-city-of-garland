@@ -173,6 +173,12 @@ require([
         where: "1=1",
         containerID: "parks",
         displayID: 1
+      }, {
+        name: "Nearest Recreation Center",
+        url: serviceUrl.City_Facility.url,
+        where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
+        containerID: "nearestCityFacility",
+        displayID: 7
       }
 
     ],
@@ -696,17 +702,18 @@ require([
     var mapImageLayerList = new MapImageLayer({
       url: serviceUrl.Map_Server.url,
       sublayers: [
-      //   {
-      //   id: serviceUrl.Road.id,
-      //   visible: true
-      // },
-       {
-        id: serviceUrl.Parcel.id,
-        visible: true
-      }, {
-        id: serviceUrl.Address.id,
-        visible: true
-      }]
+        //   {
+        //   id: serviceUrl.Road.id,
+        //   visible: true
+        // },
+        {
+          id: serviceUrl.Parcel.id,
+          visible: true
+        }, {
+          id: serviceUrl.Address.id,
+          visible: true
+        }
+      ]
     });
     subMap = new Map({
       basemap: "topo",
