@@ -1,0 +1,68 @@
+  "Address": {
+    "id": 4,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4"
+  },
+  "CityLimit": {
+    "id": 1,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1"
+  },
+  "City_Facility": {
+    "id": 2,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2"
+  },
+  "CouncilDistrict": {
+    "id": 99,
+    "url": "https://www.garlandtx.gov/gov/cd/council/bio/district"
+  },
+  "EWS_Recycling": {
+    "id": 8,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
+  },
+  "EWS_Trash_Brush": {
+    "id": 6,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
+  },
+  "GDC_Zoning": {
+    "id": 11,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
+  },
+  "Map_Server": {
+    "id": 99,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/"
+  },
+  "Neighborhood_Asso": {
+    "id": 10,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
+  },
+  "Neighborhood_Watch": {
+    "id": 9,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
+  },
+  "Parcel": {
+    "id": 5,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5"
+  },
+  "Parks": {
+    "id": 99,
+    "url": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/"
+  },
+  "Parks_Pts": {
+    "id": 14,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/14"
+  },
+  "Road": {
+    "id": 3,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3"
+  },
+  "StreetAlias": {
+    "id": 16,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16"
+  },
+  "geometry": {
+    "id": 99,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
+  },
+  "locator": {
+    "id": 99,
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
+  }
