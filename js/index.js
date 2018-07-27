@@ -152,7 +152,7 @@ require([
       },
       {
         name: "Municipal Courts",
-        url:getMapServiceUrl("cityfacility"),
+        url: getMapServiceUrl("cityfacility"),
         where: "DEPT='COURTS'",
         containerID: "nearestCityFacility",
         displayID: "3",
@@ -172,13 +172,13 @@ require([
         displayID: "6"
       }, {
         name: "Nearest Park",
-        url:getMapServiceUrl("parks"),
+        url: getMapServiceUrl("parks"),
         where: "1=1",
         containerID: "nearestPark",
         displayID: 1
       }, {
         name: "Nearest Recreation Center",
-        url:  getMapServiceUrl("cityfacility"),
+        url: getMapServiceUrl("cityfacility"),
         where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
         containerID: "nearestPark",
         displayID: 7
@@ -245,11 +245,7 @@ require([
       //"County":
       "Mapsco Grid": item.MAPSCO,
       "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='", serviceUrl.otherurl.councildistrict.url, item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
-
-      //City Council District Member
-      //"Census Tract": item.CENSUS_TRACT,
-      //"Health Complaint": item.HEALTH_COMPLAINT
+      "City Council District": "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>")
     };
     var obj2 = [{
       title: "Land Use",
@@ -297,6 +293,7 @@ require([
     var node = dom.byId("parcelInfo");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
 
+    addHyperlinks();
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
@@ -370,6 +367,7 @@ require([
       return a.displayID - b.displayID;
     }).map(function (val) {
       if (val.nearestFeature.PARKS) { //parks
+        debugger;
         var link = getParkLink(val.nearestFeature.PARKS);
 
         var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.PARKS, "</a></span></li>");
@@ -715,16 +713,14 @@ require([
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
-      url:serviceUrl.otherurl.mapserver.url      ,
-      sublayers: [
-        {
-          id: serviceUrl.mapservice.parcel.id,
-          visible: true
-        }, {
-          id: serviceUrl.mapservice.address.id,
-          visible: true
-        }
-      ]
+      url: serviceUrl.otherurl.mapserver.url,
+      sublayers: [{
+        id: serviceUrl.mapservice.parcel.id,
+        visible: true
+      }, {
+        id: serviceUrl.mapservice.address.id,
+        visible: true
+      }]
     });
     subMap = new Map({
       basemap: "topo",
@@ -780,10 +776,15 @@ require([
     var str = parkList.filter(function (value) {
       return value.indexOf(firstLetter) != -1;
     })[0];
-    return url.concat(str.charAt(0), str.slice(-1), "/default.asp");
+    return url.replace("ab",str.charAt(0) .concat( str.slice(-1)));
   }
 
+  function addHyperlinks() {
+    debugger;
+    var councilDist = document.querySelector("#council-dist");
+    councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
 
+  }
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);

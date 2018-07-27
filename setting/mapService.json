@@ -10,10 +10,10 @@
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer"
     },
     "councildistrict": {
-      "url": "https://www.garlandtx.gov/gov/cd/council/bio/district"
+      "url": "https://www.garlandtx.gov/gov/cd/council/bio/district2.asp"
     },
     "parks": {
-      "url": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks"
+      "url": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/ab/default.asp"
     }
   },
   "mapservice":{
