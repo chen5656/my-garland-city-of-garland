@@ -64,6 +64,10 @@
     "streetalias": {
       "id": 16,
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer"
+    },
+    "npo": {
+      "id": 18,
+      "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer"
     }
 
   }

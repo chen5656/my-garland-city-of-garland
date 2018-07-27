@@ -24,7 +24,7 @@ require([
   "dojo/dom-attr",
 
   'js/multi-search.js',
-  "dojo/text!/setting/mapService.json",
+  "dojo/text!/maps/mygarland/setting/mapService.json",
 
   'dojo/domReady!'
 ], function (
@@ -198,18 +198,23 @@ require([
     }, {
       name: "Neighborhood Watch",
       containerID: "neighborhoods",
-      displayID: 2,
+      displayID: 3,
       url: getMapServiceUrl("neighwatch")
     }, {
       name: "Neighborhood Association",
       containerID: "neighborhoods",
-      displayID: 3,
+      displayID: 4,
       url: getMapServiceUrl("neighasso")
     }, {
       name: "GDC Zoining",
       containerID: "planning_development-zoning",
       displayID: 2,
       url: getMapServiceUrl("gdczoning")
+    }, {
+      name: "Neighborhood Police Officer",
+      containerID: "neighborhoods",
+      displayID: 2,
+      url: getMapServiceUrl("npo")
     }],
     individualCityFacility: [],
     mapService: {
@@ -797,7 +802,6 @@ require([
   }
 
   function getMapServiceUrl(itemName) {
-   
     var val = serviceUrl.mapservice[itemName];
     return val.url.concat("/", val.id);
   }
