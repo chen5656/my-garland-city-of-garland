@@ -186,31 +186,37 @@ require([
 
     ],
     serviceZoneSourceList: [{
+      id: "ews-recycling",
       name: "EWS Recycling Pickup Week",
       containerID: "service",
       displayID: 3,
       url: getMapServiceUrl("ewsrecycling")
     }, {
+      id: "ews-trash",
       name: "EWS Trash and Brush Pickup Day",
       containerID: "service",
       displayID: 2,
       url: getMapServiceUrl("ewstrash")
     }, {
+      id: "neighborhood-watch",
       name: "Neighborhood Watch",
       containerID: "neighborhoods",
       displayID: 3,
       url: getMapServiceUrl("neighwatch")
     }, {
+      id: "neighborhood-assoc",
       name: "Neighborhood Association",
       containerID: "neighborhoods",
       displayID: 4,
       url: getMapServiceUrl("neighasso")
     }, {
-      name: "GDC Zoining",
+      id: "gdc-zoning",
+      name: "GDC Zoning",
       containerID: "planning_development-zoning",
       displayID: 2,
       url: getMapServiceUrl("gdczoning")
     }, {
+      id: "npo",
       name: "Neighborhood Police Officer",
       containerID: "neighborhoods",
       displayID: 2,
@@ -276,7 +282,7 @@ require([
       }
     }];
     parcelInfo_obj2 = obj2;
-
+console.log(parcelInfo_obj2);
     var arr = [];
     for (var key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -293,7 +299,7 @@ require([
     var node = dom.byId("parcelInfo");
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
 
-    addHyperlinks();
+    addHyperlinks("council");
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
@@ -302,10 +308,9 @@ require([
     if (parcelInfo_obj2) {
       if (parcelInfo_obj2.length > 0) {
         arr = arr.concat(parcelInfo_obj2);
-
       }
-
     }
+    console.log(arr);
     var containerID = ["service", "neighborhoods", "planning_development-zoning"];
     for (var i in containerID) {
       var subArr = arr.filter(function (val) {
@@ -314,14 +319,13 @@ require([
         return a.displayID - b.displayID;
       });
       subArr = subArr.map(function (val) {
-        var title = val.title;
         var value;
         if (val.displayFieldName) {
           value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
         } else {
           value = "NULL";
         }
-        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
+        var str = "".concat("<li><span class='location-data-tag' >", val.title, ":</span> ", "<span class='location-data-value' id='", val.id, "'>", value, "</span></li>");
         return str;
       });
       var node = dom.byId(containerID[i]);
@@ -330,6 +334,9 @@ require([
 
     //update EWS-link
     domClass.remove('EWS-link', 'd-none');
+
+    //update npo hyperlink
+    addHyperlinks("npo");
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
@@ -367,10 +374,9 @@ require([
       return a.displayID - b.displayID;
     }).map(function (val) {
       if (val.nearestFeature.PARKS) { //parks
-        debugger;
         var link = getParkLink(val.nearestFeature.PARKS);
 
-        var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.PARKS, "</a></span></li>");
+        var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a></span></li>");
         return str;
       } else { //not parks
         return getHtlmForNearestFacilitiesWithAddress(val);
@@ -776,15 +782,26 @@ require([
     var str = parkList.filter(function (value) {
       return value.indexOf(firstLetter) != -1;
     })[0];
-    return url.replace("ab",str.charAt(0) .concat( str.slice(-1)));
+    return url.replace("ab", str.charAt(0).concat(str.slice(-1)));
   }
 
-  function addHyperlinks() {
-    debugger;
-    var councilDist = document.querySelector("#council-dist");
-    councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
+  function addHyperlinks(eventName) {
+    if (eventName == "council") {
+      var councilDist = document.querySelector("#council-dist");
+      councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
+    }
 
+    if (eventName == "npo") {
+      //add a phone icon and email icon after police officer name
+      console.log(multiSearch.searchResult);
+      var npoInfo = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+        return val.id == "npo";
+      })[0].serviceZone;      
+      var npoParent =  document.getElementById("npo").parentNode;
+      npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:",npoInfo.PHONE,"'><i class='fas fa-phone-square' title='",npoInfo.PHONE,"'></i></a> <a href='mailto:",npoInfo.EMAIL,"'><i class='fas fa-envelope' title= '",npoInfo.EMAIL,"'></i></a>");
+    }    
   }
+  
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
