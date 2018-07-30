@@ -247,13 +247,43 @@ require([
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
-    var obj = {
-      "City Council District": "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>"),
-      "Zip Code": item.ZIP_CODE,
-      "Mapsco Grid": item.MAPSCO,
-      "School District": item.SCHOOL_DISTRICT
-    };
-    var obj2 = [{
+    var obj = [{
+      title: "City Council District",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>"),
+      }
+    }, {
+      title: "Zip Code",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 2,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.ZIP_CODE
+      }
+    }, {
+      title: "Mapsco Grid",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 3,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.MAPSCO
+      }
+    }, {
+      title: "School District",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 4,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.SCHOOL_DISTRICT
+      }
+    }, {
       title: "Land Use",
       containerID: "planning_development-zoning",
       displayFieldName: "value",
@@ -282,41 +312,14 @@ require([
       }
     }];
 
-    displayServiceZoneInfo(obj2, "first");
-
-    var arr = [];
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        arr.push({
-          title: key,
-          value: obj[key]
-        });
-      }
-    }
-
-    var ulNode = domQuery("ul", dom.byId("parcelInfo"))[0];
-
-    arr.forEach(function (val) {
-      var li = domConstruct.create("li", null, ulNode);
-      domConstruct.create("span", {
-        className: "location-data-tag",
-        innerHTML: val.title.concat(": ")
-      }, li);
-
-      domConstruct.create("span", {
-        className: "location-data-value",
-        innerHTML: val.value,
-        //id:val.id
-      }, li);
-
-    });
+    displayServiceInfo(obj, "first");
 
     addHyperlinks("council");
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
-    displayServiceZoneInfo(multiSearch.searchResult.serviceZoneList, "last");
+    displayServiceInfo(multiSearch.searchResult.serviceZoneList, "last");
 
     //show EWS-link
     domClass.remove('EWS-link', 'd-none');
@@ -667,8 +670,8 @@ require([
 
   });
 
-  function displayServiceZoneInfo(dataList, order) {
-    var containerID = ["service", "neighborhoods", "planning_development-zoning"];
+  function displayServiceInfo(dataList, order) {
+    var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
     var i;
     //remove load-wrap
     for (i in containerID) {
@@ -683,7 +686,12 @@ require([
       var subArr = dataList.filter(function (val) {
         return val.containerID == containerID[i];
       }).sort(function (a, b) {
-        return a.displayID - b.displayID;
+        if (order == "first") {
+          return b.displayID - a.displayID;
+        } else if (order == "last") {
+          return a.displayID - b.displayID;
+        }
+
       });
       subArr.forEach(function (val) {
         var value;
