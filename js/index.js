@@ -22,6 +22,7 @@ require([
   "dojo/topic",
   "dojo/query",
   "dojo/dom-attr",
+  "dojo/dom-construct",
 
   'js/multi-search.js',
   "dojo/text!/maps/mygarland/setting/mapService.json",
@@ -35,7 +36,7 @@ require([
   GeometryService, projection, ProjectParameters,
   Graphic,
 
-  topic, domQuery, domAttr,
+  topic, domQuery, domAttr, domConstruct,
 
   nameMultiSearch, mapService_json
 
@@ -281,8 +282,21 @@ require([
         value: item.NEIGHBORHOOD
       }
     }];
-    parcelInfo_obj2 = obj2;
-console.log(parcelInfo_obj2);
+    // parcelInfo_obj2 = obj2;
+    // console.log(parcelInfo_obj2);
+    var neighborhoodsNode = dom.byId("neighborhoods");
+
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode("111"));
+    //dom.byId("neighborhoods").appendChild(li);
+    // same result with insertBefore()
+    if (neighborhoodsNode.childNodes[0].childNodes[0]) {
+      neighborhoodsNode.insertBefore(li, neighborhoodsNode.childNodes[0]);
+    } else {
+      neighborhoodsNode.insertBefore(li, null);
+    }
+
+
     var arr = [];
     for (var key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -305,34 +319,56 @@ console.log(parcelInfo_obj2);
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
     var arr = multiSearch.searchResult.serviceZoneList;
-    if (parcelInfo_obj2) {
-      if (parcelInfo_obj2.length > 0) {
-        arr = arr.concat(parcelInfo_obj2);
-      }
-    }
-    console.log(arr);
+    var i;
+
     var containerID = ["service", "neighborhoods", "planning_development-zoning"];
-    for (var i in containerID) {
+
+    //remove load-wrap
+    for (i in containerID) {
+      var node = dom.byId(containerID[i]);
+      domQuery(".load-wrap", node).forEach(function (child) {
+        node.removeChild(child);
+      });
+    }
+
+    for (i in containerID) {
+      var containerNode=dom.byId(containerID[i]);
       var subArr = arr.filter(function (val) {
         return val.containerID == containerID[i];
       }).sort(function (a, b) {
         return a.displayID - b.displayID;
       });
-      subArr = subArr.map(function (val) {
+      subArr.forEach(function (val) {
         var value;
         if (val.displayFieldName) {
           value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
         } else {
           value = "NULL";
         }
-        var str = "".concat("<li><span class='location-data-tag' >", val.title, ":</span> ", "<span class='location-data-value' id='", val.id, "'>", value, "</span></li>");
-        return str;
+
+        var childNodes=containerNode.childNodes;
+        for(var i=0; i<childNodes.length;i++){
+          if(childNodes[i].tagName.toUpperCase()=="UL"){
+
+            var li =domConstruct.create("li", null, childNodes[i]);
+            
+            domConstruct.create("span", {
+              className: "location-data-tag",
+              innerHTML: val.title.concat(": ")
+            },li);
+
+            domConstruct.create("span", {
+              className: "location-data-value",
+              innerHTML: value,
+              id:val.id
+            },li);    
+            break; 
+          }
+        }
       });
-      var node = dom.byId(containerID[i]);
-      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
     }
 
-    //update EWS-link
+    //show EWS-link
     domClass.remove('EWS-link', 'd-none');
 
     //update npo hyperlink
@@ -400,10 +436,20 @@ console.log(parcelInfo_obj2);
     multiSearch.startNewSearch();
 
     //cardBodies
-    // class='add-load-wrapp'
+    // class='add-load-wrap'
     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.classList.contains("add-load-wrapp")) {
-        node.innerHTML = "<div class='load-wrapp'></div>";
+      if (node.classList.contains("add-load-wrap")) {
+        //remove old data
+        var children = node.childNodes;
+        var arr = Array.from(children);
+        arr.forEach(function (val) {
+          node.removeChild(val);
+        });
+        //add load-wrap
+        domConstruct.create("div", {
+          className: "load-wrap"
+        }, node);
+        domConstruct.create("ul", null, node);
       }
     });
   });
@@ -520,63 +566,62 @@ console.log(parcelInfo_obj2);
       });
     }
 
-  });
-
-  function displayUniquleStreetList(features, AddrNumber) {
-    //get unique value
-    var unique = {};
-    var distinct = [];
-    for (var i in features) {
-      if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-        distinct.push(features[i].attributes.STREETLABEL);
-      }
-      unique[features[i].attributes.STREETLABEL] = 0;
-    }
-
-    var tempAddrNum;
-    if (AddrNumber == 0) {
-      tempAddrNum = "";
-    } else {
-      tempAddrNum = "".concat(AddrNumber, " ");
-    }
-
-    distinct = distinct.slice(0, 5).map(function (val) {
-      return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
-    });
-
-
-    domClass.remove('suggestedAddresses', 'd-none');
-    dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
-    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-      btn.onclick = function () {
-        search.search(this.textContent);
-      };
-    });
-  }
-
-  function closestNums(num, arr) {
-    var numsIndex = arr.length - 1;
-    if (arr.length > 5) {
-      for (var i = 0; i < arr.length; i++) {
-        if (num < arr[i].streetNumber) {
-          if (arr.length - (i + 3) < 0) {
-            numsIndex = arr.length - 1;
-          } else {
-            numsIndex = i + 2;
+    function closestNums(num, arr) {
+      var numsIndex = arr.length - 1;
+      if (arr.length > 5) {
+        for (var i = 0; i < arr.length; i++) {
+          if (num < arr[i].streetNumber) {
+            if (arr.length - (i + 3) < 0) {
+              numsIndex = arr.length - 1;
+            } else {
+              numsIndex = i + 2;
+            }
+            break;
           }
-          break;
         }
+        if (numsIndex < 4) {
+          numsIndex = 4;
+        }
+        return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+  
+      } else {
+        return arr;
       }
-      if (numsIndex < 4) {
-        numsIndex = 4;
-      }
-      return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-
-    } else {
-      return arr;
     }
-  }
 
+    function displayUniquleStreetList(features, AddrNumber) {
+      //get unique value
+      var unique = {};
+      var distinct = [];
+      for (var i in features) {
+        if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+          distinct.push(features[i].attributes.STREETLABEL);
+        }
+        unique[features[i].attributes.STREETLABEL] = 0;
+      }
+  
+      var tempAddrNum;
+      if (AddrNumber == 0) {
+        tempAddrNum = "";
+      } else {
+        tempAddrNum = "".concat(AddrNumber, " ");
+      }
+  
+      distinct = distinct.slice(0, 5).map(function (val) {
+        return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+      });
+  
+  
+      domClass.remove('suggestedAddresses', 'd-none');
+      dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
+      domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+        btn.onclick = function () {
+          search.search(this.textContent);
+        };
+      });
+    }
+
+    
   function findArrayInAliasExtend(AddrRoad) {
     var AliasExtend = {
       "1ST": "FIRST",
@@ -625,6 +670,12 @@ console.log(parcelInfo_obj2);
     return str.join(" ").trim();
 
   }
+  });
+
+ 
+
+ 
+
 
 
   search.on("select-result", function (e) {
@@ -638,11 +689,6 @@ console.log(parcelInfo_obj2);
         window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
       }
 
-      // //update localStorage
-      // if (typeof (Storage) !== "undefined") {
-      //   localStorage.setItem("mygl-lastaddr", e.result.name);
-      // }
-
       //show result
       domClass.remove('nodeResult', 'd-none');
 
@@ -652,7 +698,6 @@ console.log(parcelInfo_obj2);
       multiSearch.searchResult.address = e.result.name;
       multiSearch.searchResult.addressGeometry = e.result.feature.geometry;
       multiSearch.getInforByAddressID();
-
 
       getCrimeData(e.result.feature.geometry);
       showSubMap(e.result.feature.geometry);
@@ -787,7 +832,7 @@ console.log(parcelInfo_obj2);
 
   function addHyperlinks(eventName) {
     if (eventName == "council") {
-      var councilDist = document.querySelector("#council-dist");
+      var councilDist = dom.byId("council-dist");
       councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
     }
 
@@ -796,12 +841,12 @@ console.log(parcelInfo_obj2);
       console.log(multiSearch.searchResult);
       var npoInfo = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
-      })[0].serviceZone;      
-      var npoParent =  document.getElementById("npo").parentNode;
-      npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:",npoInfo.PHONE,"'><i class='fas fa-phone-square' title='",npoInfo.PHONE,"'></i></a> <a href='mailto:",npoInfo.EMAIL,"'><i class='fas fa-envelope' title= '",npoInfo.EMAIL,"'></i></a>");
-    }    
+      })[0].serviceZone;
+      var npoParent = dom.byId("npo").parentNode;
+      npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:", npoInfo.PHONE, "'><i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i></a> <a href='mailto:", npoInfo.EMAIL, "'><i class='fas fa-envelope' title= '", npoInfo.EMAIL, "'></i></a>");
+    }
   }
-  
+
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
