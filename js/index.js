@@ -175,14 +175,14 @@ require([
         name: "Nearest Park",
         url: getMapServiceUrl("parks"),
         where: "1=1",
-        containerID: "nearestPark",
+        containerID: "service",
         displayID: 1
       }, {
         name: "Nearest Recreation Center",
         url: getMapServiceUrl("cityfacility"),
         where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
-        containerID: "nearestPark",
-        displayID: 7
+        containerID: "service",
+        displayID: 2
       }
 
     ],
@@ -312,14 +312,14 @@ require([
       }
     }];
 
-    displayServiceInfo(obj, "first");
+    displayReferenceData(obj, "first");
 
     addHyperlinks("council");
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
-    displayServiceInfo(multiSearch.searchResult.serviceZoneList, "last");
+    displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
 
     //show EWS-link
     domClass.remove('EWS-link', 'd-none');
@@ -329,52 +329,16 @@ require([
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-    function getHtlmForNearestFacilitiesWithAddress(val) {
-      var obj = {
-        title: val.title,
-        name: (val.nearestFeature.BLDG_NAME ? val.nearestFeature.BLDG_NAME : ""),
-        address_title: val.title + " Address",
-        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : ""),
-        distance: val.distance
-      };
-      obj.googleLink = openInGoogleMap({
-        type: "FindDireciton",
-        originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
-      });
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
-      return str;
-    }
+
     console.log("multiSearch/nearestCityFacilityUpdated");
-    var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
+    var dataList = multiSearch.searchResult.nearestCityFacilityList;
+    displayLocationData(dataList.filter(function (val) {
       return val.containerID == "nearestCityFacility";
-    }).sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
-      return getHtlmForNearestFacilitiesWithAddress(val);
-    });
+    }), "last");
+    displayLocationData(dataList.filter(function (val) {
+      return val.containerID == "service";
+    }), "first");
 
-    var node = dom.byId("nearestCityFacility");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-
-    arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
-      return val.containerID == "nearestPark";
-    }).sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
-      if (val.nearestFeature.PARKS) { //parks
-        var link = getParkLink(val.nearestFeature.PARKS);
-
-        var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a></span></li>");
-        return str;
-      } else { //not parks
-        return getHtlmForNearestFacilitiesWithAddress(val);
-      }
-
-    });
-    node = dom.byId("nearestPark");
-    domClass.remove('nearestPark', 'd-none');
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
 
   //query can get a list of features inside a distance.
@@ -382,9 +346,7 @@ require([
 
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
-    domClass.add('nearestPark', 'd-none');
     domClass.add('EWS-link', 'd-none');
-
 
     multiSearch.startNewSearch();
 
@@ -649,7 +611,7 @@ require([
       getCrimeData(e.result.feature.geometry);
       showSubMap(e.result.feature.geometry);
 
-      // projecting using geometry service:
+      // projecting using geometr"y service:
       //"project search result, make it under stateplane. ");
       var params = new ProjectParameters({
         geometries: [e.result.feature.geometry],
@@ -670,7 +632,78 @@ require([
 
   });
 
-  function displayServiceInfo(dataList, order) {
+  function displayLocationData(dataList, order) {
+    var containerID = ["nearestCityFacility", "service"];
+    var i;
+    //remove load-wrap
+    for (i in containerID) {
+      var node = dom.byId(containerID[i]);
+      domQuery(".load-wrap", node).forEach(function (child) {
+        node.removeChild(child);
+      });
+    }
+
+    for (i in containerID) {
+      var containerNode = dom.byId(containerID[i]);
+      var subArr = dataList.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        if (order == "first") {
+          return b.displayID - a.displayID;
+        } else if (order == "last") {
+          return a.displayID - b.displayID;
+        }
+      });
+      subArr.forEach(function (val) {
+
+        var ulNode = domQuery("ul", containerNode)[0];
+        var li = domConstruct.create("li", null, ulNode, order);
+
+        domConstruct.create("span", {
+          className: "location-data-tag",
+          innerHTML:  val.title.concat(": ")
+        }, li);
+
+        if (val.title == "Nearest Park") {
+          var link = getParkLink(val.nearestFeature.PARKS);
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML:"".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>"),
+            //id: val.id
+          }, li);
+    
+        } else {
+          
+          var googleLink = openInGoogleMap({
+            type: "FindDireciton",
+            originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+            destinationAdd: "Garland+" + val.nearestFeature.ADDRESS .replace(/\s|\t/g, "+")
+          });
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML: val.nearestFeature.ADDRESS ,
+            //id: val.id
+          }, li);
+
+          domConstruct.create("span", {
+            className: "location-data-distance",
+            innerHTML: "".concat(" (", val.distance, " miles)"),
+          }, li);
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME , "</a>"),
+          }, li);
+        }
+      });
+
+    }
+
+  }
+
+  function displayReferenceData(dataList, order) {
     var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
     var i;
     //remove load-wrap
@@ -829,6 +862,7 @@ require([
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
       councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
+      councilDist.setAttribute("target", "_blank");
     }
 
     if (eventName == "npo") {
