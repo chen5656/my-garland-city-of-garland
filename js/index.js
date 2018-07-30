@@ -282,20 +282,8 @@ require([
         value: item.NEIGHBORHOOD
       }
     }];
-    // parcelInfo_obj2 = obj2;
-    // console.log(parcelInfo_obj2);
-    var neighborhoodsNode = dom.byId("neighborhoods");
 
-    var li = document.createElement("li");
-    li.appendChild(document.createTextNode("111"));
-    //dom.byId("neighborhoods").appendChild(li);
-    // same result with insertBefore()
-    if (neighborhoodsNode.childNodes[0].childNodes[0]) {
-      neighborhoodsNode.insertBefore(li, neighborhoodsNode.childNodes[0]);
-    } else {
-      neighborhoodsNode.insertBefore(li, null);
-    }
-
+    displayServiceZoneInfo(obj2, "first");
 
     var arr = [];
     for (var key in obj) {
@@ -318,55 +306,7 @@ require([
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
-    var arr = multiSearch.searchResult.serviceZoneList;
-    var i;
-
-    var containerID = ["service", "neighborhoods", "planning_development-zoning"];
-
-    //remove load-wrap
-    for (i in containerID) {
-      var node = dom.byId(containerID[i]);
-      domQuery(".load-wrap", node).forEach(function (child) {
-        node.removeChild(child);
-      });
-    }
-
-    for (i in containerID) {
-      var containerNode=dom.byId(containerID[i]);
-      var subArr = arr.filter(function (val) {
-        return val.containerID == containerID[i];
-      }).sort(function (a, b) {
-        return a.displayID - b.displayID;
-      });
-      subArr.forEach(function (val) {
-        var value;
-        if (val.displayFieldName) {
-          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
-        } else {
-          value = "NULL";
-        }
-
-        var childNodes=containerNode.childNodes;
-        for(var i=0; i<childNodes.length;i++){
-          if(childNodes[i].tagName.toUpperCase()=="UL"){
-
-            var li =domConstruct.create("li", null, childNodes[i]);
-            
-            domConstruct.create("span", {
-              className: "location-data-tag",
-              innerHTML: val.title.concat(": ")
-            },li);
-
-            domConstruct.create("span", {
-              className: "location-data-value",
-              innerHTML: value,
-              id:val.id
-            },li);    
-            break; 
-          }
-        }
-      });
-    }
+    displayServiceZoneInfo(multiSearch.searchResult.serviceZoneList, "last");
 
     //show EWS-link
     domClass.remove('EWS-link', 'd-none');
@@ -583,7 +523,7 @@ require([
           numsIndex = 4;
         }
         return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-  
+
       } else {
         return arr;
       }
@@ -599,19 +539,19 @@ require([
         }
         unique[features[i].attributes.STREETLABEL] = 0;
       }
-  
+
       var tempAddrNum;
       if (AddrNumber == 0) {
         tempAddrNum = "";
       } else {
         tempAddrNum = "".concat(AddrNumber, " ");
       }
-  
+
       distinct = distinct.slice(0, 5).map(function (val) {
         return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
       });
-  
-  
+
+
       domClass.remove('suggestedAddresses', 'd-none');
       dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
       domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
@@ -621,62 +561,56 @@ require([
       });
     }
 
-    
-  function findArrayInAliasExtend(AddrRoad) {
-    var AliasExtend = {
-      "1ST": "FIRST",
-      "2ND": "SECOND",
-      "3RD": "THIRD",
-      "4TH": "FOURTH",
-      "5TH": "FIFTH",
-      "6TH": "SIXTH",
-      "7TH": "SEVENTH",
-      "9TH": "NINTH",
-      "10TH": "TENTH",
-      "11TH": "ELEVENTH",
-      "12TH": "TWELFTH",
-      "13TH": "THIRTEENTH",
-      "15TH": "FIFTEENTH",
-      "16TH": "SIXTEENTH",
-      "17TH": "SEVENTEENTH",
-      "1": "FIRST",
-      "2": "SECOND",
-      "3": "THIRD",
-      "4": "FOURTH",
-      "5": "FIFTH",
-      "6": "SIXTH",
-      "7": "SEVENTH",
-      "9": "NINTH",
-      "10": "TENTH",
-      "11": "ELEVENTH",
-      "12": "TWELFTH",
-      "13": "THIRTEENTH",
-      "15": "FIFTEENTH",
-      "16": "SIXTEENTH",
-      "17": "SEVENTEENTH"
-    };
+
+    function findArrayInAliasExtend(AddrRoad) {
+      var AliasExtend = {
+        "1ST": "FIRST",
+        "2ND": "SECOND",
+        "3RD": "THIRD",
+        "4TH": "FOURTH",
+        "5TH": "FIFTH",
+        "6TH": "SIXTH",
+        "7TH": "SEVENTH",
+        "9TH": "NINTH",
+        "10TH": "TENTH",
+        "11TH": "ELEVENTH",
+        "12TH": "TWELFTH",
+        "13TH": "THIRTEENTH",
+        "15TH": "FIFTEENTH",
+        "16TH": "SIXTEENTH",
+        "17TH": "SEVENTEENTH",
+        "1": "FIRST",
+        "2": "SECOND",
+        "3": "THIRD",
+        "4": "FOURTH",
+        "5": "FIFTH",
+        "6": "SIXTH",
+        "7": "SEVENTH",
+        "9": "NINTH",
+        "10": "TENTH",
+        "11": "ELEVENTH",
+        "12": "TWELFTH",
+        "13": "THIRTEENTH",
+        "15": "FIFTEENTH",
+        "16": "SIXTEENTH",
+        "17": "SEVENTEENTH"
+      };
 
 
-    var str = AddrRoad.split(" ");
-    str = str.map(function (val) {
-      if (AliasExtend[val]) {
-        return AliasExtend[val];
-      } else {
-        return val;
-      }
+      var str = AddrRoad.split(" ");
+      str = str.map(function (val) {
+        if (AliasExtend[val]) {
+          return AliasExtend[val];
+        } else {
+          return val;
+        }
 
-    });
-    console.log(str.join(" ").trim());
-    return str.join(" ").trim();
+      });
+      console.log(str.join(" ").trim());
+      return str.join(" ").trim();
 
-  }
+    }
   });
-
- 
-
- 
-
-
 
   search.on("select-result", function (e) {
     var i, result;
@@ -722,6 +656,55 @@ require([
     }
 
   });
+
+  function displayServiceZoneInfo(dataList, order) {
+    var containerID = ["service", "neighborhoods", "planning_development-zoning"];
+    var i;
+    //remove load-wrap
+    for (i in containerID) {
+      var node = dom.byId(containerID[i]);
+      domQuery(".load-wrap", node).forEach(function (child) {
+        node.removeChild(child);
+      });
+    }
+
+    for (i in containerID) {
+      var containerNode = dom.byId(containerID[i]);
+      var subArr = dataList.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        return a.displayID - b.displayID;
+      });
+      subArr.forEach(function (val) {
+        var value;
+        if (val.displayFieldName) {
+          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+        } else {
+          value = "NULL";
+        }
+
+        var childNodes = containerNode.childNodes;
+        for (var i = 0; i < childNodes.length; i++) {
+          if (childNodes[i].tagName.toUpperCase() == "UL") {
+
+            var li = domConstruct.create("li", null, childNodes[i],order);
+
+            domConstruct.create("span", {
+              className: "location-data-tag",
+              innerHTML: val.title.concat(": ")
+            }, li);
+
+            domConstruct.create("span", {
+              className: "location-data-value",
+              innerHTML: value,
+              id: val.id
+            }, li);
+            break;
+          }
+        }
+      });
+    }
+  }
 
 
   //open crime page
