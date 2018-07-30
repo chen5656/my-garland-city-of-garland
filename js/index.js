@@ -248,11 +248,10 @@ require([
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
     var obj = {
+      "City Council District": "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>"),
       "Zip Code": item.ZIP_CODE,
-      //"County":
       "Mapsco Grid": item.MAPSCO,
-      "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>")
+      "School District": item.SCHOOL_DISTRICT
     };
     var obj2 = [{
       title: "Land Use",
@@ -294,12 +293,23 @@ require([
         });
       }
     }
-    arr = arr.map(function (obj) {
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
-      return str;
+
+    var ulNode = domQuery("ul", dom.byId("parcelInfo"))[0];
+
+    arr.forEach(function (val) {
+      var li = domConstruct.create("li", null, ulNode);
+      domConstruct.create("span", {
+        className: "location-data-tag",
+        innerHTML: val.title.concat(": ")
+      }, li);
+
+      domConstruct.create("span", {
+        className: "location-data-value",
+        innerHTML: val.value,
+        //id:val.id
+      }, li);
+
     });
-    var node = dom.byId("parcelInfo");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
 
     addHyperlinks("council");
   });
@@ -682,30 +692,24 @@ require([
         } else {
           value = "NULL";
         }
+        var ulNode = domQuery("ul", containerNode)[0];
 
-        var childNodes = containerNode.childNodes;
-        for (var i = 0; i < childNodes.length; i++) {
-          if (childNodes[i].tagName.toUpperCase() == "UL") {
+        var li = domConstruct.create("li", null, ulNode, order);
 
-            var li = domConstruct.create("li", null, childNodes[i],order);
+        domConstruct.create("span", {
+          className: "location-data-tag",
+          innerHTML: val.title.concat(": ")
+        }, li);
 
-            domConstruct.create("span", {
-              className: "location-data-tag",
-              innerHTML: val.title.concat(": ")
-            }, li);
+        domConstruct.create("span", {
+          className: "location-data-value",
+          innerHTML: value,
+          id: val.id
+        }, li);
 
-            domConstruct.create("span", {
-              className: "location-data-value",
-              innerHTML: value,
-              id: val.id
-            }, li);
-            break;
-          }
-        }
       });
     }
   }
-
 
   //open crime page
   function getCrimeData(val) {
