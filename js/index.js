@@ -25,7 +25,8 @@ require([
   "dojo/dom-construct",
 
   'js/multi-search.js',
-  "dojo/text!/maps/mygarland/setting/mapService.json",
+  "dojo/text!/maps/mygarland/setting/config.json",
+  "dojo/text!/maps/mygarland/setting/multilayers.json",
 
   'dojo/domReady!'
 ], function (
@@ -38,31 +39,26 @@ require([
 
   topic, domQuery, domAttr, domConstruct,
 
-  nameMultiSearch, mapService_json
+  nameMultiSearch, config_json, multilayers_json
 
 ) {
 
   'use strict';
 
   //reading setting file
-  var serviceUrl = JSON.parse(mapService_json);
+  var appSetting = JSON.parse(config_json);
+  var multiLayers_setting = JSON.parse(multilayers_json);
 
   domClass.remove('main-content', 'd-none');
 
-  var map, view, subMap, subView;
+  var map, view, subMap, subView,search;
   var nearestFeatureList = [];
   var serviceZone = [];
   var parcelInfo_obj2;
 
   //draw map
   (function () {
-    var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.otherurl.mapserver.url,
-      sublayers: [{
-        id: serviceUrl.mapservice.citylimit.id,
-        visible: true
-      }]
-    });
+    var mapImageLayerList = new MapImageLayer(appSetting.mapInTop);
     map = new Map({
       basemap: 'gray',
       layers: [mapImageLayerList]
@@ -75,30 +71,25 @@ require([
     });
   })();
 
-  var search = new Search({
+  var locSetting=appSetting.locator;
+  search = new Search({
     view: view,
     container: "search",
     allPlaceholder: ".",
     locationEnabled: false,
     sources: [{
       locator: new Locator({
-        url: serviceUrl.otherurl.locator.url
+        url: locSetting.url
       }),
-      outFields: ["Ref_ID"], // Ref_ID is addressID
-      singleLineFieldName: "Single Line Input",
-      name: "GARLAND_ADDRESS_LOCATOR",
-      placeholder: "Enter a City of Garland Address",
-      suggestionsEnabled: true,
-      maxSuggestions: 8,
-      minSuggestCharacters: 6
+      outFields: locSetting.outFields, 
+      singleLineFieldName: locSetting.singleLineFieldName,
+      name: locSetting.name,
+      placeholder: locSetting.placeholder,
+      suggestionsEnabled: locSetting.suggestionsEnabled,
+      maxSuggestions: locSetting.maxSuggestions,
+      minSuggestCharacters: locSetting.minSuggestCharacters
     }]
   });
-
-  // //get last add from localstorage
-  // var lastAddr= '';
-  // if (typeof (Storage) !== "undefined"&& localStorage.getItem("mygl-lastaddr")) {
-  //   lastAddr= localStorage.getItem("mygl-lastaddr");
-  // }
 
   //autofocus on search tool box when load.
   domQuery("input", "search")[0].autofocus = true;
@@ -130,109 +121,7 @@ require([
   });
 
   //create multisearch widget.
-  var multiSearch = new GetMultiSearch({
-    cityFacilitySourceList: [{
-        name: "City Hall",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='CITY HALL'",
-        containerID: "nearestCityFacility",
-        displayID: "1"
-      }, {
-        name: "Customer Service",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='UTILITY SERVICES'",
-        containerID: "nearestCityFacility",
-        displayID: "5"
-      },
-      {
-        name: "Police Station",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='POLICE STATION'",
-        containerID: "nearestCityFacility",
-        displayID: "2"
-      },
-      {
-        name: "Municipal Courts",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='COURTS'",
-        containerID: "nearestCityFacility",
-        displayID: "3",
-      },
-      {
-        name: "Nearest Fire Station",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
-        containerID: "nearestCityFacility",
-        displayID: "4"
-      },
-      {
-        name: "Nearest Library",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='LIBRARY'",
-        containerID: "nearestCityFacility",
-        displayID: "6"
-      }, {
-        name: "Nearest Park",
-        url: getMapServiceUrl("parks"),
-        where: "1=1",
-        containerID: "service",
-        displayID: 1
-      }, {
-        name: "Nearest Recreation Center",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
-        containerID: "service",
-        displayID: 2
-      }
-
-    ],
-    serviceZoneSourceList: [{
-      id: "ews-recycling",
-      name: "EWS Recycling Pickup Week",
-      containerID: "service",
-      displayID: 3,
-      url: getMapServiceUrl("ewsrecycling")
-    }, {
-      id: "ews-trash",
-      name: "EWS Trash and Brush Pickup Day",
-      containerID: "service",
-      displayID: 2,
-      url: getMapServiceUrl("ewstrash")
-    }, {
-      id: "neighborhood-watch",
-      name: "Neighborhood Watch",
-      containerID: "neighborhoods",
-      displayID: 3,
-      url: getMapServiceUrl("neighwatch")
-    }, {
-      id: "neighborhood-assoc",
-      name: "Neighborhood Association",
-      containerID: "neighborhoods",
-      displayID: 4,
-      url: getMapServiceUrl("neighasso")
-    }, {
-      id: "gdc-zoning",
-      name: "GDC Zoning",
-      containerID: "planning_development-zoning",
-      displayID: 2,
-      url: getMapServiceUrl("gdczoning")
-    }, {
-      id: "npo",
-      name: "Neighborhood Police Officer",
-      containerID: "neighborhoods",
-      displayID: 2,
-      url: getMapServiceUrl("npo")
-    }],
-    individualCityFacility: [],
-    mapService: {
-      cityLimit: getMapServiceUrl("citylimit"),
-      address: getMapServiceUrl("address"), //used to get parcel id,
-      parcel: getMapServiceUrl("parcel"),
-      road: getMapServiceUrl("road"),
-      streetAlias: getMapServiceUrl("streetalias"),
-      geometry: serviceUrl.otherurl.geometry.url
-    }
-  });
+  var multiSearch = new GetMultiSearch(multiLayers_setting);
   multiSearch.startup();
   multiSearch.prepareCityFacilityList();
 
@@ -661,7 +550,7 @@ require([
 
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML:  val.title.concat(": ")
+          innerHTML: val.title.concat(": ")
         }, li);
 
         if (val.title == "Nearest Park") {
@@ -669,21 +558,21 @@ require([
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML:"".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>"),
+            innerHTML: "".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>"),
             //id: val.id
           }, li);
-    
+
         } else {
-          
+
           var googleLink = openInGoogleMap({
             type: "FindDireciton",
             originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-            destinationAdd: "Garland+" + val.nearestFeature.ADDRESS .replace(/\s|\t/g, "+")
+            destinationAdd: "Garland+" + val.nearestFeature.ADDRESS.replace(/\s|\t/g, "+")
           });
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: val.nearestFeature.ADDRESS ,
+            innerHTML: val.nearestFeature.ADDRESS,
             //id: val.id
           }, li);
 
@@ -694,7 +583,7 @@ require([
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME , "</a>"),
+            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME, "</a>"),
           }, li);
         }
       });
@@ -791,16 +680,7 @@ require([
 
     var lat = val.latitude;
     var long = val.longitude;
-    var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.otherurl.mapserver.url,
-      sublayers: [{
-        id: serviceUrl.mapservice.parcel.id,
-        visible: true
-      }, {
-        id: serviceUrl.mapservice.address.id,
-        visible: true
-      }]
-    });
+    var mapImageLayerList = new MapImageLayer(appSetting.subMap);
     subMap = new Map({
       basemap: "topo",
       layers: [mapImageLayerList]
@@ -849,7 +729,7 @@ require([
   }
 
   function getParkLink(parkName) {
-    var url = serviceUrl.otherurl.parks.url;
+    var url = appSetting.cog_park_site;
     var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
     var firstLetter = parkName.toLowerCase().charAt(0);
     var str = parkList.filter(function (value) {
@@ -861,7 +741,7 @@ require([
   function addHyperlinks(eventName) {
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
-      councilDist.setAttribute("href", serviceUrl.otherurl.councildistrict.url.replace("2", councilDist.innerHTML));
+      councilDist.setAttribute("href", appSetting.cog_council_site.replace("2", councilDist.innerHTML));
       councilDist.setAttribute("target", "_blank");
     }
 
@@ -893,8 +773,4 @@ require([
     return (false);
   }
 
-  function getMapServiceUrl(itemName) {
-    var val = serviceUrl.mapservice[itemName];
-    return val.url.concat("/", val.id);
-  }
 });
