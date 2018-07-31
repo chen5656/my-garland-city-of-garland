@@ -473,10 +473,9 @@ require([
       if (node.classList.contains("add-load-wrap")) {
         //remove old data
         var children = node.childNodes;
-        var arr = Array.from(children);
-        arr.forEach(function (val) {
-          node.removeChild(val);
-        });
+        for(var i=0;i<children.length-1;i++){
+          node.removeChild(children[i]);
+        }
         //add load-wrap
         domConstruct.create("div", {
           className: "load-wrap"
