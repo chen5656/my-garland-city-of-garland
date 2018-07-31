@@ -22,9 +22,12 @@ require([
   "dojo/topic",
   "dojo/query",
   "dojo/dom-attr",
+  "dojo/dom-construct",
 
   'js/multi-search.js',
   "dojo/text!/setting/mapService.json",
+  "dojo/text!/maps/mygarland/setting/config.json",
+  "dojo/text!/maps/mygarland/setting/multilayers.json",
 
   'dojo/domReady!'
 ], function (
@@ -35,34 +38,25 @@ require([
   GeometryService, projection, ProjectParameters,
   Graphic,
 
-  topic, domQuery, domAttr,
+  topic, domQuery, domAttr,domConstruct,
 
-  nameMultiSearch, mapService_json
+  nameMultiSearch, mapService_json, config_json, multilayers_json
 
 ) {
-
-  'use strict';
-
   //reading setting file
   var serviceUrl = JSON.parse(mapService_json);
-
-  domClass.remove('main-content', 'd-none');
-
-  var map, view, subMap, subView;
-  var nearestFeatureList = [];
-  var serviceZone = [];
   var parcelInfo_obj2;
 
-  //draw map
+  'use strict';
+  var view, search, appSetting, multiSearch, geometryService;
+
+  //init: topMap, search, appSetting, multiSearch
   (function () {
-    var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.otherurl.mapserver.url,
-      sublayers: [{
-        id: serviceUrl.mapservice.citylimit.id,
-        visible: true
-      }]
-    });
-    map = new Map({
+    //reading setting file
+    appSetting = JSON.parse(config_json);
+
+    var mapImageLayerList = new MapImageLayer(appSetting.mapInTop);
+    var map = new Map({
       basemap: 'gray',
       layers: [mapImageLayerList]
     });
@@ -72,181 +66,110 @@ require([
       zoom: 12,
       center: [-96.636269, 32.91676]
     });
+
+    //search widget
+    var locSetting = appSetting.locator;
+    search = new Search({
+      view: view,
+      container: "search",
+      allPlaceholder: ".",
+      locationEnabled: false,
+      sources: [{
+        locator: new Locator({
+          url: locSetting.url
+        }),
+        outFields: locSetting.outFields,
+        singleLineFieldName: locSetting.singleLineFieldName,
+        name: locSetting.name,
+        placeholder: locSetting.placeholder,
+        suggestionsEnabled: locSetting.suggestionsEnabled,
+        maxSuggestions: locSetting.maxSuggestions,
+        minSuggestCharacters: locSetting.minSuggestCharacters
+      }]
+    });
+
+    //create multisearch widget.
+    multiSearch = new GetMultiSearch(JSON.parse(multilayers_json));
+    multiSearch.startup();
+    multiSearch.prepareCityFacilityList();
+
+    //set geometry service to match spatial reference on different service.
+    geometryService = new GeometryService(multiSearch.mapService.geometry);
+
   })();
 
-  var search = new Search({
-    view: view,
-    container: "search",
-    allPlaceholder: ".",
-    locationEnabled: false,
-    sources: [{
-      locator: new Locator({
-        url: serviceUrl.otherurl.locator.url
-      }),
-      outFields: ["Ref_ID"], // Ref_ID is addressID
-      singleLineFieldName: "Single Line Input",
-      name: "GARLAND_ADDRESS_LOCATOR",
-      placeholder: "Enter a City of Garland Address",
-      suggestionsEnabled: true,
-      maxSuggestions: 8,
-      minSuggestCharacters: 6
-    }]
-  });
+  //update html div format.
+  (function () {
+    domClass.remove('main-content', 'd-none');
 
-  // //get last add from localstorage
-  // var lastAddr= '';
-  // if (typeof (Storage) !== "undefined"&& localStorage.getItem("mygl-lastaddr")) {
-  //   lastAddr= localStorage.getItem("mygl-lastaddr");
-  // }
+    //autofocus on search tool box when load.
+    domQuery("input", "search")[0].autofocus = true;
 
-  //autofocus on search tool box when load.
-  domQuery("input", "search")[0].autofocus = true;
+    domQuery(".collapsed", "nodeResult").forEach(function (title) {
+      title.onclick = function () {
+        var card = dom.byId(this.getAttribute("aria-controls"));
+        domClass.toggle(card, "show");
+        var icon = this.firstElementChild;
+        if (
+          domClass.contains(icon, "fa-minus-square")) {
+          domClass.add(icon, "fa-plus-square");
+          domClass.remove(icon, "fa-minus-square");
+        } else {
+          domClass.add(icon, "fa-minus-square");
+          domClass.remove(icon, "fa-plus-square");
+        }
+      };
+    });
 
-  domQuery(".collapsed", "nodeResult").forEach(function (title) {
-    title.onclick = function () {
-      var card = dom.byId(this.getAttribute("aria-controls"));
-      domClass.toggle(card, "show");
-      var icon = this.firstElementChild;
-      if (
-        domClass.contains(icon, "fa-minus-square")) {
-        domClass.add(icon, "fa-plus-square");
-        domClass.remove(icon, "fa-minus-square");
-      } else {
-        domClass.add(icon, "fa-minus-square");
-        domClass.remove(icon, "fa-plus-square");
-
-      }
-
-
-    };
-  });
-
-  domQuery(".closeButton", "main-content").forEach(function (btn) {
-    btn.onclick = function () {
-      var card = dom.byId(this.getAttribute("aria-controls"));
-      domClass.add(card, "d-none");
-    };
-  });
-
-  //create multisearch widget.
-  var multiSearch = new GetMultiSearch({
-    cityFacilitySourceList: [{
-        name: "City Hall",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='CITY HALL'",
-        containerID: "nearestCityFacility",
-        displayID: "1"
-      }, {
-        name: "Customer Service",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='UTILITY SERVICES'",
-        containerID: "nearestCityFacility",
-        displayID: "5"
-      },
-      {
-        name: "Police Station",
-        url: getMapServiceUrl("cityfacility"),
-        where: "BLDG_NAME='POLICE STATION'",
-        containerID: "nearestCityFacility",
-        displayID: "2"
-      },
-      {
-        name: "Municipal Courts",
-        url:getMapServiceUrl("cityfacility"),
-        where: "DEPT='COURTS'",
-        containerID: "nearestCityFacility",
-        displayID: "3",
-      },
-      {
-        name: "Nearest Fire Station",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
-        containerID: "nearestCityFacility",
-        displayID: "4"
-      },
-      {
-        name: "Nearest Library",
-        url: getMapServiceUrl("cityfacility"),
-        where: "DEPT='LIBRARY'",
-        containerID: "nearestCityFacility",
-        displayID: "6"
-      }, {
-        name: "Nearest Park",
-        url:getMapServiceUrl("parks"),
-        where: "1=1",
-        containerID: "nearestPark",
-        displayID: 1
-      }, {
-        name: "Nearest Recreation Center",
-        url:  getMapServiceUrl("cityfacility"),
-        where: "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
-        containerID: "nearestPark",
-        displayID: 7
-      }
-
-    ],
-    serviceZoneSourceList: [{
-      name: "EWS Recycling Pickup Week",
-      containerID: "service",
-      displayID: 3,
-      url: getMapServiceUrl("ewsrecycling")
-    }, {
-      name: "EWS Trash and Brush Pickup Day",
-      containerID: "service",
-      displayID: 2,
-      url: getMapServiceUrl("ewstrash")
-    }, {
-      name: "Neighborhood Watch",
-      containerID: "neighborhoods",
-      displayID: 2,
-      url: getMapServiceUrl("neighwatch")
-    }, {
-      name: "Neighborhood Association",
-      containerID: "neighborhoods",
-      displayID: 3,
-      url: getMapServiceUrl("neighasso")
-    }, {
-      name: "GDC Zoining",
-      containerID: "planning_development-zoning",
-      displayID: 2,
-      url: getMapServiceUrl("gdczoning")
-    }],
-    individualCityFacility: [],
-    mapService: {
-      cityLimit: getMapServiceUrl("citylimit"),
-      address: getMapServiceUrl("address"), //used to get parcel id,
-      parcel: getMapServiceUrl("parcel"),
-      road: getMapServiceUrl("road"),
-      streetAlias: getMapServiceUrl("streetalias"),
-      geometry: serviceUrl.otherurl.geometry.url
-    }
-  });
-  multiSearch.startup();
-  multiSearch.prepareCityFacilityList();
-
-
-  //set geometry service to match spatial reference on different service.
-  var geometryService;
-  geometryService = new GeometryService(multiSearch.mapService.geometry);
-
+    domQuery(".closeButton", "main-content").forEach(function (btn) {
+      btn.onclick = function () {
+        var card = dom.byId(this.getAttribute("aria-controls"));
+        domClass.add(card, "d-none");
+      };
+    });
+  })();
 
   //display data
-
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
-    var obj = {
-      "Zip Code": item.ZIP_CODE,
-      //"County":
-      "Mapsco Grid": item.MAPSCO,
-      "School District": item.SCHOOL_DISTRICT,
-      "City Council District": "".concat("<a href='", serviceUrl.otherurl.councildistrict.url, item.COUNCIL_ID, ".asp'  target='_blank' title='Link to Council Member'> ", item.COUNCIL_ID, "</a>"),
-
-      //City Council District Member
-      //"Census Tract": item.CENSUS_TRACT,
-      //"Health Complaint": item.HEALTH_COMPLAINT
-    };
-    var obj2 = [{
+    var obj = [{
+      title: "City Council District",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 1,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>"),
+      }
+    }, {
+      title: "Zip Code",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 2,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.ZIP_CODE
+      }
+    }, {
+      title: "Mapsco Grid",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 3,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.MAPSCO
+      }
+    }, {
+      title: "School District",
+      containerID: "parcelInfo",
+      displayFieldName: "value",
+      displayID: 4,
+      queryPolygonCount: 1,
+      serviceZone: {
+        value: item.SCHOOL_DISTRICT
+      }
+    }, {
       title: "Land Use",
       containerID: "planning_development-zoning",
       displayFieldName: "value",
@@ -274,24 +197,10 @@ require([
         value: item.NEIGHBORHOOD
       }
     }];
-    parcelInfo_obj2 = obj2;
 
-    var arr = [];
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        arr.push({
-          title: key,
-          value: obj[key]
-        });
-      }
-    }
-    arr = arr.map(function (obj) {
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.value, "</span></li>");
-      return str;
-    });
-    var node = dom.byId("parcelInfo");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
+    displayReferenceData(obj, "first");
 
+    addHyperlinks("council");
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
@@ -379,26 +288,277 @@ require([
     node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
 
+
+  function displayLocationData(dataList, order) {
+    var containerID = ["nearestCityFacility", "service"];
+    var i;
+    //remove load-wrapp
+    for (i in containerID) {
+      var node = dom.byId(containerID[i]);
+      domQuery(".load-wrapp", node).forEach(function (child) {
+        node.removeChild(child);
+      });
+    }
+
+    for (i in containerID) {
+      var containerNode = dom.byId(containerID[i]);
+      var subArr = dataList.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        if (order == "first") {
+          return b.displayID - a.displayID;
+        } else if (order == "last") {
+          return a.displayID - b.displayID;
+        }
+      });
+      subArr.forEach(function (val) {
+
+        var ulNode = domQuery("ul", containerNode)[0];
+        var li = domConstruct.create("li", null, ulNode, order);
+
+        domConstruct.create("span", {
+          className: "location-data-tag",
+          innerHTML: val.title.concat(": ")
+        }, li);
+
+        if (val.title == "Nearest Park") {
+          var link = getParkLink(val.nearestFeature.PARKS);
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML: "".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>"),
+            //id: val.id
+          }, li);
+
+        } else {
+
+          var googleLink = openInGoogleMap({
+            type: "FindDireciton",
+            originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+            destinationAdd: "Garland+" + val.nearestFeature.ADDRESS.replace(/\s|\t/g, "+")
+          });
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML: val.nearestFeature.ADDRESS,
+            //id: val.id
+          }, li);
+
+          domConstruct.create("span", {
+            className: "location-data-distance",
+            innerHTML: "".concat(" (", val.distance, " miles)"),
+          }, li);
+
+          domConstruct.create("span", {
+            className: "location-data-value",
+            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME, "</a>"),
+          }, li);
+        }
+      });
+
+    }
+
+  }
+
+  function displayReferenceData(dataList, order) {
+    var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
+    var i;
+    //remove load-wrapp
+    for (i in containerID) {
+      var node = dom.byId(containerID[i]);
+      domQuery(".load-wrapp", node).forEach(function (child) {
+        node.removeChild(child);
+      });
+    }
+
+    for (i in containerID) {
+      var containerNode = dom.byId(containerID[i]);
+      var subArr = dataList.filter(function (val) {
+        return val.containerID == containerID[i];
+      }).sort(function (a, b) {
+        if (order == "first") {
+          return b.displayID - a.displayID;
+        } else if (order == "last") {
+          return a.displayID - b.displayID;
+        }
+
+      });
+      subArr.forEach(function (val) {
+        var value;
+        if (val.displayFieldName) {
+          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+        } else {
+          value = "NULL";
+        }
+        var ulNode = domQuery("ul", containerNode)[0];
+
+        var li = domConstruct.create("li", null, ulNode, order);
+
+        domConstruct.create("span", {
+          className: "location-data-tag",
+          innerHTML: val.title.concat(": ")
+        }, li);
+
+        domConstruct.create("span", {
+          className: "location-data-value",
+          innerHTML: value,
+          id: val.id
+        }, li);
+
+      });
+    }
+  }
+
+  function addHyperlinks(eventName) {
+    if (eventName == "council") {
+      var councilDist = dom.byId("council-dist");
+      councilDist.setAttribute("href", appSetting.cog_council_site.replace("2", councilDist.innerHTML));
+      councilDist.setAttribute("target", "_blank");
+    }
+
+    if (eventName == "npo") {
+      //add a phone icon and email icon after police officer name
+      console.log(multiSearch.searchResult);
+      var npoInfo = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+        return val.id == "npo";
+      })[0].serviceZone;
+      var npoParent = dom.byId("npo").parentNode;
+      npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:", npoInfo.PHONE, "'><i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i></a> <a href='mailto:", npoInfo.EMAIL, "'><i class='fas fa-envelope' title= '", npoInfo.EMAIL, "'></i></a>");
+    }
+  }
   //query can get a list of features inside a distance.
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
-    domClass.add('nearestPark', 'd-none');
     domClass.add('EWS-link', 'd-none');
-
 
     multiSearch.startNewSearch();
 
     //cardBodies
-    // class='add-load-wrapp'
-    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
+     // class='add-load-wrapp'
+     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
       if (node.classList.contains("add-load-wrapp")) {
-        node.innerHTML = "<div class='load-wrapp'></div>";
+        //remove old data
+        var children = node.childNodes;
+        for(var i=0;i<children.length-1;i++){
+          node.removeChild(children[i]);
+        }
+       
+        //add load-wrapp
+        domConstruct.create("div", {
+          className: "load-wrapp"
+        }, node);
+        domConstruct.create("ul", null, node);
       }
     });
   });
 
+ 
+
+  function displayUniquleStreetList(features, AddrNumber) {
+    //get unique value
+    var unique = {};
+    var distinct = [];
+    for (var i in features) {
+      if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+        distinct.push(features[i].attributes.STREETLABEL);
+      }
+      unique[features[i].attributes.STREETLABEL] = 0;
+    }
+
+    var tempAddrNum;
+    if (AddrNumber == 0) {
+      tempAddrNum = "";
+    } else {
+      tempAddrNum = "".concat(AddrNumber, " ");
+    }
+
+    distinct = distinct.slice(0, 5).map(function (val) {
+      return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+    });
+
+
+    domClass.remove('suggestedAddresses', 'd-none');
+    dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
+    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+      btn.onclick = function () {
+        search.search(this.textContent);
+      };
+    });
+  }
+
+  function closestNums(num, arr) {
+    var numsIndex = arr.length - 1;
+    if (arr.length > 5) {
+      for (var i = 0; i < arr.length; i++) {
+        if (num < arr[i].streetNumber) {
+          if (arr.length - (i + 3) < 0) {
+            numsIndex = arr.length - 1;
+          } else {
+            numsIndex = i + 2;
+          }
+          break;
+        }
+      }
+      if (numsIndex < 4) {
+        numsIndex = 4;
+      }
+      return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+
+    } else {
+      return arr;
+    }
+  }
+
+  function findArrayInAliasExtend(AddrRoad) {
+    var AliasExtend = {
+      "1ST": "FIRST",
+      "2ND": "SECOND",
+      "3RD": "THIRD",
+      "4TH": "FOURTH",
+      "5TH": "FIFTH",
+      "6TH": "SIXTH",
+      "7TH": "SEVENTH",
+      "9TH": "NINTH",
+      "10TH": "TENTH",
+      "11TH": "ELEVENTH",
+      "12TH": "TWELFTH",
+      "13TH": "THIRTEENTH",
+      "15TH": "FIFTEENTH",
+      "16TH": "SIXTEENTH",
+      "17TH": "SEVENTEENTH",
+      "1": "FIRST",
+      "2": "SECOND",
+      "3": "THIRD",
+      "4": "FOURTH",
+      "5": "FIFTH",
+      "6": "SIXTH",
+      "7": "SEVENTH",
+      "9": "NINTH",
+      "10": "TENTH",
+      "11": "ELEVENTH",
+      "12": "TWELFTH",
+      "13": "THIRTEENTH",
+      "15": "FIFTEENTH",
+      "16": "SIXTEENTH",
+      "17": "SEVENTEENTH"
+    };
+
+
+    var str = AddrRoad.split(" ");
+    str = str.map(function (val) {
+      if (AliasExtend[val]) {
+        return AliasExtend[val];
+      } else {
+        return val;
+      }
+
+    });
+    console.log(str.join(" ").trim());
+    return str.join(" ").trim();
+
+  }
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
       //no result found. Suggestion the nearest result
@@ -511,112 +671,112 @@ require([
       });
     }
 
-  });
-
-  function displayUniquleStreetList(features, AddrNumber) {
-    //get unique value
-    var unique = {};
-    var distinct = [];
-    for (var i in features) {
-      if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-        distinct.push(features[i].attributes.STREETLABEL);
-      }
-      unique[features[i].attributes.STREETLABEL] = 0;
-    }
-
-    var tempAddrNum;
-    if (AddrNumber == 0) {
-      tempAddrNum = "";
-    } else {
-      tempAddrNum = "".concat(AddrNumber, " ");
-    }
-
-    distinct = distinct.slice(0, 5).map(function (val) {
-      return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
-    });
-
-
-    domClass.remove('suggestedAddresses', 'd-none');
-    dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
-    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-      btn.onclick = function () {
-        search.search(this.textContent);
-      };
-    });
-  }
-
-  function closestNums(num, arr) {
-    var numsIndex = arr.length - 1;
-    if (arr.length > 5) {
-      for (var i = 0; i < arr.length; i++) {
-        if (num < arr[i].streetNumber) {
-          if (arr.length - (i + 3) < 0) {
-            numsIndex = arr.length - 1;
-          } else {
-            numsIndex = i + 2;
+    
+    function closestNums(num, arr) {
+      var numsIndex = arr.length - 1;
+      if (arr.length > 5) {
+        for (let i = 0; i < arr.length; i++) {
+          if (num < arr[i].streetNumber) {
+            if (arr.length - (i + 3) < 0) {
+              numsIndex = arr.length - 1;
+            } else {
+              numsIndex = i + 2;
+            }
+            break;
           }
-          break;
         }
-      }
-      if (numsIndex < 4) {
-        numsIndex = 4;
-      }
-      return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+        if (numsIndex < 4) {
+          numsIndex = 4;
+        }
+        return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
 
-    } else {
-      return arr;
-    }
-  }
-
-  function findArrayInAliasExtend(AddrRoad) {
-    var AliasExtend = {
-      "1ST": "FIRST",
-      "2ND": "SECOND",
-      "3RD": "THIRD",
-      "4TH": "FOURTH",
-      "5TH": "FIFTH",
-      "6TH": "SIXTH",
-      "7TH": "SEVENTH",
-      "9TH": "NINTH",
-      "10TH": "TENTH",
-      "11TH": "ELEVENTH",
-      "12TH": "TWELFTH",
-      "13TH": "THIRTEENTH",
-      "15TH": "FIFTEENTH",
-      "16TH": "SIXTEENTH",
-      "17TH": "SEVENTEENTH",
-      "1": "FIRST",
-      "2": "SECOND",
-      "3": "THIRD",
-      "4": "FOURTH",
-      "5": "FIFTH",
-      "6": "SIXTH",
-      "7": "SEVENTH",
-      "9": "NINTH",
-      "10": "TENTH",
-      "11": "ELEVENTH",
-      "12": "TWELFTH",
-      "13": "THIRTEENTH",
-      "15": "FIFTEENTH",
-      "16": "SIXTEENTH",
-      "17": "SEVENTEENTH"
-    };
-
-
-    var str = AddrRoad.split(" ");
-    str = str.map(function (val) {
-      if (AliasExtend[val]) {
-        return AliasExtend[val];
       } else {
-        return val;
+        return arr;
+      }
+    }
+
+    function displayUniquleStreetList(features, AddrNumber) {
+      //get unique value
+      var unique = {};
+      var distinct = [];
+      for (var i in features) {
+        if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+          distinct.push(features[i].attributes.STREETLABEL);
+        }
+        unique[features[i].attributes.STREETLABEL] = 0;
       }
 
-    });
-    console.log(str.join(" ").trim());
-    return str.join(" ").trim();
+      var tempAddrNum;
+      if (AddrNumber == 0) {
+        tempAddrNum = "";
+      } else {
+        tempAddrNum = "".concat(AddrNumber, " ");
+      }
 
-  }
+      distinct = distinct.slice(0, 5).map(function (val) {
+        return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+      });
 
+
+      domClass.remove('suggestedAddresses', 'd-none');
+      dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
+      domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+        btn.onclick = function () {
+          search.search(this.textContent);
+        };
+      });
+    }
+
+
+    function findArrayInAliasExtend(AddrRoad) {
+      var AliasExtend = {
+        "1ST": "FIRST",
+        "2ND": "SECOND",
+        "3RD": "THIRD",
+        "4TH": "FOURTH",
+        "5TH": "FIFTH",
+        "6TH": "SIXTH",
+        "7TH": "SEVENTH",
+        "9TH": "NINTH",
+        "10TH": "TENTH",
+        "11TH": "ELEVENTH",
+        "12TH": "TWELFTH",
+        "13TH": "THIRTEENTH",
+        "15TH": "FIFTEENTH",
+        "16TH": "SIXTEENTH",
+        "17TH": "SEVENTEENTH",
+        "1": "FIRST",
+        "2": "SECOND",
+        "3": "THIRD",
+        "4": "FOURTH",
+        "5": "FIFTH",
+        "6": "SIXTH",
+        "7": "SEVENTH",
+        "9": "NINTH",
+        "10": "TENTH",
+        "11": "ELEVENTH",
+        "12": "TWELFTH",
+        "13": "THIRTEENTH",
+        "15": "FIFTEENTH",
+        "16": "SIXTEENTH",
+        "17": "SEVENTEENTH"
+      };
+
+
+      var str = AddrRoad.split(" ");
+      str = str.map(function (val) {
+        if (AliasExtend[val]) {
+          return AliasExtend[val];
+        } else {
+          return val;
+        }
+
+      });
+      console.log(str.join(" ").trim());
+      return str.join(" ").trim();
+
+    }
+  });
 
   search.on("select-result", function (e) {
     var i, result;
@@ -710,22 +870,20 @@ require([
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer({
-      url:serviceUrl.otherurl.mapserver.url      ,
-      sublayers: [
-        {
-          id: serviceUrl.mapservice.parcel.id,
-          visible: true
-        }, {
-          id: serviceUrl.mapservice.address.id,
-          visible: true
-        }
-      ]
+      url: serviceUrl.otherurl.mapserver.url,
+      sublayers: [{
+        id: serviceUrl.mapservice.parcel.id,
+        visible: true
+      }, {
+        id: serviceUrl.mapservice.address.id,
+        visible: true
+      }]
     });
-    subMap = new Map({
+    var subMap = new Map({
       basemap: "topo",
       layers: [mapImageLayerList]
     });
-    subView = new MapView({
+    var subView = new MapView({
       container: 'subMapView',
       map: subMap,
       zoom: 18,
@@ -797,7 +955,7 @@ require([
   }
 
   function getMapServiceUrl(itemName) {
-   
+
     var val = serviceUrl.mapservice[itemName];
     return val.url.concat("/", val.id);
   }
