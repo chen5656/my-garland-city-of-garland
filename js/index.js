@@ -45,21 +45,14 @@ require([
 
   'use strict';
 
-  //reading setting file
-  var appSetting = JSON.parse(config_json);
-  var multiLayers_setting = JSON.parse(multilayers_json);
-
-  domClass.remove('main-content', 'd-none');
-
-  var map, view, subMap, subView,search;
-  var nearestFeatureList = [];
-  var serviceZone = [];
-  var parcelInfo_obj2;
-
-  //draw map
+  var view, search, appSetting, multiSearch, geometryService;
+  //init: topMap, search, appSetting, multiSearch
   (function () {
+    //reading setting file
+    appSetting = JSON.parse(config_json);
+
     var mapImageLayerList = new MapImageLayer(appSetting.mapInTop);
-    map = new Map({
+    var map = new Map({
       basemap: 'gray',
       layers: [mapImageLayerList]
     });
@@ -69,70 +62,70 @@ require([
       zoom: 12,
       center: [-96.636269, 32.91676]
     });
+
+    //search widget
+    var locSetting = appSetting.locator;
+    search = new Search({
+      view: view,
+      container: "search",
+      allPlaceholder: ".",
+      locationEnabled: false,
+      sources: [{
+        locator: new Locator({
+          url: locSetting.url
+        }),
+        outFields: locSetting.outFields,
+        singleLineFieldName: locSetting.singleLineFieldName,
+        name: locSetting.name,
+        placeholder: locSetting.placeholder,
+        suggestionsEnabled: locSetting.suggestionsEnabled,
+        maxSuggestions: locSetting.maxSuggestions,
+        minSuggestCharacters: locSetting.minSuggestCharacters
+      }]
+    });
+
+    //create multisearch widget.
+    multiSearch = new GetMultiSearch(JSON.parse(multilayers_json));
+    multiSearch.startup();
+    multiSearch.prepareCityFacilityList();
+
+    //set geometry service to match spatial reference on different service.
+    geometryService = new GeometryService(multiSearch.mapService.geometry);
+
   })();
 
-  var locSetting=appSetting.locator;
-  search = new Search({
-    view: view,
-    container: "search",
-    allPlaceholder: ".",
-    locationEnabled: false,
-    sources: [{
-      locator: new Locator({
-        url: locSetting.url
-      }),
-      outFields: locSetting.outFields, 
-      singleLineFieldName: locSetting.singleLineFieldName,
-      name: locSetting.name,
-      placeholder: locSetting.placeholder,
-      suggestionsEnabled: locSetting.suggestionsEnabled,
-      maxSuggestions: locSetting.maxSuggestions,
-      minSuggestCharacters: locSetting.minSuggestCharacters
-    }]
-  });
+  //update html div format.
+  (function () {
+    domClass.remove('main-content', 'd-none');
 
-  //autofocus on search tool box when load.
-  domQuery("input", "search")[0].autofocus = true;
+    //autofocus on search tool box when load.
+    domQuery("input", "search")[0].autofocus = true;
 
-  domQuery(".collapsed", "nodeResult").forEach(function (title) {
-    title.onclick = function () {
-      var card = dom.byId(this.getAttribute("aria-controls"));
-      domClass.toggle(card, "show");
-      var icon = this.firstElementChild;
-      if (
-        domClass.contains(icon, "fa-minus-square")) {
-        domClass.add(icon, "fa-plus-square");
-        domClass.remove(icon, "fa-minus-square");
-      } else {
-        domClass.add(icon, "fa-minus-square");
-        domClass.remove(icon, "fa-plus-square");
+    domQuery(".collapsed", "nodeResult").forEach(function (title) {
+      title.onclick = function () {
+        var card = dom.byId(this.getAttribute("aria-controls"));
+        domClass.toggle(card, "show");
+        var icon = this.firstElementChild;
+        if (
+          domClass.contains(icon, "fa-minus-square")) {
+          domClass.add(icon, "fa-plus-square");
+          domClass.remove(icon, "fa-minus-square");
+        } else {
+          domClass.add(icon, "fa-minus-square");
+          domClass.remove(icon, "fa-plus-square");
+        }
+      };
+    });
 
-      }
-
-
-    };
-  });
-
-  domQuery(".closeButton", "main-content").forEach(function (btn) {
-    btn.onclick = function () {
-      var card = dom.byId(this.getAttribute("aria-controls"));
-      domClass.add(card, "d-none");
-    };
-  });
-
-  //create multisearch widget.
-  var multiSearch = new GetMultiSearch(multiLayers_setting);
-  multiSearch.startup();
-  multiSearch.prepareCityFacilityList();
-
-
-  //set geometry service to match spatial reference on different service.
-  var geometryService;
-  geometryService = new GeometryService(multiSearch.mapService.geometry);
-
+    domQuery(".closeButton", "main-content").forEach(function (btn) {
+      btn.onclick = function () {
+        var card = dom.byId(this.getAttribute("aria-controls"));
+        domClass.add(card, "d-none");
+      };
+    });
+  })();
 
   //display data
-
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
@@ -227,297 +220,6 @@ require([
     displayLocationData(dataList.filter(function (val) {
       return val.containerID == "service";
     }), "first");
-
-  });
-
-  //query can get a list of features inside a distance.
-  search.on("search-start", function (e) {
-
-    domClass.add('nodeResult', 'd-none');
-    domClass.add('suggestedAddresses', 'd-none');
-    domClass.add('EWS-link', 'd-none');
-
-    multiSearch.startNewSearch();
-
-    //cardBodies
-    // class='add-load-wrap'
-    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.classList.contains("add-load-wrap")) {
-        //remove old data
-        var children = node.childNodes;
-        var arr = Array.from(children);
-        arr.forEach(function (val) {
-          node.removeChild(val);
-        });
-        //add load-wrap
-        domConstruct.create("div", {
-          className: "load-wrap"
-        }, node);
-        domConstruct.create("ul", null, node);
-      }
-    });
-  });
-
-  search.on("search-complete", function (e) {
-    if (e.numResults == 0) {
-      //no result found. Suggestion the nearest result
-      var AddrRoad, AddrNumber;
-      var str = e.searchTerm.split(",")[0].trim().toUpperCase();
-      var subStr = str.split(" ");
-      if (subStr.length > 1) {
-        var str1 = subStr[0];
-        if (str1 != parseInt(str1, 10)) {
-          //not a number, try to use it as street name
-          AddrRoad = str;
-          AddrNumber = 0;
-        } else {
-          subStr.shift();
-          AddrRoad = subStr.join(" ");
-          AddrNumber = str1;
-        }
-      } else {
-        // try to use it as street name
-        AddrRoad = str;
-        AddrNumber = 0;
-      }
-
-      AddrRoad = findArrayInAliasExtend(AddrRoad);
-
-      var query = new Query({
-        where: "STREETLABEL LIKE '%".concat(AddrRoad, "%'"),
-        returnGeometry: false,
-        outFields: ["*"]
-      });
-      console.log(query.where);
-      var queryTask = new QueryTask({
-        url: multiSearch.mapService.address
-      });
-      queryTask.execute(query).then(function (results) {
-        var AddList = [];
-        if (results.features.length > 0) {
-          //street entered correct
-          console.log("correct street label, wrong address number");
-          AddList = results.features.map(function (val) {
-            return {
-              streetNumber: val.attributes.STREETNUM,
-              streetLabel: val.attributes.STREETLABEL
-            };
-          }).sort(function (a, b) {
-            return a.streetNumber - b.streetNumber;
-          });
-          //find close nums
-          var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
-            return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
-          });
-          //display data
-          domClass.remove('suggestedAddresses', 'd-none');
-          dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
-          domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-            btn.onclick = function () {
-              search.search(this.textContent);
-            };
-          });
-        } else {
-          //street wrong
-
-          var str = AddrRoad.split(" ");
-
-          var longestStr = str[0];
-          for (var i = 1; i < str.length; i++) {
-            if (longestStr.length < str[i].length) {
-              longestStr = str[i];
-            }
-          }
-          var query = new Query({
-            where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
-            returnGeometry: false,
-            outFields: ["*"]
-          });
-          console.log(query.where);
-          var queryTask = new QueryTask({
-            url: multiSearch.mapService.road
-          });
-          queryTask.execute(query).then(function (results) {
-            if (results.features.length > 0) {
-              console.log("wrong street label. find street name in road table");
-              displayUniquleStreetList(results.features, AddrNumber);
-            } else {
-              //check alias table
-              var query = new Query({
-                where: "STREETNAME LIKE '%".concat(longestStr, "%'"),
-                returnGeometry: false,
-                outFields: ["*"]
-              });
-              var queryTask = new QueryTask({
-                url: multiSearch.mapService.streetAlias
-              });
-              queryTask.execute(query).then(function (results) {
-                if (results.features.length > 0) {
-
-                  console.log("wrong street label. find street name in alias table");
-                  displayUniquleStreetList(results.features, AddrNumber);
-                } else {
-                  domClass.remove('suggestedAddresses', 'd-none');
-                  dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
-                }
-              });
-
-            }
-          });
-
-
-        }
-      });
-    }
-
-    function closestNums(num, arr) {
-      var numsIndex = arr.length - 1;
-      if (arr.length > 5) {
-        for (var i = 0; i < arr.length; i++) {
-          if (num < arr[i].streetNumber) {
-            if (arr.length - (i + 3) < 0) {
-              numsIndex = arr.length - 1;
-            } else {
-              numsIndex = i + 2;
-            }
-            break;
-          }
-        }
-        if (numsIndex < 4) {
-          numsIndex = 4;
-        }
-        return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-
-      } else {
-        return arr;
-      }
-    }
-
-    function displayUniquleStreetList(features, AddrNumber) {
-      //get unique value
-      var unique = {};
-      var distinct = [];
-      for (var i in features) {
-        if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-          distinct.push(features[i].attributes.STREETLABEL);
-        }
-        unique[features[i].attributes.STREETLABEL] = 0;
-      }
-
-      var tempAddrNum;
-      if (AddrNumber == 0) {
-        tempAddrNum = "";
-      } else {
-        tempAddrNum = "".concat(AddrNumber, " ");
-      }
-
-      distinct = distinct.slice(0, 5).map(function (val) {
-        return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
-      });
-
-
-      domClass.remove('suggestedAddresses', 'd-none');
-      dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
-      domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-        btn.onclick = function () {
-          search.search(this.textContent);
-        };
-      });
-    }
-
-
-    function findArrayInAliasExtend(AddrRoad) {
-      var AliasExtend = {
-        "1ST": "FIRST",
-        "2ND": "SECOND",
-        "3RD": "THIRD",
-        "4TH": "FOURTH",
-        "5TH": "FIFTH",
-        "6TH": "SIXTH",
-        "7TH": "SEVENTH",
-        "9TH": "NINTH",
-        "10TH": "TENTH",
-        "11TH": "ELEVENTH",
-        "12TH": "TWELFTH",
-        "13TH": "THIRTEENTH",
-        "15TH": "FIFTEENTH",
-        "16TH": "SIXTEENTH",
-        "17TH": "SEVENTEENTH",
-        "1": "FIRST",
-        "2": "SECOND",
-        "3": "THIRD",
-        "4": "FOURTH",
-        "5": "FIFTH",
-        "6": "SIXTH",
-        "7": "SEVENTH",
-        "9": "NINTH",
-        "10": "TENTH",
-        "11": "ELEVENTH",
-        "12": "TWELFTH",
-        "13": "THIRTEENTH",
-        "15": "FIFTEENTH",
-        "16": "SIXTEENTH",
-        "17": "SEVENTEENTH"
-      };
-
-
-      var str = AddrRoad.split(" ");
-      str = str.map(function (val) {
-        if (AliasExtend[val]) {
-          return AliasExtend[val];
-        } else {
-          return val;
-        }
-
-      });
-      console.log(str.join(" ").trim());
-      return str.join(" ").trim();
-
-    }
-  });
-
-  search.on("select-result", function (e) {
-    var i, result;
-    view.zoom = 12;
-    if (e.result) {
-      console.log("Address valid by address locator");
-
-      //update url
-      if (e.result.name) {
-        window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
-      }
-
-      //show result
-      domClass.remove('nodeResult', 'd-none');
-
-
-      //get information from parcel layer by Ref_ID(addressID)
-      multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
-      multiSearch.searchResult.address = e.result.name;
-      multiSearch.searchResult.addressGeometry = e.result.feature.geometry;
-      multiSearch.getInforByAddressID();
-
-      getCrimeData(e.result.feature.geometry);
-      showSubMap(e.result.feature.geometry);
-
-      // projecting using geometr"y service:
-      //"project search result, make it under stateplane. ");
-      var params = new ProjectParameters({
-        geometries: [e.result.feature.geometry],
-        outSpatialReference: multiSearch.spatialReference
-      });
-      var geometries = geometryService.project(params).then(function (geometries) {
-        console.log('get input geometry');
-        multiSearch.geometry = geometries[0];
-        //console.log("Finding nearest city facilities and get distance");
-        multiSearch.getNearestCityFacilityList();
-        multiSearch.getServiceZoneList();
-      }, function (error) {
-        console.log("Error on select search result:", error);
-
-        alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
-      });
-    }
 
   });
 
@@ -681,11 +383,11 @@ require([
     var lat = val.latitude;
     var long = val.longitude;
     var mapImageLayerList = new MapImageLayer(appSetting.subMap);
-    subMap = new Map({
+    var subMap = new Map({
       basemap: "topo",
       layers: [mapImageLayerList]
     });
-    subView = new MapView({
+    var subView = new MapView({
       container: 'subMapView',
       map: subMap,
       zoom: 18,
@@ -756,6 +458,297 @@ require([
     }
   }
 
+  //query can get a list of features inside a distance.
+  search.on("search-start", function (e) {
+
+    domClass.add('nodeResult', 'd-none');
+    domClass.add('suggestedAddresses', 'd-none');
+    domClass.add('EWS-link', 'd-none');
+
+    multiSearch.startNewSearch();
+
+    //cardBodies
+    // class='add-load-wrap'
+    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
+      if (node.classList.contains("add-load-wrap")) {
+        //remove old data
+        var children = node.childNodes;
+        var arr = Array.from(children);
+        arr.forEach(function (val) {
+          node.removeChild(val);
+        });
+        //add load-wrap
+        domConstruct.create("div", {
+          className: "load-wrap"
+        }, node);
+        domConstruct.create("ul", null, node);
+      }
+    });
+  });
+
+  search.on("search-complete", function (e) {
+    if (e.numResults == 0) {
+      //no result found. Suggestion the nearest result
+      var AddrRoad, AddrNumber;
+      var str = e.searchTerm.split(",")[0].trim().toUpperCase();
+      var subStr = str.split(" ");
+      if (subStr.length > 1) {
+        var str1 = subStr[0];
+        if (str1 != parseInt(str1, 10)) {
+          //not a number, try to use it as street name
+          AddrRoad = str;
+          AddrNumber = 0;
+        } else {
+          subStr.shift();
+          AddrRoad = subStr.join(" ");
+          AddrNumber = str1;
+        }
+      } else {
+        // try to use it as street name
+        AddrRoad = str;
+        AddrNumber = 0;
+      }
+
+      AddrRoad = findArrayInAliasExtend(AddrRoad);
+
+      var query = new Query({
+        where: "STREETLABEL LIKE '%".concat(AddrRoad, "%'"),
+        returnGeometry: false,
+        outFields: ["*"]
+      });
+      console.log(query.where);
+      var queryTask = new QueryTask({
+        url: multiSearch.mapService.address
+      });
+      queryTask.execute(query).then(function (results) {
+        var AddList = [];
+        if (results.features.length > 0) {
+          //street entered correct
+          console.log("correct street label, wrong address number");
+          AddList = results.features.map(function (val) {
+            return {
+              streetNumber: val.attributes.STREETNUM,
+              streetLabel: val.attributes.STREETLABEL
+            };
+          }).sort(function (a, b) {
+            return a.streetNumber - b.streetNumber;
+          });
+          //find close nums
+          var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
+            return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
+          });
+          //display data
+          domClass.remove('suggestedAddresses', 'd-none');
+          dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
+          domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+            btn.onclick = function () {
+              search.search(this.textContent);
+            };
+          });
+        } else {
+          //street wrong
+
+          var str = AddrRoad.split(" ");
+
+          var longestStr = str[0];
+          for (let i = 1; i < str.length; i++) {
+            if (longestStr.length < str[i].length) {
+              longestStr = str[i];
+            }
+          }
+          var query = new Query({
+            where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
+            returnGeometry: false,
+            outFields: ["*"]
+          });
+          console.log(query.where);
+          var queryTask = new QueryTask({
+            url: multiSearch.mapService.road
+          });
+          queryTask.execute(query).then(function (results) {
+            if (results.features.length > 0) {
+              console.log("wrong street label. find street name in road table");
+              displayUniquleStreetList(results.features, AddrNumber);
+            } else {
+              //check alias table
+              var query = new Query({
+                where: "STREETNAME LIKE '%".concat(longestStr, "%'"),
+                returnGeometry: false,
+                outFields: ["*"]
+              });
+              var queryTask = new QueryTask({
+                url: multiSearch.mapService.streetAlias
+              });
+              queryTask.execute(query).then(function (results) {
+                if (results.features.length > 0) {
+
+                  console.log("wrong street label. find street name in alias table");
+                  displayUniquleStreetList(results.features, AddrNumber);
+                } else {
+                  domClass.remove('suggestedAddresses', 'd-none');
+                  dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
+                }
+              });
+
+            }
+          });
+
+
+        }
+      });
+    }
+
+    function closestNums(num, arr) {
+      var numsIndex = arr.length - 1;
+      if (arr.length > 5) {
+        for (let i = 0; i < arr.length; i++) {
+          if (num < arr[i].streetNumber) {
+            if (arr.length - (i + 3) < 0) {
+              numsIndex = arr.length - 1;
+            } else {
+              numsIndex = i + 2;
+            }
+            break;
+          }
+        }
+        if (numsIndex < 4) {
+          numsIndex = 4;
+        }
+        return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+
+      } else {
+        return arr;
+      }
+    }
+
+    function displayUniquleStreetList(features, AddrNumber) {
+      //get unique value
+      var unique = {};
+      var distinct = [];
+      for (var i in features) {
+        if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+          distinct.push(features[i].attributes.STREETLABEL);
+        }
+        unique[features[i].attributes.STREETLABEL] = 0;
+      }
+
+      var tempAddrNum;
+      if (AddrNumber == 0) {
+        tempAddrNum = "";
+      } else {
+        tempAddrNum = "".concat(AddrNumber, " ");
+      }
+
+      distinct = distinct.slice(0, 5).map(function (val) {
+        return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+      });
+
+
+      domClass.remove('suggestedAddresses', 'd-none');
+      dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
+      domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+        btn.onclick = function () {
+          search.search(this.textContent);
+        };
+      });
+    }
+
+
+    function findArrayInAliasExtend(AddrRoad) {
+      var AliasExtend = {
+        "1ST": "FIRST",
+        "2ND": "SECOND",
+        "3RD": "THIRD",
+        "4TH": "FOURTH",
+        "5TH": "FIFTH",
+        "6TH": "SIXTH",
+        "7TH": "SEVENTH",
+        "9TH": "NINTH",
+        "10TH": "TENTH",
+        "11TH": "ELEVENTH",
+        "12TH": "TWELFTH",
+        "13TH": "THIRTEENTH",
+        "15TH": "FIFTEENTH",
+        "16TH": "SIXTEENTH",
+        "17TH": "SEVENTEENTH",
+        "1": "FIRST",
+        "2": "SECOND",
+        "3": "THIRD",
+        "4": "FOURTH",
+        "5": "FIFTH",
+        "6": "SIXTH",
+        "7": "SEVENTH",
+        "9": "NINTH",
+        "10": "TENTH",
+        "11": "ELEVENTH",
+        "12": "TWELFTH",
+        "13": "THIRTEENTH",
+        "15": "FIFTEENTH",
+        "16": "SIXTEENTH",
+        "17": "SEVENTEENTH"
+      };
+
+
+      var str = AddrRoad.split(" ");
+      str = str.map(function (val) {
+        if (AliasExtend[val]) {
+          return AliasExtend[val];
+        } else {
+          return val;
+        }
+
+      });
+      console.log(str.join(" ").trim());
+      return str.join(" ").trim();
+
+    }
+  });
+
+  search.on("select-result", function (e) {
+    var i, result;
+    view.zoom = 12;
+    if (e.result) {
+      console.log("Address valid by address locator");
+
+      //update url
+      if (e.result.name) {
+        window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
+      }
+
+      //show result
+      domClass.remove('nodeResult', 'd-none');
+
+
+      //get information from parcel layer by Ref_ID(addressID)
+      multiSearch.searchResult.addressID = e.result.feature.attributes.Ref_ID;
+      multiSearch.searchResult.address = e.result.name;
+      multiSearch.searchResult.addressGeometry = e.result.feature.geometry;
+      multiSearch.getInforByAddressID();
+
+      getCrimeData(e.result.feature.geometry);
+      showSubMap(e.result.feature.geometry);
+
+      // projecting using geometr"y service:
+      //"project search result, make it under stateplane. ");
+      var params = new ProjectParameters({
+        geometries: [e.result.feature.geometry],
+        outSpatialReference: multiSearch.spatialReference
+      });
+      var geometries = geometryService.project(params).then(function (geometries) {
+        console.log('get input geometry');
+        multiSearch.geometry = geometries[0];
+        //console.log("Finding nearest city facilities and get distance");
+        multiSearch.getNearestCityFacilityList();
+        multiSearch.getServiceZoneList();
+      }, function (error) {
+        console.log("Error on select search result:", error);
+
+        alert("Timeout exceeded. Please refresh the page and try again. If this error keeps happening, please contact helpdesk.");
+      });
+    }
+
+  });
+  
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
@@ -764,7 +757,7 @@ require([
   function getURLQueryVariable(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
+    for (let i = 0; i < vars.length; i++) {
       var pair = vars[i].split("=");
       if (pair[0] == variable) {
         return pair[1];
