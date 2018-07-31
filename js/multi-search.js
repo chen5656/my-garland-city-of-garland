@@ -201,7 +201,6 @@ define([
       var queryRequest = [];
 
       for (var i in this.serviceZoneSourceList) {
-        // findServiceZone(this.geometry, this.serviceZoneSourceList[i]);
         var queryTask = new QueryTask({
           url: this.serviceZoneSourceList[i].url
         });
@@ -218,6 +217,7 @@ define([
           var result;
           if (response[i].features.length > 0) {
             result = {
+              id:featureSet.id,
               title: featureSet.name,
               serviceZone: response[i].features[0].attributes,
               displayFieldName: response[i].displayFieldName,
@@ -228,6 +228,7 @@ define([
           } else {
             //no polygon returns.
             result = {
+              id:featureSet.id,
               title: featureSet.name,
               containerID: featureSet.containerID, //"1_2",
               displayID: featureSet.displayID, //"1",
@@ -244,33 +245,6 @@ define([
       }).catch(function (e) {
         console.log("Error - getServiceZoneList:", e);
       });
-
-      function findServiceZone(geometry, featureSet) {
-
-
-        queryTask.execute(query).then(function (e) {
-          var result;
-          if (e.features.length > 0) {
-            result = {
-              title: featureSet.name,
-              serviceZone: e.features[0].attributes,
-              displayFieldName: e.displayFieldName,
-              containerID: featureSet.containerID, //"1_2",
-              displayID: featureSet.displayID, //"1",
-              queryPolygonCount: e.features.length
-            };
-          } else {
-            //no polygon returns.
-            result = {
-              title: featureSet.name,
-              queryPolygonCount: e.features.length
-            };
-
-          }
-          that.searchResult.serviceZoneList.push(result);
-
-        });
-      }
     }
 
   });

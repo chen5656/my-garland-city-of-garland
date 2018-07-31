@@ -25,8 +25,8 @@ require([
   "dojo/dom-construct",
 
   'js/multi-search.js',
-  "dojo/text!/maps/mygarland/setting/config.json",
-  "dojo/text!/maps/mygarland/setting/multilayers.json",
+  "dojo/text!/app-config/mygarland/config.json",
+  "dojo/text!/app-config/mygarland/multilayers.json",
 
   'dojo/domReady!'
 ], function (
@@ -443,7 +443,6 @@ require([
     return url.replace("ab", str.charAt(0).concat(str.slice(-1)));
   }
 
-
   function addHyperlinks(eventName) {
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
@@ -452,7 +451,6 @@ require([
     }
 
     if (eventName == "npo") {
-      debugger;
       //add a phone icon and email icon after police officer name
       var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
