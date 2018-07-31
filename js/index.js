@@ -25,7 +25,6 @@ require([
   "dojo/dom-construct",
 
   'js/multi-search.js',
-  "dojo/text!/setting/mapService.json",
   "dojo/text!/maps/mygarland/setting/config.json",
   "dojo/text!/maps/mygarland/setting/multilayers.json",
 
@@ -40,13 +39,9 @@ require([
 
   topic, domQuery, domAttr,domConstruct,
 
-  nameMultiSearch, mapService_json, config_json, multilayers_json
+  nameMultiSearch, config_json, multilayers_json
 
 ) {
-  //reading setting file
-  var serviceUrl = JSON.parse(mapService_json);
-  var parcelInfo_obj2;
-
   'use strict';
   var view, search, appSetting, multiSearch, geometryService;
 
@@ -205,89 +200,29 @@ require([
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
-    var arr = multiSearch.searchResult.serviceZoneList;
-    if (parcelInfo_obj2) {
-      if (parcelInfo_obj2.length > 0) {
-        arr = arr.concat(parcelInfo_obj2);
+   
+    displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
 
-      }
 
-    }
-    var containerID = ["service", "neighborhoods", "planning_development-zoning"];
-    for (var i in containerID) {
-      var subArr = arr.filter(function (val) {
-        return val.containerID == containerID[i];
-      }).sort(function (a, b) {
-        return a.displayID - b.displayID;
-      });
-      subArr = subArr.map(function (val) {
-        var title = val.title;
-        var value;
-        if (val.displayFieldName) {
-          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
-        } else {
-          value = "NULL";
-        }
-        var str = "".concat("<li><span class='location-data-tag'>", title, ":</span> ", "<span class='location-data-value'>", value, "</span></li>");
-        return str;
-      });
-      var node = dom.byId(containerID[i]);
-      node.innerHTML = "<ul>".concat(subArr.join(""), "</ul>");
-    }
-
-    //update EWS-link
+    //show EWS-link
     domClass.remove('EWS-link', 'd-none');
+
+    //update npo hyperlink
+    addHyperlinks("npo");
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
-    function getHtlmForNearestFacilitiesWithAddress(val) {
-      var obj = {
-        title: val.title,
-        name: (val.nearestFeature.BLDG_NAME ? val.nearestFeature.BLDG_NAME : ""),
-        address_title: val.title + " Address",
-        address: (val.nearestFeature.ADDRESS ? val.nearestFeature.ADDRESS : ""),
-        distance: val.distance
-      };
-      obj.googleLink = openInGoogleMap({
-        type: "FindDireciton",
-        originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-        destinationAdd: "Garland+" + obj.address.replace(/\s|\t/g, "+")
-      });
-      var str = "".concat("<li><span class='location-data-tag'>", obj.title, ":</span> ", "<span class='location-data-value'>", obj.address, "</span>", "<span class='location-data-distance'>", " (", obj.distance, " miles)</span>", "<span class='location-data-value'><a href='", obj.googleLink, "'  target='_blank' title='Open in Google Map'> ", obj.name, "</a></span></li>");
-      return str;
-    }
+
     console.log("multiSearch/nearestCityFacilityUpdated");
-    var arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
+    var dataList = multiSearch.searchResult.nearestCityFacilityList;
+    displayLocationData(dataList.filter(function (val) {
       return val.containerID == "nearestCityFacility";
-    }).sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
-      return getHtlmForNearestFacilitiesWithAddress(val);
-    });
+    }), "last");
+    displayLocationData(dataList.filter(function (val) {
+      return val.containerID == "service";
+    }), "first");
 
-    var node = dom.byId("nearestCityFacility");
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
-
-    arr = multiSearch.searchResult.nearestCityFacilityList.filter(function (val) {
-      return val.containerID == "nearestPark";
-    }).sort(function (a, b) {
-      return a.displayID - b.displayID;
-    }).map(function (val) {
-      if (val.nearestFeature.PARKS) { //parks
-        var link = getParkLink(val.nearestFeature.PARKS);
-
-        var str = "".concat("<li><span class='location-data-tag'>", val.title, ":</span> ", "<span class='location-data-value'>", "<a href='", link, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.PARKS, "</a></span></li>");
-        return str;
-      } else { //not parks
-        return getHtlmForNearestFacilitiesWithAddress(val);
-      }
-
-    });
-    node = dom.byId("nearestPark");
-    domClass.remove('nearestPark', 'd-none');
-    node.innerHTML = "<ul>".concat(arr.join(""), "</ul>");
   });
-
 
   function displayLocationData(dataList, order) {
     var containerID = ["nearestCityFacility", "service"];
@@ -361,6 +296,7 @@ require([
   }
 
   function displayReferenceData(dataList, order) {
+   
     var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
     var i;
     //remove load-wrapp
@@ -409,6 +345,105 @@ require([
     }
   }
 
+
+  //open crime page
+  function getCrimeData(val) {
+    console.log("crime map:");
+    if (dom.byId("crimeData")) {
+      dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='https://www.crimereports.com/' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
+    }
+
+    var lat = val.latitude;
+    var long = val.longitude;
+    var numberX = 0.03265857696533;
+    var numberY = 0.02179533454397;
+
+    var lat1 = lat + numberY;
+    var lat2 = lat - numberY;
+    var long1 = long + numberX;
+    var long2 = long - numberX;
+
+    var today = new Date();
+    today.setHours(0, 0, 0);
+    var yesterday = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
+    var severDaysAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
+    var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
+    var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
+
+    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
+    console.log("crime map:", url);
+    var node = dom.byId("crimeDataIFrame");
+    node.src = url;
+    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
+
+    dom.byId("open-crime-map").setAttribute("href", url);
+  }
+
+  function showSubMap(val) {
+    var node = dom.byId("subMap");
+    node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
+
+    var lat = val.latitude;
+    var long = val.longitude;
+    var mapImageLayerList = new MapImageLayer(appSetting.subMap);
+    var subMap = new Map({
+      basemap: "topo",
+      layers: [mapImageLayerList]
+    });
+    var subView = new MapView({
+      container: 'subMapView',
+      map: subMap,
+      zoom: 18,
+      center: [long, lat],
+      constraints: {
+        rotationEnabled: false
+      }
+    });
+
+    //add a graphic point of the address
+    // // Create a symbol for drawing the point
+
+    var markerSymbol = {
+      type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+      color: [226, 119, 40]
+    };
+    var pntAtt = {
+      Title: "Geolocator result",
+      Info: multiSearch.searchResult.address,
+      AddressID: multiSearch.searchResult.addressID
+    };
+
+    // Create a graphic and add the geometry and symbol to it
+    var pointGraphic = new Graphic({
+      geometry: multiSearch.searchResult.addressGeometry,
+      symbol: markerSymbol,
+      attributes: pntAtt
+    });
+    subView.graphics.add(pointGraphic);
+  }
+
+  function openInGoogleMap(location) {
+    if (location.type == "FindDireciton") {
+      var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
+      var destinationAdd = location.destinationAdd; //garland+police+department
+      var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
+      return url;
+    } else if (location.type == "FindLocation") {
+      return "https://www.google.com/maps/search/".concat(location.destinationAdd);
+    }
+  }
+
+  function getParkLink(parkName) {
+    var url = appSetting.cog_park_site;
+    var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
+    var firstLetter = parkName.toLowerCase().charAt(0);
+    var str = parkList.filter(function (value) {
+      return value.indexOf(firstLetter) != -1;
+    })[0];
+    return url.replace("ab", str.charAt(0).concat(str.slice(-1)));
+  }
+
+
   function addHyperlinks(eventName) {
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
@@ -417,16 +452,19 @@ require([
     }
 
     if (eventName == "npo") {
+      debugger;
       //add a phone icon and email icon after police officer name
-      console.log(multiSearch.searchResult);
-      var npoInfo = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+      var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
-      })[0].serviceZone;
+      });
+      console.log(item);
+     var npoInfo=item [0].serviceZone;
       var npoParent = dom.byId("npo").parentNode;
       npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:", npoInfo.PHONE, "'><i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i></a> <a href='mailto:", npoInfo.EMAIL, "'><i class='fas fa-envelope' title= '", npoInfo.EMAIL, "'></i></a>");
     }
   }
-  //query can get a list of features inside a distance.
+
+  
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
@@ -454,111 +492,6 @@ require([
     });
   });
 
- 
-
-  function displayUniquleStreetList(features, AddrNumber) {
-    //get unique value
-    var unique = {};
-    var distinct = [];
-    for (var i in features) {
-      if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-        distinct.push(features[i].attributes.STREETLABEL);
-      }
-      unique[features[i].attributes.STREETLABEL] = 0;
-    }
-
-    var tempAddrNum;
-    if (AddrNumber == 0) {
-      tempAddrNum = "";
-    } else {
-      tempAddrNum = "".concat(AddrNumber, " ");
-    }
-
-    distinct = distinct.slice(0, 5).map(function (val) {
-      return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
-    });
-
-
-    domClass.remove('suggestedAddresses', 'd-none');
-    dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
-    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-      btn.onclick = function () {
-        search.search(this.textContent);
-      };
-    });
-  }
-
-  function closestNums(num, arr) {
-    var numsIndex = arr.length - 1;
-    if (arr.length > 5) {
-      for (var i = 0; i < arr.length; i++) {
-        if (num < arr[i].streetNumber) {
-          if (arr.length - (i + 3) < 0) {
-            numsIndex = arr.length - 1;
-          } else {
-            numsIndex = i + 2;
-          }
-          break;
-        }
-      }
-      if (numsIndex < 4) {
-        numsIndex = 4;
-      }
-      return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-
-    } else {
-      return arr;
-    }
-  }
-
-  function findArrayInAliasExtend(AddrRoad) {
-    var AliasExtend = {
-      "1ST": "FIRST",
-      "2ND": "SECOND",
-      "3RD": "THIRD",
-      "4TH": "FOURTH",
-      "5TH": "FIFTH",
-      "6TH": "SIXTH",
-      "7TH": "SEVENTH",
-      "9TH": "NINTH",
-      "10TH": "TENTH",
-      "11TH": "ELEVENTH",
-      "12TH": "TWELFTH",
-      "13TH": "THIRTEENTH",
-      "15TH": "FIFTEENTH",
-      "16TH": "SIXTEENTH",
-      "17TH": "SEVENTEENTH",
-      "1": "FIRST",
-      "2": "SECOND",
-      "3": "THIRD",
-      "4": "FOURTH",
-      "5": "FIFTH",
-      "6": "SIXTH",
-      "7": "SEVENTH",
-      "9": "NINTH",
-      "10": "TENTH",
-      "11": "ELEVENTH",
-      "12": "TWELFTH",
-      "13": "THIRTEENTH",
-      "15": "FIFTEENTH",
-      "16": "SIXTEENTH",
-      "17": "SEVENTEENTH"
-    };
-
-
-    var str = AddrRoad.split(" ");
-    str = str.map(function (val) {
-      if (AliasExtend[val]) {
-        return AliasExtend[val];
-      } else {
-        return val;
-      }
-
-    });
-    console.log(str.join(" ").trim());
-    return str.join(" ").trim();
-
-  }
   search.on("search-complete", function (e) {
     if (e.numResults == 0) {
       //no result found. Suggestion the nearest result
@@ -675,7 +608,7 @@ require([
     function closestNums(num, arr) {
       var numsIndex = arr.length - 1;
       if (arr.length > 5) {
-        for (let i = 0; i < arr.length; i++) {
+        for (var i = 0; i < arr.length; i++) {
           if (num < arr[i].streetNumber) {
             if (arr.length - (i + 3) < 0) {
               numsIndex = arr.length - 1;
@@ -789,11 +722,6 @@ require([
         window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
       }
 
-      // //update localStorage
-      // if (typeof (Storage) !== "undefined") {
-      //   localStorage.setItem("mygl-lastaddr", e.result.name);
-      // }
-
       //show result
       domClass.remove('nodeResult', 'd-none');
 
@@ -829,114 +757,6 @@ require([
 
   });
 
-
-  //open crime page
-  function getCrimeData(val) {
-    console.log("crime map:");
-    if (dom.byId("crimeData")) {
-      dom.byId("crimeData").innerHTML = "<iframe id='crimeDataIFrame' src='https://www.crimereports.com/' height='400' width='100%' sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>";
-    }
-
-    var lat = val.latitude;
-    var long = val.longitude;
-    var numberX = 0.03265857696533;
-    var numberY = 0.02179533454397;
-
-    var lat1 = lat + numberY;
-    var lat2 = lat - numberY;
-    var long1 = long + numberX;
-    var long2 = long - numberX;
-
-    var today = new Date();
-    today.setHours(0, 0, 0);
-    var yesterday = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
-    var severDaysAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-    var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
-    var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
-
-    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
-    console.log("crime map:", url);
-    var node = dom.byId("crimeDataIFrame");
-    node.src = url;
-    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
-
-    dom.byId("open-crime-map").setAttribute("href", url);
-  }
-
-  function showSubMap(val) {
-    var node = dom.byId("subMap");
-    node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
-
-    var lat = val.latitude;
-    var long = val.longitude;
-    var mapImageLayerList = new MapImageLayer({
-      url: serviceUrl.otherurl.mapserver.url,
-      sublayers: [{
-        id: serviceUrl.mapservice.parcel.id,
-        visible: true
-      }, {
-        id: serviceUrl.mapservice.address.id,
-        visible: true
-      }]
-    });
-    var subMap = new Map({
-      basemap: "topo",
-      layers: [mapImageLayerList]
-    });
-    var subView = new MapView({
-      container: 'subMapView',
-      map: subMap,
-      zoom: 18,
-      center: [long, lat],
-      constraints: {
-        rotationEnabled: false
-      }
-    });
-
-    //add a graphic point of the address
-    // // Create a symbol for drawing the point
-
-    var markerSymbol = {
-      type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-      color: [226, 119, 40]
-    };
-    var pntAtt = {
-      Title: "Geolocator result",
-      Info: multiSearch.searchResult.address,
-      AddressID: multiSearch.searchResult.addressID
-    };
-
-    // Create a graphic and add the geometry and symbol to it
-    var pointGraphic = new Graphic({
-      geometry: multiSearch.searchResult.addressGeometry,
-      symbol: markerSymbol,
-      attributes: pntAtt
-    });
-    subView.graphics.add(pointGraphic);
-  }
-
-  function openInGoogleMap(location) {
-    if (location.type == "FindDireciton") {
-      var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
-      var destinationAdd = location.destinationAdd; //garland+police+department
-      var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
-      return url;
-    } else if (location.type == "FindLocation") {
-      return "https://www.google.com/maps/search/".concat(location.destinationAdd);
-    }
-  }
-
-  function getParkLink(parkName) {
-    var url = serviceUrl.otherurl.parks.url;
-    var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
-    var firstLetter = parkName.toLowerCase().charAt(0);
-    var str = parkList.filter(function (value) {
-      return value.indexOf(firstLetter) != -1;
-    })[0];
-    return url.concat(str.charAt(0), str.slice(-1), "/default.asp");
-  }
-
-
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
@@ -954,9 +774,4 @@ require([
     return (false);
   }
 
-  function getMapServiceUrl(itemName) {
-
-    var val = serviceUrl.mapservice[itemName];
-    return val.url.concat("/", val.id);
-  }
 });
