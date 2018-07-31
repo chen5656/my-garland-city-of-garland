@@ -37,15 +37,14 @@ require([
   GeometryService, projection, ProjectParameters,
   Graphic,
 
-  topic, domQuery, domAttr, domConstruct,
+  topic, domQuery, domAttr,domConstruct,
 
   nameMultiSearch, config_json, multilayers_json
 
 ) {
-
   'use strict';
-
   var view, search, appSetting, multiSearch, geometryService;
+
   //init: topMap, search, appSetting, multiSearch
   (function () {
     //reading setting file
@@ -201,7 +200,9 @@ require([
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
+   
     displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
+
 
     //show EWS-link
     domClass.remove('EWS-link', 'd-none');
@@ -226,10 +227,10 @@ require([
   function displayLocationData(dataList, order) {
     var containerID = ["nearestCityFacility", "service"];
     var i;
-    //remove load-wrap
+    //remove load-wrapp
     for (i in containerID) {
       var node = dom.byId(containerID[i]);
-      domQuery(".load-wrap", node).forEach(function (child) {
+      domQuery(".load-wrapp", node).forEach(function (child) {
         node.removeChild(child);
       });
     }
@@ -295,12 +296,13 @@ require([
   }
 
   function displayReferenceData(dataList, order) {
+   
     var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
     var i;
-    //remove load-wrap
+    //remove load-wrapp
     for (i in containerID) {
       var node = dom.byId(containerID[i]);
-      domQuery(".load-wrap", node).forEach(function (child) {
+      domQuery(".load-wrapp", node).forEach(function (child) {
         node.removeChild(child);
       });
     }
@@ -342,6 +344,7 @@ require([
       });
     }
   }
+
 
   //open crime page
   function getCrimeData(val) {
@@ -440,6 +443,7 @@ require([
     return url.replace("ab", str.charAt(0).concat(str.slice(-1)));
   }
 
+
   function addHyperlinks(eventName) {
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
@@ -448,17 +452,19 @@ require([
     }
 
     if (eventName == "npo") {
+      debugger;
       //add a phone icon and email icon after police officer name
-      console.log(multiSearch.searchResult);
-      var npoInfo = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+      var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
-      })[0].serviceZone;
+      });
+      console.log(item);
+     var npoInfo=item [0].serviceZone;
       var npoParent = dom.byId("npo").parentNode;
       npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:", npoInfo.PHONE, "'><i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i></a> <a href='mailto:", npoInfo.EMAIL, "'><i class='fas fa-envelope' title= '", npoInfo.EMAIL, "'></i></a>");
     }
   }
 
-  //query can get a list of features inside a distance.
+  
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
@@ -468,17 +474,18 @@ require([
     multiSearch.startNewSearch();
 
     //cardBodies
-    // class='add-load-wrap'
-    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.classList.contains("add-load-wrap")) {
+     // class='add-load-wrapp'
+     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
+      if (node.classList.contains("add-load-wrapp")) {
         //remove old data
         var children = node.childNodes;
         for(var i=0;i<children.length-1;i++){
           node.removeChild(children[i]);
         }
-        //add load-wrap
+       
+        //add load-wrapp
         domConstruct.create("div", {
-          className: "load-wrap"
+          className: "load-wrapp"
         }, node);
         domConstruct.create("ul", null, node);
       }
@@ -550,7 +557,7 @@ require([
           var str = AddrRoad.split(" ");
 
           var longestStr = str[0];
-          for (let i = 1; i < str.length; i++) {
+          for (var i = 1; i < str.length; i++) {
             if (longestStr.length < str[i].length) {
               longestStr = str[i];
             }
@@ -597,10 +604,11 @@ require([
       });
     }
 
+    
     function closestNums(num, arr) {
       var numsIndex = arr.length - 1;
       if (arr.length > 5) {
-        for (let i = 0; i < arr.length; i++) {
+        for (var i = 0; i < arr.length; i++) {
           if (num < arr[i].streetNumber) {
             if (arr.length - (i + 3) < 0) {
               numsIndex = arr.length - 1;
@@ -724,10 +732,11 @@ require([
       multiSearch.searchResult.addressGeometry = e.result.feature.geometry;
       multiSearch.getInforByAddressID();
 
+
       getCrimeData(e.result.feature.geometry);
       showSubMap(e.result.feature.geometry);
 
-      // projecting using geometr"y service:
+      // projecting using geometry service:
       //"project search result, make it under stateplane. ");
       var params = new ProjectParameters({
         geometries: [e.result.feature.geometry],
@@ -747,7 +756,7 @@ require([
     }
 
   });
-  
+
   if (getURLQueryVariable("address")) {
     var address = getURLQueryVariable("address").replace(/%20/g, ' ');
     search.search(address);
@@ -756,7 +765,7 @@ require([
   function getURLQueryVariable(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
-    for (let i = 0; i < vars.length; i++) {
+    for (var i = 0; i < vars.length; i++) {
       var pair = vars[i].split("=");
       if (pair[0] == variable) {
         return pair[1];
