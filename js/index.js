@@ -37,7 +37,7 @@ require([
   GeometryService, projection, ProjectParameters,
   Graphic,
 
-  topic, domQuery, domAttr,domConstruct,
+  topic, domQuery, domAttr, domConstruct,
 
   nameMultiSearch, config_json, multilayers_json
 
@@ -200,7 +200,7 @@ require([
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
     console.log("multiSearch/serviceZoneListUpdated");
-   
+
     displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
 
 
@@ -261,7 +261,7 @@ require([
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>"),
+            innerHTML: "".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>")
             //id: val.id
           }, li);
 
@@ -296,7 +296,7 @@ require([
   }
 
   function displayReferenceData(dataList, order) {
-   
+
     var containerID = ["service", "neighborhoods", "planning_development-zoning", "parcelInfo"];
     var i;
     //remove load-wrapp
@@ -455,14 +455,25 @@ require([
       var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
       });
-      console.log(item);
-     var npoInfo=item [0].serviceZone;
-      var npoParent = dom.byId("npo").parentNode;
-      npoParent.innerHTML = npoParent.innerHTML.concat(" <a href='tel:", npoInfo.PHONE, "'><i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i></a> <a href='mailto:", npoInfo.EMAIL, "'><i class='fas fa-envelope' title= '", npoInfo.EMAIL, "'></i></a>");
+      if (item.length > 0) {
+        var npoInfo = item[0].serviceZone;
+        var npoParent = dom.byId("npo").parentNode;
+
+        domConstruct.create("a", {
+          href: "tel:".concat(npoInfo.PHONE, "'"),
+          innerHTML: "".concat(" <i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i> ")
+        }, npoParent);
+
+        domConstruct.create("a", {
+          href: "mailto:".concat(npoInfo.EMAIL, "'"),
+          innerHTML: "".concat(" <i class='fas fa-envelope' title='", npoInfo.EMAIL, "'></i> ")
+        }, npoParent);
+
+      }
     }
   }
 
-  
+
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
@@ -472,15 +483,15 @@ require([
     multiSearch.startNewSearch();
 
     //cardBodies
-     // class='add-load-wrapp'
-     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
+    // class='add-load-wrapp'
+    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
       if (node.classList.contains("add-load-wrapp")) {
         //remove old data
         var children = node.childNodes;
-        for(var i=0;i<children.length-1;i++){
+        for (var i = 0; i < children.length - 1; i++) {
           node.removeChild(children[i]);
         }
-       
+
         //add load-wrapp
         domConstruct.create("div", {
           className: "load-wrapp"
@@ -537,13 +548,23 @@ require([
           }).sort(function (a, b) {
             return a.streetNumber - b.streetNumber;
           });
-          //find close nums
-          var closestAddressList = closestNums(AddrNumber, AddList).map(function (val) {
-            return "".concat("<li><button class = 'btn btn-link'>", val.streetNumber, " ", val.streetLabel, "</button></li>");
-          });
-          //display data
+          //find close nums display data
           domClass.remove('suggestedAddresses', 'd-none');
-          dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", closestAddressList.join(" "), "</ul>");
+          var containerNode = dom.byId("address-links");          
+      containerNode.innerHTML="";
+          domConstruct.create("p", {
+            innerHTML: "Did you mean?"
+          }, containerNode);
+          var ulNode = domConstruct.create("ul", null, containerNode);
+          closestNums(AddrNumber, AddList).forEach(function (val) {
+            var li = domConstruct.create("li", null, ulNode);
+
+            domConstruct.create("button", {
+              className: "btn btn-link",
+              innerHTML: "".concat(val.streetNumber, " ", val.streetLabel)
+            }, li);
+          });
+
           domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
             btn.onclick = function () {
               search.search(this.textContent);
@@ -602,7 +623,7 @@ require([
       });
     }
 
-    
+
     function closestNums(num, arr) {
       var numsIndex = arr.length - 1;
       if (arr.length > 5) {
@@ -644,13 +665,22 @@ require([
         tempAddrNum = "".concat(AddrNumber, " ");
       }
 
-      distinct = distinct.slice(0, 5).map(function (val) {
-        return "".concat("<li><button class = 'btn btn-link'>", tempAddrNum, val, "</button></li>");
+      domClass.remove('suggestedAddresses', 'd-none');
+      var containerNode = dom.byId("address-links");
+      containerNode.innerHTML="";
+      domConstruct.create("p", {
+        innerHTML: "Did you mean?"
+      }, containerNode);
+      var ulNode = domConstruct.create("ul", null, containerNode);
+      distinct.slice(0, 5).forEach(function (val) {
+        var li = domConstruct.create("li", null, ulNode);
+
+        domConstruct.create("button", {
+          className: "btn btn-link",
+          innerHTML: "".concat(tempAddrNum, val)
+        }, li);
       });
 
-
-      domClass.remove('suggestedAddresses', 'd-none');
-      dom.byId("address-links").innerHTML = "".concat("<p>Did you mean?</p>", "<ul>", distinct.join(" "), "</ul>");
       domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
         btn.onclick = function () {
           search.search(this.textContent);
