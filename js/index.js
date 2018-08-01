@@ -50,16 +50,16 @@ require([
     //reading setting file
     appSetting = JSON.parse(config_json);
 
-    var mapImageLayerList = new MapImageLayer(appSetting.mapInTop);
+    var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
     var map = new Map({
-      basemap: 'gray',
+      basemap:appSetting.mapInTop.basemap,
       layers: [mapImageLayerList]
     });
     view = new MapView({
       container: 'viewDiv',
       map: map,
-      zoom: 12,
-      center: [-96.636269, 32.91676]
+      zoom: appSetting.mapInTop.zoom,
+      center: appSetting.mapInTop.center
     });
 
     //search widget
@@ -69,18 +69,11 @@ require([
       container: "search",
       allPlaceholder: ".",
       locationEnabled: false,
-      sources: [{
-        locator: new Locator({
-          url: locSetting.url
-        }),
-        outFields: locSetting.outFields,
-        singleLineFieldName: locSetting.singleLineFieldName,
-        name: locSetting.name,
-        placeholder: locSetting.placeholder,
-        suggestionsEnabled: locSetting.suggestionsEnabled,
-        maxSuggestions: locSetting.maxSuggestions,
-        minSuggestCharacters: locSetting.minSuggestCharacters
-      }]
+      sources: [
+        Object.assign({locator: new Locator({
+          url: appSetting.locator.locatorUrl
+        })}, appSetting.locator.sourceSetting)
+    ]
     });
 
     //create multisearch widget.
@@ -474,7 +467,6 @@ require([
     }
   }
 
-
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
@@ -488,16 +480,14 @@ require([
     domQuery(".card-body>div", "nodeResult").forEach(function (node) {
       if (node.classList.contains("add-load-wrapp")) {
         //remove old data
-        var children = node.childNodes;
-        for (var i = 0; i < children.length - 1; i++) {
-          node.removeChild(children[i]);
+        var ulNode = domQuery("ul", node);
+        if (ulNode.length > 0) {
+          ulNode[0].innerHTML = "";
         }
-
         //add load-wrapp
         domConstruct.create("div", {
           className: "load-wrapp"
         }, node);
-        domConstruct.create("ul", null, node);
       }
     });
   });
