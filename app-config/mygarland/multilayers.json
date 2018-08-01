@@ -1,11 +1,13 @@
 {
   "cityFacilitySourceList": [{
+      "id": "city-hall",
       "name": "City Hall",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "BLDG_NAME='CITY HALL'",
       "containerID": "nearestCityFacility",
       "displayID": "1"
     }, {
+      "id": "customer-service",
       "name": "Customer Service",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "BLDG_NAME='UTILITY SERVICES'",
@@ -13,6 +15,7 @@
       "displayID": "5"
     },
     {
+      "id": "police-station",
       "name": "Police Station",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "BLDG_NAME='POLICE STATION'",
@@ -20,6 +23,7 @@
       "displayID": "2"
     },
     {
+      "id": "municipal-courts",
       "name": "Municipal Courts",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "DEPT='COURTS'",
@@ -27,6 +31,7 @@
       "displayID": "3"
     },
     {
+      "id": "nearest-fire-station",
       "name": "Nearest Fire Station",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
@@ -34,18 +39,21 @@
       "displayID": "4"
     },
     {
+      "id": "nearest-library",
       "name": "Nearest Library",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "DEPT='LIBRARY'",
       "containerID": "nearestCityFacility",
       "displayID": "6"
     }, {
+      "id": "nearest-park",
       "name": "Nearest Park",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/14",
       "where": "1=1",
       "containerID": "service",
       "displayID": 1
     }, {
+      "id": "nearest-recreation-center",
       "name": "Nearest Recreation Center",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
       "where": "DEPT='PARKS' and CAMPUS like '%RECREATION%'",

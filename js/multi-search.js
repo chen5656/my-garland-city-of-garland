@@ -69,6 +69,7 @@ define([
         queryTask.execute(query).then(function (results) {
           // Results.graphics contains the graphics returned from query
           that.cityFacilityList.push({
+            id: queryParameter.id,
             name: queryParameter.name,
             containerID:queryParameter.containerID,
             displayID: queryParameter.displayID,
@@ -141,6 +142,7 @@ define([
           var minFeature = featureSet.features[minIndex];
 
           var result = {
+            id: featureSet.id,
             title: featureSet.name,
             containerID:featureSet.containerID,
             displayID: featureSet.displayID,

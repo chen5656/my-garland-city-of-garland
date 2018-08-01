@@ -247,13 +247,14 @@ require([
         }
       });
       subArr.forEach(function (val) {
-
         var ulNode = domQuery("ul", containerNode)[0];
-        var li = domConstruct.create("li", null, ulNode, order);
+        var li = domConstruct.create("li", {
+          id: val.id
+        }, ulNode, order);
 
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML: val.title.concat(": ")
+          innerHTML: val.title.concat(": "),
         }, li);
 
         if (val.title == "Nearest Park") {
@@ -550,8 +551,8 @@ require([
           });
           //find close nums display data
           domClass.remove('suggestedAddresses', 'd-none');
-          var containerNode = dom.byId("address-links");          
-      containerNode.innerHTML="";
+          var containerNode = dom.byId("address-links");
+          containerNode.innerHTML = "";
           domConstruct.create("p", {
             innerHTML: "Did you mean?"
           }, containerNode);
@@ -667,7 +668,7 @@ require([
 
       domClass.remove('suggestedAddresses', 'd-none');
       var containerNode = dom.byId("address-links");
-      containerNode.innerHTML="";
+      containerNode.innerHTML = "";
       domConstruct.create("p", {
         innerHTML: "Did you mean?"
       }, containerNode);
