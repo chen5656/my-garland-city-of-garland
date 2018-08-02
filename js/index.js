@@ -385,7 +385,7 @@ require([
     if (location.type == "FindDireciton") {
       var originAdd = location.originAdd;
       var destinationAdd = location.destinationAdd;
-      return appSetting.google_direction.replace(/%d/, originAdd).replace(/%s/, destinationAdd);
+      return appSetting.google_direction.replace(/%o/, originAdd).replace(/%d/, destinationAdd);
     }
   }
 

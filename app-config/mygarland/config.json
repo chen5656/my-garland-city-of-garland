@@ -40,9 +40,8 @@
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
   "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
 
-  "cog_council_site": "https://www.garlandtx.gov/gov/cd/council/bio/district%.asp",
-  "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%d/default.asp",
-  "google_direction":"https://www.google.com/maps/dir/?api=1&origin=%s&destination=%s,Garland",
+  "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%s/default.asp",
+  "google_direction":"https://www.google.com/maps/dir/?api=1&origin=%o&destination=%d,Garland",
   
   "ews_link":"https://www.garlandtx.gov/gov/eg/ews/default.asp"
 
