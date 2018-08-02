@@ -267,7 +267,9 @@ require([
         }
         var ulNode = domQuery("ul", containerNode)[0];
 
-        var li = domConstruct.create("li", null, ulNode, order);
+        var li = domConstruct.create("li", {
+          id: val.id
+        }, ulNode, order);
 
         domConstruct.create("span", {
           className: "location-data-tag",
@@ -277,8 +279,7 @@ require([
         //create <a> as hyperlink, or <span> as text, and add hyperlink to <a>
         var valueNodeProperty = {
           className: "location-data-value",
-          innerHTML: innerHTML_value,
-          id: val.id
+          innerHTML: innerHTML_value
         };
         if (val.hyperlink) {
           var url = val.hyperlink_formula.url;
@@ -291,12 +292,13 @@ require([
               case "none":
                 break;
             }
-            url=url.replace(new RegExp(val.replaceWith, 'g'), newValue);
+            url = url.replace(new RegExp(val.replaceWith, 'g'), newValue);
           });
-          
+
           valueNodeProperty = Object.assign({
             "href": url,
-            "target": "_blank"
+            "target": "_blank",
+            "title": "Open to see details"
           }, valueNodeProperty);
           domConstruct.create("a", valueNodeProperty, li);
         } else {
@@ -404,32 +406,25 @@ require([
   }
 
   function addHyperlinks(eventName) {
-    debugger;
-    if (eventName == "council") {
-      var councilDist = dom.byId("council-dist");
-      councilDist.setAttribute("href", appSetting.cog_council_site.replace("2", councilDist.innerHTML));
-      councilDist.setAttribute("target", "_blank");
-    }
 
     if (eventName == "npo") {
       //add a phone icon and email icon after police officer name
       var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
       });
-      if (item.length > 0) {
-        var npoInfo = item[0].serviceZone;
-        var npoParent = dom.byId("npo").parentNode;
-
+      var nodes=domQuery(".location-data-value","npo");
+      if (item.length > 0 && nodes.length>0) {
+        var npoInfo = item[0].serviceZone;        
+        var npoNode =nodes[0];
         domConstruct.create("a", {
           href: "tel:".concat(npoInfo.PHONE, "'"),
           innerHTML: "".concat(" <i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i> ")
-        }, npoParent);
+        }, npoNode);
 
         domConstruct.create("a", {
           href: "mailto:".concat(npoInfo.EMAIL, "'"),
           innerHTML: "".concat(" <i class='fas fa-envelope' title='", npoInfo.EMAIL, "'></i> ")
-        }, npoParent);
-
+        }, npoNode);
       }
     }
   }
