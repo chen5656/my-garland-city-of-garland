@@ -68,13 +68,11 @@ define([
         });
         queryTask.execute(query).then(function (results) {
           // Results.graphics contains the graphics returned from query
-          that.cityFacilityList.push({
-            id: queryParameter.id,
-            name: queryParameter.name,
-            containerID:queryParameter.containerID,
-            displayID: queryParameter.displayID,
-            features: results.features
-          });
+          that.cityFacilityList.push(
+            Object.assign({
+              features: results.features
+            }, queryParameter)
+          );
         });
       }
     },
@@ -128,7 +126,7 @@ define([
       }
 
 
-      
+
       function findNearest(geometry, featureSet) {
         var distanceRequestList = [];
         for (var i in featureSet.features) {
@@ -140,15 +138,11 @@ define([
           var minDistance = Math.min.apply(null, response);
           var minIndex = response.indexOf(minDistance);
           var minFeature = featureSet.features[minIndex];
-
-          var result = {
-            id: featureSet.id,
-            title: featureSet.name,
-            containerID:featureSet.containerID,
-            displayID: featureSet.displayID,
+          var result =Object.assign({
             nearestFeature: minFeature.attributes,
             distance: minDistance.toFixed(2)
-          };
+          }, featureSet);
+    
           that.searchResult.nearestCityFacilityList.push(result);
           if (that.searchResult.nearestCityFacilityList.length == that.cityFacilityList.length + that.individualCityFacility.length) {
             //time to display data
@@ -219,7 +213,7 @@ define([
           var result;
           if (response[i].features.length > 0) {
             result = {
-              id:featureSet.id,
+              id: featureSet.id,
               title: featureSet.name,
               serviceZone: response[i].features[0].attributes,
               displayFieldName: response[i].displayFieldName,
@@ -230,7 +224,7 @@ define([
           } else {
             //no polygon returns.
             result = {
-              id:featureSet.id,
+              id: featureSet.id,
               title: featureSet.name,
               containerID: featureSet.containerID, //"1_2",
               displayID: featureSet.displayID, //"1",

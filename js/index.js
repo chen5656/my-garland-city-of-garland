@@ -43,12 +43,13 @@ require([
 
 ) {
   'use strict';
-  var view, search, appSetting, multiSearch, geometryService;
+  var view, search, appSetting, layerSetting, multiSearch, geometryService;
 
   //init: topMap, search, appSetting, multiSearch
   (function () {
     //reading setting file
     appSetting = JSON.parse(config_json);
+    layerSetting = JSON.parse(multilayers_json);
 
     var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
     var map = new Map({
@@ -79,7 +80,7 @@ require([
     });
 
     //create multisearch widget.
-    multiSearch = new GetMultiSearch(JSON.parse(multilayers_json));
+    multiSearch = new GetMultiSearch(layerSetting.layers);
     multiSearch.startup();
     multiSearch.prepareCityFacilityList();
 
@@ -123,15 +124,13 @@ require([
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
-    var obj =
-      appSetting.dataInParcelLayer.map(function (val) {
-        return Object.assign({
-          serviceZone: {
-            value: item[val.fieldName]
-          }
-        }, val);
-      });
-
+    var obj = layerSetting.parcelData.map(function (val) {
+      return Object.assign({
+        serviceZone: {
+          value: item[val.fieldName]
+        }
+      }, val);
+    });
     displayReferenceData(obj, "first");
   });
 
@@ -139,7 +138,6 @@ require([
     console.log("multiSearch/serviceZoneListUpdated");
 
     displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
-
 
     //show EWS-link
     domClass.remove('EWS-link', 'd-none');
@@ -189,12 +187,13 @@ require([
           id: val.id
         }, ulNode, order);
 
+        debugger;
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML: val.title.concat(": "),
+          innerHTML: val.name.concat(": "),
         }, li);
 
-        if (val.title == "Nearest Park") {
+        if (val.name == "Nearest Park") {
           var link = getParkLink(val.nearestFeature.PARKS);
 
           domConstruct.create("span", {
@@ -204,11 +203,11 @@ require([
           }, li);
 
         } else {
-
+          debugger;
           var googleLink = openInGoogleMap({
             type: "FindDireciton",
             originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-            destinationAdd: "Garland+" + val.nearestFeature.ADDRESS.replace(/\s|\t/g, "+")
+            destinationAdd: val.nearestFeature.ADDRESS.replace(/\s|\t/g, "+")
           });
 
           domConstruct.create("span", {
@@ -386,12 +385,9 @@ require([
 
   function openInGoogleMap(location) {
     if (location.type == "FindDireciton") {
-      var originAdd = location.originAdd; //2020+66+GARLAND+TX+75040
-      var destinationAdd = location.destinationAdd; //garland+police+department
-      var url = "https://www.google.com/maps/dir/?api=1&origin=".concat(originAdd, "&destination=", destinationAdd);
-      return url;
-    } else if (location.type == "FindLocation") {
-      return "https://www.google.com/maps/search/".concat(location.destinationAdd);
+      var originAdd = location.originAdd;
+      var destinationAdd = location.destinationAdd;
+      return appSetting.google_direction.replace(/%d/, originAdd).replace(/%s/, destinationAdd);
     }
   }
 
@@ -406,16 +402,15 @@ require([
   }
 
   function addHyperlinks(eventName) {
-
     if (eventName == "npo") {
       //add a phone icon and email icon after police officer name
       var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
         return val.id == "npo";
       });
-      var nodes=domQuery(".location-data-value","npo");
-      if (item.length > 0 && nodes.length>0) {
-        var npoInfo = item[0].serviceZone;        
-        var npoNode =nodes[0];
+      var nodes = domQuery(".location-data-value", "npo");
+      if (item.length > 0 && nodes.length > 0) {
+        var npoInfo = item[0].serviceZone;
+        var npoNode = nodes[0];
         domConstruct.create("a", {
           href: "tel:".concat(npoInfo.PHONE, "'"),
           innerHTML: "".concat(" <i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i> ")
