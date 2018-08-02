@@ -52,7 +52,7 @@ require([
 
     var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
     var map = new Map({
-      basemap:appSetting.mapInTop.basemap,
+      basemap: appSetting.mapInTop.basemap,
       layers: [mapImageLayerList]
     });
     view = new MapView({
@@ -70,10 +70,12 @@ require([
       allPlaceholder: ".",
       locationEnabled: false,
       sources: [
-        Object.assign({locator: new Locator({
-          url: appSetting.locator.locatorUrl
-        })}, appSetting.locator.sourceSetting)
-    ]
+        Object.assign({
+          locator: new Locator({
+            url: appSetting.locator.locatorUrl
+          })
+        }, appSetting.locator.sourceSetting)
+      ]
     });
 
     //create multisearch widget.
@@ -121,74 +123,16 @@ require([
   topic.subscribe("multiSearch/parcelInfoUpdated", function () {
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
-    var obj = [{
-      title: "City Council District",
-      containerID: "parcelInfo",
-      displayFieldName: "value",
-      displayID: 1,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: "<a id='council-dist' >".concat(item.COUNCIL_ID, "</a>"),
-      }
-    }, {
-      title: "Zip Code",
-      containerID: "parcelInfo",
-      displayFieldName: "value",
-      displayID: 2,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.ZIP_CODE
-      }
-    }, {
-      title: "Mapsco Grid",
-      containerID: "parcelInfo",
-      displayFieldName: "value",
-      displayID: 3,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.MAPSCO
-      }
-    }, {
-      title: "School District",
-      containerID: "parcelInfo",
-      displayFieldName: "value",
-      displayID: 4,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.SCHOOL_DISTRICT
-      }
-    }, {
-      title: "Land Use",
-      containerID: "planning_development-zoning",
-      displayFieldName: "value",
-      displayID: 1,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.LANDUSE
-      }
-    }, {
-      title: "ZONING",
-      containerID: "planning_development-zoning",
-      displayFieldName: "value",
-      displayID: 2,
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.ZONING
-      }
-    }, {
-      title: "Neighborhood",
-      containerID: "neighborhoods",
-      displayID: 1,
-      displayFieldName: "value",
-      queryPolygonCount: 1,
-      serviceZone: {
-        value: item.NEIGHBORHOOD
-      }
-    }];
+    var obj =
+      appSetting.dataInParcelLayer.map(function (val) {
+        return Object.assign({
+          serviceZone: {
+            value: item[val.fieldName]
+          }
+        }, val);
+      });
 
     displayReferenceData(obj, "first");
-
-    addHyperlinks("council");
   });
 
   topic.subscribe("multiSearch/serviceZoneListUpdated", function () {
@@ -314,11 +258,12 @@ require([
 
       });
       subArr.forEach(function (val) {
-        var value;
+        var innerHTML_value, value_tag_name;
+
         if (val.displayFieldName) {
-          value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
+          innerHTML_value = (val.serviceZone[val.displayFieldName] ? val.serviceZone[val.displayFieldName] : "NULL");
         } else {
-          value = "NULL";
+          innerHTML_value = "NULL";
         }
         var ulNode = domQuery("ul", containerNode)[0];
 
@@ -329,16 +274,37 @@ require([
           innerHTML: val.title.concat(": ")
         }, li);
 
-        domConstruct.create("span", {
+        //create <a> as hyperlink, or <span> as text, and add hyperlink to <a>
+        var valueNodeProperty = {
           className: "location-data-value",
-          innerHTML: value,
+          innerHTML: innerHTML_value,
           id: val.id
-        }, li);
-
+        };
+        if (val.hyperlink) {
+          var url = val.hyperlink_formula.url;
+          val.hyperlink_formula.replaceList.forEach(function (val) {
+            var newValue;
+            switch (val.type) {
+              case "displayValue":
+                newValue = innerHTML_value;
+                break;
+              case "none":
+                break;
+            }
+            url=url.replace(new RegExp(val.replaceWith, 'g'), newValue);
+          });
+          
+          valueNodeProperty = Object.assign({
+            "href": url,
+            "target": "_blank"
+          }, valueNodeProperty);
+          domConstruct.create("a", valueNodeProperty, li);
+        } else {
+          domConstruct.create("span", valueNodeProperty, li);
+        }
       });
     }
   }
-
 
   //open crime page
   function getCrimeData(val) {
@@ -438,6 +404,7 @@ require([
   }
 
   function addHyperlinks(eventName) {
+    debugger;
     if (eventName == "council") {
       var councilDist = dom.byId("council-dist");
       councilDist.setAttribute("href", appSetting.cog_council_site.replace("2", councilDist.innerHTML));
