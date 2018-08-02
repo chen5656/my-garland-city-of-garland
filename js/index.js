@@ -164,10 +164,7 @@ require([
     var i;
     //remove load-wrapp
     for (i in containerID) {
-      var node = dom.byId(containerID[i]);
-      domQuery(".load-wrapp", node).forEach(function (child) {
-        node.removeChild(child);
-      });
+      domQuery(".load-wrapp", containerID[i]).forEach(dojo.destroy);
     }
 
     for (i in containerID) {
@@ -236,10 +233,7 @@ require([
     var i;
     //remove load-wrapp
     for (i in containerID) {
-      var node = dom.byId(containerID[i]);
-      domQuery(".load-wrapp", node).forEach(function (child) {
-        node.removeChild(child);
-      });
+      domQuery(".load-wrapp", containerID[i]).forEach(dojo.destroy);
     }
 
     for (i in containerID) {
@@ -421,12 +415,12 @@ require([
       }
     }
 
-    if(eventName=="ews_link"){
+    if (eventName == "ews_link") {
       var node = dom.byId("ews_link");
       domConstruct.create("a", {
         href: appSetting.ews_link,
-        target:"_blank",
-        title:"goto Environmental Waste Services",
+        target: "_blank",
+        title: "goto Environmental Waste Services",
         innerHTML: "goto Environmental Waste Services<br> <img src='images/Env-Waste-Svcs.png' width='30%'/>"
       }, node);
     }
@@ -442,18 +436,16 @@ require([
 
     //cardBodies
     // class='add-load-wrapp'
-    domQuery(".card-body>div", "nodeResult").forEach(function (node) {
-      if (node.classList.contains("add-load-wrapp")) {
-        //remove old data
-        var ulNode = domQuery("ul", node);
-        if (ulNode.length > 0) {
-          ulNode[0].innerHTML = "";
-        }
-        //add load-wrapp
-        domConstruct.create("div", {
-          className: "load-wrapp"
-        }, node);
-      }
+    domQuery(".add-load-wrapp").forEach(function (node) {
+      //remove old data
+      domQuery("ul", node).forEach(function (val) {
+        val.innerHTML = "";
+      });
+      //add load-wrapp
+      domConstruct.create("div", {
+        className: "load-wrapp"
+      }, node);
+
     });
   });
 
@@ -757,7 +749,7 @@ require([
     }
     return (false);
   }
-  
-  addHyperlinks("EWS-link");
+
+  addHyperlinks("ews_link");
 
 });
