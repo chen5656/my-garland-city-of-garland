@@ -139,8 +139,8 @@ require([
 
     displayReferenceData(multiSearch.searchResult.serviceZoneList, "last");
 
-    //show EWS-link
-    domClass.remove('EWS-link', 'd-none');
+    //show ews_link
+    domClass.remove('ews_link', 'd-none');
 
     //update npo hyperlink
     addHyperlinks("npo");
@@ -187,7 +187,6 @@ require([
           id: val.id
         }, ulNode, order);
 
-        debugger;
         domConstruct.create("span", {
           className: "location-data-tag",
           innerHTML: val.name.concat(": "),
@@ -203,7 +202,6 @@ require([
           }, li);
 
         } else {
-          debugger;
           var googleLink = openInGoogleMap({
             type: "FindDireciton",
             originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
@@ -398,7 +396,7 @@ require([
     var str = parkList.filter(function (value) {
       return value.indexOf(firstLetter) != -1;
     })[0];
-    return url.replace("ab", str.charAt(0).concat(str.slice(-1)));
+    return url.replace(/%s/, str.charAt(0).concat(str.slice(-1)));
   }
 
   function addHyperlinks(eventName) {
@@ -422,13 +420,23 @@ require([
         }, npoNode);
       }
     }
+
+    if(eventName=="ews_link"){
+      var node = dom.byId("ews_link");
+      domConstruct.create("a", {
+        href: appSetting.ews_link,
+        target:"_blank",
+        title:"goto Environmental Waste Services",
+        innerHTML: "goto Environmental Waste Services<br> <img src='images/Env-Waste-Svcs.png' width='30%'/>"
+      }, node);
+    }
   }
 
   search.on("search-start", function (e) {
 
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
-    domClass.add('EWS-link', 'd-none');
+    domClass.add('ews_link', 'd-none');
 
     multiSearch.startNewSearch();
 
@@ -749,5 +757,7 @@ require([
     }
     return (false);
   }
+  
+  addHyperlinks("EWS-link");
 
 });
