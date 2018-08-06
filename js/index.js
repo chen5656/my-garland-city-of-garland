@@ -64,7 +64,6 @@ require([
     });
 
     //search widget
-    var locSetting = appSetting.locator;
     search = new Search({
       view: view,
       container: "search",
