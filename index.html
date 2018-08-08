@@ -19,7 +19,7 @@
   <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.13/css/all.css' integrity='sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp'
     crossorigin='anonymous'>
 
-  <link rel='stylesheet' href='https://js.arcgis.com/4.8/esri/css/main.css'>
+  <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
   <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet'>
 
   <script>
@@ -78,7 +78,7 @@
                 <div class='card-header' id='headingOne'>
                   <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
                     <i class='fas fa-minus-square fa-lg'></i>
-                    <h3 class='fas fa-lg'>Nearby City Facilities (click for directions) 
+                    <h3 class='fas fa-lg'>Nearby City Facilities (click for directions)
                     </h3>
                   </div>
                 </div>
@@ -97,9 +97,9 @@
                 </div>
                 <div id='collapseTwo' class='card-body collapse show' aria-labelledby='headingTwo' data-parent='#accordion'>
                   <div id='service' class='add-load-wrapp'>
-                      <ul></ul>
+                    <ul></ul>
                   </div>
-                  <div id='ews_link' class='d-none'>                
+                  <div id='ews_link' class='d-none'>
                   </div>
                 </div>
               </section>
@@ -120,7 +120,7 @@
                 </div>
                 <div id='collapseFour' class='card-body collapse show' aria-labelledby='headingFour' data-parent='#accordion'>
                   <div id='parcelInfo' class='add-load-wrapp'>
-                      <ul></ul>
+                    <ul></ul>
                   </div>
                 </div>
               </section>
@@ -133,7 +133,7 @@
                 </div>
                 <div id='collapseFive' class='card-body collapse show' aria-labelledby='headingFive' data-parent='#accordion'>
                   <div id='neighborhoods' class='add-load-wrapp'>
-                      <ul></ul>
+                    <ul></ul>
                   </div>
                 </div>
               </section>
@@ -147,8 +147,29 @@
                 </div>
                 <div id='collapseThree' class='card-body collapse show' aria-labelledby='headingThree' data-parent='#accordion'>
                   <div id='planning_development-zoning' class='add-load-wrapp'>
-                      <ul></ul>
+                    <ul></ul>
                   </div>
+                </div>
+              </section>
+              <section class='card'>
+                <!-- default as hidden. Remove show in the card-body class, and change fa-minus-square to fa-plus-square -->
+                <div class='card-header' id='headingEight'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseEight'>
+                    <i class='fas fa-plus-square fa-lg'> </i>
+                    <h3 class='fas fa-lg'>Streets Condition
+                    </h3>
+                  </div>
+                </div>
+                <div id='collapseEight' class='card-body collapse ' aria-labelledby='headingEight' data-parent='#accordion'>
+                  <div id='street-condition'>
+                    
+                      <div class="street-condition-toggle  ">
+                        <div>
+                        <input type="checkbox" id="rounded" />
+                        <label for="rounded"></label>
+                      </div>
+                      <div >Add PCI to Detail Map</div></div>
+                    </div>
                 </div>
               </section>
             </div>
@@ -168,7 +189,7 @@
                 </div>
                 <div id='collapseSeven' class='card-body collapse show' aria-labelledby='headingSeven' data-parent='#accordion'>
                   <div id='subMap' class='add-load-wrapp'>
-                      <ul></ul>
+                    <ul></ul>
                   </div>
                 </div>
               </section>
@@ -233,7 +254,7 @@
       or be suitable for legal, engineering, or surveying purposes. It does not represent an on-the-ground survey and represents
       only the approximate relative location of property boundaries.</p>
   </footer>
-  <script src='https://js.arcgis.com/4.8/'></script>
+  <script src='https://js.arcgis.com/4.7/'></script>
   <script src='js/index.js'></script>
 
 </body>

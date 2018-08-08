@@ -81,6 +81,50 @@ header .absolute {
   }
 }
 
+/* checkbox -- toggle  */
+.street-condition-toggle > div:first-of-type {
+  width: 100px;
+  height: 40px;
+  position: relative;
+}
+.street-condition-toggle > div:first-of-type input {
+  opacity: 0;
+}
+.street-condition-toggle > div:first-of-type label {
+  position: absolute;
+  background-color: #cac8c8;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 3.125rem;
+  -webkit-transition: background-color .2s ease-in-out;
+          transition: background-color .2s ease-in-out;
+}
+.street-condition-toggle > div:first-of-type label:after {
+  content: "";
+  display: block;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 3.125rem;
+  cursor: pointer;
+  position: absolute;
+  top: .3125rem;
+  z-index: 1;
+  left: .5rem;
+  background-color: #FFFFFD;
+  -webkit-transition: left .2s ease-in-out;
+          transition: left .2s ease-in-out;
+}
+.street-condition-toggle > div:first-of-type input[type=checkbox]:checked ~ label {
+  background-color: #5366d3;
+}
+
+.street-condition-toggle > div:first-of-type input[type=checkbox]:checked ~ label:after {
+  left: 3.125rem;
+}
+
+/*  */
 .r-title {
   background-color: rgb(29, 29, 65);
   padding: 10px;
