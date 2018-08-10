@@ -2,8 +2,6 @@
   background-color: rgb(196, 196, 196);
 }
 
-
-
 .r-search-box {
   background-color: rgb(244, 244, 244);
   margin: 2px;
@@ -45,8 +43,8 @@
 }
 
 .absolute {
-  position: absolute;}
-
+  position: absolute;
+}
 
 header h1 {
   font-family: 'Signika', sans-serif;
@@ -82,49 +80,87 @@ header .absolute {
 }
 
 /* checkbox -- toggle  */
-.street-condition-toggle > div:first-of-type {
-  width: 100px;
-  height: 40px;
-  position: relative;
-}
-.street-condition-toggle > div:first-of-type input {
+
+.street-condition-toggle input[type="checkbox"] {
+  /*position: absolute;*/
   opacity: 0;
 }
-.street-condition-toggle > div:first-of-type label {
-  position: absolute;
-  background-color: #cac8c8;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  border-radius: 3.125rem;
-  -webkit-transition: background-color .2s ease-in-out;
-          transition: background-color .2s ease-in-out;
-}
-.street-condition-toggle > div:first-of-type label:after {
-  content: "";
-  display: block;
-  width: 1.875rem;
-  height: 1.875rem;
-  border-radius: 3.125rem;
-  cursor: pointer;
-  position: absolute;
-  top: .3125rem;
-  z-index: 1;
-  left: .5rem;
-  background-color: #FFFFFD;
-  -webkit-transition: left .2s ease-in-out;
-          transition: left .2s ease-in-out;
-}
-.street-condition-toggle > div:first-of-type input[type=checkbox]:checked ~ label {
-  background-color: #5366d3;
+
+.street-condition-toggle input[type="checkbox"].ios-switch+div {
+  color: #fff;
+  display: inline-block;
+  vertical-align: middle;
+  width: 90px;
+  height: 26px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 999px;
+  margin: 0 12px;
+  background: rgb(175, 175, 175);
+  background-image: linear-gradient(rgba(0, 0, 0, .05), transparent), linear-gradient(90deg, #88DB81 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-origin: border-box;
+  background-clip: border-box;
+  overflow: hidden;
+  transition-duration: .4s;
+  transition-property: padding, width, background-position, text-indent;
+  /*box-shadow: 0 .1em .1em rgba(0,0,0,.2) inset,
+                0 .45em 0 .1em rgba(0,0,0,.05) inset;*/
+  font-size: 150%;
+  /* change this and see how they adjust! */
 }
 
-.street-condition-toggle > div:first-of-type input[type=checkbox]:checked ~ label:after {
-  left: 3.125rem;
+.street-condition-toggle input[type="checkbox"].ios-switch:checked+div {
+  padding-left: 64px;
+  /*	width: 74px;*/
+  background-position: 0 0;
 }
 
-/*  */
+.street-condition-toggle input[type="checkbox"].ios-switch+div:before {
+  content: 'ON';
+  float: left;
+  width: 22px;
+  height: 22px;
+  margin: 1px;
+  /*
+    border: 1px solid rgba(0,0,0,.25);*/
+  border-radius: inherit;
+  background: white;
+  /*background-image: linear-gradient(rgba(0,0,0,.1), transparent);
+    box-shadow: 0 .1em .1em .1em hsla(0,0%,100%,.8) inset/*,
+                0 0 .5em rgba(0,0,0,.3);*/
+  /*
+    text-shadow: 0 -1px 1px rgba(0,0,0,.3);*/
+  text-indent: -48px;
+}
+
+.street-condition-toggle input[type="checkbox"].ios-switch:active+div:before {
+  background-color: #eee;
+}
+
+.street-condition-toggle input[type="checkbox"].ios-switch+div:before,
+.street-condition-toggle input[type="checkbox"].ios-switch+div:after {
+  font: bold 60%/1.7 sans-serif;
+}
+
+.street-condition-toggle input[type="checkbox"].ios-switch+div:after {
+  content: 'OFF';
+  float: left;
+  text-indent: 8px;
+  /*
+  position: fixed;
+  top: 24px;/*
+    color: rgba(255,255,255,1);*/
+  text-shadow: none;
+  line-height: 1.8;
+}
+
+.switch {
+  position: relative;
+}
+
+/*  checkbox -- toggle */
+
 .r-title {
   background-color: rgb(29, 29, 65);
   padding: 10px;
@@ -184,14 +220,14 @@ header .absolute {
   width: 100%;
   z-index: 2;
   text-align: center;
-} 
+}
 
 .browser-compatibility-alert i {
   position: absolute;
   top: 50%;
   left: 80px;
   transform: translateY(-50%)
-} 
+}
 
 .browser-compatibility-alert .browser-error {
   font-size: 20px;
@@ -206,8 +242,12 @@ header .absolute {
   padding-left: 10px;
 }
 
-.card .absolute{  
+.card .absolute {
   top: 15px;
   right: 15px;
 }
 
+.street-condition-legend {
+  border:solid 2px #41403E;
+
+}

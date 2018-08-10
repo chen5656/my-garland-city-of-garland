@@ -331,16 +331,15 @@ require([
     dom.byId("open-crime-map").setAttribute("href", url);
   }
 
-  function showSubMap(val) {
+  function showSubMap(val, layers) {
     var node = dom.byId("subMap");
     node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
 
     var lat = val.latitude;
     var long = val.longitude;
-    var mapImageLayerList = new MapImageLayer(appSetting.subMap);
     var subMap = new Map({
       basemap: "topo",
-      layers: [mapImageLayerList]
+      layers: layers
     });
     var subView = new MapView({
       container: 'subMapView',
@@ -430,6 +429,9 @@ require([
     domClass.add('nodeResult', 'd-none');
     domClass.add('suggestedAddresses', 'd-none');
     domClass.add('ews_link', 'd-none');
+    dom.byId("street-condition-checkbox").checked = false;
+    domClass.add('street-condition-legend', 'd-none');
+
 
     multiSearch.startNewSearch();
 
@@ -708,13 +710,13 @@ require([
       multiSearch.getInforByAddressID();
 
 
-      getCrimeData(e.result.feature.geometry);
-      showSubMap(e.result.feature.geometry);
+      getCrimeData(multiSearch.searchResult.addressGeometry);
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap)]);
 
       // projecting using geometry service:
       //"project search result, make it under stateplane. ");
       var params = new ProjectParameters({
-        geometries: [e.result.feature.geometry],
+        geometries: [multiSearch.searchResult.addressGeometry],
         outSpatialReference: multiSearch.spatialReference
       });
       var geometries = geometryService.project(params).then(function (geometries) {
@@ -750,5 +752,22 @@ require([
   }
 
   addHyperlinks("ews_link");
+
+  dom.byId("street-condition-toggle").addEventListener("change", function () {
+    var layerOn = dom.byId("street-condition-checkbox").checked;
+    var divLegend = dom.byId("street-condition-legend");
+    if (layerOn) {
+      domClass.remove(divLegend, "d-none");
+
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.streetCondition), new MapImageLayer(appSetting.subMap.baseMap)]);
+    } else {
+      domClass.add(divLegend, "d-none");
+
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap)]);
+    }
+
+  });
+
+
 
 });

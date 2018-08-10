@@ -27,23 +27,31 @@
   },
 
   "subMap": {
-    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
-    "sublayers": [{
-      "id": 5,
-      "visible": true
-    }, {
-      "id": 4,
-      "visible": true
-    }]
+    "baseMap": {
+      "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
+      "sublayers": [{
+        "id": 5,
+        "visible": true
+      }, {
+        "id": 4,
+        "visible": true
+      }]
+    },
+    "streetCondition": {
+      "url": "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Engineering_Transportaion/MapServer",
+      "sublayers": [{
+        "id": 11,
+        "visible": true
+      }]
+    }
   },
-
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
   "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
 
   "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%s/default.asp",
-  "google_direction":"https://www.google.com/maps/dir/?api=1&origin=%o&destination=%d,Garland",
-  
-  "ews_link":"https://www.garlandtx.gov/gov/eg/ews/default.asp"
+  "google_direction": "https://www.google.com/maps/dir/?api=1&origin=%o&destination=%d,Garland",
+
+  "ews_link": "https://www.garlandtx.gov/gov/eg/ews/default.asp"
 
 
 }
