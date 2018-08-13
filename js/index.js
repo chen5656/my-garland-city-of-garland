@@ -185,7 +185,7 @@ require([
 
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML: val.name.concat(": "),
+          innerHTML: val.name.concat(": ")
         }, li);
 
         if (val.name == "Nearest Park") {
@@ -206,18 +206,18 @@ require([
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: val.nearestFeature.ADDRESS,
+            innerHTML: val.nearestFeature.ADDRESS
             //id: val.id
           }, li);
 
           domConstruct.create("span", {
             className: "location-data-distance",
-            innerHTML: "".concat(" (", val.distance, " miles)"),
+            innerHTML: "".concat(" (", val.distance, " miles)")
           }, li);
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME, "</a>"),
+            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME, "</a>")
           }, li);
         }
       });
@@ -755,26 +755,33 @@ require([
     domConstruct.create("p", {
       innerHTML: json.title
     }, node);
-    var table = domConstruct.create("table", {class:"esriLegendLayer"}, node);
+    var table = domConstruct.create("table", {
+      class: "esriLegendLayer"
+    }, node);
     var tbody = domConstruct.create("tbody", null, table);
     var str = json.renderer.map(function (item) {
       var svgValue, label;
       switch (item.type) {
         case "polyline":
-        svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size , '" />');
+          svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size, '" />');
           break;
         case "polygon":
-        svgValue = "".concat('<polygon points="0,0 0,20 20,20 20,0" style="fill:', item.color, ';stroke:black;stroke-width:1" />');
+          svgValue = "".concat('<polygon points="0,0 0,20 20,20 20,0" style="fill:', item.color, ';stroke:black;stroke-width:1" />');
           break;
         default: //point
-        svgValue = "".concat('  <circle cx="', item.size, '" cy="', item.size, '" r="', item.size / 2, '" stroke="black" stroke-width="1" fill="', item.color, '" />');
+          svgValue = "".concat('  <circle cx="', item.size, '" cy="', item.size, '" r="', item.size / 2, '" stroke="black" stroke-width="1" fill="', item.color, '" />');
       }
-      svgValue="".concat(' <svg height="20" width="20">',svgValue,'</svg>');
-           
-      var tr = domConstruct.create("tr", null, tbody);
-      var td = domConstruct.create("td", {innerHTML:svgValue,width:35}, tr);
+      svgValue = "".concat(' <svg height="20" width="20">', svgValue, '</svg>');
 
-      domConstruct.create("td", {innerHTML:item.label}, tr);
+      var tr = domConstruct.create("tr", null, tbody);
+      var td = domConstruct.create("td", {
+        innerHTML: svgValue,
+        width: 35
+      }, tr);
+
+      domConstruct.create("td", {
+        innerHTML: item.label
+      }, tr);
     });
   }
 
