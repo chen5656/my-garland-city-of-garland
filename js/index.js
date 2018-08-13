@@ -751,8 +751,36 @@ require([
     return (false);
   }
 
+  function displayLegend(json, node) {
+    domConstruct.create("p", {
+      innerHTML: json.title
+    }, node);
+    var table = domConstruct.create("table", {class:"esriLegendLayer"}, node);
+    var tbody = domConstruct.create("tbody", null, table);
+    var str = json.renderer.map(function (item) {
+      var svgValue, label;
+      switch (item.type) {
+        case "polyline":
+        svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size , '" />');
+          break;
+        case "polygon":
+        svgValue = "".concat('<polygon points="0,0 0,20 20,20 20,0" style="fill:', item.color, ';stroke:black;stroke-width:1" />');
+          break;
+        default: //point
+        svgValue = "".concat('  <circle cx="', item.size, '" cy="', item.size, '" r="', item.size / 2, '" stroke="black" stroke-width="1" fill="', item.color, '" />');
+      }
+      svgValue="".concat(' <svg height="20" width="20">',svgValue,'</svg>');
+           
+      var tr = domConstruct.create("tr", null, tbody);
+      var td = domConstruct.create("td", {innerHTML:svgValue,width:35}, tr);
+
+      domConstruct.create("td", {innerHTML:item.label}, tr);
+    });
+  }
+
   addHyperlinks("ews_link");
 
+  //street-condition-toggle
   dom.byId("street-condition-toggle").addEventListener("change", function () {
     var layerOn = dom.byId("street-condition-checkbox").checked;
     var divLegend = dom.byId("street-condition-legend");
@@ -760,10 +788,14 @@ require([
       domClass.remove(divLegend, "d-none");
 
       showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.streetCondition), new MapImageLayer(appSetting.subMap.baseMap)]);
+
+      divLegend.innerHTML = "";
+      displayLegend(appSetting.subMapLegend.streetCondition, divLegend);
     } else {
-      domClass.add(divLegend, "d-none");
+      //domClass.add(divLegend, "d-none");
 
       showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap)]);
+      divLegend.innerHTML = "";
     }
 
   });

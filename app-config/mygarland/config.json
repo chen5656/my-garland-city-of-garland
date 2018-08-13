@@ -45,6 +45,21 @@
       }]
     }
   },
+  "subMapLegend": {
+    "streetCondition":{ 
+      "title":"Street PCI Legend",
+      "renderer":[{
+      "color": "rgba(255,255,1,1)",
+      "label": "NULL",
+      "type":"polyline",
+      "size":2
+    }, {
+      "color": "rgba(0,255,255,1)",
+      "label": "Good",
+      "type":"polyline",
+      "size":2
+    }]}
+  },
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
   "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
 
