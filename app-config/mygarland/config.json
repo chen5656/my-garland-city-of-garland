@@ -28,37 +28,43 @@
 
   "subMap": {
     "baseMap": {
-      "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
-      "sublayers": [{
-        "id": 5,
-        "visible": true
-      }, {
-        "id": 4,
-        "visible": true
-      }]
+      "map": {
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
+        "sublayers": [{
+          "id": 5,
+          "visible": true
+        }, {
+          "id": 4,
+          "visible": true
+        }]
+      },
+      "legend": ""
     },
     "streetCondition": {
-      "url": "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Engineering_Transportaion/MapServer",
-      "sublayers": [{
-        "id": 11,
-        "visible": true
-      }]
+      "map": {
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Engineering_Transportaion/MapServer",
+        "sublayers": [{
+          "id": 11,
+          "visible": true
+        }]
+      },
+
+      "legend": {
+        "title": "Street PCI Legend",
+        "renderer": [{
+          "color": "rgba(255,255,1,1)",
+          "label": "NULL",
+          "type": "polyline",
+          "size": 2
+        }, {
+          "color": "rgba(0,255,255,1)",
+          "label": "Good",
+          "type": "polyline",
+          "size": 2
+        }]
+
+      }
     }
-  },
-  "subMapLegend": {
-    "streetCondition":{ 
-      "title":"Street PCI Legend",
-      "renderer":[{
-      "color": "rgba(255,255,1,1)",
-      "label": "NULL",
-      "type":"polyline",
-      "size":2
-    }, {
-      "color": "rgba(0,255,255,1)",
-      "label": "Good",
-      "type":"polyline",
-      "size":2
-    }]}
   },
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
   "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",

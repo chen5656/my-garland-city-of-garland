@@ -3,6 +3,7 @@ require([
   'dojo/dom',
   "dojo/dom-class",
   'dojo/_base/array',
+  "dojo/_base/lang",
 
   'esri/Map',
   'esri/views/MapView',
@@ -30,7 +31,7 @@ require([
 
   'dojo/domReady!'
 ], function (
-  on, dom, domClass, array,
+  on, dom, domClass, array,lang,
   Map, MapView, MapImageLayer,
 
   Search, Locator, Query, QueryTask,
@@ -70,7 +71,7 @@ require([
       allPlaceholder: ".",
       locationEnabled: false,
       sources: [
-        Object.assign({
+        dojo.mixin({
           locator: new Locator({
             url: appSetting.locator.locatorUrl
           })
@@ -124,7 +125,7 @@ require([
     console.log("multiSearch/parcelInfoUpdated");
     var item = multiSearch.searchResult.parcelInfo;
     var obj = layerSetting.parcelData.map(function (val) {
-      return Object.assign({
+      return dojo.mixin({
         serviceZone: {
           value: item[val.fieldName]
         }
@@ -285,7 +286,7 @@ require([
             url = url.replace(new RegExp(val.replaceWith, 'g'), newValue);
           });
 
-          valueNodeProperty = Object.assign({
+          valueNodeProperty = dojo.mixin({
             "href": url,
             "target": "_blank",
             "title": "Open to see details"
@@ -430,7 +431,6 @@ require([
     domClass.add('suggestedAddresses', 'd-none');
     domClass.add('ews_link', 'd-none');
     dom.byId("street-condition-checkbox").checked = false;
-    domClass.add('street-condition-legend', 'd-none');
 
 
     multiSearch.startNewSearch();
@@ -711,7 +711,7 @@ require([
 
 
       getCrimeData(multiSearch.searchResult.addressGeometry);
-      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap)]);
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap.map)]);
 
       // projecting using geometry service:
       //"project search result, make it under stateplane. ");
@@ -792,16 +792,17 @@ require([
     var layerOn = dom.byId("street-condition-checkbox").checked;
     var divLegend = dom.byId("street-condition-legend");
     if (layerOn) {
-      domClass.remove(divLegend, "d-none");
+      domClass.add(divLegend, "black-border");
 
-      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.streetCondition), new MapImageLayer(appSetting.subMap.baseMap)]);
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.streetCondition.map), new MapImageLayer(appSetting.subMap.baseMap.map)]);
 
       divLegend.innerHTML = "";
-      displayLegend(appSetting.subMapLegend.streetCondition, divLegend);
+      displayLegend(appSetting.subMap.streetCondition.legend, divLegend);
     } else {
-      //domClass.add(divLegend, "d-none");
+      
+      domClass.remove(divLegend, "black-border");
 
-      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap)]);
+      showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap.map)]);
       divLegend.innerHTML = "";
     }
 

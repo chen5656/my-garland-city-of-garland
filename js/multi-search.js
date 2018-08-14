@@ -69,7 +69,7 @@ define([
         queryTask.execute(query).then(function (results) {
           // Results.graphics contains the graphics returned from query
           that.cityFacilityList.push(
-            Object.assign({
+            dojo.mixin({
               features: results.features
             }, queryParameter)
           );
@@ -115,6 +115,7 @@ define([
 
     getNearestCityFacilityList: function () {
       console.log("getNearestCityFacilityList Function");
+      debugger;
       var that = this;
 
       //individualCityFacility distance
@@ -138,7 +139,7 @@ define([
           var minDistance = Math.min.apply(null, response);
           var minIndex = response.indexOf(minDistance);
           var minFeature = featureSet.features[minIndex];
-          var result =Object.assign({
+          var result =dojo.mixin({
             nearestFeature: minFeature.attributes,
             distance: minDistance.toFixed(2)
           }, featureSet);
