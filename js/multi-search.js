@@ -115,7 +115,6 @@ define([
 
     getNearestCityFacilityList: function () {
       console.log("getNearestCityFacilityList Function");
-      debugger;
       var that = this;
 
       //individualCityFacility distance

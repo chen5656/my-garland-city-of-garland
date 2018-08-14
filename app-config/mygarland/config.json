@@ -52,13 +52,33 @@
       "legend": {
         "title": "Street PCI Legend",
         "renderer": [{
-          "color": "rgba(255,255,1,1)",
-          "label": "NULL",
+          "color": "rgba(16,16,16,1)",
+          "label": "-NULL-",
           "type": "polyline",
           "size": 2
         }, {
-          "color": "rgba(0,255,255,1)",
+          "color": "rgba(36,116,0,1)",
+          "label": "Excellent",
+          "type": "polyline",
+          "size": 2
+        },{
+          "color": "rgba(77,230,0,1)",
           "label": "Good",
+          "type": "polyline",
+          "size": 2
+        },{
+          "color": "rgba(230,230,0,1)",
+          "label": "Fair",
+          "type": "polyline",
+          "size": 2
+        },{
+          "color": "rgba(225,167,127,1)",
+          "label": "Poor",
+          "type": "polyline",
+          "size": 2
+        },{
+          "color": "rgba(255,0,0,1)",
+          "label": "Failed",
           "type": "polyline",
           "size": 2
         }]
