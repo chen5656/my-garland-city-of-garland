@@ -755,9 +755,7 @@ require([
     domConstruct.create("p", {
       innerHTML: json.title
     }, node);
-    var table = domConstruct.create("table", {
-      class: "esriLegendLayer"
-    }, node);
+    var table = domConstruct.create("table", null, node);
     var tbody = domConstruct.create("tbody", null, table);
     var str = json.renderer.map(function (item) {
       var svgValue, label;
