@@ -1,9 +1,6 @@
 require([
-  'dojo/on',
   'dojo/dom',
   "dojo/dom-class",
-  'dojo/_base/array',
-  "dojo/_base/lang",
 
   'esri/Map',
   'esri/views/MapView',
@@ -15,32 +12,30 @@ require([
   "esri/tasks/QueryTask",
 
   "esri/tasks/GeometryService",
-  "esri/geometry/projection",
   "esri/tasks/support/ProjectParameters",
 
   "esri/Graphic",
 
   "dojo/topic",
   "dojo/query",
-  "dojo/dom-attr",
   "dojo/dom-construct",
 
-  'js/multi-search.js',
   "dojo/text!/app-config/mygarland/config.json",
   "dojo/text!/app-config/mygarland/multilayers.json",
 
+  'js/multi-search.js',
   'dojo/domReady!'
 ], function (
-  on, dom, domClass, array,lang,
+   dom, domClass, 
   Map, MapView, MapImageLayer,
 
   Search, Locator, Query, QueryTask,
-  GeometryService, projection, ProjectParameters,
+  GeometryService,  ProjectParameters,
   Graphic,
 
-  topic, domQuery, domAttr, domConstruct,
+  topic, domQuery,  domConstruct,
 
-  nameMultiSearch, config_json, multilayers_json
+  config_json, multilayers_json
 
 ) {
   'use strict';
