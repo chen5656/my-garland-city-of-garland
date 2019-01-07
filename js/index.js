@@ -1,4 +1,6 @@
 require([
+
+
   'dojo/dom',
   "dojo/dom-class",
 
@@ -14,8 +16,13 @@ require([
   "esri/tasks/GeometryService",
   "esri/tasks/support/ProjectParameters",
 
+  "esri/geometry/SpatialReference",
+  "esri/geometry/geometryEngineAsync",
+
   "esri/Graphic",
 
+  "dojo/_base/lang",
+  "dojo/promise/all",
   "dojo/topic",
   "dojo/query",
   "dojo/dom-construct",
@@ -23,17 +30,18 @@ require([
   "dojo/text!/app-config/mygarland/config.json",
   "dojo/text!/app-config/mygarland/multilayers.json",
 
-  'js/multi-search.js',
   'dojo/domReady!'
 ], function (
-   dom, domClass, 
+  dom, domClass,
   Map, MapView, MapImageLayer,
 
   Search, Locator, Query, QueryTask,
-  GeometryService,  ProjectParameters,
+  GeometryService, ProjectParameters,
+  SpatialReference, geometryEngineAsync,
   Graphic,
 
-  topic, domQuery,  domConstruct,
+  lang, all,
+  topic, domQuery, domConstruct,
 
   config_json, multilayers_json
 
@@ -73,15 +81,249 @@ require([
         }, appSetting.locator.sourceSetting)
       ]
     });
+    //create multisearch 
+    class buildMultiSearch {
+      constructor(sourceLayer) {
 
-    //create multisearch widget.
-    multiSearch = new GetMultiSearch(layerSetting.layers);
-    multiSearch.startup();
+        this.mapService = sourceLayer.mapService; //need address map service and parcel map service
+
+        this.individualCityFacility = sourceLayer.individualCityFacility; //Police Station,Court ...
+        this.cityFacilitySourceList = sourceLayer.cityFacilitySourceList;
+        this.cityFacilityList = sourceLayer.cityFacilityList;
+        this.serviceZoneSourceList = sourceLayer.serviceZoneSourceList;
+        this.spatialReference = new SpatialReference({
+          wkid: 2276
+        });
+
+      }
+
+      startNewSearch() {
+        this.searchResult = {
+          address: null,
+          addressID: null,
+          nearestCityFacilityList: [],
+          serviceZoneList: [],
+          parcelInfo: null
+        };
+      }
+
+      prepareCityFacilityList() {
+        var that = this;
+
+        that.cityFacilityList = [];
+
+        for (var i in this.cityFacilitySourceList) {
+          runQuery(this.cityFacilitySourceList[i]);
+        }
+
+        function runQuery(queryParameter) {
+          var query = new Query({
+            where: queryParameter.where,
+            returnGeometry: true,
+            outFields: ["*"]
+          });
+          var queryTask = new QueryTask({
+            url: queryParameter.url
+          });
+          queryTask.execute(query).then(function (results) {
+            // Results.graphics contains the graphics returned from query
+            that.cityFacilityList.push(
+              dojo.mixin({
+                features: results.features
+              }, queryParameter)
+            );
+          });
+        }
+      }
+      getInforByAddressID() {
+        console.log("getInforByAddressID function");
+        var that = this;
+        var query = new Query();
+        var queryTask = new QueryTask({
+          url: this.mapService.address
+        });
+        query.where = "ADDRESSID =" + this.searchResult.addressID;
+        //query.outSpatialReference = spatialReference2276;
+        query.returnGeometry = false;
+        query.outFields = ["PARCELID"];
+        queryTask.execute(query).then(function (results) {
+          // Results.graphics contains the graphics returned from query
+          if (results.features[0].attributes.PARCELID) {
+            var parcelID = results.features[0].attributes.PARCELID;
+            var query = new Query();
+            var queryTask = new QueryTask({
+              url: that.mapService.parcel
+            });
+            query.where = "PARCELID  =" + parcelID;
+            //query.outSpatialReference = spatialReference2276;
+            query.returnGeometry = false;
+            query.outFields = ["*"];
+            queryTask.execute(query).then(function (results) {
+              that.searchResult.parcelInfo = results.features[0].attributes;
+              topic.publish("multiSearch/parcelInfoUpdated", {
+                parcelID: parcelID
+              });
+            });
+          } else {
+            console.log("error getInforByAddressID: ", that.searchResult.addressID);
+          }
+        });
+      }
+
+      getNearestCityFacilityList() {
+        console.log("getNearestCityFacilityList Function");
+        var that = this;
+
+        //individualCityFacility distance
+        var arr = distanceToIndividualCityFacility(this.geometry);
+        this.searchResult.nearestCityFacilityList = this.searchResult.nearestCityFacilityList.concat(arr);
+
+        for (var i in this.cityFacilityList) {
+          findNearest(this.geometry, this.cityFacilityList[i]);
+        }
+
+
+
+        function findNearest(geometry, featureSet) {
+          var distanceRequestList = [];
+          for (var i in featureSet.features) {
+            var request = geometryEngineAsync.distance(geometry, featureSet.features[i].geometry, "miles");
+            distanceRequestList.push(request);
+          }
+          var promises = new all(distanceRequestList);
+          promises.then(lang.hitch(this, function (response) {
+            var minDistance = Math.min.apply(null, response);
+            var minIndex = response.indexOf(minDistance);
+            var minFeature = featureSet.features[minIndex];
+            var result = dojo.mixin({
+              nearestFeature: minFeature.attributes,
+              distance: minDistance.toFixed(2)
+            }, featureSet);
+
+            that.searchResult.nearestCityFacilityList.push(result);
+            if (that.searchResult.nearestCityFacilityList.length == that.cityFacilityList.length + that.individualCityFacility.length) {
+              //time to display data
+              topic.publish("multiSearch/nearestCityFacilityUpdated", {
+                count: that.searchResult.nearestCityFacilityList.length
+              });
+            }
+          })).catch(function (e) {
+            console.log("Error - findNearest: ", e);
+          });
+
+        }
+
+        function distanceToIndividualCityFacility(geometry) {
+          var userPnt = {
+            x: geometry.x,
+            y: geometry.y
+          };
+          var arr = that.individualCityFacility.map(function (val) {
+            var facilityPnt = {
+              x: val.nearestFeature.x,
+              y: val.nearestFeature.y
+            };
+            return {
+              "title": val.title,
+              "displayID": val.displayID,
+              "nearestFeature": val.nearestFeature,
+              "distance": distanceBetweenTwoPointInStatePlan(userPnt, facilityPnt)
+            };
+          });
+          return arr;
+        }
+
+        function distanceBetweenTwoPointInStatePlan(pnt1, pnt2) {
+          var result = (Math.sqrt(Math.pow((pnt1.x - pnt2.x), 2) + Math.pow((pnt1.y - pnt2.y), 2)) / 5280).toFixed(2);
+          return result;
+        }
+
+      }
+
+
+
+      getServiceZoneList() {
+        console.log("getServiceZoneList Function");
+        var that = this;
+
+        var query = new Query({
+          returnGeometry: true,
+          outFields: ["*"],
+          spatialRelationship: "intersects"
+        });
+        query.geometry = this.geometry;
+
+        var queryRequest = [];
+
+        for (var i in this.serviceZoneSourceList) {
+          var queryTask = new QueryTask({
+            url: this.serviceZoneSourceList[i].url
+          });
+          //Assign the esriRequest execute function to a variable
+          var request = queryTask.execute(query);
+          //add the function variable to a array
+          queryRequest.push(request);
+        }
+
+        var promises = new all(queryRequest);
+        promises.then(function (response) {
+          for (var i in response) {
+            var featureSet = that.serviceZoneSourceList[i];
+            var result;
+            if (response[i].features.length > 0) {
+              result = {
+                id: featureSet.id,
+                title: featureSet.name,
+                serviceZone: response[i].features[0].attributes,
+                displayFieldName: response[i].displayFieldName,
+                containerID: featureSet.containerID, //"1_2",
+                displayID: featureSet.displayID, //"1",
+                queryPolygonCount: response[i].features.length
+              };
+            } else {
+              //no polygon returns.
+              result = {
+                id: featureSet.id,
+                title: featureSet.name,
+                containerID: featureSet.containerID, //"1_2",
+                displayID: featureSet.displayID, //"1",
+                queryPolygonCount: response[i].features.length
+              };
+            }
+            that.searchResult.serviceZoneList.push(result);
+          }
+
+          //time to display data
+          topic.publish("multiSearch/serviceZoneListUpdated", {
+            count: response.length
+          });
+        }).catch(function (e) {
+          console.log("Error - getServiceZoneList:", e);
+        });
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+    multiSearch = new buildMultiSearch(layerSetting.layers);
     multiSearch.prepareCityFacilityList();
 
     //set geometry service to match spatial reference on different service.
     geometryService = new GeometryService(multiSearch.mapService.geometry);
-
   })();
 
   //update html div format.
@@ -443,6 +685,8 @@ require([
       }, node);
 
     });
+    debugger;
+
   });
 
   search.on("search-complete", function (e) {
@@ -792,7 +1036,7 @@ require([
       divLegend.innerHTML = "";
       displayLegend(appSetting.subMap.streetCondition.legend, divLegend);
     } else {
-      
+
       domClass.remove(divLegend, "black-border");
 
       showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap.map)]);
