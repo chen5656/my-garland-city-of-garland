@@ -1,4 +1,4 @@
-{
+const layerSetting={
   "layers": {
     "cityFacilitySourceList": [{
         "id": "city-hall",
@@ -190,4 +190,4 @@
     }
 
   ]
-}
+};

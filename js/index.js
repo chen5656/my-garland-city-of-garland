@@ -1,3 +1,49 @@
+//check if IE 7
+(function () {
+  var ie = IeVersion();
+  console.log("IsIE: " + ie.IsIE + "||" + "TrueVersion: " + ie.TrueVersion + "||" + "ActingVersion: " + ie.ActingVersion);
+  if (ie.IsIE == true && (ie.TrueVersion < 11 || ie.ActingVersion < 11)) {
+    alert("The web browser you are using now may not display everything properly. Please use Chrome or Firefox if you want better experience.");
+  }
+
+  function IeVersion() {
+    //Set defaults
+    var value = {
+      IsIE: false,
+      TrueVersion: 0,
+      ActingVersion: 0,
+      CompatibilityMode: false
+    };
+
+    //Try to find the Trident version number
+    var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+    if (trident) {
+      value.IsIE = true;
+      //Convert from the Trident version number to the IE version number
+      value.TrueVersion = parseInt(trident[1], 10) + 4;
+    }
+
+    //Try to find the MSIE number
+    var msie = navigator.userAgent.match(/MSIE (\d+)/);
+    if (msie) {
+      value.IsIE = true;
+      //Find the IE version number from the user agent string
+      value.ActingVersion = parseInt(msie[1]);
+    } else {
+      //Must be IE 11 in "edge" mode
+      value.ActingVersion = value.TrueVersion;
+    }
+
+    //If we have both a Trident and MSIE version number, see if they're different
+    if (value.IsIE && value.TrueVersion > 0 && value.ActingVersion > 0) {
+      //In compatibility mode if the trident number doesn't match up with the MSIE number
+      value.CompatibilityMode = value.TrueVersion != value.ActingVersion;
+    }
+    return value;
+  }
+
+})();
+
 require([
   'dojo/dom',
   "dojo/dom-class",
@@ -25,8 +71,6 @@ require([
   "dojo/query",
   "dojo/dom-construct",
 
-  "dojo/text!/app-config/mygarland/config.json",
-  "dojo/text!/app-config/mygarland/multilayers.json",
 
   'dojo/domReady!'
 ], function (
@@ -39,20 +83,13 @@ require([
   Graphic,
 
   lang, all,
-  topic, domQuery, domConstruct,
-
-  config_json, multilayers_json
+  topic, domQuery, domConstruct
 
 ) {
   'use strict';
-  var view, search, appSetting, layerSetting, multiSearch, geometryService;
-
+  var view, search, multiSearch, geometryService;
   //init: topMap, search, appSetting, multiSearch
   (function () {
-    //reading setting file
-    appSetting = JSON.parse(config_json);
-    layerSetting = JSON.parse(multilayers_json);
-
     var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
     var map = new Map({
       basemap: appSetting.mapInTop.basemap,

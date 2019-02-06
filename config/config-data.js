@@ -1,4 +1,4 @@
-{
+const  appSetting={
 
   "mapInTop": {
     "mapImageLayer": {
@@ -95,4 +95,4 @@
   "ews_link": "https://www.garlandtx.gov/gov/eg/ews/default.asp"
 
 
-}
+};
