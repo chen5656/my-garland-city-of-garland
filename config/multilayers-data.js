@@ -1,4 +1,4 @@
-const layerSetting={
+var layerSetting={
   "layers": {
     "cityFacilitySourceList": [{
         "id": "city-hall",

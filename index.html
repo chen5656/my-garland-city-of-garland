@@ -22,27 +22,13 @@
   <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
   <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet'>
 
-  <script>
-    dojoConfig = {
-      parseOnLoad: false,
-      cacheBust: true
-    }
-  </script>
-
 </head>
 
 <body>
   <div id='browser-check'>
-    <noscript>
-      <div class='browser-compatibility-alert d-block bg-danger text-white'>
-        <!-- <div class='col-lg-4 col-md-6 font-grey'> -->
-        <i class='fas fa-exclamation-triangle  fa-2x '></i>
-        <p class='browser-error'>Your browser's Javascript functionality is turned off. Please turn it on so that you see the map and do the search.
-
-        </p>
-        <!-- </div> -->
-      </div>
-    </noscript>
+    <div class="browser-compatibility-alert d-block bg-danger text-white">The web
+      browser you are using right
+      now may not have the full function. Please use Chrome or Firefox instead.</div>
   </div>
   <header>
     <div class='overflow-hidden relative'>
@@ -206,7 +192,8 @@
                     <h3 class='fas fa-lg' id='crime-map-title'>Crime</h3>
                   </div>
 
-                  <a class='btn btn-secondary  btn-secondary-right' id='open-crime-map' title='Open CrimeReport.com' href='#' target='_blank'>
+                  <a class='btn btn-secondary  btn-secondary-right' id='open-crime-map' title='Open CrimeReport.com'
+                    href='#' target='_blank'>
                     <i class='fas fa-external-link-alt'></i>
                   </a>
 
@@ -230,7 +217,8 @@
                   Address not find. </h2>
                 <div class='absolute float-right'>
                   <abbr title='Close this card'>
-                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls='suggestedAddresses' aria-label='Close'>
+                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls='suggestedAddresses'
+                      aria-label='Close'>
                       <i class='fas fa-times'></i>
                     </button>
                   </abbr>
@@ -250,16 +238,70 @@
 
     </div>
   </main>
-
-
-
   <footer class='pt-2 px-3 font-grey'>
     <!--facebook twitter info -->
     <p class='copyright mb-2'> Copyright 2018. City of Garland. </p>
-    <p class='copyright-content'>Texas Government Code § 2051.102 (2011): This product is for informational purposes and may not have been prepared for
-      or be suitable for legal, engineering, or surveying purposes. It does not represent an on-the-ground survey and represents
+    <p class='copyright-content'>Texas Government Code § 2051.102 (2011): This product is for informational purposes
+      and may not have been prepared for
+      or be suitable for legal, engineering, or surveying purposes. It does not represent an on-the-ground survey and
+      represents
       only the approximate relative location of property boundaries.</p>
   </footer>
+  <script>
+    //check if IE 7
+    (function () {
+      var ie = IeVersion();
+      console.log("IsIE: " + ie.IsIE + "||" + "TrueVersion: " + ie.TrueVersion + "||" + "ActingVersion: " + ie.ActingVersion);
+      if (ie.IsIE == true && (ie.TrueVersion < 11 || ie.ActingVersion < 11)) {
+        document.getElementById('browser-check').style.display = 'block';
+      } else {
+        document.getElementById('browser-check').style.display = 'none';
+      }
+
+      function IeVersion() {
+        //Set defaults
+        var value = {
+          IsIE: false,
+          TrueVersion: 0,
+          ActingVersion: 0,
+          CompatibilityMode: false
+        };
+
+        //Try to find the Trident version number
+        var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+        if (trident) {
+          value.IsIE = true;
+          //Convert from the Trident version number to the IE version number
+          value.TrueVersion = parseInt(trident[1], 10) + 4;
+        }
+
+        //Try to find the MSIE number
+        var msie = navigator.userAgent.match(/MSIE (\d+)/);
+        if (msie) {
+          value.IsIE = true;
+          //Find the IE version number from the user agent string
+          value.ActingVersion = parseInt(msie[1]);
+        } else {
+          //Must be IE 11 in "edge" mode
+          value.ActingVersion = value.TrueVersion;
+        }
+
+        //If we have both a Trident and MSIE version number, see if they're different
+        if (value.IsIE && value.TrueVersion > 0 && value.ActingVersion > 0) {
+          //In compatibility mode if the trident number doesn't match up with the MSIE number
+          value.CompatibilityMode = value.TrueVersion != value.ActingVersion;
+        }
+        return value;
+      }
+
+    })();
+
+    // dojoConfig = {
+    //   parseOnLoad: false,
+    //   cacheBust: true
+    // }
+  </script>
+
   <script src='https://js.arcgis.com/4.7/'></script>
 
   <script src='config/multilayers-data.js'></script>

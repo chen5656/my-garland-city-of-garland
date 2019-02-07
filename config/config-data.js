@@ -1,4 +1,4 @@
-const  appSetting={
+var  appSetting={
 
   "mapInTop": {
     "mapImageLayer": {
