@@ -164,6 +164,7 @@ require([
           promises.then(lang.hitch(this, function (response) {
             var minDistance = Math.min.apply(null, response);
             var minIndex = response.indexOf(minDistance);
+            
             var minFeature = featureSet.features[minIndex];
             featureSet.nearestFeature = minFeature.attributes;
             featureSet.distance = minDistance.toFixed(2);
@@ -359,36 +360,53 @@ require([
         }, li);
 
         if (val.name == "Nearest Park") {
-          var link = getParkLink(val.nearestFeature.PARKS);
-
+          
+debugger;
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat("<a href='", link, "'  target='_blank' title='Open to see details'> ", val.nearestFeature.PARKS, "</a>")
+            innerHTML: "".concat("<a href='",  val.nearestFeature[val.linkValue], "'  target='_blank' title='Open to see details'> ", val.nearestFeature[val.displayValue2], "</a>")
             //id: val.id
           }, li);
 
         } else {
-          var googleLink = openInGoogleMap({
-            type: "FindDireciton",
-            originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-            destinationAdd: val.nearestFeature[val.addressValue].replace(/\s|\t/g, "+")
-          });
+          if (val.displayValue1) {
+            domConstruct.create("span", {
+              className: "location-data-value",
+              innerHTML: val.nearestFeature[val.displayValue1]
+              //id: val.id        
+            }, li);
+            domConstruct.create("span", {
+              className: "location-data-distance",
+              innerHTML: "".concat(" (", val.distance, " miles)")
+            }, li);
+          }
+          var hyperLink="";
+          var title=""
+          if(val.linkValue){
+            hyperLink
+          }
 
-          domConstruct.create("span", {
-            className: "location-data-value",
-            innerHTML: val.nearestFeature[val.displayValue1]
-            //id: val.id        
-          }, li);
+          if (val.addressValue) {
+            hyperLink= openInGoogleMap({
+              type: "FindDireciton",
+              originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
+              destinationAdd: val.nearestFeature[val.addressValue].replace(/\s|\t/g, "+")
+            });
+            title="Open in Google Map";         
+          }
 
-          domConstruct.create("span", {
-            className: "location-data-distance",
-            innerHTML: "".concat(" (", val.distance, " miles)")
-          }, li);
 
-          domConstruct.create("span", {
-            className: "location-data-value",
-            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature[val.displayValue2], "</a>")
-          }, li);
+          if (val.displayValue2) {
+            domConstruct.create("span", {
+              className: "location-data-value",
+              innerHTML: "".concat("<a href='", hyperLink, "'  target='_blank' title='",title,"'> ", val.nearestFeature[val.displayValue2], "</a>")
+            }, li);
+          }
+
+
+
+
+       
         }
       });
 
