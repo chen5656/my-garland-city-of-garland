@@ -3,6 +3,9 @@ var layerSetting={
     "cityFacilitySourceList": [{
         "id": "city-hall",
         "name": "City Hall",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "BLDG_NAME='CITY HALL'",
         "containerID": "nearestCityFacility",
@@ -10,6 +13,9 @@ var layerSetting={
       }, {
         "id": "customer-service",
         "name": "Customer Service",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "BLDG_NAME='UTILITY SERVICES'",
         "containerID": "nearestCityFacility",
@@ -18,6 +24,9 @@ var layerSetting={
       {
         "id": "police-station",
         "name": "Police Station",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "BLDG_NAME='POLICE STATION'",
         "containerID": "nearestCityFacility",
@@ -26,6 +35,9 @@ var layerSetting={
       {
         "id": "municipal-courts",
         "name": "Municipal Courts",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "DEPT='COURTS'",
         "containerID": "nearestCityFacility",
@@ -34,6 +46,9 @@ var layerSetting={
       {
         "id": "nearest-fire-station",
         "name": "Nearest Fire Station",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
         "containerID": "nearestCityFacility",
@@ -42,6 +57,9 @@ var layerSetting={
       {
         "id": "nearest-library",
         "name": "Nearest Library",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "DEPT='LIBRARY'",
         "containerID": "nearestCityFacility",
@@ -49,17 +67,33 @@ var layerSetting={
       }, {
         "id": "nearest-park",
         "name": "Nearest Park",
+        "addressValue":"NULL",
+        "displayValue1":"NULL",
+        "displayValue2":"PARKS",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/14",
         "where": "1=1",
         "containerID": "service",
-        "displayID": 1
+        "displayID": 2
       }, {
         "id": "nearest-recreation-center",
         "name": "Nearest Recreation Center",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"BLDG_NAME",
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
         "where": "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
         "containerID": "service",
-        "displayID": 2
+        "displayID": 3
+      }, {
+        "id": "nearest-school",
+        "name": "Nearest School",
+        "addressValue":"ADDRESS",
+        "displayValue1":"ADDRESS",
+        "displayValue2":"OFFICIALNA",
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/20",
+        "where": "1=1",
+        "containerID": "service",
+        "displayID": 1
       }
 
     ],
@@ -67,13 +101,13 @@ var layerSetting={
       "id": "ews-recycling",
       "name": "EWS Recycling Pickup Week",
       "containerID": "service",
-      "displayID": 3,
+      "displayID": 5,
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
     }, {
       "id": "ews-trash",
       "name": "EWS Trash and Brush Pickup Day",
       "containerID": "service",
-      "displayID": 2,
+      "displayID": 4,
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
     }, {
       "id": "neighborhood-watch",
@@ -90,6 +124,8 @@ var layerSetting={
     }, {
       "id": "gdc-zoning",
       "name": "GDC Zoning",
+      "displayValue1":"ADDRESS",
+      "displayValue2":"BLDG_NAME",
       "containerID": "planning_development-zoning",
       "displayID": 2,
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"

@@ -371,13 +371,13 @@ require([
           var googleLink = openInGoogleMap({
             type: "FindDireciton",
             originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
-            destinationAdd: val.nearestFeature.ADDRESS.replace(/\s|\t/g, "+")
+            destinationAdd: val.nearestFeature[val.addressValue].replace(/\s|\t/g, "+")
           });
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: val.nearestFeature.ADDRESS
-            //id: val.id
+            innerHTML: val.nearestFeature[val.displayValue1]
+            //id: val.id        
           }, li);
 
           domConstruct.create("span", {
@@ -387,7 +387,7 @@ require([
 
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature.BLDG_NAME, "</a>")
+            innerHTML: "".concat("<a href='", googleLink, "'  target='_blank' title='Open in Google Map'> ", val.nearestFeature[val.displayValue2], "</a>")
           }, li);
         }
       });
