@@ -356,7 +356,7 @@ require([
 
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML: val.name.concat(": ")
+          innerHTML: val.name + ": "
         }, li);
 
         if (val.displayValue1) {
@@ -367,20 +367,20 @@ require([
           }, li);
           domConstruct.create("span", {
             className: "location-data-distance",
-            innerHTML: "".concat(" (", val.distance, " miles)")
+            innerHTML: " (" + val.distance + " miles)"
           }, li);
         }
         var hyperlink = function (val) {
           if (val.linkValue) {
-            return "".concat("<a href='", val.nearestFeature[val.linkValue], "'  target='_blank' title='Open to see details'> ");
+            return "<a href='" + val.nearestFeature[val.linkValue] + "'  target='_blank' title='Open to see details'> ";
           } else if (val.addressValue) {
-            return "".concat("<a href='",
+            return "<a href='" +
               openInGoogleMap({
                 type: "FindDireciton",
                 originAdd: multiSearch.searchResult.address.replace(/\s|\t/g, "+"),
                 destinationAdd: val.nearestFeature[val.addressValue].replace(/\s|\t/g, "+")
-              }),
-              "'  target='_blank' title='Open in Google Map'> ");
+              }) +
+              "'  target='_blank' title='Open in Google Map'> ";
           } else {
             return "";
           }
@@ -389,7 +389,7 @@ require([
         if (val.displayValue2) {
           domConstruct.create("span", {
             className: "location-data-value",
-            innerHTML: "".concat(hyperlink, val.nearestFeature[val.displayValue2], "</a>")
+            innerHTML: hyperlink + val.nearestFeature[val.displayValue2] + "</a>"
           }, li);
         }
       });
@@ -433,7 +433,7 @@ require([
 
         domConstruct.create("span", {
           className: "location-data-tag",
-          innerHTML: val.title.concat(": ")
+          innerHTML: val.title + ": "
         }, li);
 
         //create <a> as hyperlink, or <span> as text, and add hyperlink to <a>
@@ -487,21 +487,27 @@ require([
     today.setHours(0, 0, 0);
     var yesterday = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
     var severDaysAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-    var start_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
-    var end_date = "".concat(yesterday.getFullYear(), "-", yesterday.getMonth() + 1, "-", yesterday.getDate());
+    var start_date = `${severDaysAgo.getFullYear()}-${severDaysAgo.getMonth() + 1}-${severDaysAgo.getDate()}`;
+    var end_date = `${yesterday.getFullYear()}-${yesterday.getMonth() + 1}-${yesterday.getDate()}`;
 
-    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date=".concat(start_date, "&end_date=", end_date, "&lat=", val.latitude, "&lng=", val.longitude);
+    var url = "https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=" +
+      "Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=" +
+      "Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252C" +
+      "Liquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252C" +
+      "Quality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle" +
+      "&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map" +
+      `&start_date=${start_date}&end_date=${end_date}&lat=${val.latitude}&lng=${val.longitude}`;
     console.log("crime map:", url);
     var node = dom.byId("crimeDataIFrame");
     node.src = url;
-    dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
+    dom.byId("crime-map-title").innerHTML = `Crime ( <time datetime='${start_date} 00:00'>${start_date.slice(5)}</time> to <time datetime='${end_date} 23:59'>${end_date.slice(5)}</time> )`;
 
     dom.byId("open-crime-map").setAttribute("href", url);
   }
 
   function showSubMap(val, layers) {
     var node = dom.byId("subMap");
-    node.innerHTML = "".concat("<div id='subMapView' style='width: 100%; height: 350px;'></div>");
+    node.innerHTML = "<div id='subMapView' style='width: 100%; height: 350px;'></div>";
 
     var lat = val.latitude;
     var long = val.longitude;
@@ -549,16 +555,6 @@ require([
     }
   }
 
-  function getParkLink(parkName) {
-    var url = appSetting.cog_park_site;
-    var parkList = ["ab", "cd", "efg", "hij", "klmnopq", "rst", "wxy"];
-    var firstLetter = parkName.toLowerCase().charAt(0);
-    var str = parkList.filter(function (value) {
-      return value.indexOf(firstLetter) != -1;
-    })[0];
-    return url.replace(/%s/, str.charAt(0).concat(str.slice(-1)));
-  }
-
   function addHyperlinks(eventName) {
     if (eventName == "npo") {
       //add a phone icon and email icon after police officer name
@@ -570,13 +566,13 @@ require([
         var npoInfo = item[0].serviceZone;
         var npoNode = nodes[0];
         domConstruct.create("a", {
-          href: "tel:".concat(npoInfo.PHONE, "'"),
-          innerHTML: "".concat(" <i class='fas fa-phone-square' title='", npoInfo.PHONE, "'></i> ")
+          href: `tel:${npoInfo.PHONE.trim()}`,
+          innerHTML: ` <i class='fas fa-phone-square' title='${npoInfo.PHONE}'></i> `
         }, npoNode);
 
         domConstruct.create("a", {
-          href: "mailto:".concat(npoInfo.EMAIL, "'"),
-          innerHTML: "".concat(" <i class='fas fa-envelope' title='", npoInfo.EMAIL, "'></i> ")
+          href: `mailto:${npoInfo.EMAIL.trim()}`,
+          innerHTML: `<i class='fas fa-envelope' title='${npoInfo.EMAIL}'></i>`
         }, npoNode);
       }
     }
@@ -643,7 +639,7 @@ require([
       AddrRoad = findArrayInAliasExtend(AddrRoad);
 
       var query = new Query({
-        where: "STREETLABEL LIKE '%".concat(AddrRoad, "%'"),
+        where: "STREETLABEL LIKE '%" + AddrRoad + "%'",
         returnGeometry: false,
         outFields: ["*"]
       });
@@ -677,7 +673,7 @@ require([
 
             domConstruct.create("button", {
               className: "btn btn-link",
-              innerHTML: "".concat(val.streetNumber, " ", val.streetLabel)
+              innerHTML: "" + val.streetNumber + val.streetLabel
             }, li);
           });
 
@@ -698,7 +694,7 @@ require([
             }
           }
           var query = new Query({
-            where: "STREETLABEL LIKE '%".concat(longestStr, "%'"),
+            where: "STREETLABEL LIKE '%" + longestStr + "%'",
             returnGeometry: false,
             outFields: ["*"]
           });
@@ -713,7 +709,7 @@ require([
             } else {
               //check alias table
               var query = new Query({
-                where: "STREETNAME LIKE '%".concat(longestStr, "%'"),
+                where: "STREETNAME LIKE '%" + longestStr + "%'",
                 returnGeometry: false,
                 outFields: ["*"]
               });
@@ -727,7 +723,7 @@ require([
                   displayUniquleStreetList(results.features, AddrNumber);
                 } else {
                   domClass.remove('suggestedAddresses', 'd-none');
-                  dom.byId("address-links").innerHTML = "".concat("<p>Couldn't find entered address. </p><p>Please check the address name.</p>");
+                  dom.byId("address-links").innerHTML = "<p>Couldn't find entered address. </p><p>Please check the address name.</p>";
                 }
               });
 
@@ -778,7 +774,7 @@ require([
       if (AddrNumber == 0) {
         tempAddrNum = "";
       } else {
-        tempAddrNum = "".concat(AddrNumber, " ");
+        tempAddrNum = "" + AddrNumber + " ";
       }
 
       domClass.remove('suggestedAddresses', 'd-none');
@@ -793,7 +789,7 @@ require([
 
         domConstruct.create("button", {
           className: "btn btn-link",
-          innerHTML: "".concat(tempAddrNum, val)
+          innerHTML: "" + tempAddrNum + val
         }, li);
       });
 
@@ -863,7 +859,7 @@ require([
 
       //update url
       if (e.result.name) {
-        window.history.pushState("new-address", e.result.name, "?address=".concat(e.result.name.replace(/ /g, "%20")));
+        window.history.pushState("new-address", e.result.name, "?address=" + e.result.name.replace(/ /g, "%20"));
       }
 
       //show result
@@ -928,15 +924,15 @@ require([
       var svgValue, label;
       switch (item.type) {
         case "polyline":
-          svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size, '" />');
+          svgValue = `<line x1="0" y1="10" x2="20" y2="10" style="stroke:${item.color};stroke-width:${item.size}" />`;
           break;
         case "polygon":
-          svgValue = "".concat('<polygon points="0,0 0,20 20,20 20,0" style="fill:', item.color, ';stroke:black;stroke-width:1" />');
+          svgValue = `<polygon points="0,0 0,20 20,20 20,0" style="fill:${item.color};stroke:black;stroke-width:1" />`;
           break;
         default: //point
-          svgValue = "".concat('  <circle cx="', item.size, '" cy="', item.size, '" r="', item.size / 2, '" stroke="black" stroke-width="1" fill="', item.color, '" />');
+          svgValue = ` <circle cx="${item.size}" cy="${item.size}" r="${item.size / 2}" stroke="black" stroke-width="1" fill="${item.color}" />`;
       }
-      svgValue = "".concat(' <svg height="20" width="20">', svgValue, '</svg>');
+      svgValue = `<svg height="20" width="20">${svgValue}</svg>`;
 
       var tr = domConstruct.create("tr", null, tbody);
       var td = domConstruct.create("td", {
