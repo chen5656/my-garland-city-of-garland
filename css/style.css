@@ -251,3 +251,11 @@ header .absolute {
   border:solid 2px #41403E;
 
 }
+
+#council-dist a {
+  font-size: 85%;
+  font-weight: 900;
+  color: white;  
+  padding: 0px 4px;
+  background-color: #207ff7;
+}
