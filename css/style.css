@@ -46,11 +46,20 @@
   position: absolute;
 }
 
-header h1 {
-  font-family: 'Signika', sans-serif;
-  font-weight: 900;
+.title  {
+	color: #36486b;
+  margin:50px auto;
+  font-weight: 800;
+  text-shadow: 3px 2px DarkGray;
 }
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", Arial,sans-serif;
+
+}
 header .absolute {
   top: 80px;
   right: 15px;
