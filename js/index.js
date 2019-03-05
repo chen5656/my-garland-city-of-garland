@@ -314,6 +314,9 @@ require([
 
     //update npo hyperlink
     addHyperlinks("npo");
+    //
+    addHyperlinks("code-n-districts");
+    addHyperlinks("code-commercial-districts");
   });
 
   topic.subscribe("multiSearch/nearestCityFacilityUpdated", function () {
@@ -549,24 +552,63 @@ require([
   }
 
   function addHyperlinks(eventName) {
+    if (eventName == "code-commercial-districts") {
+      var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+        return val.id == eventName;
+      });
+      var nodes = domQuery(".location-data-value", eventName);
+      if (item.length > 0 && nodes.length > 0) {
+        var evtInfo = item[0].serviceZone;
+        var evtNode = nodes[0];
+        domConstruct.create("a", {
+          href: "tel:" + evtInfo.PHONE.trim() ,
+          innerHTML: " <i class='fas fa-phone-square' title='" + evtInfo.PHONE.trim() + "'></i> "
+        }, evtNode);
+      }
+
+
+    }
+    if (eventName == "code-n-districts") {
+      var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
+        return val.id == eventName;
+      });
+      var nodes = domQuery(".location-data-value", eventName);
+      if (item.length > 0 && nodes.length > 0) {
+        var evtInfo = item[0].serviceZone;
+        var evtNode = nodes[0];
+        domConstruct.create("a", {
+          href: "tel:" + evtInfo.PHONE.trim() ,
+          innerHTML: " <i class='fas fa-phone-square' title='" + evtInfo.PHONE.trim() + "'></i> "
+        }, evtNode);
+        domConstruct.create("span", {
+          innerHTML: ", "+ evtInfo.INSPECTOR2.trim()
+        }, evtNode);
+        domConstruct.create("a", {
+          href: "tel:" + evtInfo.PHONE.trim() ,
+          innerHTML: " <i class='fas fa-phone-square' title='" + evtInfo.PHONE2.trim() + "'></i> "
+        }, evtNode);
+
+
+      }
+    }
     if (eventName == "npo") {
       //add a phone icon and email icon after police officer name
       var item = multiSearch.searchResult.serviceZoneList.filter(function (val) {
-        return val.id == "npo";
+        return val.id == eventName;
       });
-      var nodes = domQuery(".location-data-value", "npo");
+      var nodes = domQuery(".location-data-value", eventName);
       if (item.length > 0 && nodes.length > 0) {
-        var npoInfo = item[0].serviceZone;
-        var npoNode = nodes[0];
+        var evtInfo = item[0].serviceZone;
+        var evtNode = nodes[0];
         domConstruct.create("a", {
-          href: "tel:" + npoInfo.PHONE.trim() + "'",
-          innerHTML: " <i class='fas fa-phone-square' title='" + npoInfo.PHONE.trim() + "'></i> "
-        }, npoNode);
+          href: "tel:" + evtInfo.PHONE.trim() ,
+          innerHTML: " <i class='fas fa-phone-square' title='" + evtInfo.PHONE.trim() + "'></i> "
+        }, evtNode);
 
         domConstruct.create("a", {
-          href: "mailto:" + npoInfo.EMAIL.trim() + "'",
-          innerHTML: " <i class='fas fa-envelope' title='" + npoInfo.EMAIL.trim() + "'></i> "
-        }, npoNode);
+          href: "mailto:" + evtInfo.EMAIL.trim() ,
+          innerHTML: " <i class='fas fa-envelope' title='" + evtInfo.EMAIL.trim() + "'></i> "
+        }, evtNode);
       }
     }
 
