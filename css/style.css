@@ -95,7 +95,7 @@ header .absolute {
   opacity: 0;
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch+div {
+#street-condition-toggle input[type="checkbox"].ios-switch+span {
   color: #fff;
   display: inline-block;
   vertical-align: middle;
@@ -119,13 +119,13 @@ header .absolute {
   /* change this and see how they adjust! */
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch:checked+div {
+#street-condition-toggle input[type="checkbox"].ios-switch:checked+span {
   padding-left: 64px;
   /*	width: 74px;*/
   background-position: 0 0;
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch+div:before {
+#street-condition-toggle input[type="checkbox"].ios-switch+span:before {
   content: 'ON';
   float: left;
   width: 22px;
@@ -143,16 +143,16 @@ header .absolute {
   text-indent: -48px;
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch:active+div:before {
+#street-condition-toggle input[type="checkbox"].ios-switch:active+span:before {
   background-color: #eee;
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch+div:before,
-#street-condition-toggle input[type="checkbox"].ios-switch+div:after {
+#street-condition-toggle input[type="checkbox"].ios-switch+span:before,
+#street-condition-toggle input[type="checkbox"].ios-switch+span:after {
   font: bold 60%/1.7 sans-serif;
 }
 
-#street-condition-toggle input[type="checkbox"].ios-switch+div:after {
+#street-condition-toggle input[type="checkbox"].ios-switch+span:after {
   content: 'OFF';
   float: left;
   text-indent: 8px;
