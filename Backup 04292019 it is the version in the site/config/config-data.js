@@ -1,4 +1,4 @@
-var appSetting = {
+var  appSetting={
 
   "mapInTop": {
     "mapImageLayer": {
@@ -61,22 +61,22 @@ var appSetting = {
           "label": "Excellent",
           "type": "polyline",
           "size": 2
-        }, {
+        },{
           "color": "rgba(77,230,0,1)",
           "label": "Good",
           "type": "polyline",
           "size": 2
-        }, {
+        },{
           "color": "rgba(230,230,0,1)",
           "label": "Fair",
           "type": "polyline",
           "size": 2
-        }, {
+        },{
           "color": "rgba(225,167,127,1)",
           "label": "Poor",
           "type": "polyline",
           "size": 2
-        }, {
+        },{
           "color": "rgba(255,0,0,1)",
           "label": "Failed",
           "type": "polyline",
@@ -89,7 +89,9 @@ var appSetting = {
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
   "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
 
-  // "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%s/default.asp",
+  "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%s/default.asp",
+  "google_direction": "https://www.google.com/maps/dir/?api=1&origin=%o&destination=%d,Garland",
+
   "ews_link": "https://www.garlandtx.gov/gov/eg/ews/default.asp"
 
 

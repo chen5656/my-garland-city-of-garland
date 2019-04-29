@@ -1,11 +1,12 @@
 .grey-background {
-  background-color: #fcfbfa;
+  background-color: rgb(196, 196, 196);
 }
 
 .r-search-box {
+  background-color: rgb(244, 244, 244);
   margin: 2px;
   padding: 50px 5px 50px 5px;
-  background-image: linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa);
+  border-top: 30px solid rgb(196, 196, 196);
   text-align: center;
   z-index: 99;
   position: relative;
@@ -45,9 +46,9 @@
   position: absolute;
 }
 
-.title {
-  color: #007aa3;
-  margin: 50px auto;
+.title  {
+	color: #36486b;
+  margin:50px auto;
   font-weight: 800;
   text-shadow: 3px 2px DarkGray;
 }
@@ -56,15 +57,35 @@ body {
   font-family: -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    "Droid Sans", "Helvetica Neue", Arial,sans-serif;
 
 }
-
 header .absolute {
   top: 80px;
   right: 15px;
   width: 300px;
   height: 100px;
+}
+
+.load-wrapp {
+  border: 16px solid #f3f3f3;
+  /* Light grey */
+  border-top: 16px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 25px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* checkbox -- toggle  */
@@ -150,7 +171,7 @@ header .absolute {
 /*  checkbox -- toggle */
 
 .r-title {
-  background-color: #007aa3;
+  background-color: rgb(29, 29, 65);
   padding: 10px;
   color: white;
   font-weight: 600;
@@ -173,8 +194,6 @@ header .absolute {
 
 .location-data-value {
   font-size: 18px;
-  text-transform: uppercase;
-
 }
 
 .btn-secondary-right {
@@ -238,14 +257,14 @@ header .absolute {
 }
 
 .black-border {
-  border: solid 2px #41403E;
+  border:solid 2px #41403E;
 
 }
 
 #council-dist a {
   font-size: 85%;
   font-weight: 900;
-  color: white;
+  color: white;  
   padding: 0px 4px;
   background-color: #207ff7;
 }

@@ -6,17 +6,38 @@
   <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
   <title>My Garland</title>
   <meta name='author' content='Huajun Chen'>
-  <meta name='description'
-    content='My Address aims to provide residents information on nearest city facilities, service zones, neighborhoods and development information. And also provide a crime data map.'>
+  <meta name='description' content='My Address aims to provide residents information on nearest city facilities, service zones, neighborhoods and development information. And also provide a crime data map.'>
 
+  <meta property='og:image' content='https://maps.garlandtx.gov/gisimages/logo.png'>
+  <meta property='og:description' content='My Address aims to provide residents information on nearest city facilities, service zones, neighborhoods and development information. And also provide a crime data map.'>
+  <meta property='og:title' content='My Address'>
+
+
+  <!-- To support old sizes -->
+  <link rel="apple-touch-icon" sizes="57x57" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+
+  <!-- To support new sizes -->
+  <link rel="apple-touch-icon" sizes="60×60" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="76×76" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="120×120" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="152×152" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="apple-touch-icon" sizes="180×180" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <!-- To support Android -->
+  <link rel="icon" sizes="192×192" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
+  <link rel="icon" sizes="128×128" href="https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/images/capture.png">
   <link href='images/favicon.ico' rel='icon' type='image/x-icon' />
   <link rel='stylesheet' href='css/style.css'>
+  <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css' integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4'
+    crossorigin='anonymous'>
+  <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.13/css/all.css' integrity='sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp'
+    crossorigin='anonymous'>
 
-  <link rel='stylesheet' href='resources/bootstrap/bootstrap.4.3.1.min.css' />
-  <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.13/css/all.css'
-    integrity='sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp' crossorigin='anonymous'>
 
   <link rel='stylesheet' href='https://js.arcgis.com/4.7/esri/css/main.css'>
+  <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet'>
 
 
 
@@ -36,7 +57,7 @@
       </div>
     </noscript>
 
-    <div class='browser-compatibility-alert d-block bg-danger text-white'>The web
+    <div class="browser-compatibility-alert d-block bg-danger text-white">The web
       browser you are using right
       now may not be fully functional. Please use Chrome or Firefox instead.</div>
   </div>
@@ -49,9 +70,8 @@
       </div>
     </div>
   </header>
-  <!-- style='display:none;' -->
+  <!-- style="display:none;" -->
   <main>
-
     <div class='container-fluid'>
       <div id='main-content' class='d-none'>
 
@@ -62,7 +82,6 @@
               Enter a valid City of Garland Address to look up City data.
             </div>
             <div id='search'></div>
-
           </div>
         </div>
         <article class='row grey-background py-4 d-none' id='nodeResult'>
@@ -78,17 +97,13 @@
                 <div class='card-header' id='headingOne'>
                   <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
                     <i class='fas fa-minus-square fa-lg'></i>
-                    <h3 class='fas fa-lg'>Nearby City Facilities
+                    <h3 class='fas fa-lg'>Nearby City Facilities (click for directions)
                     </h3>
                   </div>
                 </div>
-                <div id='collapseOne' class='card-body collapse show' aria-labelledby='headingOne'
-                  data-parent='#accordion'>
-                  <div id='nearestCityFacility'>
-                    <div class='spinner-grow' role='status'>
-                      <span class='sr-only'>Loading...</span>
-                    </div>
-                    <ul> </ul>
+                <div id='collapseOne' class='card-body collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
+                  <div id='nearestCityFacility' class='add-load-wrapp'>
+                    <ul></ul>
                   </div>
                 </div>
               </section>
@@ -99,17 +114,12 @@
                     <h3 class='fas fa-lg'>Services</h3>
                   </div>
                 </div>
-                <div id='collapseTwo' class='card-body collapse show' aria-labelledby='headingTwo'
-                  data-parent='#accordion'>
-                  <div id='service'>
-                    <div class='spinner-grow' role='status'>
-                      <span class='sr-only'>Loading...</span></div>
+                <div id='collapseTwo' class='card-body collapse show' aria-labelledby='headingTwo' data-parent='#accordion'>
+                  <div id='service' class='add-load-wrapp'>
                     <ul></ul>
                   </div>
-                  <div id="ews_link" class="d-none">
-                    <a href="https://www.garlandtx.gov/gov/eg/ews/default.asp" target="_blank"
-                      title="goto Environmental Waste Services">goto Environmental Waste Services<br> <img
-                        src="images/Env-Waste-Svcs.png" width="30%"></a></div>
+                  <div id='ews_link' class='d-none'>
+                  </div>
                 </div>
               </section>
 
@@ -127,12 +137,8 @@
                     <h3 class='fas fa-lg'>Reference</h3>
                   </div>
                 </div>
-                <div id='collapseFour' class='card-body collapse show' aria-labelledby='headingFour'
-                  data-parent='#accordion'>
-                  <div id='parcelInfo'>
-                    <div class='spinner-grow' role='status'>
-                      <span class='sr-only'>Loading...</span>
-                    </div>
+                <div id='collapseFour' class='card-body collapse show' aria-labelledby='headingFour' data-parent='#accordion'>
+                  <div id='parcelInfo' class='add-load-wrapp'>
                     <ul></ul>
                   </div>
                 </div>
@@ -144,11 +150,8 @@
                     <h3 class='fas fa-lg'>Neighborhoods</h3>
                   </div>
                 </div>
-                <div id='collapseFive' class='card-body collapse show' aria-labelledby='headingFive'
-                  data-parent='#accordion'>
-                  <div id='neighborhoods'>
-                    <div class='spinner-grow' role='status'>
-                      <span class='sr-only'>Loading...</span></div>
+                <div id='collapseFive' class='card-body collapse show' aria-labelledby='headingFive' data-parent='#accordion'>
+                  <div id='neighborhoods' class='add-load-wrapp'>
                     <ul></ul>
                   </div>
                 </div>
@@ -161,11 +164,8 @@
                     </h3>
                   </div>
                 </div>
-                <div id='collapseThree' class='card-body collapse show' aria-labelledby='headingThree'
-                  data-parent='#accordion'>
-                  <div id='planning_development-zoning'>
-                    <div class='spinner-grow' role='status'>
-                      <span class='sr-only'>Loading...</span></div>
+                <div id='collapseThree' class='card-body collapse show' aria-labelledby='headingThree' data-parent='#accordion'>
+                  <div id='planning_development-zoning' class='add-load-wrapp'>
                     <ul></ul>
                   </div>
                 </div>
@@ -179,8 +179,7 @@
                     </h3>
                   </div>
                 </div>
-                <div id='collapseEight' class='card-body collapse ' aria-labelledby='headingEight'
-                  data-parent='#accordion'>
+                <div id='collapseEight' class='card-body collapse ' aria-labelledby='headingEight' data-parent='#accordion'>
                   <div id='street-condition'>
 
                     <div id='street-condition-toggle'>
@@ -190,7 +189,8 @@
                         <span class='switch'></span>
                       </label>
                     </div>
-                    <div class='p-2 mt-3 d-none black-border' id='street-condition-legend'>
+                    <div class='p-2 mt-3' id='street-condition-legend'>
+
                     </div>
                   </div>
                 </div>
@@ -210,10 +210,9 @@
                     <h3 class='fas fa-lg'>Detail</h3>
                   </div>
                 </div>
-                <div id='collapseSeven' class='card-body collapse show' aria-labelledby='headingSeven'
-                  data-parent='#accordion'>
-                  <div id='subMap'>
-                    <div id='subMapView' style='width: 100%; height: 350px;'></div>
+                <div id='collapseSeven' class='card-body collapse show' aria-labelledby='headingSeven' data-parent='#accordion'>
+                  <div id='subMap' class='add-load-wrapp'>
+                    <ul></ul>
                   </div>
                 </div>
               </section>
@@ -221,15 +220,16 @@
                 <div class='card-header' id='headingSix'>
                   <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix'>
                     <i class='fas fa-minus-square fa-lg'></i>
-                    <h3 class='fas fa-lg' id='crime-map-title'>Crime Map</h3>
+                    <h3 class='fas fa-lg' id='crime-map-title'>Crime</h3>
                   </div>
+
                   <a class='btn btn-secondary  btn-secondary-right' id='open-crime-map' title='Open CrimeReport.com'
                     href='#' target='_blank'>
                     <i class='fas fa-external-link-alt'></i>
                   </a>
+
                 </div>
-                <div id='collapseSix' class='card-body collapse show' aria-labelledby='headingSix'
-                  data-parent='#accordion'>
+                <div id='collapseSix' class='card-body collapse show' aria-labelledby='headingSix' data-parent='#accordion'>
                   <div id='crimeData'>
 
                   </div>
@@ -248,8 +248,8 @@
                   Address not find. </h2>
                 <div class='absolute float-right'>
                   <abbr title='Close this card'>
-                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton'
-                      aria-controls='suggestedAddresses' aria-label='Close'>
+                    <button type='button' class='btn btn-secondary btn-secondary-right closeButton' aria-controls='suggestedAddresses'
+                      aria-label='Close'>
                       <i class='fas fa-times'></i>
                     </button>
                   </abbr>
@@ -278,36 +278,11 @@
       represents
       only the approximate relative location of property boundaries.</p>
   </footer>
-
-  <script id='search-result-display' type='text/template'>
-    <li index='{{index}}' id='{{id}}'>
-      <span class='location-data-tag'>{{name}}: </span>
-      <span class='location-data-value'>{{displayValue1}}</span>
-      <span class='location-data-distance'> {{distance}}</span>
-      <span class='location-data-value'><a href='{{link}}'
-          target='_blank' title='{{linkTitle}}'> {{displayValue2}}</a></span>
-    </li>
-  </script>
-
-  <script id='search-result-display-hardcode' type='text/template'>
-    <li index='{{index}}'>
-      <span class='location-data-tag'>{{name}}: </span>
-      {{hardcode}}
-    </li>
-  </script>
-
-  <script id='crime-map-iframe' type='text/template'>
-    <iframe id='crimeDataIFrame' src=' https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date={{start_date}}&end_date={{end_date}}&lat={{lat}}&lng={{long}}' height='400' width='100%' 
-    sandbox ='allow-scripts allow-same-origin allow-forms'></iframe>
-
-</script>
-
   <script>
     //check if IE 7
     (function () {
       var ie = IeVersion();
-      console.log('IsIE: ' + ie.IsIE + '||' + 'TrueVersion: ' + ie.TrueVersion + '||' + 'ActingVersion: ' + ie
-        .ActingVersion);
+      console.log("IsIE: " + ie.IsIE + "||" + "TrueVersion: " + ie.TrueVersion + "||" + "ActingVersion: " + ie.ActingVersion);
       if (ie.IsIE == true && (ie.TrueVersion < 11 || ie.ActingVersion < 11)) {
         document.getElementById('browser-check').style.display = 'block';
       } else {
@@ -338,7 +313,7 @@
           //Find the IE version number from the user agent string
           value.ActingVersion = parseInt(msie[1]);
         } else {
-          //Must be IE 11 in 'edge' mode
+          //Must be IE 11 in "edge" mode
           value.ActingVersion = value.TrueVersion;
         }
 
@@ -360,9 +335,9 @@
 
   <script src='https://js.arcgis.com/4.7/'></script>
 
-  <script src='config/multilSearch-data.js'></script>
+  <script src='config/multilayers-data.js'></script>
   <script src='config/config-data.js'></script>
-  <script src='js/app.js'></script>
+  <script src='js/index.js'></script>
 </body>
 
 </html>
