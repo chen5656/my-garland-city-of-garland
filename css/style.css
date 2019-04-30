@@ -246,6 +246,13 @@ header .absolute {
   font-size: 85%;
   font-weight: 900;
   color: white;
-  padding: 0px 4px;
+  padding: 0px 6px 0px 4px ;
   background-color: #207ff7;
+}
+
+#open-crime-map {
+  color: #fff;
+    background-color: #207ff7;
+    border-color: #207ff7;
+    float: right;
 }
