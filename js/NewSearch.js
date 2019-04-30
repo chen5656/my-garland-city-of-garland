@@ -141,7 +141,10 @@ define(["dojo/_base/declare",
               return item;
             });
           });
-          return allPnts.flat();
+
+          return allPnts.reduce(function (a, b) {
+            return a.concat(b);
+          });
         }
       },
 
