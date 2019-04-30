@@ -35,10 +35,10 @@ require([
 
     'dojo/domReady!',
 ], function (dom, domClass,
-    Map, MapView, MapImageLayer,
+    Map, , MapImageLayer,
     Search, Locator, Query, QueryTask,
     domQuery, domConstruct,
-    Template
+    TemplateMapView
 ) {
     'use strict';
     var view, subMap, subView, search;
@@ -118,7 +118,7 @@ require([
         });
     })();
 
-    //add street pci legend to map, based on config-data js. 
+    //generate street pci legend , based on config-data js. 
     (function (json) {
         var node = dom.byId("street-condition-legend");
         domConstruct.create("p", {
@@ -126,8 +126,8 @@ require([
         }, node);
         var table = domConstruct.create("table", null, node);
         var tbody = domConstruct.create("tbody", null, table);
-        var str = json.renderer.map(function (item) {
-            var svgValue, label;
+        json.renderer.map(function (item) {
+            var svgValue;
             switch (item.type) {
                 case "polyline":
                     svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size, '" />');
@@ -141,7 +141,7 @@ require([
             svgValue = "".concat(' <svg height="20" width="20">', svgValue, '</svg>');
 
             var tr = domConstruct.create("tr", null, tbody);
-            var td = domConstruct.create("td", {
+            domConstruct.create("td", {
                 innerHTML: svgValue,
                 width: 35
             }, tr);

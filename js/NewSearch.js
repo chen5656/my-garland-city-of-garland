@@ -296,7 +296,7 @@ define(["dojo/_base/declare",
           geometry: this.addressGeometry,
           symbol: {
             type: "simple-marker",
-            color: [226, 119, 40]
+            color: "#dc2533"
           }
         });
         subView.graphics.removeAll()
@@ -304,8 +304,6 @@ define(["dojo/_base/declare",
         subView.center = [this.addressGeometry.longitude, this.addressGeometry.latitude];
         subView.zoom = 18;
       },
-
-
     });
 
   });
