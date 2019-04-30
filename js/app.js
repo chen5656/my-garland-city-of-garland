@@ -29,9 +29,9 @@ require([
     "dojo/query",
     "dojo/dom-construct",
 
-    "/js/template.js",
-    "/js/MultiSearch.js",
-    "/js/NewSearch.js",
+    "js/template.js",
+    "js/MultiSearch.js",
+    "js/NewSearch.js",
 
     'dojo/domReady!',
 ], function (dom, domClass,

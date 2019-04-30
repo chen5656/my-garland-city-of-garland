@@ -1,7 +1,7 @@
 
 @font-face {
   font-family: publicSans;
-  src: url(/resources/fonts/PublicSans_Light.woff);
+  src: url(../resources/fonts/PublicSans_Light.woff);
 }
 
 .title,.container-fluid,p {
