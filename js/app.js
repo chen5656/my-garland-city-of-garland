@@ -35,10 +35,10 @@ require([
 
     'dojo/domReady!',
 ], function (dom, domClass,
-    Map, , MapImageLayer,
+    Map, MapView, MapImageLayer,
     Search, Locator, Query, QueryTask,
     domQuery, domConstruct,
-    TemplateMapView
+    Template
 ) {
     'use strict';
     var view, subMap, subView, search;
