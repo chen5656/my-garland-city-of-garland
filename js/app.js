@@ -1,6 +1,6 @@
 function iterationCopy(src) {
-    let target = {};
-    for (let prop in src) {
+    var target = {};
+    for (var prop in src) {
         if (src.hasOwnProperty(prop)) {
             target[prop] = src[prop];
         }
@@ -100,13 +100,12 @@ require([
                 var card = dom.byId(this.getAttribute("aria-controls"));
                 domClass.toggle(card, "show");
                 var icon = this.firstElementChild;
-                if (
-                    domClass.contains(icon, "fa-minus-square")) {
-                    domClass.add(icon, "fa-plus-square");
-                    domClass.remove(icon, "fa-minus-square");
+                if (domClass.contains(icon, "esri-icon-minus")) {
+                    domClass.add(icon, "esri-icon-plus");
+                    domClass.remove(icon, "esri-icon-minus");
                 } else {
-                    domClass.add(icon, "fa-minus-square");
-                    domClass.remove(icon, "fa-plus-square");
+                    domClass.add(icon, "esri-icon-minus");
+                    domClass.remove(icon, "esri-icon-plus");
                 }
             };
         });
@@ -473,11 +472,12 @@ require([
 
     //get address from previous saved url
     (function () {
-        var addr=getURLQueryVariable("address")
+        var addr = getURLQueryVariable("address")
 
-        if(addr){
+        if (addr) {
             search.search(addr.replace(/%20/g, ' '));
         }
+
         function getURLQueryVariable(variable) {
             var query = window.location.search.substring(1);
             var vars = query.split("&");

@@ -186,7 +186,7 @@ define(["dojo/_base/declare",
         var existingData = domQuery("li", ulNode).map(function (node) {
 
           return {
-            displayID: node.attributes.index,
+            displayID: node.attributes.index.value,
             resultHtml: node.outerHTML
           }
         });

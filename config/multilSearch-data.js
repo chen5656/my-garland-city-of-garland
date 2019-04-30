@@ -182,7 +182,7 @@ var multilSearch_settings = {
       "containerID": "service",
       "displayID": 6,
       "hyperlinkType": "hardcode",
-      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='fas fa-phone-square' title='Make a phone call to {{displayValue1}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='fas fa-phone-square' title='Make a phone call to {{displayValue3}}'></i> </a></span>",
+      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='Make a phone call to {{displayValue1}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='Make a phone call to {{displayValue3}}'></i> </a></span>",
       "displayDistance": false,
       "displayValue1": "INSPECTOR",
       "displayValue2": "PHONE",
@@ -197,7 +197,7 @@ var multilSearch_settings = {
       "containerID": "service",
       "displayID": 7,
       "hyperlinkType": "hardcode",
-      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='fas fa-phone-square'title='Make a phone call to {{displayValue1}}'></i> </a></span>",
+      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='Make a phone call to {{displayValue1}}'></i> </a></span>",
       "displayDistance": false,
       "displayValue1": "INSPECTOR",
       "displayValue2": "PHONE"
@@ -246,7 +246,7 @@ var multilSearch_settings = {
       "containerID": "neighborhoods",
       "displayID": 2,
       "hyperlinkType": "hardcode",
-      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='fas fa-phone-square' title='Make a phone call to {{displayValue1}}'></i> </a><a href='mailto:{{displayValue3}}'> <i class='fas fa-envelope' title='Send a mail to {{displayValue1}}'></i> </a></span>",
+      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='Make a phone call to {{displayValue1}}'></i> </a><a href='mailto:{{displayValue3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='Send a mail to {{displayValue1}}'></i> </a></span>",
       "displayDistance": false,
       "displayValue1": "OFFICER",
       "displayValue2": "PHONE",
@@ -261,7 +261,7 @@ var multilSearch_settings = {
         "containerID": "parcelInfo",
         "displayID": 1,
         "hyperlinkType": "hardcode",
-        "hardcode":"<span class='location-data-value'><a href='https://www.garlandtx.gov/gov/cd/council/bio/district{{displayValue1}}.asp' target='_blank' title='Open to see details'> {{displayValue1}}</a></span>",
+        "hardcode":"<span class='location-data-value'><a href='https://www.garlandtx.gov/gov/cd/council/bio/district{{displayValue1}}.asp' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
         "displayDistance": false,
         "displayValue1": "COUNCIL_ID"
       }
