@@ -17,7 +17,6 @@ require([
     "dojo/query",
     "dojo/dom-construct",
 
-    "js/template.js",
     "js/MultiSearch.js",
     "js/AddressSuggestion.js",
     "js/NewSearch.js",
@@ -27,14 +26,13 @@ require([
     Map, MapView, MapImageLayer,
     Search, Locator,
     domQuery, domConstruct,
-   template,MultiSearch,addressSuggestion
+   MultiSearch,addressSuggestion
 ) {
     'use strict';
     var view, subMap, subView, search;
     //init: multiSearch
     var multiSearch = new MultiSearch(multilSearch_settings);
     var addressSuggestionService = addressSuggestion();
-   var template = template();
 
     //init: map,submap, view, search,appSetting
     (function (settings) {
@@ -186,15 +184,15 @@ require([
             domClass.remove('nodeResult', 'd-none');
 
             //create new search result
-            var newSearch = new locationService.NewSearch(e.result, template, multiSearch.containerList);
+            var newSearch = new locationService.NewSearch(e.result,  multiSearch.containerList);
 
             //get information from parcel layer by Ref_ID(addressID)
             newSearch.getParcelInfo(multiSearch.mapService.address, multiSearch.mapService.parcel, multiSearch.parcelDataList);
 
             //--add last
-            newSearch.getCrimeData(template.generateCrimeMapIframe);
+            newSearch.getCrimeData();
             newSearch.showSubMap(subView);
-
+            
             newSearch.projectToStatePlane(multiSearch.spatialReference, multiSearch.mapService.geometry).then(function (geometries) {
 
                     newSearch.geometryStatePlane = geometries[0];

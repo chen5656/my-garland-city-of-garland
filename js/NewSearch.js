@@ -13,7 +13,9 @@ define(["dojo/_base/declare",
     "esri/Graphic",
 
     "dojo/promise/all",
-    "dojo/query"
+    "dojo/query",
+    
+    "js/template.js",
   ],
   function (declare, dom, domClass,
     Query, QueryTask,
@@ -21,7 +23,9 @@ define(["dojo/_base/declare",
     geometryEngineAsync,
     Graphic,
 
-    all, domQuery
+    all, domQuery,
+
+    template
 
   ) {
     'use strict';
@@ -41,7 +45,7 @@ define(["dojo/_base/declare",
     //"project search result, make it under stateplane. ");
 
     return declare("locationService.NewSearch", null, { //"Anonymous" Class,only available within its given scope. 
-      constructor: function (searchAddress, template, containerList) {
+      constructor: function (searchAddress,  containerList) {
         this.address = searchAddress.name;
         this.addressID = searchAddress.feature.attributes.Ref_ID;
         this.addressGeometry = searchAddress.feature.geometry;
@@ -49,7 +53,6 @@ define(["dojo/_base/declare",
         //this.serviceZoneList = [];
         //this.parcelInfo = null;
         this.containerList = containerList;
-        this.template = template;
       },
 
       getParcelInfo: function (AddressMapService, ParcelMapService, parcelDataList) {
@@ -106,6 +109,7 @@ define(["dojo/_base/declare",
       },
 
       getNearestCityFacilityList: function (cityFacilityList) {
+        debugger;
         var that = this;
         var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
         getDistances(allCityFacilities).then(function (result) {
@@ -113,7 +117,7 @@ define(["dojo/_base/declare",
             val.distance = result[i];
             return val;
           });
-
+debugger;
           that.nearestCityFacilityList = cityFacilityList.map(function (item) {
             var nearestFeature = cityFacilityDistanceList.filter(function (val) {
               return val.layer == item.id;
@@ -265,7 +269,7 @@ define(["dojo/_base/declare",
         var resultHtmlArray = arr.map(function (item) {
 
           var newItem = that.prepareHtmlData(item);
-          var resultHtml = that.template.generateResultHtml(newItem);
+          var resultHtml = template().generateResultHtml(newItem);
           return {
             containerID: newItem.displayControl.containerID,
             displayID: newItem.displayControl.displayID,
@@ -296,7 +300,7 @@ define(["dojo/_base/declare",
         }
         var node = dom.byId("crimeData");
         node.innerHTML = "";
-        node.innerHTML = generateCrimeMapIframe(urlProperty);
+        node.innerHTML =  template().generateCrimeMapIframe(urlProperty);
         var url = node.children[0].src;
         dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
         dom.byId("open-crime-map").setAttribute("href", url);

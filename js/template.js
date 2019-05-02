@@ -44,7 +44,7 @@ define([
         return template;
     }
 
-    return declare("locationService.template",null, { //'Anonymous' Class,only available within its given scope. 
+    return declare(null, { //'Anonymous' Class,only available within its given scope. 
         generateCrimeMapIframe: generateCrimeMapIframe,
         generateResultHtml: generateResultHtml
     });
