@@ -40,7 +40,6 @@ define(["dojo/_base/declare",
       return target;
     }
 
-    
     function appendToPage(arr,address,containerList) {
       var resultHtmlArray = arr.map(function (item) {
 
@@ -202,7 +201,7 @@ define(["dojo/_base/declare",
       getNearestCityFacilityList: function (cityFacilityList) {
         var that = this;
         var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
-        getDistances(allCityFacilities).then(function (result) {
+        getDistances(allCityFacilities,this.geometryStatePlane).then(function (result) {
           var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
             val.distance = result[i];
             return val;
@@ -229,15 +228,14 @@ define(["dojo/_base/declare",
 
         });
 
-        function getDistances(features) {
-          var location = that.geometryStatePlane;
+        function getDistances(features,geometryStatePlane) {
           var distanceRequestList = features.map(function (item) {
-            return geometryEngineAsync.distance(location, item.geometry, "miles")
+            return geometryEngineAsync.distance(geometryStatePlane, item.geometry, "miles")
           });
           var promises = new all(distanceRequestList);
           return promises;
         }
-
+    
         function getFeaturesOfCityFacilityList(cityFacilityList) {
           var allPnts = cityFacilityList.map(function (val) {
             return val.features.map(function (item) {
@@ -245,11 +243,12 @@ define(["dojo/_base/declare",
               return item;
             });
           });
-
+    
           return allPnts.reduce(function (a, b) {
             return a.concat(b);
           });
         }
+        
       },
 
       getLocatedServiceZoneList: function (serviceZoneList) {
