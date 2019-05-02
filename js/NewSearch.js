@@ -40,6 +40,97 @@ define(["dojo/_base/declare",
       return target;
     }
 
+    
+    function appendToPage(arr,address,containerList) {
+      var resultHtmlArray = arr.map(function (item) {
+
+        var newItem = prepareHtmlData(item, address);
+        var resultHtml = template().generateResultHtml(newItem);
+        return {
+          containerID: newItem.displayControl.containerID,
+          displayID: newItem.displayControl.displayID,
+          resultHtml: resultHtml
+        }
+      });
+
+      containerList.forEach(function (val) {
+        insertHtmlToPage(val, resultHtmlArray);
+      });
+
+
+      function prepareHtmlData(item, searchTerm) {
+        var newItem = {};
+        newItem.id = item.id;
+        newItem.name = item.name;
+        newItem.displayControl = item.displayControl;
+
+        if (item.queryPolygonCount == 0) {
+          newItem.displayValue1 = "NULL";
+          newItem.displayValue2 = "";
+          return newItem;
+        }
+
+        if (item.displayControl.displayDistance) {
+          newItem.distance = item.distance;
+        }
+
+        if (item.displayControl.hyperlinkType == "hardcode") {
+          newItem.displayControl.hardcode = item.displayControl.hardcode;
+        }
+
+        ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
+          if (item.displayControl[val]) {
+            newItem[val] = item.feature[item.displayControl[val]];
+          } else {
+            newItem[val] = "";
+          }
+        });
+
+        if (item.displayControl.hyperlinkType == 'googleMap') {
+          newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
+          newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
+        }
+        return newItem;
+      }
+
+
+      function insertHtmlToPage(container, data) {
+        var htmlArr = data.filter(function (val) {
+          return val.containerID == container.id;
+        })
+        var ulNode = domQuery("ul", dom.byId(container.id))[0];
+        var existingData = domQuery("li", ulNode).map(function (node) {
+
+          return {
+            displayID: node.attributes.index.value,
+            resultHtml: node.outerHTML
+          }
+        });
+        ulNode.innerHTML = existingData.concat(htmlArr).sort(function (a, b) {
+          return a.displayID - b.displayID;
+        }).map(function (val) {
+          return val.resultHtml;
+        }).join("");
+
+        // isContainerFullDisplayed
+        if (container.itemCount <= existingData.length + htmlArr.length) {
+
+          domQuery(".spinner-grow", container.id).forEach(function (node) {
+            if (domClass.contains(node, "d-none") == false) {
+              domClass.add(node, 'd-none');
+            }
+          });;
+        }
+        //show ews link
+        if (dom.byId("ews-trash") || dom.byId("ews-recycling")) {
+          var node = dom.byId("ews_link");
+          if (domClass.contains(node, "d-none") == true) {
+            domClass.remove(node, 'd-none');
+          }
+        }
+      }
+    }
+
 
     // projecting using geometry service:
     //"project search result, make it under stateplane. ");
@@ -95,7 +186,7 @@ define(["dojo/_base/declare",
             return newItem;
           })
           // console.log("parcelInfo", that.parcelInfo);
-          that.appendToPage(that.parcelInfo);
+          appendToPage(that.parcelInfo,that.address,that.containerList);
         });
       },
 
@@ -109,7 +200,6 @@ define(["dojo/_base/declare",
       },
 
       getNearestCityFacilityList: function (cityFacilityList) {
-        debugger;
         var that = this;
         var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
         getDistances(allCityFacilities).then(function (result) {
@@ -117,7 +207,6 @@ define(["dojo/_base/declare",
             val.distance = result[i];
             return val;
           });
-          debugger;
           that.nearestCityFacilityList = cityFacilityList.map(function (item) {
             var nearestFeature = cityFacilityDistanceList.filter(function (val) {
               return val.layer == item.id;
@@ -136,7 +225,7 @@ define(["dojo/_base/declare",
             return newItem;
           });
           //  console.log("nearestCityFacilityList", that.nearestCityFacilityList);
-          that.appendToPage(that.nearestCityFacilityList);
+          appendToPage(that.nearestCityFacilityList,that.address,that.containerList);
 
         });
 
@@ -188,101 +277,11 @@ define(["dojo/_base/declare",
             return newItem;
           });
           //    console.log("serviceZoneList", that.serviceZoneList);
-          that.appendToPage(that.serviceZoneList);
+          appendToPage(that.serviceZoneList,that.address,that.containerList);
         });
       },
 
-      appendToPage: function (arr) {
-        var address=this.address;
-        var resultHtmlArray = arr.map(function (item) {
-
-          var newItem = prepareHtmlData(item, address);
-          var resultHtml = template().generateResultHtml(newItem);
-          return {
-            containerID: newItem.displayControl.containerID,
-            displayID: newItem.displayControl.displayID,
-            resultHtml: resultHtml
-          }
-        });
-
-        this.containerList.forEach(function (val) {
-          insertHtmlToPage(val, resultHtmlArray);
-        });
-
-
-        function prepareHtmlData(item, searchTerm) {
-          var newItem = {};
-          newItem.id = item.id;
-          newItem.name = item.name;
-          newItem.displayControl = item.displayControl;
-
-          if (item.queryPolygonCount == 0) {
-            newItem.displayValue1 = "NULL";
-            newItem.displayValue2 = "";
-            return newItem;
-          }
-
-          if (item.displayControl.displayDistance) {
-            newItem.distance = item.distance;
-          }
-
-          if (item.displayControl.hyperlinkType == "hardcode") {
-            newItem.displayControl.hardcode = item.displayControl.hardcode;
-          }
-
-          ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
-            if (item.displayControl[val]) {
-              newItem[val] = item.feature[item.displayControl[val]];
-            } else {
-              newItem[val] = "";
-            }
-          });
-
-          if (item.displayControl.hyperlinkType == 'googleMap') {
-            newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
-            newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
-          }
-          return newItem;
-        }
-
-
-        function insertHtmlToPage(container, data) {
-          var htmlArr = data.filter(function (val) {
-            return val.containerID == container.id;
-          })
-          var ulNode = domQuery("ul", dom.byId(container.id))[0];
-          var existingData = domQuery("li", ulNode).map(function (node) {
-
-            return {
-              displayID: node.attributes.index.value,
-              resultHtml: node.outerHTML
-            }
-          });
-          ulNode.innerHTML = existingData.concat(htmlArr).sort(function (a, b) {
-            return a.displayID - b.displayID;
-          }).map(function (val) {
-            return val.resultHtml;
-          }).join("");
-
-          // isContainerFullDisplayed
-          if (container.itemCount <= existingData.length + htmlArr.length) {
-
-            domQuery(".spinner-grow", container.id).forEach(function (node) {
-              if (domClass.contains(node, "d-none") == false) {
-                domClass.add(node, 'd-none');
-              }
-            });;
-          }
-          //show ews link
-          if (dom.byId("ews-trash") || dom.byId("ews-recycling")) {
-            var node = dom.byId("ews_link");
-            if (domClass.contains(node, "d-none") == true) {
-              domClass.remove(node, 'd-none');
-            }
-          }
-        }
-      },
-
+      
       getCrimeData: function (generateCrimeMapIframe) {
         //in chrome, need to remove iframe, add it again to refresh the iframe.
 
