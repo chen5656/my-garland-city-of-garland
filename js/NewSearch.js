@@ -26,6 +26,17 @@ define(["dojo/_base/declare",
   ) {
     'use strict';
 
+    function iterationCopy(src) {
+      var target = {};
+      for (var prop in src) {
+          if (src.hasOwnProperty(prop)) {
+              target[prop] = src[prop];
+          }
+      }
+      return target;
+  }
+  
+
     // projecting using geometry service:
     //"project search result, make it under stateplane. ");
 

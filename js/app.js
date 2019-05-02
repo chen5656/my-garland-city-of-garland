@@ -1,15 +1,5 @@
-function iterationCopy(src) {
-    var target = {};
-    for (var prop in src) {
-        if (src.hasOwnProperty(prop)) {
-            target[prop] = src[prop];
-        }
-    }
-    return target;
-}
-
 function displayErrorMessage(msg) {
-    alert("Time out to retrieve data.");
+    alert("Time out to retrieve data. Please refresh the page.");
     console.log("alert", msg);
 }
 
@@ -23,29 +13,28 @@ require([
 
     "esri/widgets/Search",
     "esri/tasks/Locator",
-    "esri/tasks/support/Query",
-    "esri/tasks/QueryTask",
 
     "dojo/query",
     "dojo/dom-construct",
 
     "js/template.js",
     "js/MultiSearch.js",
+    "js/AddressSuggestion.js",
     "js/NewSearch.js",
 
     'dojo/domReady!',
 ], function (dom, domClass,
     Map, MapView, MapImageLayer,
-    Search, Locator, Query, QueryTask,
+    Search, Locator,
     domQuery, domConstruct,
-    Template
+   template,MultiSearch,addressSuggestion
 ) {
     'use strict';
     var view, subMap, subView, search;
     //init: multiSearch
-    var multiSearch = new locationService.MultiSearch(multilSearch_settings);
-
-    var template = Template();
+    var multiSearch = new MultiSearch(multilSearch_settings);
+    var addressSuggestionService = addressSuggestion();
+   var template = template();
 
     //init: map,submap, view, search,appSetting
     (function (settings) {
@@ -177,243 +166,22 @@ require([
 
     search.on("search-complete", function (e) {
         if (e.numResults == 0) {
-            //no result found. Suggestion the nearest result
-            var AddrRoad, AddrNumber;
-            var str = e.searchTerm.split(",")[0].trim().toUpperCase();
-            var subStr = str.split(" ");
-            if (subStr.length > 1) {
-                var str1 = subStr[0];
-                if (str1 != parseInt(str1, 10)) {
-                    //not a number, try to use it as street name
-                    AddrRoad = str;
-                    AddrNumber = 0;
-                } else {
-                    subStr.shift();
-                    AddrRoad = subStr.join(" ");
-                    AddrNumber = str1;
-                }
-            } else {
-                // try to use it as street name
-                AddrRoad = str;
-                AddrNumber = 0;
+            //no address find from input, display suggestion.
+            var addressClick = function () {
+                search.search(this.textContent);
             }
-
-            AddrRoad = findArrayInAliasExtend(AddrRoad);
-
-            var query = new Query({
-                where: "STREETLABEL LIKE '%" + AddrRoad + "%'",
-                returnGeometry: false,
-                outFields: ["*"]
-            });
-            var queryTask = new QueryTask({
-                url: multiSearch.mapService.address
-            });
-            queryTask.execute(query).then(function (results) {
-                var AddList = [];
-                if (results.features.length > 0) {
-                    //street entered correct
-                    console.log("correct street label, wrong address number");
-                    AddList = results.features.map(function (val) {
-                        return {
-                            streetNumber: val.attributes.STREETNUM,
-                            streetLabel: val.attributes.STREETLABEL
-                        };
-                    }).sort(function (a, b) {
-                        return a.streetNumber - b.streetNumber;
-                    });
-                    //find close nums display data
-                    domClass.remove('suggestedAddresses', 'd-none');
-                    var containerNode = dom.byId("address-links");
-                    containerNode.innerHTML = "";
-                    domConstruct.create("p", {
-                        innerHTML: "Did you mean?"
-                    }, containerNode);
-                    var ulNode = domConstruct.create("ul", null, containerNode);
-                    closestNums(AddrNumber, AddList).forEach(function (val) {
-                        var li = domConstruct.create("li", null, ulNode);
-
-                        domConstruct.create("button", {
-                            className: "btn btn-link",
-                            innerHTML: "" + val.streetNumber + " " + val.streetLabel
-                        }, li);
-                    });
-
-                    domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-                        btn.onclick = function () {
-                            search.search(this.textContent);
-                        };
-                    });
-                } else {
-                    //street wrong
-
-                    var str = AddrRoad.split(" ");
-
-                    var longestStr = str[0];
-                    for (var i = 1; i < str.length; i++) {
-                        if (longestStr.length < str[i].length) {
-                            longestStr = str[i];
-                        }
-                    }
-                    var query = new Query({
-                        where: "STREETLABEL LIKE '%" + longestStr + "%'",
-                        returnGeometry: false,
-                        outFields: ["*"]
-                    });
-                    console.log(query.where);
-                    var queryTask = new QueryTask({
-                        url: multiSearch.mapService.road
-                    });
-                    queryTask.execute(query).then(function (results) {
-                        if (results.features.length > 0) {
-                            console.log("wrong street label. find street name in road table");
-                            displayUniquleStreetList(results.features, AddrNumber);
-                        } else {
-                            //check alias table
-                            var query = new Query({
-                                where: "STREETNAME LIKE '%" + longestStr + "%'",
-                                returnGeometry: false,
-                                outFields: ["*"]
-                            });
-                            var queryTask = new QueryTask({
-                                url: multiSearch.mapService.streetAlias
-                            });
-                            queryTask.execute(query).then(function (results) {
-                                if (results.features.length > 0) {
-
-                                    console.log("wrong street label. find street name in alias table");
-                                    displayUniquleStreetList(results.features, AddrNumber);
-                                } else {
-                                    domClass.remove('suggestedAddresses', 'd-none');
-                                    dom.byId("address-links").innerHTML = "<p>Couldn't find entered address. </p><p>Please check the address name.</p>";
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
-        function closestNums(num, arr) {
-            var numsIndex = arr.length - 1;
-            if (arr.length > 5) {
-                for (var i = 0; i < arr.length; i++) {
-                    if (num < arr[i].streetNumber) {
-                        if (arr.length - (i + 3) < 0) {
-                            numsIndex = arr.length - 1;
-                        } else {
-                            numsIndex = i + 2;
-                        }
-                        break;
-                    }
-                }
-                if (numsIndex < 4) {
-                    numsIndex = 4;
-                }
-                return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-
-            } else {
-                return arr;
-            }
-        }
-
-        function displayUniquleStreetList(features, AddrNumber) {
-            //get unique value
-            var unique = {};
-            var distinct = [];
-            for (var i in features) {
-                if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-                    distinct.push(features[i].attributes.STREETLABEL);
-                }
-                unique[features[i].attributes.STREETLABEL] = 0;
-            }
-
-            var tempAddrNum;
-            if (AddrNumber == 0) {
-                tempAddrNum = "";
-            } else {
-                tempAddrNum = "" + AddrNumber + " ";
-            }
-
             domClass.remove('suggestedAddresses', 'd-none');
-            var containerNode = dom.byId("address-links");
-            containerNode.innerHTML = "";
-            domConstruct.create("p", {
-                innerHTML: "Did you mean?"
-            }, containerNode);
-            var ulNode = domConstruct.create("ul", null, containerNode);
-            distinct.slice(0, 5).forEach(function (val) {
-                var li = domConstruct.create("li", null, ulNode);
-
-                domConstruct.create("button", {
-                    className: "btn btn-link",
-                    innerHTML: "" + tempAddrNum + val
-                }, li);
-            });
-
-            domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-                btn.onclick = function () {
-                    search.search(this.textContent);
-                };
-            });
-        }
-
-        function findArrayInAliasExtend(AddrRoad) {
-            var AliasExtend = {
-                "1ST": "FIRST",
-                "2ND": "SECOND",
-                "3RD": "THIRD",
-                "4TH": "FOURTH",
-                "5TH": "FIFTH",
-                "6TH": "SIXTH",
-                "7TH": "SEVENTH",
-                "9TH": "NINTH",
-                "10TH": "TENTH",
-                "11TH": "ELEVENTH",
-                "12TH": "TWELFTH",
-                "13TH": "THIRTEENTH",
-                "15TH": "FIFTEENTH",
-                "16TH": "SIXTEENTH",
-                "17TH": "SEVENTEENTH",
-                "1": "FIRST",
-                "2": "SECOND",
-                "3": "THIRD",
-                "4": "FOURTH",
-                "5": "FIFTH",
-                "6": "SIXTH",
-                "7": "SEVENTH",
-                "9": "NINTH",
-                "10": "TENTH",
-                "11": "ELEVENTH",
-                "12": "TWELFTH",
-                "13": "THIRTEENTH",
-                "15": "FIFTEENTH",
-                "16": "SIXTEENTH",
-                "17": "SEVENTEENTH"
-            };
-
-            var str = AddrRoad.split(" ");
-            str = str.map(function (val) {
-                if (AliasExtend[val]) {
-                    return AliasExtend[val];
-                } else {
-                    return val;
-                }
-
-            });
-            return str.join(" ").trim();
+            addressSuggestionService.suggestion("address-links", addressClick, e.searchTerm, multiSearch.mapService, appSetting.aliasExtend);
         }
     });
 
     search.on("select-result", function (e) {
         view.zoom = 12;
         if (e.result) {
-            console.log("Address found");
-
             //update url
             if (e.result.name) {
                 window.history.pushState("new-address", e.result.name, "?address=" + e.result.name.replace(/ /g, "%20"));
             }
-
             //show result
             domClass.remove('nodeResult', 'd-none');
 
