@@ -15,7 +15,7 @@ define(["dojo/_base/declare",
     "dojo/promise/all",
     "dojo/query",
 
-    "js/template.js",
+    "js/template.js"
   ],
   function (declare, dom, domClass,
     Query, QueryTask,
@@ -247,8 +247,7 @@ define(["dojo/_base/declare",
           return allPnts.reduce(function (a, b) {
             return a.concat(b);
           });
-        }
-        
+        }        
       },
 
       getLocatedServiceZoneList: function (serviceZoneList) {

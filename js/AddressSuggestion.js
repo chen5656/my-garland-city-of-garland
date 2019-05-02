@@ -4,10 +4,12 @@ define([
     "esri/tasks/support/Query",
     "esri/tasks/QueryTask",
 
-    "dojo/query"
+    "dojo/query",
+    "js/template.js"
 ], function (declare,
     Query, QueryTask,
-    domQuery
+    domQuery,
+    template
 ) {
 
     var suggestion = function (displayArea, searchAddressFunction, searchTerm, mapServices, aliasExtend) {
@@ -58,7 +60,10 @@ define([
                 });
                 //find close nums display data
                 var str = closestNums(AddrNumber, AddList).map(function (val) {
-                    return '<li><button class="btn btn-link"  onclick="myFunction()">' + val.streetNumber + " " + val.streetLabel + '</button></li>'
+                    return template().generateSuggestAddress({
+                        "streetNumber": val.streetNumber,
+                        "streetLabel": val.streetLabel
+                    });
                 }).join("");
 
                 node.innerHTML = "<p>Did you mean?</p><ul>".concat(str, "</ul>");
@@ -157,7 +162,10 @@ define([
         }
 
         var str = distinct.slice(0, 5).map(function (val) {
-            return '<li><button class="btn btn-link"  onclick="myFunction()">' + tempAddrNum + val + '</button></li>'
+            return template().generateSuggestAddress({
+                "streetNumber": tempAddrNum,
+                "streetLabel": val
+            });
         }).join("");
         node.innerHTML = "<p>Did you mean?</p><ul>".concat(str, "</ul>");
 
@@ -178,7 +186,7 @@ define([
         });
         return str.join(" ").trim();
     }
-    
+
     return declare(null, {
         //no result found. Suggestion the nearest result
         suggestion: suggestion
