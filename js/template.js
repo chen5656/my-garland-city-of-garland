@@ -108,7 +108,6 @@ define([
         var existingData = [];
         if (domExistingData.length > 0) {
             existingData = arrayFrom(domExistingData).map(function (node) {
-                debugger;
                 return {
                     displayID: node.attributes.index.value,
                     resultHtml: node.outerHTML
