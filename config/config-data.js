@@ -21,7 +21,7 @@ var appSetting = {
       "name": "GARLAND_ADDRESS_LOCATOR",
       "placeholder": "Enter a City of Garland Address",
       "suggestionsEnabled": true,
-      "maxSuggestions": 8,
+      "maxSuggestions": 6,
       "minSuggestCharacters": 6
     }
   },

@@ -1,34 +1,26 @@
 define(["dojo/_base/declare",
     'dojo/dom',
+    "dojo/promise/all",
     "dojo/dom-class",
 
     "esri/tasks/support/Query",
     "esri/tasks/QueryTask",
-
     "esri/tasks/GeometryService",
     "esri/tasks/support/ProjectParameters",
-
     "esri/geometry/geometryEngineAsync",
-
     "esri/Graphic",
-
-    "dojo/promise/all",
-    "dojo/query",
 
     "js/template.js"
   ],
-  function (declare, dom, domClass,
+  function (declare, dom, all, domClass,
     Query, QueryTask,
     GeometryService, ProjectParameters,
     geometryEngineAsync,
     Graphic,
 
-    all, domQuery,
-
     template
 
   ) {
-    'use strict';
 
     function iterationCopy(src) {
       var target = {};
@@ -40,116 +32,29 @@ define(["dojo/_base/declare",
       return target;
     }
 
-    function appendToPage(arr,address,containerList) {
-      var resultHtmlArray = arr.map(function (item) {
-
-        var newItem = prepareHtmlData(item, address);
-        var resultHtml = template().generateResultHtml(newItem);
-        return {
-          containerID: newItem.displayControl.containerID,
-          displayID: newItem.displayControl.displayID,
-          resultHtml: resultHtml
-        }
-      });
-
-      containerList.forEach(function (val) {
-        insertHtmlToPage(val, resultHtmlArray);
-      });
-
-
-      function prepareHtmlData(item, searchTerm) {
-        var newItem = {};
-        newItem.id = item.id;
-        newItem.name = item.name;
-        newItem.displayControl = item.displayControl;
-
-        if (item.queryPolygonCount == 0) {
-          newItem.displayValue1 = "NULL";
-          newItem.displayValue2 = "";
-          return newItem;
-        }
-
-        if (item.displayControl.displayDistance) {
-          newItem.distance = item.distance;
-        }
-
-        if (item.displayControl.hyperlinkType == "hardcode") {
-          newItem.displayControl.hardcode = item.displayControl.hardcode;
-        }
-
-        ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
-          if (item.displayControl[val]) {
-            newItem[val] = item.feature[item.displayControl[val]];
-          } else {
-            newItem[val] = "";
-          }
-        });
-
-        if (item.displayControl.hyperlinkType == 'googleMap') {
-          newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
-          newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
-        }
-        return newItem;
-      }
-
-
-      function insertHtmlToPage(container, data) {
-        var htmlArr = data.filter(function (val) {
-          return val.containerID == container.id;
-        })
-        var ulNode = domQuery("ul", dom.byId(container.id))[0];
-        var existingData = domQuery("li", ulNode).map(function (node) {
-
-          return {
-            displayID: node.attributes.index.value,
-            resultHtml: node.outerHTML
-          }
-        });
-        ulNode.innerHTML = existingData.concat(htmlArr).sort(function (a, b) {
-          return a.displayID - b.displayID;
-        }).map(function (val) {
-          return val.resultHtml;
-        }).join("");
-
-        // isContainerFullDisplayed
-        if (container.itemCount <= existingData.length + htmlArr.length) {
-
-          domQuery(".spinner-grow", container.id).forEach(function (node) {
-            if (domClass.contains(node, "d-none") == false) {
-              domClass.add(node, 'd-none');
-            }
-          });;
-        }
-        //show ews link
-        if (dom.byId("ews-trash") || dom.byId("ews-recycling")) {
-          var node = dom.byId("ews_link");
-          if (domClass.contains(node, "d-none") == true) {
-            domClass.remove(node, 'd-none');
-          }
-        }
-      }
-    }
+    var mapService_address = multilSearch_settings.mapService.address;
+    var mapService_parcle = multilSearch_settings.mapService.parcel;
+    var mapService_geometryService = multilSearch_settings.mapService.geometry;
 
 
     // projecting using geometry service:
     //"project search result, make it under stateplane. ");
 
     return declare("locationService.NewSearch", null, { //"Anonymous" Class,only available within its given scope. 
-      constructor: function (searchAddress, containerList) {
+      constructor: function (searchAddress) {
         this.address = searchAddress.name;
         this.addressID = searchAddress.feature.attributes.Ref_ID;
         this.addressGeometry = searchAddress.feature.geometry;
         //this.nearestCityFacilityList = [];
         //this.serviceZoneList = [];
         //this.parcelInfo = null;
-        this.containerList = containerList;
       },
 
-      getParcelInfo: function (AddressMapService, ParcelMapService, parcelDataList) {
+      getParcelInfo: function (parcelDataList) {
         var that = this;
         var query = new Query();
         var queryTask = new QueryTask({
-          url: AddressMapService
+          url: mapService_address
         });
         query.where = "ADDRESSID =" + this.addressID;
         //query.outSpatialReference = spatialReference2276;
@@ -161,7 +66,7 @@ define(["dojo/_base/declare",
             var parcelID = results.features[0].attributes.PARCELID;
             var query = new Query();
             var queryTask = new QueryTask({
-              url: ParcelMapService
+              url: mapService_parcle
             });
             query.where = "PARCELID  =" + parcelID;
             //query.outSpatialReference = spatialReference2276;
@@ -185,12 +90,13 @@ define(["dojo/_base/declare",
             return newItem;
           })
           // console.log("parcelInfo", that.parcelInfo);
-          appendToPage(that.parcelInfo,that.address,that.containerList);
+          template().appendToPage(that.parcelInfo, that.address);
+
         });
       },
 
-      projectToStatePlane: function (spatialReference, geometryService) {
-        var geometryService = new GeometryService(geometryService);
+      projectToStatePlane: function (spatialReference) {
+        var geometryService = new GeometryService(mapService_geometryService);
         var params = new ProjectParameters({
           geometries: [this.addressGeometry],
           outSpatialReference: spatialReference
@@ -201,7 +107,7 @@ define(["dojo/_base/declare",
       getNearestCityFacilityList: function (cityFacilityList) {
         var that = this;
         var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
-        getDistances(allCityFacilities,this.geometryStatePlane).then(function (result) {
+        getDistances(allCityFacilities, this.geometryStatePlane).then(function (result) {
           var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
             val.distance = result[i];
             return val;
@@ -224,18 +130,19 @@ define(["dojo/_base/declare",
             return newItem;
           });
           //  console.log("nearestCityFacilityList", that.nearestCityFacilityList);
-          appendToPage(that.nearestCityFacilityList,that.address,that.containerList);
+          template().appendToPage(that.nearestCityFacilityList, that.address);
+
 
         });
 
-        function getDistances(features,geometryStatePlane) {
+        function getDistances(features, geometryStatePlane) {
           var distanceRequestList = features.map(function (item) {
             return geometryEngineAsync.distance(geometryStatePlane, item.geometry, "miles")
           });
           var promises = new all(distanceRequestList);
           return promises;
         }
-    
+
         function getFeaturesOfCityFacilityList(cityFacilityList) {
           var allPnts = cityFacilityList.map(function (val) {
             return val.features.map(function (item) {
@@ -243,11 +150,11 @@ define(["dojo/_base/declare",
               return item;
             });
           });
-    
+
           return allPnts.reduce(function (a, b) {
             return a.concat(b);
           });
-        }        
+        }
       },
 
       getLocatedServiceZoneList: function (serviceZoneList) {
@@ -275,12 +182,12 @@ define(["dojo/_base/declare",
             return newItem;
           });
           //    console.log("serviceZoneList", that.serviceZoneList);
-          appendToPage(that.serviceZoneList,that.address,that.containerList);
+          template().appendToPage(that.serviceZoneList, that.address);
         });
       },
 
-      
-      getCrimeData: function (generateCrimeMapIframe) {
+
+      getCrimeData: function () {
         //in chrome, need to remove iframe, add it again to refresh the iframe.
 
         var today = new Date();
@@ -299,12 +206,10 @@ define(["dojo/_base/declare",
         var node = dom.byId("crimeData");
         node.innerHTML = "";
         node.innerHTML = template().generateCrimeMapIframe(urlProperty);
-        var url = node.children[0].src;
-        dom.byId("crime-map-title").innerHTML = "".concat("Crime ( <time datetime='", start_date, " 00:00'>", start_date.slice(5), "</time> to <time datetime='", end_date, " 23:59'>", end_date.slice(5), "</time> )");
-        dom.byId("open-crime-map").setAttribute("href", url);
       },
 
       showSubMap: function (subView) {
+
         var pointGraphic = new Graphic({
           geometry: this.addressGeometry,
           symbol: {
@@ -315,8 +220,16 @@ define(["dojo/_base/declare",
         subView.graphics.removeAll()
         subView.graphics.add(pointGraphic);
         subView.center = [this.addressGeometry.longitude, this.addressGeometry.latitude];
-        subView.zoom = 18;
       },
+
+      showEWSLink: function () {
+        //show ews link
+        var node = document.getElementById("ews_link");
+        if (domClass.contains(node, "d-none") == true) {
+          domClass.remove(node, 'd-none');
+        }
+
+      }
     });
 
   });

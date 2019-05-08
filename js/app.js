@@ -26,7 +26,7 @@ require([
     Map, MapView, MapImageLayer,
     Search, Locator,
     domQuery, domConstruct,
-   MultiSearch,addressSuggestion
+    MultiSearch, addressSuggestion
 ) {
     'use strict';
     var view, subMap, subView, search;
@@ -35,52 +35,54 @@ require([
     var addressSuggestionService = addressSuggestion();
 
     //init: map,submap, view, search,appSetting
-    (function (settings) {
-        var mapImageLayerList = new MapImageLayer(settings.mapInTop.mapImageLayer);
+    (function () {
+        dom.byId("offline").innerHTML = "";
+        var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
         var map = new Map({
-            basemap: settings.mapInTop.basemap,
+            basemap: appSetting.mapInTop.basemap,
             layers: [mapImageLayerList]
         });
         view = new MapView({
             container: 'viewDiv',
             map: map,
-            zoom: settings.mapInTop.zoom,
-            center: settings.mapInTop.center
+            zoom: appSetting.mapInTop.zoom,
+            center: appSetting.mapInTop.center
         });
 
         subMap = new Map({
             basemap: "topo",
-            layers: [new MapImageLayer(settings.subMap.baseMap.map)]
+            layers: [new MapImageLayer(appSetting.subMap.baseMap.map)]
         });
         subView = new MapView({
             container: 'subMapView',
             map: subMap,
-            zoom: 12,
-            center: settings.mapInTop.center,
+            zoom: 18,
+            center: appSetting.mapInTop.center,
             constraints: {
                 rotationEnabled: false
             }
         });
         //search widget
-        var searchSources = settings.locator.sourceSetting;
+        var searchSources = appSetting.locator.sourceSetting;
         searchSources.locator = new Locator({
-            url: settings.locator.locatorUrl
+            url: appSetting.locator.locatorUrl
         });
         search = new Search({
             view: view,
             container: "search",
+            includeDefaultSources: false,
             allPlaceholder: ".",
             locationEnabled: false,
             sources: [searchSources]
         });
-    })(appSetting);
+    })();
 
     //update html div format.
     (function () {
         domClass.remove('main-content', 'd-none');
 
         //autofocus on search tool box when load.
-        domQuery("input", "search")[0].autofocus = true;
+        //   domQuery("input", "search")[0].autofocus = true;
 
         domQuery(".collapsed", "nodeResult").forEach(function (title) {
             title.onclick = function () {
@@ -184,16 +186,13 @@ require([
             domClass.remove('nodeResult', 'd-none');
 
             //create new search result
-            var newSearch = new locationService.NewSearch(e.result,  multiSearch.containerList);
+            var newSearch = new locationService.NewSearch(e.result);
 
             //get information from parcel layer by Ref_ID(addressID)
-            newSearch.getParcelInfo(multiSearch.mapService.address, multiSearch.mapService.parcel, multiSearch.parcelDataList);
+            newSearch.getParcelInfo(multiSearch.parcelDataList);
 
-            //--add last
-            newSearch.getCrimeData();
-            newSearch.showSubMap(subView);
-            
-            newSearch.projectToStatePlane(multiSearch.spatialReference, multiSearch.mapService.geometry).then(function (geometries) {
+
+            newSearch.projectToStatePlane(multiSearch.spatialReference).then(function (geometries) {
 
                     newSearch.geometryStatePlane = geometries[0];
 
@@ -207,6 +206,12 @@ require([
                     console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
                     displayErrorMessage(e);
                 });
+
+
+            //--add last
+            newSearch.showEWSLink();
+            newSearch.getCrimeData();
+            newSearch.showSubMap(subView);
         }
 
     });
