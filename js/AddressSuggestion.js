@@ -4,17 +4,15 @@ define([
     "esri/tasks/support/Query",
     "esri/tasks/QueryTask",
 
-    "dojo/query",
-    "js/template.js"
+    "dojo/query"
 ], function (declare,
     Query, QueryTask,
-    domQuery,
-    template
+    domQuery
 ) {
-
-    var suggestion = function (displayArea, searchAddressFunction, searchTerm, mapServices, aliasExtend) {
+    
+    var suggestion = function (targetArea, searchAddressFunction, searchTerm, mapServices) {
         var AddrRoad, AddrNumber;
-        var node = document.getElementById(displayArea);
+        var node = document.getElementById(targetArea);
         var str = searchTerm.split(",")[0].trim().toUpperCase();
         var subStr = str.split(" ");
         if (subStr.length > 1) {
@@ -34,7 +32,7 @@ define([
             AddrNumber = 0;
         }
 
-        AddrRoad = findArrayInAliasExtend(AddrRoad, aliasExtend);
+        AddrRoad = findArrayInAliasExtend(AddrRoad);
 
         var query = new Query({
             where: "STREETLABEL LIKE '%" + AddrRoad + "%'",
@@ -60,7 +58,7 @@ define([
                 });
                 //find close nums display data
                 var str = closestNums(AddrNumber, AddList).map(function (val) {
-                    return template().generateSuggestAddress({
+                    return template.generateSuggestAddress({
                         "streetNumber": val.streetNumber,
                         "streetLabel": val.streetLabel
                     });
@@ -162,7 +160,7 @@ define([
         }
 
         var str = distinct.slice(0, 5).map(function (val) {
-            return template().generateSuggestAddress({
+            return template.generateSuggestAddress({
                 "streetNumber": tempAddrNum,
                 "streetLabel": val
             });
@@ -174,11 +172,11 @@ define([
         });
     }
 
-    function findArrayInAliasExtend(AddrRoad, aliasExtend) {
+    function findArrayInAliasExtend(AddrRoad) {
         var str = AddrRoad.split(" ");
         str = str.map(function (val) {
-            if (aliasExtend[val]) {
-                return aliasExtend[val];
+            if (appSetting.aliasExtend[val]) {
+                return appSetting.aliasExtend[val];
             } else {
                 return val;
             }

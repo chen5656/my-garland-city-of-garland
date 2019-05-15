@@ -8,17 +8,13 @@ define(["dojo/_base/declare",
     "esri/tasks/GeometryService",
     "esri/tasks/support/ProjectParameters",
     "esri/geometry/geometryEngineAsync",
-    "esri/Graphic",
-
-    "js/template.js"
+    "esri/Graphic"
   ],
   function (declare, dom, all, domClass,
     Query, QueryTask,
     GeometryService, ProjectParameters,
     geometryEngineAsync,
-    Graphic,
-
-    template
+    Graphic
 
   ) {
 
@@ -36,69 +32,92 @@ define(["dojo/_base/declare",
     var mapService_parcle = multilSearch_settings.mapService.parcel;
     var mapService_geometryService = multilSearch_settings.mapService.geometry;
 
-
     // projecting using geometry service:
     //"project search result, make it under stateplane. ");
 
     return declare("locationService.NewSearch", null, { //"Anonymous" Class,only available within its given scope. 
-      constructor: function (searchAddress) {
-        this.address = searchAddress.name;
-        this.addressId = searchAddress.feature.attributes.Ref_ID;
-        this.addressGeometry = searchAddress.feature.geometry;
+      constructor: function (addressId) {
+        this.addressId = addressId;
+        //this.address = searchAddress.address;
+        //this.addressGeometry = searchAddress.addressGeometry;
         //this.nearestCityFacilityList = [];
         //this.serviceZoneList = [];
         //this.parcelInfo = null;
+
       },
 
-      getParcelInfo: function (parcelDataList) {
-        var that = this;
+      getAddressInfo: function () {
+        var thisObj = this;
         var query = new Query();
         var queryTask = new QueryTask({
           url: mapService_address
         });
         query.where = "ADDRESSID =" + this.addressId;
         //query.outSpatialReference = spatialReference2276;
-        query.returnGeometry = false;
-        query.outFields = ["PARCELID"];
-        queryTask.execute(query).then(function (results) {
-          // Results.graphics contains the graphics returned from query
-          if (results.features[0].attributes.PARCELID) {
-            var parcelID = results.features[0].attributes.PARCELID;
-            var query = new Query();
-            var queryTask = new QueryTask({
-              url: mapService_parcle
-            });
-            query.where = "PARCELID  =" + parcelID;
-            //query.outSpatialReference = spatialReference2276;
-            query.returnGeometry = false;
-            query.outFields = ["*"];
-            return queryTask.execute(query);
-          }
-        }).then(function (results) {
-          var result = results.features[0].attributes;
-          that.parcelInfo = parcelDataList.map(function (item) {
-            var newItem = iterationCopy(item);
-            newItem.queryPolygonCount = 1;
-            newItem.feature = {};
-            ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
-              if (item.displayControl[val]) {
-                newItem.feature[item.displayControl[val]] = result[item.displayControl[val]];
-              } else {
-                newItem.displayControl[val] = "";
-              }
-            });
-            return newItem;
-          })
-          // console.log("parcelInfo", that.parcelInfo);
-          template().appendToPage(that.parcelInfo, that.address);
+        query.returnGeometry = true;
+        query.outFields = ["*"];
 
+        return new Promise(function (resolve, reject) {
+          queryTask.execute(query).then(function (result) {
+
+            var attributes = result.features[0].attributes;
+            thisObj.parcelId = attributes.PARCELID;
+            thisObj.address = "".concat(attributes.STREETNUM, " ", attributes.STREETLABEL, ", ", attributes.CITY, ", ", attributes.STATE, ", ", attributes.ZIPCODE);
+            thisObj.geometryStatePlane = result.features[0].geometry; //in stateplane
+            resolve();
+          });
         });
       },
 
-      projectToStatePlane: function (spatialReference) {
+      getParcelInfo: function (parcelDataList) {
+        var that = this;
+        var query = new Query();
+        var queryTask = new QueryTask({
+          url: mapService_parcle
+        });
+        query.where = "PARCELID  =" + this.parcelId;
+        //query.outSpatialReference = spatialReference2276;
+        query.returnGeometry = false;
+        query.outFields = ["*"];
+        return new Promise(function (resolve, reject) {
+          queryTask.execute(query).then(function (results) {
+            var result = results.features[0].attributes;
+            that.parcelInfo = parcelDataList.map(function (item) {
+              var newItem = iterationCopy(item);
+              newItem.queryPolygonCount = 1;
+              newItem.feature = {};
+              ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
+                if (item.displayControl[val]) {
+                  newItem.feature[item.displayControl[val]] = result[item.displayControl[val]];
+                } else {
+                  newItem.displayControl[val] = "";
+                }
+              });
+              return newItem;
+            })
+            template.appendToPage(that.parcelInfo, that.address);
+            resolve();
+          });
+        });
+      },
+
+      // projectToStatePlane: function (spatialReference) {
+      //   var geometryService = new GeometryService(mapService_geometryService);
+      //   var params = new ProjectParameters({
+      //     geometries: [this.geometry],
+      //     outSpatialReference: spatialReference
+      //   });
+      //   return geometryService.project(params);
+
+      ////new SpatialReference({
+      //// wkid: 2276
+      ////})
+      // },
+
+      projectToSpatialReference: function (geometries, spatialReference) {
         var geometryService = new GeometryService(mapService_geometryService);
         var params = new ProjectParameters({
-          geometries: [this.addressGeometry],
+          geometries: geometries,
           outSpatialReference: spatialReference
         });
         return geometryService.project(params);
@@ -129,8 +148,7 @@ define(["dojo/_base/declare",
             newItem.feature = nearestFeature.attributes;
             return newItem;
           });
-          //  console.log("nearestCityFacilityList", that.nearestCityFacilityList);
-          template().appendToPage(that.nearestCityFacilityList, that.address);
+          template.appendToPage(that.nearestCityFacilityList, that.address);
 
 
         });
@@ -160,11 +178,11 @@ define(["dojo/_base/declare",
       getLocatedServiceZoneList: function (serviceZoneList) {
         var that = this;
         var query = new Query({
-          returnGeometry: true,
+          returnGeometry: false,
           outFields: ["*"],
           spatialRelationship: "intersects"
         });
-        query.geometry = this.addressGeometry;
+        query.geometry = this.geometry;
         var queryRequest = serviceZoneList.map(function (item) {
           var queryTask = new QueryTask({
             url: item.url
@@ -181,8 +199,8 @@ define(["dojo/_base/declare",
             }
             return newItem;
           });
-          //    console.log("serviceZoneList", that.serviceZoneList);
-          template().appendToPage(that.serviceZoneList, that.address);
+          template.appendToPage(that.serviceZoneList, that.address);
+
         });
       },
 
@@ -198,32 +216,32 @@ define(["dojo/_base/declare",
         var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
 
         var urlProperty = {
-          lat: this.addressGeometry.latitude,
-          long: this.addressGeometry.longitude,
+          lat: this.geometry.latitude,
+          long: this.geometry.longitude,
           start_date: start_date,
           end_date: end_date
         }
         var node = dom.byId("crimeData");
         node.innerHTML = "";
-        node.innerHTML = template().generateCrimeMapIframe(urlProperty);
+        node.innerHTML = template.generateCrimeMapIframe(urlProperty);
       },
 
       addResultToMap: function (subView) {
 
         var pointGraphic = new Graphic({
-          geometry: this.addressGeometry,
+          geometry: this.geometry,
           symbol: {
             type: "simple-marker",
             color: "#dc2533"
           },
           popupTemplate: { // autocasts as new PopupTemplate()
-            title: "Search result",
+            title: "Target",
             content: this.address
           }
         });
         subView.graphics.removeAll()
         subView.graphics.add(pointGraphic);
-        subView.center = [this.addressGeometry.longitude, this.addressGeometry.latitude];
+        subView.center = [this.geometry.longitude, this.geometry.latitude];
       },
 
       showEWSLink: function () {

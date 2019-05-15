@@ -17,7 +17,8 @@ var multilSearch_settings = {
     "itemCount": 3
   }],
 
-  "cityFacilitySourceList": [{
+  "cityFacilitySourceList": [
+    {
       "id": "city-hall",
       "name": "City Hall",
       "addressValue": "ADDRESS",
@@ -116,7 +117,7 @@ var multilSearch_settings = {
         "containerID": "service",
         "displayID": 2,
         "hyperlinkType": "hardcode",
-        "hardcode":"<span class='location-data-value'><a href='{{displayValue2}}' target='_blank' title='Open to see details'>{{displayValue1}}</a></span>",
+        "hardcode": "<span class='location-data-value'><a href='{{displayValue2}}' target='_blank' title='Open to see details'>{{displayValue1}}</a></span>",
         "displayDistance": false,
         "displayValue1": "PARK",
         "displayValue2": "PARK_WEBLI"
@@ -150,7 +151,8 @@ var multilSearch_settings = {
 
   ],
 
-  "serviceZoneSourceList": [{
+  "serviceZoneSourceList": [
+    {
     "id": "ews-recycling",
     "name": "EWS Recycling Pickup Week",
     "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
@@ -254,14 +256,15 @@ var multilSearch_settings = {
     }
   }],
 
-  "parcelDataList": [{
+  "parcelDataList": [
+    {
       "id": "council-dist",
       "name": "City Council District",
       "displayControl": {
         "containerID": "parcelInfo",
         "displayID": 1,
         "hyperlinkType": "hardcode",
-        "hardcode":"<span class='location-data-value'><a href='https://www.garlandtx.gov/gov/cd/council/bio/district{{displayValue1}}.asp' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
+        "hardcode": "<span class='location-data-value'><a href='https://www.garlandtx.gov/gov/cd/council/bio/district{{displayValue1}}.asp' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
         "displayDistance": false,
         "displayValue1": "COUNCIL_ID"
       }
