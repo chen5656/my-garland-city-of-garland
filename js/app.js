@@ -107,48 +107,14 @@ require([
         });
     })();
 
-    //generate street pci legend , based on config-data js. 
-    (function (json) {
-        var node = dom.byId("street-condition-legend");
-        domConstruct.create("p", {
-            innerHTML: json.title
-        }, node);
-        var table = domConstruct.create("table", null, node);
-        var tbody = domConstruct.create("tbody", null, table);
-        json.renderer.map(function (item) {
-            var svgValue;
-            switch (item.type) {
-                case "polyline":
-                    svgValue = "".concat('<line x1="0" y1="10" x2="20" y2="10" style="stroke:', item.color, ';stroke-width:', item.size, '" />');
-                    break;
-                case "polygon":
-                    svgValue = "".concat('<polygon points="0,0 0,20 20,20 20,0" style="fill:', item.color, ';stroke:black;stroke-width:1" />');
-                    break;
-                default: //point
-                    svgValue = "".concat('  <circle cx="', item.size, '" cy="', item.size, '" r="', item.size / 2, '" stroke="black" stroke-width="1" fill="', item.color, '" />');
-            }
-            svgValue = "".concat(' <svg height="20" width="20">', svgValue, '</svg>');
-
-            var tr = domConstruct.create("tr", null, tbody);
-            domConstruct.create("td", {
-                innerHTML: svgValue,
-                width: 35
-            }, tr);
-
-            domConstruct.create("td", {
-                innerHTML: item.label
-            }, tr);
-        });
-    })(appSetting.subMap.streetCondition.legend);
-
-
+ 
     search.on("search-start", function (e) {
 
         domClass.add('nodeResult', 'd-none');
         domClass.add('suggestedAddresses', 'd-none');
         domClass.add('ews_link', 'd-none');
-        dom.byId("street-condition-checkbox").checked = false;
-        domClass.add('street-condition-legend', 'd-none');
+        
+        view.graphics.removeAll()
 
         //cardBodies
         //  show spinner-grow
@@ -211,35 +177,12 @@ require([
             //--add last
             newSearch.showEWSLink();
             newSearch.getCrimeData();
-            newSearch.showSubMap(subView);
+            newSearch.addResultToMap(view);
+            newSearch.addResultToMap(subView);
         }
 
     });
 
-    //street-condition-toggle
-    dom.byId("street-condition-toggle").addEventListener("change", function () {
-        var layerOn = dom.byId("street-condition-checkbox").checked;
-        var node = dom.byId("street-condition-legend");
-        if (layerOn) {
-
-            //  showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.streetCondition.map), new MapImageLayer(appSetting.subMap.baseMap.map)]);
-            if (domClass.contains(node, "d-none")) {
-                domClass.remove(node, 'd-none');
-            }
-            var layer = new MapImageLayer(appSetting.subMap.streetCondition.map);
-            subMap.layers.add(layer);
-        } else {
-            //  showSubMap(multiSearch.searchResult.addressGeometry, [new MapImageLayer(appSetting.subMap.baseMap.map)]);
-            if (domClass.contains(node, "d-none") == false) {
-                domClass.add(node, 'd-none');
-            }
-            var layer = subMap.layers.items.filter(function (layer) {
-                return layer.url == appSetting.subMap.streetCondition.map.url;
-            })[0];
-            subMap.remove(layer);
-        }
-
-    });
 
     //get address from previous saved url
     (function () {

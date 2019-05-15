@@ -208,13 +208,17 @@ define(["dojo/_base/declare",
         node.innerHTML = template().generateCrimeMapIframe(urlProperty);
       },
 
-      showSubMap: function (subView) {
+      addResultToMap: function (subView) {
 
         var pointGraphic = new Graphic({
           geometry: this.addressGeometry,
           symbol: {
             type: "simple-marker",
             color: "#dc2533"
+          },
+          popupTemplate: { // autocasts as new PopupTemplate()
+            title: "Search result",
+            content: this.address
           }
         });
         subView.graphics.removeAll()
