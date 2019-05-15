@@ -154,7 +154,7 @@ require([
             //create new search result
             var newSearch = new locationService.NewSearch(e.result);
 
-            //get information from parcel layer by Ref_ID(addressID)
+            //get information from parcel layer by Ref_ID(addressId)
             newSearch.getParcelInfo(multiSearch.parcelDataList);
 
 

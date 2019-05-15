@@ -43,7 +43,7 @@ define(["dojo/_base/declare",
     return declare("locationService.NewSearch", null, { //"Anonymous" Class,only available within its given scope. 
       constructor: function (searchAddress) {
         this.address = searchAddress.name;
-        this.addressID = searchAddress.feature.attributes.Ref_ID;
+        this.addressId = searchAddress.feature.attributes.Ref_ID;
         this.addressGeometry = searchAddress.feature.geometry;
         //this.nearestCityFacilityList = [];
         //this.serviceZoneList = [];
@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
         var queryTask = new QueryTask({
           url: mapService_address
         });
-        query.where = "ADDRESSID =" + this.addressID;
+        query.where = "ADDRESSID =" + this.addressId;
         //query.outSpatialReference = spatialReference2276;
         query.returnGeometry = false;
         query.outFields = ["PARCELID"];
