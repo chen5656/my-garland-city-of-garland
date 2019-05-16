@@ -29,7 +29,7 @@ require([
 
     'dojo/domReady!',
 ], function (dom, domClass,
-    Map, MapView, MapImageLayer, 
+    Map, MapView, MapImageLayer,
     Search, Locator,
     domQuery, domConstruct,
     MultiSearch, addressSuggestion
@@ -69,6 +69,7 @@ require([
     })();
 
     //init: multiSearch,search widget
+    var addressSuggestionService = addressSuggestion();
     var multiSearch = new MultiSearch(multilSearch_settings);
     multiSearch.getCityFacilityList(multilSearch_settings.cityFacilitySourceList).then(function () {
         // setup search or get address from previous saved url,  when multiSearch ready.         
@@ -86,24 +87,7 @@ require([
         });
 
         search.on("search-start", function (e) {
-            domClass.add('nodeResult', 'd-none');
-            domClass.add('suggestedAddresses', 'd-none');
-            domClass.add('ews_link', 'd-none');
-            dom.byId("street-condition-checkbox").checked = false;
-            domClass.add('street-condition-legend', 'd-none');
-
-            //cardBodies
-            //  show spinner-grow
-            domQuery(".spinner-grow").forEach(function (node) {
-                if (domClass.contains(node, "d-none")) {
-                    domClass.remove(node, 'd-none');
-                }
-            });
-
-            //remove old data
-            domQuery("ul", "nodeResult").forEach(function (val) {
-                val.innerHTML = "";
-            });
+            searchStart();
         });
 
         search.on("search-complete", function (e) {
@@ -124,7 +108,7 @@ require([
                 saveToIndexDB.insertInfo("term-" + this.searchTerm.trim(), {
                     "addressId": e.result.feature.attributes.Ref_ID
                 });
-                searchFinish(e.result.feature.attributes.Ref_ID);
+                searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
         });
 
@@ -132,7 +116,7 @@ require([
         (function () {
             var addrId = "".concat(getURLQueryVariable("addressId"));
             if (!isNaN(addrId) && addrId > 0) {
-                searchFinish(addrId);
+                searchFinish(addrId, true);
             }
 
             function getURLQueryVariable(variable) {
@@ -148,7 +132,6 @@ require([
             }
         })();
     });
-    var addressSuggestionService = addressSuggestion();
 
     //update html div format.
     (function () {
@@ -237,20 +220,47 @@ require([
 
     });
 
-    function searchFinish(addressId) {
+    function searchStart() {
+
+        domClass.add('nodeResult', 'd-none');
+        domClass.add('suggestedAddresses', 'd-none');
+        domClass.add('ews_link', 'd-none');
+        dom.byId("street-condition-checkbox").checked = false;
+        domClass.add('street-condition-legend', 'd-none');
+
+        //cardBodies
+        //  show spinner-grow
+        domQuery(".spinner-grow").forEach(function (node) {
+            if (domClass.contains(node, "d-none")) {
+                domClass.remove(node, 'd-none');
+            }
+        });
+
+        //remove old data
+        domQuery("ul", "nodeResult").forEach(function (val) {
+            val.innerHTML = "";
+        });
+    }
+
+    function searchFinish(addressId, insertToHistory) {
         domClass.remove('nodeResult', 'd-none');
-        window.history.pushState("new-address-id", addressId, "?addressId=" + addressId); //update url
+
+        if (insertToHistory) {
+            window.history.pushState({
+                "value": "my-garland-address-search",
+                "id": addressId
+            }, "", "?addressId=" + addressId); //update url
+        }
 
         //create new search result
         var newSearch = new locationService.NewSearch(addressId);
         newSearch.getAddressInfo().then(function () {
-           
-            if(search.searchTerm.trim().length<2){
+            if (search.searchTerm.trim().length < 2) {
                 search.searchTerm = newSearch.address;
-            }                      
+            }
 
             newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList); //with newSearch.geometryStatePlane 
-            
+
 
             newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
                     newSearch.geometry = geometries[0];
@@ -283,13 +293,18 @@ require([
                     console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
                     displayErrorMessage(e);
                 });
-
-
         });
-
 
         //--add last
         newSearch.showEWSLink();
 
     }
+
+    window.addEventListener("popstate", function (e) {
+        if (e.state.value == "my-garland-address-search") {
+            searchStart();
+            search.searchTerm = "";
+            searchFinish(e.state.id, false);
+        }
+    });
 });
