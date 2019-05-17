@@ -22,18 +22,11 @@ define([
                     item.features = results[i].features;
                     return item;
                 });
-                //save to local storage
-                that.saveToClientStorage();
-
                 return resolve();
-
             });
         });
     };
 
-    var saveToClientStorage = function () {
-        saveToIndexDB.insertInfo("multiSearchMaster", this);
-    };
     return declare(null, {
         constructor: function (settings) {
             this.containerList = settings.containerList;
@@ -41,7 +34,6 @@ define([
             this.serviceZoneSourceList = settings.serviceZoneSourceList;
             this.parcelDataList = settings.parcelDataList;
         },
-        getCityFacilityList: getCityFacilityList,
-        saveToClientStorage: saveToClientStorage
+        getCityFacilityList: getCityFacilityList
     });
 });

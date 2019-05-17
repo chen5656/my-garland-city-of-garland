@@ -38,12 +38,12 @@ define(["dojo/_base/declare",
     return declare("locationService.NewSearch", null, { //"Anonymous" Class,only available within its given scope. 
       constructor: function (addressId) {
         this.addressId = addressId;
+        this.resultList = [];
         //this.address = searchAddress.address;
         //this.addressGeometry = searchAddress.addressGeometry;
         //this.nearestCityFacilityList = [];
         //this.serviceZoneList = [];
         //this.parcelInfo = null;
-
       },
 
       getAddressInfo: function () {
@@ -59,12 +59,18 @@ define(["dojo/_base/declare",
 
         return new Promise(function (resolve, reject) {
           queryTask.execute(query).then(function (result) {
+            if (result.features.length > 0) {
+              var attributes = result.features[0].attributes;
+              thisObj.parcelId = attributes.PARCELID;
+              thisObj.address = "".concat(attributes.STREETNUM, " ", attributes.STREETLABEL, ", ", attributes.CITY, ", ", attributes.STATE, ", ", attributes.ZIPCODE);
+              thisObj.geometryStatePlane = result.features[0].geometry; //in stateplane
+              resolve();
+            } else {
+              reject({
+                error: "Wrong address Id"
+              });
+            }
 
-            var attributes = result.features[0].attributes;
-            thisObj.parcelId = attributes.PARCELID;
-            thisObj.address = "".concat(attributes.STREETNUM, " ", attributes.STREETLABEL, ", ", attributes.CITY, ", ", attributes.STATE, ", ", attributes.ZIPCODE);
-            thisObj.geometryStatePlane = result.features[0].geometry; //in stateplane
-            resolve();
           });
         });
       },
@@ -95,8 +101,7 @@ define(["dojo/_base/declare",
               });
               return newItem;
             })
-            template.appendToPage(that.parcelInfo, that.address);
-            resolve();
+            resolve(that.parcelInfo);
           });
         });
       },
@@ -126,30 +131,31 @@ define(["dojo/_base/declare",
       getNearestCityFacilityList: function (cityFacilityList) {
         var that = this;
         var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
-        getDistances(allCityFacilities, this.geometryStatePlane).then(function (result) {
-          var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
-            val.distance = result[i];
-            return val;
-          });
-          that.nearestCityFacilityList = cityFacilityList.map(function (item) {
-            var nearestFeature = cityFacilityDistanceList.filter(function (val) {
-              return val.layer == item.id;
-            }).reduce(function (a, b) {
-              if (a.distance < b.distance) {
-                return a;
-              } else {
-                return b;
-              }
+        return new Promise(function (resolve, reject) {
+          getDistances(allCityFacilities, that.geometryStatePlane).then(function (result) {
+            var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
+              val.distance = result[i];
+              return val;
             });
-            var newItem = iterationCopy(item);
-            delete newItem.features;
-            newItem.distance = nearestFeature.distance.toFixed(2);
-            newItem.queryPolygonCount = 1;
-            newItem.feature = nearestFeature.attributes;
-            return newItem;
+            that.nearestCityFacilityList = cityFacilityList.map(function (item) {
+              var nearestFeature = cityFacilityDistanceList.filter(function (val) {
+                return val.layer == item.id;
+              }).reduce(function (a, b) {
+                if (a.distance < b.distance) {
+                  return a;
+                } else {
+                  return b;
+                }
+              });
+              var newItem = iterationCopy(item);
+              delete newItem.features;
+              newItem.distance = nearestFeature.distance.toFixed(2);
+              newItem.queryPolygonCount = 1;
+              newItem.feature = nearestFeature.attributes;
+              return newItem;
+            });
+            resolve(that.nearestCityFacilityList);
           });
-          template.appendToPage(that.nearestCityFacilityList, that.address);
-
 
         });
 
@@ -190,17 +196,19 @@ define(["dojo/_base/declare",
           return queryTask.execute(query);
         });
         var promises = new all(queryRequest);
-        promises.then(function (results) {
-          that.serviceZoneList = serviceZoneList.map(function (item, i) {
-            var newItem = iterationCopy(item);
-            newItem.queryPolygonCount = results[i].features.length;
-            if (newItem.queryPolygonCount > 0) {
-              newItem.feature = results[i].features[0].attributes;
-            }
-            return newItem;
-          });
-          template.appendToPage(that.serviceZoneList, that.address);
+        return new Promise(function (resolve, reject) {
+          promises.then(function (results) {
+            that.serviceZoneList = serviceZoneList.map(function (item, i) {
+              var newItem = iterationCopy(item);
+              newItem.queryPolygonCount = results[i].features.length;
+              if (newItem.queryPolygonCount > 0) {
+                newItem.feature = results[i].features[0].attributes;
+              }
+              return newItem;
+            });
+            resolve(that.serviceZoneList);
 
+          });
         });
       },
 
@@ -242,15 +250,6 @@ define(["dojo/_base/declare",
         subView.graphics.removeAll()
         subView.graphics.add(pointGraphic);
         subView.center = [this.geometry.longitude, this.geometry.latitude];
-      },
-
-      showEWSLink: function () {
-        //show ews link
-        var node = document.getElementById("ews_link");
-        if (domClass.contains(node, "d-none") == true) {
-          domClass.remove(node, 'd-none');
-        }
-
       }
     });
 

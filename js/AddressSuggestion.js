@@ -9,7 +9,7 @@ define([
     Query, QueryTask,
     domQuery
 ) {
-    
+
     var suggestion = function (targetArea, searchAddressFunction, searchTerm, mapServices) {
         var AddrRoad, AddrNumber;
         var node = document.getElementById(targetArea);
@@ -115,6 +115,7 @@ define([
                 });
             }
         });
+
         function closestNums(num, arr) {
             var numsIndex = arr.length - 1;
             if (arr.length > 5) {
@@ -140,14 +141,10 @@ define([
     
         function displayUniquleStreetList(features, AddrNumber) {
             //get unique value
-            var unique = {};
-            var distinct = [];
-            for (var i in features) {
-                if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-                    distinct.push(features[i].attributes.STREETLABEL);
-                }
-                unique[features[i].attributes.STREETLABEL] = 0;
-            }
+            debugger;
+            var distinct = getUnique(features.map(function (feature) {
+                return feature.attributes.STREETLABEL;
+            }));
     
             var tempAddrNum;
             if (AddrNumber == 0) {
@@ -181,9 +178,8 @@ define([
             });
             return str.join(" ").trim();
         }
-    };
+    }
 
-   
 
     return declare(null, {
         //no result found. Suggestion the nearest result

@@ -9,6 +9,19 @@ function displayErrorMessage(msg) {
     console.log("alert", msg);
 }
 
+function getUnique(array) {
+    //get unique value
+    var unique = {};
+    var distinct = [];
+    for (var i in array) {
+        if (typeof (unique[array[i]]) == "undefined") {
+            distinct.push(array[i]);
+        }
+        unique[array[i]] = 0;
+    }
+    return distinct;
+}
+
 require([
     'dojo/dom',
     "dojo/dom-class",
@@ -105,8 +118,8 @@ require([
             view.zoom = 12;
 
             if (e.result) {
-                saveToIndexDB.insertInfo("term-" + this.searchTerm.trim(), {
-                    "addressId": e.result.feature.attributes.Ref_ID
+                saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0], {
+                    "addressId": "".concat(e.result.feature.attributes.Ref_ID)
                 });
                 searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
@@ -242,62 +255,109 @@ require([
         });
     }
 
-    function searchFinish(addressId, insertToHistory) {
-        domClass.remove('nodeResult', 'd-none');
-
-        if (insertToHistory) {
-            window.history.pushState({
-                "value": "my-garland-address-search",
-                "id": addressId
-            }, "", "?addressId=" + addressId); //update url
+    function displayAndSaveSearchData(data, newSearch) {
+        template.appendToPage(data, newSearch.address);
+        newSearch.resultList = newSearch.resultList.concat(data);
+        var searchResult = {
+            "address": newSearch.address,
+            "resultList": newSearch.resultList
         }
+        if (newSearch.parcelInfo) {
+            searchResult.parcelInfo = "true";
+        }
+        if (newSearch.serviceZoneList) {
+            searchResult.serviceZoneList = "true";
+        }
+        if (newSearch.nearestCityFacilityList) {
+            searchResult.nearestCityFacilityList = "true";
+        }
+        saveToIndexDB.insertInfo(newSearch.addressId, searchResult)
+    }
 
-        //create new search result
-        var newSearch = new locationService.NewSearch(addressId);
-        newSearch.getAddressInfo().then(function () {
-            if (search.searchTerm.trim().length < 2) {
-                search.searchTerm = newSearch.address;
+    function insertIntoHistory(addressId) {
+        window.history.pushState({
+            "value": "my-garland-address-search",
+            "id": addressId
+        }, "", "?addressId=" + addressId); //update url
+
+    }
+
+    function searchFinish(addressId, insertToHistory) {
+
+        //get data from local storage first.
+        saveToIndexDB.getInfo(addressId).then(function (oldSearch) {
+
+            if (oldSearch) {
+                if (oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
+                    console.log("find search result in indexDB. display oldSearch.");
+                    document.title = "My Garland - ".concat(oldSearch.address);
+                    if (insertToHistory) {
+                        insertIntoHistory (addressId);
+                    }
+                    domClass.remove('nodeResult', 'd-none');
+                    //display data. Else, query data from server.
+                    template.appendToPage(oldSearch.resultList, oldSearch.address);
+                    search.searchTerm = oldSearch.address;
+                    return;
+                }
             }
 
-            newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList); //with newSearch.geometryStatePlane 
+            //create new search result
+            var newSearch = new locationService.NewSearch(addressId);
+            console.log("create newSearch");
+            newSearch.getAddressInfo().then(function () {
+                    domClass.remove('nodeResult', 'd-none');
+                    document.title = "My Garland - ".concat(newSearch.address);
+                    if (insertToHistory) {
+                        insertIntoHistory (addressId);
+                    }
+                    if (search.searchTerm.trim().length < 2) {
+                        search.searchTerm = newSearch.address;
+                    }
 
-
-            newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
-                    newSearch.geometry = geometries[0];
-
-                    newSearch.addResultToMap(view);
-                    newSearch.addResultToMap(subView);
-
-                    newSearch.getParcelInfo(multiSearch.parcelDataList).then(function () {
-                        saveToIndexDB.insertInfo("adressId-" + newSearch.addressId, {
-                            address: newSearch.address,
-                            geometry: {
-                                latitude: newSearch.geometry.latitude,
-                                longitude: newSearch.geometry.longitude
-                            },
-                            geometryStatePlane: {
-                                x: newSearch.geometryStatePlane.x,
-                                y: newSearch.geometryStatePlane.y
-                            },
-                            parcelInfo: newSearch.parcelInfo
-                        });
+                    newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
+                        displayAndSaveSearchData(data, newSearch);
                     });
 
-                    newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList);
-                    console.log("newSearch", newSearch);
+                    newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
+                            newSearch.geometry = geometries[0];
 
-                    newSearch.getCrimeData();
+                            newSearch.addResultToMap(view);
+                            newSearch.addResultToMap(subView);
 
-                })
-                .catch(function (e) {
-                    console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
-                    displayErrorMessage(e);
-                });
+                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+
+                            newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+                            console.log("newSearch", newSearch);
+
+                            newSearch.getCrimeData();
+
+                        })
+                        .catch(function (e) {
+                            console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
+                            displayErrorMessage(e);
+                        });
+                },
+                function (error) {
+                    console.log("getAddressInfo", error);
+
+                }
+            );
+
+
         });
 
-        //--add last
-        newSearch.showEWSLink();
-
+        //--add last EWS Link
+        (function () {
+            var node = document.getElementById("ews_link");
+            if (domClass.contains(node, "d-none") == true) {
+                domClass.remove(node, 'd-none');
+            }
+        })();
     }
 
     window.addEventListener("popstate", function (e) {
@@ -307,4 +367,5 @@ require([
             searchFinish(e.state.id, false);
         }
     });
+
 });
