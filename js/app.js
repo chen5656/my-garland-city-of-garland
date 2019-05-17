@@ -114,7 +114,7 @@ require([
 
         //get address from previous saved url
         (function () {
-            var addrId = "".concat(getURLQueryVariable("addressId"));
+            var addrId = "".concat(getURLQueryVariable("addressid"));
             if (!isNaN(addrId) && addrId > 0) {
                 searchFinish(addrId, true);
             }
@@ -124,7 +124,7 @@ require([
                 var vars = query.split("&");
                 for (var i = 0; i < vars.length; i++) {
                     var pair = vars[i].split("=");
-                    if (pair[0] == variable) {
+                    if (pair[0].toLowerCase() == variable) {
                         return pair[1];
                     }
                 }

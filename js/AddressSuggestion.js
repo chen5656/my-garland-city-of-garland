@@ -115,75 +115,75 @@ define([
                 });
             }
         });
-
-    }
-
-    function closestNums(num, arr) {
-        var numsIndex = arr.length - 1;
-        if (arr.length > 5) {
-            for (var i = 0; i < arr.length; i++) {
-                if (num < arr[i].streetNumber) {
-                    if (arr.length - (i + 3) < 0) {
-                        numsIndex = arr.length - 1;
-                    } else {
-                        numsIndex = i + 2;
+        function closestNums(num, arr) {
+            var numsIndex = arr.length - 1;
+            if (arr.length > 5) {
+                for (var i = 0; i < arr.length; i++) {
+                    if (num < arr[i].streetNumber) {
+                        if (arr.length - (i + 3) < 0) {
+                            numsIndex = arr.length - 1;
+                        } else {
+                            numsIndex = i + 2;
+                        }
+                        break;
                     }
-                    break;
                 }
-            }
-            if (numsIndex < 4) {
-                numsIndex = 4;
-            }
-            return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
-
-        } else {
-            return arr;
-        }
-    }
-
-    function displayUniquleStreetList(features, AddrNumber) {
-        //get unique value
-        var unique = {};
-        var distinct = [];
-        for (var i in features) {
-            if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
-                distinct.push(features[i].attributes.STREETLABEL);
-            }
-            unique[features[i].attributes.STREETLABEL] = 0;
-        }
-
-        var tempAddrNum;
-        if (AddrNumber == 0) {
-            tempAddrNum = "";
-        } else {
-            tempAddrNum = "" + AddrNumber + " ";
-        }
-
-        var str = distinct.slice(0, 5).map(function (val) {
-            return template.generateSuggestAddress({
-                "streetNumber": tempAddrNum,
-                "streetLabel": val
-            });
-        }).join("");
-        node.innerHTML = "<p>Did you mean?</p><ul>".concat(str, "</ul>");
-
-        domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-            btn.onclick = searchAddressFunction;
-        });
-    }
-
-    function findArrayInAliasExtend(AddrRoad) {
-        var str = AddrRoad.split(" ");
-        str = str.map(function (val) {
-            if (appSetting.aliasExtend[val]) {
-                return appSetting.aliasExtend[val];
+                if (numsIndex < 4) {
+                    numsIndex = 4;
+                }
+                return [arr[numsIndex - 4], arr[numsIndex - 3], arr[numsIndex - 2], arr[numsIndex - 1], arr[numsIndex]];
+    
             } else {
-                return val;
+                return arr;
             }
+        }
+    
+        function displayUniquleStreetList(features, AddrNumber) {
+            //get unique value
+            var unique = {};
+            var distinct = [];
+            for (var i in features) {
+                if (typeof (unique[features[i].attributes.STREETLABEL]) == "undefined") {
+                    distinct.push(features[i].attributes.STREETLABEL);
+                }
+                unique[features[i].attributes.STREETLABEL] = 0;
+            }
+    
+            var tempAddrNum;
+            if (AddrNumber == 0) {
+                tempAddrNum = "";
+            } else {
+                tempAddrNum = "" + AddrNumber + " ";
+            }
+    
+            var str = distinct.slice(0, 5).map(function (val) {
+                return template.generateSuggestAddress({
+                    "streetNumber": tempAddrNum,
+                    "streetLabel": val
+                });
+            }).join("");
+            node.innerHTML = "<p>Did you mean?</p><ul>".concat(str, "</ul>");
+    
+            domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
+                btn.onclick = searchAddressFunction;
+            });
+        }
+    
+        function findArrayInAliasExtend(AddrRoad) {
+            var str = AddrRoad.split(" ");
+            str = str.map(function (val) {
+                if (appSetting.aliasExtend[val]) {
+                    return appSetting.aliasExtend[val];
+                } else {
+                    return val;
+                }
+    
+            });
+            return str.join(" ").trim();
+        }
+    };
 
-        });
-        return str.join(" ").trim();
-    }
+   
 
     return declare(null, {
         //no result found. Suggestion the nearest result
