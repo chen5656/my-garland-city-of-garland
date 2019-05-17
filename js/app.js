@@ -319,7 +319,7 @@ require([
         view.center = [geometry.longitude, geometry.latitude];
     }
 
-    function addCrimeMap(geometry)    {
+    function addCrimeMap(geometry) {
         //in chrome, need to remove iframe, add it again to refresh the iframe.
         var today = new Date();
         today.setHours(0, 0, 0);
@@ -329,15 +329,15 @@ require([
         var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
 
         var urlProperty = {
-          lat: geometry.latitude,
-          long: geometry.longitude,
-          start_date: start_date,
-          end_date: end_date
+            lat: geometry.latitude,
+            long: geometry.longitude,
+            start_date: start_date,
+            end_date: end_date
         }
         var node = dom.byId("crimeData");
         node.innerHTML = "";
         node.innerHTML = template.generateCrimeMapIframe(urlProperty);
-      
+
     }
 
     function searchFinish(addressId, insertToHistory) {
@@ -348,24 +348,28 @@ require([
 
             if (oldSearch) {
                 if (oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
-                    console.log("find search result in indexDB. display oldSearch.");
-                    document.title = "My Garland - ".concat(oldSearch.address);
-                    if (insertToHistory) {
-                        insertIntoHistory(addressId);
+                    //make sure data is not too old
+                    var historyDate = ((Date.now() - oldSearch.createdOn) / (1000 * 60 * 60 * 24)).toFixed(3);
+                    if (historyDate < 30) {
+                        console.log("display oldSearch - find search result in indexDB of ".concat(historyDate, " days ago."));
+                        document.title = "My Garland - ".concat(oldSearch.address);
+                        if (insertToHistory) {
+                            insertIntoHistory(addressId);
+                        }
+                        domClass.remove('nodeResult', 'd-none');
+                        //display data. Else, query data from server.
+                        template.appendToPage(oldSearch.resultList, oldSearch.address);
+                        oldSearch.geometry = {
+                            type: "point",
+                            latitude: oldSearch.geometry.latitude,
+                            longitude: oldSearch.geometry.longitude
+                        }
+                        addResultToMap(oldSearch.geometry, view);
+                        addResultToMap(oldSearch.geometry, subView);
+                        addCrimeMap(oldSearch.geometry);
+                        search.searchTerm = oldSearch.address;
+                        return;
                     }
-                    domClass.remove('nodeResult', 'd-none');
-                    //display data. Else, query data from server.
-                    template.appendToPage(oldSearch.resultList, oldSearch.address);
-                    oldSearch.geometry={
-                        type:"point",
-                        latitude: oldSearch.geometry.latitude,
-                        longitude: oldSearch.geometry.longitude
-                    }
-                    addResultToMap(oldSearch.geometry, view);
-                    addResultToMap(oldSearch.geometry, subView);
-                    addCrimeMap(oldSearch.geometry);
-                    search.searchTerm = oldSearch.address;
-                    return;
                 }
             }
 
