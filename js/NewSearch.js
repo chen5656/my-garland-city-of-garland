@@ -1,21 +1,17 @@
 define(["dojo/_base/declare",
     'dojo/dom',
     "dojo/promise/all",
-    "dojo/dom-class",
 
     "esri/tasks/support/Query",
     "esri/tasks/QueryTask",
     "esri/tasks/GeometryService",
     "esri/tasks/support/ProjectParameters",
-    "esri/geometry/geometryEngineAsync",
-    "esri/Graphic"
+    "esri/geometry/geometryEngineAsync"
   ],
-  function (declare, dom, all, domClass,
+  function (declare, dom, all, 
     Query, QueryTask,
     GeometryService, ProjectParameters,
-    geometryEngineAsync,
-    Graphic
-
+    geometryEngineAsync
   ) {
 
     function iterationCopy(src) {
@@ -207,50 +203,10 @@ define(["dojo/_base/declare",
               return newItem;
             });
             resolve(that.serviceZoneList);
-
           });
         });
-      },
-
-
-      getCrimeData: function () {
-        //in chrome, need to remove iframe, add it again to refresh the iframe.
-
-        var today = new Date();
-        today.setHours(0, 0, 0);
-        var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
-        var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-        var start_date = "".concat(TwoWeeksAgo.getFullYear(), "-", TwoWeeksAgo.getMonth() + 1, "-", TwoWeeksAgo.getDate());
-        var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
-
-        var urlProperty = {
-          lat: this.geometry.latitude,
-          long: this.geometry.longitude,
-          start_date: start_date,
-          end_date: end_date
-        }
-        var node = dom.byId("crimeData");
-        node.innerHTML = "";
-        node.innerHTML = template.generateCrimeMapIframe(urlProperty);
-      },
-
-      addResultToMap: function (subView) {
-
-        var pointGraphic = new Graphic({
-          geometry: this.geometry,
-          symbol: {
-            type: "simple-marker",
-            color: "#dc2533"
-          },
-          popupTemplate: { // autocasts as new PopupTemplate()
-            title: "Target",
-            content: this.address
-          }
-        });
-        subView.graphics.removeAll()
-        subView.graphics.add(pointGraphic);
-        subView.center = [this.geometry.longitude, this.geometry.latitude];
       }
+
     });
 
   });
