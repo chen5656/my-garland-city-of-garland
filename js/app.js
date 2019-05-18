@@ -1,14 +1,3 @@
-var template = new myGarland.templates();
-var saveToIndexDB = new myGarland.clientStorage();
-
-//saveToIndexDB.getInfo(that.address);
-//test getData from IndexDB
-
-function displayErrorMessage(msg) {
-    alert("Time out to retrieve data. Please refresh the page.");
-    console.log("alert", msg);
-}
-
 function getUnique(array) {
     //get unique value
     var unique = {};
@@ -22,6 +11,11 @@ function getUnique(array) {
     return distinct;
 }
 
+var template = new myGarland.templates();
+var saveToIndexDB = new myGarland.clientStorage();
+
+var view, subMap, subView, search;
+
 require([
     'dojo/dom',
     "dojo/dom-class",
@@ -32,6 +26,7 @@ require([
 
     "esri/widgets/Search",
     "esri/tasks/Locator",
+    "esri/Graphic",
 
     "dojo/query",
     "dojo/dom-construct",
@@ -43,16 +38,186 @@ require([
     'dojo/domReady!',
 ], function (dom, domClass,
     Map, MapView, MapImageLayer,
-    Search, Locator,
+    Search, Locator, Graphic,
     domQuery, domConstruct,
     MultiSearch, addressSuggestion
 ) {
     'use strict';
-    var view, subMap, subView, search;
+
+    function searchStart() {
+        domClass.add('nodeResult', 'd-none');
+        domClass.add('suggestedAddresses', 'd-none');
+        domClass.add('ews_link', 'd-none');
+        dom.byId("street-condition-checkbox").checked = false;
+        domClass.add('street-condition-legend', 'd-none');
+
+        //cardBodies        //  show spinner-grow
+        domQuery(".spinner-grow").forEach(function (node) {
+            if (domClass.contains(node, "d-none")) {
+                domClass.remove(node, 'd-none');
+            }
+        });
+
+        //remove old data
+        domQuery("ul", "nodeResult").forEach(function (val) {
+            val.innerHTML = "";
+        });
+    }
+
+    function displayAndSaveSearchData(data, newSearch) {
+        template.appendToPage(data, newSearch.address);
+        newSearch.resultList = newSearch.resultList.concat(data);
+        var searchResult = {
+            address: newSearch.address,
+            resultList: newSearch.resultList
+        }
+        if (newSearch.geometry) {
+            searchResult.geometry = {
+                latitude: newSearch.geometry.latitude,
+                longitude: newSearch.geometry.longitude
+            }
+        };
+        if (newSearch.parcelInfo) {
+            searchResult.parcelInfo = "true";
+        }
+        if (newSearch.serviceZoneList) {
+            searchResult.serviceZoneList = "true";
+        }
+        if (newSearch.nearestCityFacilityList) {
+            searchResult.nearestCityFacilityList = "true";
+        }
+        searchResult.createdOn = Date.now();
+        saveToIndexDB.insertInfo(newSearch.addressId, searchResult)
+    }
+
+    function pushToHistory(addressId) {
+        if (!(window.history.state && window.history.state.value == "my-garland-address-search" && window.history.state.id == addressId)) {
+            window.history.pushState({
+                "value": "my-garland-address-search",
+                "id": addressId
+            }, "", "?addressId=" + addressId);
+        }
+    }
+
+    function addToMap(geometry) {
+
+        addPnt(geometry, view);
+        addPnt(geometry, subView);
+        displayCrimeMap(geometry);
+
+        //--add last EWS Link
+        var node = document.getElementById("ews_link");
+        if (domClass.contains(node, "d-none") == true) {
+            domClass.remove(node, 'd-none');
+        }
+
+        function addPnt(geometry, mapView) {
+            var pnt = new Graphic({
+                geometry: geometry,
+                symbol: {
+                    type: "simple-marker",
+                    color: "#dc2533"
+                }
+            });
+            mapView.graphics.removeAll();
+            mapView.graphics.add(pnt);
+            mapView.center = [geometry.longitude, geometry.latitude];
+
+        }
+
+        function displayCrimeMap(geometry) {
+            //in chrome, need to remove iframe, add it again to refresh the iframe.
+            var today = new Date();
+            today.setHours(0, 0, 0);
+            var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
+            var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
+            var start_date = "".concat(TwoWeeksAgo.getFullYear(), "-", TwoWeeksAgo.getMonth() + 1, "-", TwoWeeksAgo.getDate());
+            var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
+
+            var urlProperty = {
+                lat: geometry.latitude,
+                long: geometry.longitude,
+                start_date: start_date,
+                end_date: end_date
+            }
+            var node = dom.byId("crimeData");
+            node.innerHTML = "";
+            node.innerHTML = template.generateCrimeMapIframe(urlProperty);
+        }
+    }
+    
+    function searchFinish(addressId, insertToHistory) {
+        //get data from local storage first.
+        saveToIndexDB.getInfo(addressId).then(function (oldSearch) {
+
+            if (oldSearch && oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
+                var r = ((Date.now() - oldSearch.createdOn) / 864e5).toFixed(3); //only read data keeped in 30 days.
+                if (r < 30) {
+                    console.log("display oldSearch - find search result in indexDB of ".concat(r, " days ago."));
+                    document.title = "My Garland - ".concat(oldSearch.address);
+                    if (insertToHistory) {
+                        pushToHistory(addressId);
+                    }
+                    //display data
+                    domClass.remove('nodeResult', 'd-none');
+                    search.searchTerm = oldSearch.address;
+                    template.appendToPage(oldSearch.resultList, oldSearch.address);
+                    oldSearch.geometry = {
+                        type: "point",
+                        latitude: oldSearch.geometry.latitude,
+                        longitude: oldSearch.geometry.longitude
+                    }
+                    addToMap(oldSearch.geometry);
+                    return;
+                }
+            }
+            //create new search result
+            var newSearch = new locationService.NewSearch(addressId);
+            console.log("create newSearch");
+            newSearch.getAddressInfo().then(function () {
+                    domClass.remove('nodeResult', 'd-none');
+                    document.title = "My Garland - ".concat(newSearch.address);
+                    if (insertToHistory) {
+                        pushToHistory(addressId);
+                    }
+                    if (search.searchTerm.trim().length < 2) {
+                        search.searchTerm = newSearch.address;
+                    }
+
+                    newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
+                        displayAndSaveSearchData(data, newSearch);
+                    });
+
+                    newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
+                            newSearch.geometry = geometries[0];
+
+                            addToMap(newSearch.geometry);
+
+                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+
+                            newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+                            console.log("newSearch", newSearch);
+                        })
+                        .catch(function (e) {
+                            console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
+                        });
+                },
+                function (error) {
+                    console.log("getAddressInfo", error);
+
+                }
+            );
+        });
+
+    }
 
     //init: map,submap, view
     (function () {
-        dom.byId("offline").innerHTML = "";
+        //dom.byId("offline").innerHTML = "";
         var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
         var map = new Map({
             basemap: appSetting.mapInTop.basemap,
@@ -116,10 +281,10 @@ require([
 
         search.on("select-result", function (e) {
             view.zoom = 12;
-
             if (e.result) {
                 saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0], {
-                    "addressId": "".concat(e.result.feature.attributes.Ref_ID)
+                    "addressId": "".concat(e.result.feature.attributes.Ref_ID),
+                    createdOn: Date.now()
                 });
                 searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
@@ -233,132 +398,6 @@ require([
 
     });
 
-    function searchStart() {
-
-        domClass.add('nodeResult', 'd-none');
-        domClass.add('suggestedAddresses', 'd-none');
-        domClass.add('ews_link', 'd-none');
-        dom.byId("street-condition-checkbox").checked = false;
-        domClass.add('street-condition-legend', 'd-none');
-
-        //cardBodies
-        //  show spinner-grow
-        domQuery(".spinner-grow").forEach(function (node) {
-            if (domClass.contains(node, "d-none")) {
-                domClass.remove(node, 'd-none');
-            }
-        });
-
-        //remove old data
-        domQuery("ul", "nodeResult").forEach(function (val) {
-            val.innerHTML = "";
-        });
-    }
-
-    function displayAndSaveSearchData(data, newSearch) {
-        template.appendToPage(data, newSearch.address);
-        newSearch.resultList = newSearch.resultList.concat(data);
-        var searchResult = {
-            "address": newSearch.address,
-            "resultList": newSearch.resultList
-        }
-        if (newSearch.parcelInfo) {
-            searchResult.parcelInfo = "true";
-        }
-        if (newSearch.serviceZoneList) {
-            searchResult.serviceZoneList = "true";
-        }
-        if (newSearch.nearestCityFacilityList) {
-            searchResult.nearestCityFacilityList = "true";
-        }
-        saveToIndexDB.insertInfo(newSearch.addressId, searchResult)
-    }
-
-    function insertIntoHistory(addressId) {
-        window.history.pushState({
-            "value": "my-garland-address-search",
-            "id": addressId
-        }, "", "?addressId=" + addressId); //update url
-
-    }
-
-    function searchFinish(addressId, insertToHistory) {
-
-        //get data from local storage first.
-        saveToIndexDB.getInfo(addressId).then(function (oldSearch) {
-
-            if (oldSearch) {
-                if (oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
-                    console.log("find search result in indexDB. display oldSearch.");
-                    document.title = "My Garland - ".concat(oldSearch.address);
-                    if (insertToHistory) {
-                        insertIntoHistory (addressId);
-                    }
-                    domClass.remove('nodeResult', 'd-none');
-                    //display data. Else, query data from server.
-                    template.appendToPage(oldSearch.resultList, oldSearch.address);
-                    search.searchTerm = oldSearch.address;
-                    return;
-                }
-            }
-
-            //create new search result
-            var newSearch = new locationService.NewSearch(addressId);
-            console.log("create newSearch");
-            newSearch.getAddressInfo().then(function () {
-                    domClass.remove('nodeResult', 'd-none');
-                    document.title = "My Garland - ".concat(newSearch.address);
-                    if (insertToHistory) {
-                        insertIntoHistory (addressId);
-                    }
-                    if (search.searchTerm.trim().length < 2) {
-                        search.searchTerm = newSearch.address;
-                    }
-
-                    newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
-                        displayAndSaveSearchData(data, newSearch);
-                    });
-
-                    newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
-                            newSearch.geometry = geometries[0];
-
-                            newSearch.addResultToMap(view);
-                            newSearch.addResultToMap(subView);
-
-                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
-                                displayAndSaveSearchData(data, newSearch);
-                            });
-
-                            newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
-                                displayAndSaveSearchData(data, newSearch);
-                            });
-                            console.log("newSearch", newSearch);
-
-                            newSearch.getCrimeData();
-
-                        })
-                        .catch(function (e) {
-                            console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
-                            displayErrorMessage(e);
-                        });
-                },
-                function (error) {
-                    console.log("getAddressInfo", error);
-
-                }
-            );
-
-
-        });
-
-        //--add last EWS Link
-        (function () {
-            var node = document.getElementById("ews_link");
-            if (domClass.contains(node, "d-none") == true) {
-                domClass.remove(node, 'd-none');
-            }
-        })();
-    }
 
     window.addEventListener("popstate", function (e) {
         if (e.state.value == "my-garland-address-search") {
