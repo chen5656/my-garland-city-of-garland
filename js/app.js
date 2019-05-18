@@ -87,7 +87,7 @@ require([
             searchResult.nearestCityFacilityList = "true";
         }
         searchResult.createdOn = Date.now();
-        saveToIndexDB.insertInfo(newSearch.addressId, searchResult)
+        saveToIndexDB.insertInfo("" + newSearch.addressId, searchResult)
     }
 
     function pushToHistory(addressId) {
@@ -97,6 +97,10 @@ require([
                 "id": addressId
             }, "", "?addressId=" + addressId);
         }
+    }
+
+    function daysFromNow(milliseconds) {
+        return ((Date.now() - milliseconds) / 864e5).toFixed(3);
     }
 
     function addToMap(geometry) {
@@ -145,15 +149,26 @@ require([
             node.innerHTML = template.generateCrimeMapIframe(urlProperty);
         }
     }
-    
+
+    function getInfoFromClientStorageByString(searchTerm) {
+        saveToIndexDB.getInfo("term-" + searchTerm.trim().split(",")[0]).then(function (result) {
+            if (result && (daysFromNow(result.createdOn) < 180)) {
+                var addressId = result.addressId;
+                search.clear();
+                console.log(3);
+                searchFinish(addressId, true);
+
+            }
+        })
+    }
+
     function searchFinish(addressId, insertToHistory) {
         //get data from local storage first.
-        saveToIndexDB.getInfo(addressId).then(function (oldSearch) {
+        saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
 
             if (oldSearch && oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
-                var r = ((Date.now() - oldSearch.createdOn) / 864e5).toFixed(3); //only read data keeped in 30 days.
-                if (r < 30) {
-                    console.log("display oldSearch - find search result in indexDB of ".concat(r, " days ago."));
+                if (daysFromNow(oldSearch.createdOn) < 30) { //only read data keeped in 30 days.
+                    console.log("display oldSearch - find search result in indexDB");
                     document.title = "My Garland - ".concat(oldSearch.address);
                     if (insertToHistory) {
                         pushToHistory(addressId);
@@ -266,9 +281,11 @@ require([
 
         search.on("search-start", function (e) {
             searchStart();
+            getInfoFromClientStorageByString(search.searchTerm);
         });
 
         search.on("search-complete", function (e) {
+            console.log(1);
             if (e.numResults == 0) {
                 //no address find from input, display suggestion.
                 var addressClick = function () {
@@ -280,6 +297,8 @@ require([
         });
 
         search.on("select-result", function (e) {
+            
+            console.log(2);
             view.zoom = 12;
             if (e.result) {
                 saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0], {

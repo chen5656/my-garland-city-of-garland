@@ -1,22 +1,16 @@
-var myGarland = myGarland || {};
-myGarland.templates = function () {
-    ;
-}
-var arrayFrom = function (nodelist) {
-    return [].slice.call(nodelist);
-}
-
 function hasClass(el, className) {
-    if (el.classList)
+    if (el.classList) {
         return el.classList.contains(className);
+    }
     return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
 }
 
 function addClass(el, className) {
-    if (el.classList)
-        el.classList.add(className)
-    else if (!hasClass(el, className))
+    if (el.classList) {
+        el.classList.add(className);
+    } else if (!hasClass(el, className)) {
         el.className += " " + className;
+    }
 }
 
 function removeClass(el, className) {
@@ -27,6 +21,13 @@ function removeClass(el, className) {
         el.className = el.className.replace(reg, ' ');
     }
 }
+
+var myGarland = myGarland || {};
+myGarland.templates = function () {};
+var arrayFrom = function (nodelist) {
+    return [].slice.call(nodelist);
+};
+
 
 var containerList = multilSearch_settings.containerList;
 
