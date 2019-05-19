@@ -150,23 +150,9 @@ require([
         }
     }
 
-    function getInfoFromClientStorageByString(searchTerm) {
-        saveToIndexDB.getInfo("term-" + searchTerm.trim().split(",")[0].replace(/\s+/g, '+')).then(function (result) {
-            if (result && (daysFromNow(result.createdOn) < 180)) {
-                var addressId = result.addressId; 
-                searchFinish(addressId, true);
 
-            }
-        }, function (error) {
-            console.log(error);
-        })
-    }
 
     function searchFinish(addressId, insertToHistory) {
-        //remove old data
-        domQuery("ul", "nodeResult").forEach(function (val) {
-            val.innerHTML = "";
-        });
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
 
@@ -293,7 +279,6 @@ require([
 
         search.on("search-start", function (e) {
             searchStart();
-            getInfoFromClientStorageByString(search.searchTerm);
         });
 
         search.on("search-complete", function (e) {
@@ -310,10 +295,6 @@ require([
         search.on("select-result", function (e) {
             view.zoom = 12;
             if (e.result) {
-                saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0].replace(/\s+/g, '+'), {
-                    "addressId": "".concat(e.result.feature.attributes.Ref_ID),
-                    createdOn: Date.now()
-                });
                 searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
         });
