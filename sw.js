@@ -1,6 +1,7 @@
 // "use strict";
 
 var myGarlandCacheName = 'myGarlandCacheV1';
+var EsriJsApiCache411 = 'EsriJsApiV411';
 
 var myGarlandCacheFiles = [
   'js/app.js',
@@ -43,7 +44,8 @@ self.addEventListener('activate', function (event) {
     .then(function (cacheKeys) {
       var deletePromises = [];
       for (var i = 0; i < cacheKeys.length; i++) {
-        if (cacheKeys[i] != myGarlandCacheName) {
+        if (cacheKeys[i] != myGarlandCacheName &&
+          cacheKeys[i] != EsriJsApiCache411) {
           deletePromises.push(caches.delete(cacheKeys[i]));
         }
       }
@@ -52,31 +54,31 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-self.addEventListener('fetch', function (event) {debugger;
+self.addEventListener('fetch', function (event) {
   var requestUrl = new URL(event.request.url);
-  var requestOrigin=requestUrl.origin;
-  var hostname=requestUrl.hostname;
+  var requestOrigin = requestUrl.origin;
+  var hostname = requestUrl.hostname;
   var requestPath = requestUrl.pathname;
   var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
-  console.log(requestOrigin,requestPath,fileName);
 
   if (fileName == "sw.js") {
     //Network Only Strategy
-       event.respondWith(fetch(event.request));
-  } 
-  else if ( hostname =="http://127.0.0.1"||hostname=="https://maps.garlandtx.gov") {
+    event.respondWith(fetch(event.request));
+  } else if (hostname == "js.arcgis.com") {
+    event.respondWith(cacheFirstStrategy(event.request));
+  } else if (hostname == "127.0.0.1" || (hostname == "maps.garlandtx.gov" && !requestUrl.pathname.includes("/arcgis/rest/services/WebApps/MyGarland/"))) {
     //Offline First  
-    console.log(requestOrigin,requestPath,fileName);
-    
-     event.respondWith(cacheFirstStrategy(event.request));
+    console.log(requestOrigin, requestPath, fileName);
+    event.respondWith(cacheFirstStrategy(event.request));
   }
 });
 
 //Caching Strategies
 function cacheFirstStrategy(request) {
-  return caches.match(request).then(function (cacheResponse) {
+  var s = caches.match(request).then(function (cacheResponse) {
     return cacheResponse || fetchRequestAndCache(request);
   });
+  return s;
 }
 
 function networkFirstStrategy(request) {
@@ -96,9 +98,12 @@ function fetchRequestAndCache(request) {
 }
 
 function getCacheName(request) {
-  var requestUrl = new URL(request.url);  
-  var requestOrigin=requestUrl.origin;
+  var requestUrl = new URL(request.url);
+  var hostname = requestUrl.hostname;
 
+  if (hostname == "js.arcgis.com") {
+    return EsriJsApiCache411;
+  } else {
     return myGarlandCacheName;
-  
+  }
 }
