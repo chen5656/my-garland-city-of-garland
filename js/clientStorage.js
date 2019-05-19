@@ -11,10 +11,17 @@ myGarland.clientStorage.prototype = {
     },
 
     getInfo: function (key) {
-        var thisObj = this;        
+        var thisObj = this;
         return new Promise(function (resolve, reject) {
             thisObj.myGarlandInstance.getItem(key).then(function (result) {
-                return resolve(result);
+                if (result) {
+                    return resolve(result);
+
+                } else {
+                    return reject({
+                        error: "no result of '".concat(key, "' found in local storage")
+                    })
+                }
             });
         });
     }

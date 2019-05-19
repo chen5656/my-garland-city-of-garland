@@ -151,18 +151,22 @@ require([
     }
 
     function getInfoFromClientStorageByString(searchTerm) {
-        saveToIndexDB.getInfo("term-" + searchTerm.trim().split(",")[0]).then(function (result) {
+        saveToIndexDB.getInfo("term-" + searchTerm.trim().split(",")[0].replace(/\s+/g, '+')).then(function (result) {
             if (result && (daysFromNow(result.createdOn) < 180)) {
-                var addressId = result.addressId;
-                search.clear();
-                console.log(3);
+                var addressId = result.addressId; 
                 searchFinish(addressId, true);
 
             }
+        }, function (error) {
+            console.log(error);
         })
     }
 
     function searchFinish(addressId, insertToHistory) {
+        //remove old data
+        domQuery("ul", "nodeResult").forEach(function (val) {
+            val.innerHTML = "";
+        });
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
 
@@ -186,48 +190,56 @@ require([
                     return;
                 }
             }
-            //create new search result
-            var newSearch = new locationService.NewSearch(addressId);
-            console.log("create newSearch");
-            newSearch.getAddressInfo().then(function () {
-                    domClass.remove('nodeResult', 'd-none');
-                    document.title = "My Garland - ".concat(newSearch.address);
-                    if (insertToHistory) {
-                        pushToHistory(addressId);
-                    }
-                    if (search.searchTerm.trim().length < 2) {
-                        search.searchTerm = newSearch.address;
-                    }
+            createNewSearch(addressId, insertToHistory);
 
-                    newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
-                        displayAndSaveSearchData(data, newSearch);
-                    });
-
-                    newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
-                            newSearch.geometry = geometries[0];
-
-                            addToMap(newSearch.geometry);
-
-                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
-                                displayAndSaveSearchData(data, newSearch);
-                            });
-
-                            newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
-                                displayAndSaveSearchData(data, newSearch);
-                            });
-                            console.log("newSearch", newSearch);
-                        })
-                        .catch(function (e) {
-                            console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
-                        });
-                },
-                function (error) {
-                    console.log("getAddressInfo", error);
-
-                }
-            );
+        }, function (error) {
+            console.log(error);
+            createNewSearch(addressId, insertToHistory);
         });
 
+    }
+
+    function createNewSearch(addressId, insertToHistory) {
+        //create new search result
+        var newSearch = new locationService.NewSearch(addressId);
+        console.log("create newSearch");
+        newSearch.getAddressInfo().then(function () {
+                domClass.remove('nodeResult', 'd-none');
+                document.title = "My Garland - ".concat(newSearch.address);
+                if (insertToHistory) {
+                    pushToHistory(addressId);
+                }
+                if (search.searchTerm.trim().length < 2) {
+                    search.searchTerm = newSearch.address;
+                }
+
+                newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
+                    displayAndSaveSearchData(data, newSearch);
+                });
+
+                newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
+                        newSearch.geometry = geometries[0];
+
+                        addToMap(newSearch.geometry);
+
+                        newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
+                            displayAndSaveSearchData(data, newSearch);
+                        });
+
+                        newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
+                            displayAndSaveSearchData(data, newSearch);
+                        });
+                        console.log("newSearch", newSearch);
+                    })
+                    .catch(function (e) {
+                        console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
+                    });
+            },
+            function (error) {
+                console.log("getAddressInfo", error);
+
+            }
+        );
     }
 
     //init: map,submap, view
@@ -285,7 +297,6 @@ require([
         });
 
         search.on("search-complete", function (e) {
-            console.log(1);
             if (e.numResults == 0) {
                 //no address find from input, display suggestion.
                 var addressClick = function () {
@@ -297,11 +308,9 @@ require([
         });
 
         search.on("select-result", function (e) {
-            
-            console.log(2);
             view.zoom = 12;
             if (e.result) {
-                saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0], {
+                saveToIndexDB.insertInfo("term-" + this.searchTerm.trim().split(",")[0].replace(/\s+/g, '+'), {
                     "addressId": "".concat(e.result.feature.attributes.Ref_ID),
                     createdOn: Date.now()
                 });

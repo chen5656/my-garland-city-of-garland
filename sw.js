@@ -1,7 +1,6 @@
 // "use strict";
 
 var myGarlandCacheName = 'myGarlandCacheV1';
-var esriJsApiCacheName='arcgisJs411';
 
 var myGarlandCacheFiles = [
   'js/app.js',
@@ -12,15 +11,13 @@ var myGarlandCacheFiles = [
   'js/swRegister.js',
   'js/template.js',
   'images/Env-Waste-Svcs.png',
-  'images/favicon.ico',
   './',
   'resources/bootstrap/bootstrap.4.3.1.min.css',
   'resources/fonts/PublicSans_Light.woff',
   'resources/localforage/localforage.min.js',
-  'resources/localforage/localforage-getitems.js',
-  'resources/localforage/localforage-setitems.js',
-  'css/style.css',
+  'css/style.css'
 ];
+
 
 
 //Installing
@@ -55,31 +52,20 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-var arcgisJsAPI_4_11='https://js.arcgis.com';
-var arcgisJsAPIList=[
-  "dojo_en-us.js",
-  "dojo-lite.js",
-  "geometryEngineAsync.js",
-  "Graphic.js",
-  "Search.js",
-  
-  "Map.js",
-  "MapView.js",
-  "MapImageLayer.js",
-  "Locator.js"];
-
-//Event Listeners Once Activated
-self.addEventListener('fetch', function (event) {
+self.addEventListener('fetch', function (event) {debugger;
   var requestUrl = new URL(event.request.url);
   var requestOrigin=requestUrl.origin;
+  var hostname=requestUrl.hostname;
   var requestPath = requestUrl.pathname;
   var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
+  console.log(requestOrigin,requestPath,fileName);
 
   if (fileName == "sw.js") {
     //Network Only Strategy
        event.respondWith(fetch(event.request));
-  } else if ( fileName in arcgisJsAPIList) {
-    //Offline First then Network Strategy, save to arcgisJsApi cache
+  } 
+  else if ( hostname =="http://127.0.0.1"||hostname=="https://maps.garlandtx.gov") {
+    //Offline First  
     console.log(requestOrigin,requestPath,fileName);
     
      event.respondWith(cacheFirstStrategy(event.request));
@@ -113,19 +99,6 @@ function getCacheName(request) {
   var requestUrl = new URL(request.url);  
   var requestOrigin=requestUrl.origin;
 
-  if (requestOrigin == arcgisJsAPI_4_11) {
-    return esriJsApiCacheName;
-  } else {
     return myGarlandCacheName;
-  }
+  
 }
-
-/*self.addEventListener('message', function(event) {
-  var sourceID = event.source ? event.source.id : 'unknown';
-  event.waitUntil(
-    event.source.postMessage({
-        sourceID: sourceID,
-        message: 'sw:' + event.data
-      })
-  );
-});*/
