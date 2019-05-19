@@ -104,7 +104,12 @@ var prepareHtmlData = function (item, searchTerm) {
 
     if (item.displayControl.hyperlinkType == 'googleMap') {
         newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
-        newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
+        if(item.feature.ADDRESS){
+
+            newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
+        }else{
+            console.log("error, no address info for ",item.feature );
+        }
     }
     return newItem;
 };

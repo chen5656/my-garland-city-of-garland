@@ -156,7 +156,7 @@ require([
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
 
-            if (oldSearch && oldSearch.parcelInfo && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
                 if (daysFromNow(oldSearch.createdOn) < 30) { //only read data keeped in 30 days.
                     console.log("display oldSearch - find search result in indexDB");
                     document.title = "My Garland - ".concat(oldSearch.address);
