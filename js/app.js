@@ -49,7 +49,6 @@ require([
         domClass.add('suggestedAddresses', 'd-none');
         domClass.add('ews_link', 'd-none');
         dom.byId("street-condition-checkbox").checked = false;
-        domClass.add('street-condition-legend', 'd-none');
 
         //cardBodies        //  show spinner-grow
         domQuery(".spinner-grow").forEach(function (node) {

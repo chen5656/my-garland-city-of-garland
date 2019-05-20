@@ -42,15 +42,15 @@ var appSetting = {
     },
     "streetCondition": {
       "map": {
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/CityMap/Engineering_Transportaion/MapServer",
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/",
         "sublayers": [{
-          "id": 11,
+          "id": 33,
           "visible": true
         }]
       },
 
       "legend": {
-        "title": "Street PCI Legend",
+        "title": "Street OCI Legend",
         "renderer": [{
           "color": "rgba(16,16,16,1)",
           "label": "-NULL-",
