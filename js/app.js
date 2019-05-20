@@ -62,6 +62,12 @@ require([
         domQuery("ul", "nodeResult").forEach(function (val) {
             val.innerHTML = "";
         });
+
+        [view, subView].forEach(function (view1) {
+            if (view1) {
+                view1.graphics.removeAll();
+            }
+        })
     }
 
     function displayAndSaveSearchData(data, newSearch) {
@@ -154,43 +160,33 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
-                if (daysFromNow(oldSearch.createdOn) < 30) { //only read data keeped in 30 days.      
-                    console.log("display oldSearch - find search result in indexDB");
-                    document.title = "My Garland - ".concat(oldSearch.address);
-                    if (insertToHistory) {
-                        pushToHistory(addressId);
-                    }
-                    //display data
-                    domClass.remove('nodeResult', 'd-none');
-                    search.searchTerm = oldSearch.address;
-                    template.appendToPage(oldSearch.resultList, oldSearch.address);
-                    oldSearch.geometry = {
-                        type: "point",
-                        latitude: oldSearch.geometry.latitude,
-                        longitude: oldSearch.geometry.longitude
-                    }
-                    addToMap(oldSearch.geometry);
-                    return;
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30)) {
+                //only read data keeped in 30 days.      
+                console.log("display oldSearch - find search result in indexDB in 30 days");
+                document.title = "My Garland - ".concat(oldSearch.address);
+                if (insertToHistory) {
+                    pushToHistory(addressId);
                 }
+                //display data
+                domClass.remove('nodeResult', 'd-none');
+                search.searchTerm = oldSearch.address;
+                template.appendToPage(oldSearch.resultList, oldSearch.address);
+                oldSearch.geometry = {
+                    type: "point",
+                    latitude: oldSearch.geometry.latitude,
+                    longitude: oldSearch.geometry.longitude
+                }
+                addToMap(oldSearch.geometry);
+            } else {
+                //create new search result
+                createNewSearch(addressId, insertToHistory);
             }
 
-            //create new search result
-            createNewSearch(addressId, insertToHistory);
         }, function (error) {
             console.log(error);
             createNewSearch(addressId, insertToHistory);
         });
-
-        //--add last EWS Link
-        (function () {
-            var node = document.getElementById("ews_link");
-            if (domClass.contains(node, "d-none") == true) {
-                domClass.remove(node, 'd-none');
-            }
-        })();
     }
-
 
     function createNewSearch(addressId, insertToHistory) {
         var newSearch = new locationService.NewSearch(addressId);
@@ -302,7 +298,7 @@ require([
         search.on("select-result", function (e) {
             view.zoom = 12;
             if (e.result) {
-                searchFinish(e.result.feature.attributes.Ref_ID, true);
+                searchFinish(e.result.feature.attributes.Ref_ID, true);                
             }
         });
 
@@ -413,45 +409,6 @@ require([
         }
 
     });
-
-
-
-
-    function addResultToMap(geometry, view) {
-
-        var pointGraphic = new Graphic({
-            geometry: geometry,
-            symbol: {
-                type: "simple-marker",
-                color: "#dc2533"
-            }
-        });
-        view.graphics.removeAll()
-        view.graphics.add(pointGraphic);
-        view.center = [geometry.longitude, geometry.latitude];
-    }
-
-    function addCrimeMap(geometry) {
-        //in chrome, need to remove iframe, add it again to refresh the iframe.
-        var today = new Date();
-        today.setHours(0, 0, 0);
-        var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
-        var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-        var start_date = "".concat(TwoWeeksAgo.getFullYear(), "-", TwoWeeksAgo.getMonth() + 1, "-", TwoWeeksAgo.getDate());
-        var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
-
-        var urlProperty = {
-            lat: geometry.latitude,
-            long: geometry.longitude,
-            start_date: start_date,
-            end_date: end_date
-        }
-        var node = dom.byId("crimeData");
-        node.innerHTML = "";
-        node.innerHTML = template.generateCrimeMapIframe(urlProperty);
-
-    }
-
 
     window.addEventListener("popstate", function (e) {
         if (e.state.value == "my-garland-address-search") {
