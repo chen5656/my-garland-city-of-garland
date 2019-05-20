@@ -1,21 +1,16 @@
 define(["dojo/_base/declare",
-    'dojo/dom',
     "dojo/promise/all",
-    "dojo/dom-class",
 
     "esri/tasks/support/Query",
     "esri/tasks/QueryTask",
     "esri/tasks/GeometryService",
     "esri/tasks/support/ProjectParameters",
-    "esri/geometry/geometryEngineAsync",
-    "esri/Graphic"
+    "esri/geometry/geometryEngineAsync"
   ],
-  function (declare, dom, all, domClass,
+  function (declare,  all, 
     Query, QueryTask,
     GeometryService, ProjectParameters,
-    geometryEngineAsync,
-    Graphic
-
+    geometryEngineAsync
   ) {
 
     function iterationCopy(src) {
@@ -207,11 +202,9 @@ define(["dojo/_base/declare",
               return newItem;
             });
             resolve(that.serviceZoneList);
-
           });
         });
       }
-
 
     });
 

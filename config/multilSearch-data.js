@@ -17,8 +17,7 @@ var multilSearch_settings = {
     "itemCount": 3
   }],
 
-  "cityFacilitySourceList": [
-    {
+  "cityFacilitySourceList": [{
       "id": "city-hall",
       "name": "City Hall",
       "addressValue": "ADDRESS",
@@ -151,8 +150,7 @@ var multilSearch_settings = {
 
   ],
 
-  "serviceZoneSourceList": [
-    {
+  "serviceZoneSourceList": [{
     "id": "ews-recycling",
     "name": "EWS Recycling Pickup Week",
     "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
@@ -248,7 +246,7 @@ var multilSearch_settings = {
       "containerID": "neighborhoods",
       "displayID": 2,
       "hyperlinkType": "hardcode",
-      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><a href='mailto:{{displayValue3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{displayValue3}}'></i> </a></span>",
+      "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><a target='_blank' href='mailto:{{displayValue3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{displayValue3}}'></i> </a></span>",
       "displayDistance": false,
       "displayValue1": "OFFICER",
       "displayValue2": "PHONE",
@@ -256,8 +254,7 @@ var multilSearch_settings = {
     }
   }],
 
-  "parcelDataList": [
-    {
+  "parcelDataList": [{
       "id": "council-dist",
       "name": "City Council District",
       "displayControl": {

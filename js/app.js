@@ -35,7 +35,7 @@ require([
     "js/AddressSuggestion.js",
     "js/NewSearch.js",
 
-    'dojo/domReady!',
+    'dojo/domReady!'
 ], function (dom, domClass,
     Map, MapView, MapImageLayer,
     Search, Locator, Graphic,
@@ -150,14 +150,12 @@ require([
         }
     }
 
-
-
     function searchFinish(addressId, insertToHistory) {
+
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-
             if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo) {
-                if (daysFromNow(oldSearch.createdOn) < 30) { //only read data keeped in 30 days.
+                if (daysFromNow(oldSearch.createdOn) < 30) { //only read data keeped in 30 days.      
                     console.log("display oldSearch - find search result in indexDB");
                     document.title = "My Garland - ".concat(oldSearch.address);
                     if (insertToHistory) {
@@ -176,17 +174,25 @@ require([
                     return;
                 }
             }
-            createNewSearch(addressId, insertToHistory);
 
+            //create new search result
+            createNewSearch(addressId, insertToHistory);
         }, function (error) {
             console.log(error);
             createNewSearch(addressId, insertToHistory);
         });
 
+        //--add last EWS Link
+        (function () {
+            var node = document.getElementById("ews_link");
+            if (domClass.contains(node, "d-none") == true) {
+                domClass.remove(node, 'd-none');
+            }
+        })();
     }
 
+
     function createNewSearch(addressId, insertToHistory) {
-        //create new search result
         var newSearch = new locationService.NewSearch(addressId);
         console.log("create newSearch");
         newSearch.getAddressInfo().then(function () {
@@ -215,15 +221,16 @@ require([
                         newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
                             displayAndSaveSearchData(data, newSearch);
                         });
+
                         console.log("newSearch", newSearch);
                     })
                     .catch(function (e) {
                         console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
+
                     });
             },
             function (error) {
                 console.log("getAddressInfo", error);
-
             }
         );
     }
@@ -406,6 +413,44 @@ require([
         }
 
     });
+
+
+
+
+    function addResultToMap(geometry, view) {
+
+        var pointGraphic = new Graphic({
+            geometry: geometry,
+            symbol: {
+                type: "simple-marker",
+                color: "#dc2533"
+            }
+        });
+        view.graphics.removeAll()
+        view.graphics.add(pointGraphic);
+        view.center = [geometry.longitude, geometry.latitude];
+    }
+
+    function addCrimeMap(geometry) {
+        //in chrome, need to remove iframe, add it again to refresh the iframe.
+        var today = new Date();
+        today.setHours(0, 0, 0);
+        var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
+        var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
+        var start_date = "".concat(TwoWeeksAgo.getFullYear(), "-", TwoWeeksAgo.getMonth() + 1, "-", TwoWeeksAgo.getDate());
+        var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
+
+        var urlProperty = {
+            lat: geometry.latitude,
+            long: geometry.longitude,
+            start_date: start_date,
+            end_date: end_date
+        }
+        var node = dom.byId("crimeData");
+        node.innerHTML = "";
+        node.innerHTML = template.generateCrimeMapIframe(urlProperty);
+
+    }
 
 
     window.addEventListener("popstate", function (e) {
