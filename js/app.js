@@ -169,14 +169,16 @@ require([
                 }
                 //display data
                 domClass.remove('nodeResult', 'd-none');
-                search.searchTerm = oldSearch.address;
                 template.appendToPage(oldSearch.resultList, oldSearch.address);
                 oldSearch.geometry = {
                     type: "point",
                     latitude: oldSearch.geometry.latitude,
                     longitude: oldSearch.geometry.longitude
                 }
-                addToMap(oldSearch.geometry);
+                 addToMap(oldSearch.geometry);
+                 if(!search.searchTerm){
+                    search.searchTerm = oldSearch.address;
+                 }
             } else {
                 //create new search result
                 createNewSearch(addressId, insertToHistory);
@@ -298,7 +300,7 @@ require([
         search.on("select-result", function (e) {
             view.zoom = 12;
             if (e.result) {
-                searchFinish(e.result.feature.attributes.Ref_ID, true);                
+                searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
         });
 
