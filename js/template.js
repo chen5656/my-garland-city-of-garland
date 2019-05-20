@@ -1,22 +1,16 @@
-var myGarland = myGarland || {};
-myGarland.templates = function () {
-    ;
-}
-var arrayFrom = function (nodelist) {
-    return [].slice.call(nodelist);
-}
-
 function hasClass(el, className) {
-    if (el.classList)
+    if (el.classList) {
         return el.classList.contains(className);
+    }
     return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
 }
 
 function addClass(el, className) {
-    if (el.classList)
-        el.classList.add(className)
-    else if (!hasClass(el, className))
+    if (el.classList) {
+        el.classList.add(className);
+    } else if (!hasClass(el, className)) {
         el.className += " " + className;
+    }
 }
 
 function removeClass(el, className) {
@@ -27,6 +21,13 @@ function removeClass(el, className) {
         el.className = el.className.replace(reg, ' ');
     }
 }
+
+var myGarland = myGarland || {};
+myGarland.templates = function () {};
+var arrayFrom = function (nodelist) {
+    return [].slice.call(nodelist);
+};
+
 
 var containerList = multilSearch_settings.containerList;
 
@@ -103,7 +104,12 @@ var prepareHtmlData = function (item, searchTerm) {
 
     if (item.displayControl.hyperlinkType == 'googleMap') {
         newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
-        newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
+        if(item.feature.ADDRESS){
+
+            newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
+        }else{
+            console.log("error, no address info for ",item.feature );
+        }
     }
     return newItem;
 };

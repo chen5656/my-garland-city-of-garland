@@ -68,7 +68,7 @@ var multilSearch_settings = {
       "name": "Nearest Fire Station",
       "addressValue": "ADDRESS",
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-      "where": "DEPT='FIRE' and BLDG_NAME<>'FIRE ADMIN & TRAINING'",
+      "where": "DEPT='FIRE' and BLDG_NAME like 'FIRE STATION%'",
       "displayControl": {
         "containerID": "nearestCityFacility",
         "displayID": "4",

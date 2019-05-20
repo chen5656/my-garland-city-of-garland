@@ -1,5 +1,3 @@
-//myArray.push(_defineProperty({}, key, someValueArray)); --> ES6   myArray.push({ [key]: someValueArray });
-
 var myGarland = myGarland || {};
 myGarland.clientStorage = function () {
     this.myGarlandInstance = localforage.createInstance({
@@ -16,7 +14,14 @@ myGarland.clientStorage.prototype = {
         var thisObj = this;
         return new Promise(function (resolve, reject) {
             thisObj.myGarlandInstance.getItem(key).then(function (result) {
-                return resolve(result);
+                if (result) {
+                    return resolve(result);
+
+                } else {
+                    return reject({
+                        error: "no result of '".concat(key, "' found in local storage")
+                    })
+                }
             });
         });
     }
