@@ -174,10 +174,10 @@ require([
                     latitude: oldSearch.geometry.latitude,
                     longitude: oldSearch.geometry.longitude
                 }
-                 addToMap(oldSearch.geometry);
-                 if(!search.searchTerm){
+                addToMap(oldSearch.geometry);
+                if (!search.searchTerm) {
                     search.searchTerm = oldSearch.address;
-                 }
+                }
             } else {
                 //create new search result
                 createNewSearch(addressId, insertToHistory);
@@ -403,10 +403,23 @@ require([
             if (domClass.contains(node, "d-none") == false) {
                 domClass.add(node, 'd-none');
             }
-            var layer = subMap.layers.items.filter(function (layer) {
-                return layer.url == appSetting.subMap.streetCondition.map.url;
-            })[0];
-            subMap.remove(layer);
+            var layers = subMap.layers.items.filter(function (layer) {
+
+                if (cleanUrl(layer.url) == cleanUrl(appSetting.subMap.streetCondition.map.url)) {
+
+                    for (var sublayer of layer.sublayers.items) {
+                        if (sublayer.id == appSetting.subMap.streetCondition.map.sublayers[0].id) {
+                            return true;
+                        }
+                    }
+                }
+            });
+            subMap.removeMany(layers);
+
+            function cleanUrl(url) {
+                return url.toLowerCase().split("/rest/")[1].split("/mapserver")[0];
+
+            }
         }
 
     });

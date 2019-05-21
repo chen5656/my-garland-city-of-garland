@@ -48,15 +48,10 @@ var appSetting = {
           "visible": true
         }]
       },
-
+      
       "legend": {
         "title": "Street OCI Legend",
-        "renderer": [{
-          "color": "rgba(16,16,16,1)",
-          "label": "-NULL-",
-          "type": "polyline",
-          "size": 2
-        }, {
+        "renderer": [ {
           "color": "rgba(36,116,0,1)",
           "label": "Excellent",
           "type": "polyline",
