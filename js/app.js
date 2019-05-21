@@ -261,13 +261,7 @@ require([
             }
         });
 
-    })();
 
-    //init: multiSearch,search widget
-    var addressSuggestionService = addressSuggestion();
-    var multiSearch = new MultiSearch(multilSearch_settings);
-    multiSearch.getCityFacilityList(multilSearch_settings.cityFacilitySourceList).then(function () {
-        // setup search or get address from previous saved url,  when multiSearch ready.         
         var searchSource = appSetting.locator.sourceSetting;
         searchSource.locator = new Locator({
             url: appSetting.locator.locatorUrl
@@ -280,11 +274,20 @@ require([
             locationEnabled: false,
             sources: [searchSource]
         });
-
         search.on("search-start", function (e) {
+            if (!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList) {
+                console.log("!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList", !multiSearch.cityFacilityList, !multiSearch.serviceZoneSourceList, !multiSearch.parcelDataList);
+                alert("Loading data...")
+            }
             searchStart();
         });
+    })();
 
+    //init: multiSearch,search widget
+    var addressSuggestionService = addressSuggestion();
+    var multiSearch = new MultiSearch(multilSearch_settings);
+    multiSearch.getCityFacilityList(multilSearch_settings.cityFacilitySourceList).then(function () {
+        // setup search or get address from previous saved url,  when multiSearch ready.         
         search.on("search-complete", function (e) {
             if (e.numResults == 0) {
                 //no address find from input, display suggestion.
