@@ -439,7 +439,7 @@ require([
    ( function(days){
      saveToIndexDB.getAll().then(function(array){
          array.forEach(function(item){
-             if(daysFromNow(item.value.createdOn) >= days ){
+             if(!item.value.createdOn&&daysFromNow(item.value.createdOn) >= days ){
                 saveToIndexDB.removeItem(item.key);                
              }
          })
