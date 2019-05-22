@@ -116,10 +116,7 @@ var appSetting = {
   },
 
   "mapserver": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
-  "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
-
-  // "cog_park_site": "https://www.garlandtx.gov/gov/lq/parks/facilities/parks/%s/default.asp",
-  "ews_link": "https://www.garlandtx.gov/gov/eg/ews/default.asp"
+  "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
 
 
 };
