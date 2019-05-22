@@ -275,18 +275,8 @@ require([
             sources: [searchSource]
         });
         search.on("search-start", function (e) {
-            if (!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList) {
-                console.log("!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList", !multiSearch.cityFacilityList, !multiSearch.serviceZoneSourceList, !multiSearch.parcelDataList);
-                alert("Loading data...")
-            }
             searchStart();
         });
-    })();
-
-    //init: multiSearch,search widget
-    var addressSuggestionService = addressSuggestion();
-    var multiSearch = new MultiSearch(multilSearch_settings);
-    multiSearch.getCityFacilityList(multilSearch_settings.cityFacilitySourceList).then(function () {
         // setup search or get address from previous saved url,  when multiSearch ready.         
         search.on("search-complete", function (e) {
             if (e.numResults == 0) {
@@ -302,10 +292,19 @@ require([
         search.on("select-result", function (e) {
             view.zoom = 12;
             if (e.result) {
+                if (!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList) {
+                    console.log("!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList", !multiSearch.cityFacilityList, !multiSearch.serviceZoneSourceList, !multiSearch.parcelDataList);
+                    alert("Loading data...")
+                }
                 searchFinish(e.result.feature.attributes.Ref_ID, true);
             }
         });
+    })();
 
+    //init: multiSearch,search widget
+    var addressSuggestionService = addressSuggestion();
+    var multiSearch = new MultiSearch(multilSearch_settings);
+    multiSearch.getCityFacilityList(multilSearch_settings.cityFacilitySourceList).then(function () {
         //get address from previous saved url
         (function () {
             var addrId = "".concat(getURLQueryVariable("addressid"));
