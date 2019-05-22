@@ -24,5 +24,27 @@ myGarland.clientStorage.prototype = {
                 }
             });
         });
+    },
+
+    removeItem:function(key){
+        this.myGarlandInstance.removeItem(key).then();
+    },
+
+    getAll: function () {
+        var array=[];
+        var thisObj = this;
+        return new Promise(function (resolve, reject) {
+            thisObj.myGarlandInstance.iterate(function (value, key, iterationNumber) {          
+                 array.push({
+                    key:key,
+                    value:value});
+            }).then(function (e) {
+             return resolve( array);                
+            }).catch(function (err) {
+                // This code runs if there were any errors
+                console.log(err);
+                return resolve(  array);
+            });        
+        });
     }
 };

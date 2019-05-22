@@ -11,6 +11,10 @@ function getUnique(array) {
     return distinct;
 }
 
+function daysFromNow(milliseconds) {
+    return ((Date.now() - milliseconds) / 864e5).toFixed(3);
+}
+
 var template = new myGarland.templates();
 var saveToIndexDB = new myGarland.clientStorage();
 
@@ -104,9 +108,6 @@ require([
         }
     }
 
-    function daysFromNow(milliseconds) {
-        return ((Date.now() - milliseconds) / 864e5).toFixed(3);
-    }
 
     function addToMap(geometry) {
 
@@ -159,7 +160,7 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 0)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn>1558542002479)) {
                 //only read data keeped in 0 days.      
                 console.log("display oldSearch - find search result in indexDB in 30 days");
                 document.title = "My Garland - ".concat(oldSearch.address);
@@ -433,5 +434,16 @@ require([
             searchFinish(e.state.id, false);
         }
     });
+
+    //remove 30 days old data from indexDB.
+   ( function(days){
+     saveToIndexDB.getAll().then(function(array){
+         array.forEach(function(item){
+             if(daysFromNow(item.value.createdOn) >= days ){
+                saveToIndexDB.removeItem(item.key);                
+             }
+         })
+     });
+   })(30)
 
 });
