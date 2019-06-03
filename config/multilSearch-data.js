@@ -111,7 +111,7 @@ var multilSearch_settings = {
       "name": "Nearest Park",
       "addressValue": null,
       "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/28",
-      "where": "Status='M'",
+      "where": "1=1",
       "displayControl": {
         "containerID": "service",
         "displayID": 2,
