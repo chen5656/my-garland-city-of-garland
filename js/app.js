@@ -160,7 +160,7 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn>1558542002479)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1558542002479)) {
                 //only read data keeped in 0 days.      
                 console.log("display oldSearch - find search result in indexDB in 30 days");
                 document.title = "My Garland - ".concat(oldSearch.address);
@@ -184,8 +184,8 @@ require([
                 createNewSearch(addressId, insertToHistory);
             }
 
-        }, function (error) {
-            console.log(error);
+        }, function (e) {
+            console.log(e.error);
             createNewSearch(addressId, insertToHistory);
         });
     }
@@ -202,29 +202,30 @@ require([
                 if (search.searchTerm.trim().length < 2) {
                     search.searchTerm = newSearch.address;
                 }
-
-                newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
-                    displayAndSaveSearchData(data, newSearch);
-                });
-
+                if (multiSearch.cityFacilityList) {
+                    newSearch.getNearestCityFacilityList(multiSearch.cityFacilityList).then(function (data) { //with newSearch.geometryStatePlane 
+                        displayAndSaveSearchData(data, newSearch);
+                    });
+                }
                 newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
                         newSearch.geometry = geometries[0];
 
                         addToMap(newSearch.geometry);
-
-                        newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
-                            displayAndSaveSearchData(data, newSearch);
-                        });
-
-                        newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
-                            displayAndSaveSearchData(data, newSearch);
-                        });
+                        if (multiSearch.parcelDataList) {
+                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+                        }
+                        if (multiSearch.serviceZoneSourceList) {
+                            newSearch.getLocatedServiceZoneList(multiSearch.serviceZoneSourceList).then(function (data) {
+                                displayAndSaveSearchData(data, newSearch);
+                            });
+                        }
 
                         console.log("newSearch", newSearch);
                     })
                     .catch(function (e) {
                         console.log("Error on projectToStatePlane/ getDistanceToFacilities/ getLocatedServiceZoneList:", e);
-
                     });
             },
             function (error) {
@@ -294,7 +295,7 @@ require([
             view.zoom = 12;
             if (e.result) {
                 if (!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList) {
-                    console.log("!multiSearch.cityFacilityList || !multiSearch.serviceZoneSourceList || !multiSearch.parcelDataList", !multiSearch.cityFacilityList, !multiSearch.serviceZoneSourceList, !multiSearch.parcelDataList);
+                    console.log("multiSearch.cityFacilityList, multiSearch.serviceZoneSourceList, multiSearch.parcelDataList", !!multiSearch.cityFacilityList, !!multiSearch.serviceZoneSourceList, !!multiSearch.parcelDataList);
                     alert("Loading data...")
                 }
                 searchFinish(e.result.feature.attributes.Ref_ID, true);
@@ -325,6 +326,8 @@ require([
                 return ("");
             }
         })();
+    }, function (error) {
+        console.log(error);
     });
 
     //update html div format.
@@ -436,14 +439,14 @@ require([
     });
 
     //remove 30 days old data from indexDB.
-   ( function(days){
-     saveToIndexDB.getAll().then(function(array){
-         array.forEach(function(item){
-             if(!item.value.createdOn&&daysFromNow(item.value.createdOn) >= days ){
-                saveToIndexDB.removeItem(item.key);                
-             }
-         })
-     });
-   })(30)
+    (function (days) {
+        saveToIndexDB.getAll().then(function (array) {
+            array.forEach(function (item) {
+                if (!item.value.createdOn && daysFromNow(item.value.createdOn) >= days) {
+                    saveToIndexDB.removeItem(item.key);
+                }
+            })
+        });
+    })(30)
 
 });

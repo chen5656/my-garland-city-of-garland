@@ -23,6 +23,10 @@ define([
                     return item;
                 });
                 return resolve();
+            },function(error){
+                error.name="Error when getting information for GIS Server:";
+             return reject(error);            
+
             });
         });
     };

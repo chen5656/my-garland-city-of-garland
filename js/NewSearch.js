@@ -7,7 +7,7 @@ define(["dojo/_base/declare",
     "esri/tasks/support/ProjectParameters",
     "esri/geometry/geometryEngineAsync"
   ],
-  function (declare,  all, 
+  function (declare, all,
     Query, QueryTask,
     GeometryService, ProjectParameters,
     geometryEngineAsync
@@ -133,20 +133,25 @@ define(["dojo/_base/declare",
               return val;
             });
             that.nearestCityFacilityList = cityFacilityList.map(function (item) {
-              var nearestFeature = cityFacilityDistanceList.filter(function (val) {
-                return val.layer == item.id;
-              }).reduce(function (a, b) {
-                if (a.distance < b.distance) {
-                  return a;
-                } else {
-                  return b;
-                }
-              });
               var newItem = iterationCopy(item);
               delete newItem.features;
-              newItem.distance = nearestFeature.distance.toFixed(2);
-              newItem.queryPolygonCount = 1;
-              newItem.feature = nearestFeature.attributes;
+              var features = cityFacilityDistanceList.filter(function (val) {
+                return val.layer == item.id;
+              });
+              if (features.length > 0) {
+                var nearestFeature = features.reduce(function (a, b) {
+                  if (a.distance < b.distance) {
+                    return a;
+                  } else {
+                    return b;
+                  }
+                });
+                newItem.distance = nearestFeature.distance.toFixed(2);
+                newItem.queryPolygonCount = 1;
+                newItem.feature = nearestFeature.attributes;
+              } else {
+                newItem.queryPolygonCount = 0;
+              }
               return newItem;
             });
             resolve(that.nearestCityFacilityList);
