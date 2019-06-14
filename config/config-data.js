@@ -50,7 +50,7 @@ var appSetting = {
       },
       
       "legend": {
-        "title": "Street OCI Legend",
+        "title": "Street PCI Legend",
         "renderer": [ {
           "color": "rgba(36,116,0,1)",
           "label": "Excellent",
