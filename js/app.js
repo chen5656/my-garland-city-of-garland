@@ -185,7 +185,7 @@ require([
             }
 
         }, function (e) {
-            console.log("warning:",e.error);
+            console.log("warning:", e.error);
             createNewSearch(addressId, insertToHistory);
         });
     }
@@ -209,11 +209,18 @@ require([
                 }
                 newSearch.projectToSpatialReference([newSearch.geometryStatePlane], view.spatialReference).then(function (geometries) {
                         newSearch.geometry = geometries[0];
-
                         addToMap(newSearch.geometry);
                         if (multiSearch.parcelDataList) {
                             newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
-                                displayAndSaveSearchData(data, newSearch);
+                                //hardcord to update council district hyperlink
+                                newSearch.getFieldValue("https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35", "DISTRICT_NUMBER", data[0].feature.COUNCIL_ID, "HYPERLINIK").then(function (result) {
+                                    //    "https://www.garlandtx.gov/758/City-Council", result);
+                                    data[0].displayControl.hardcode = data[0].displayControl.hardcode.replace("https://www.garlandtx.gov/758/City-Council", result);
+                                    displayAndSaveSearchData(data, newSearch);
+                                }, function (error) {
+                                    console.log("Warning: ", error);
+                                    displayAndSaveSearchData(data, newSearch);
+                                });
                             });
                         }
                         if (multiSearch.serviceZoneSourceList) {
@@ -221,7 +228,6 @@ require([
                                 displayAndSaveSearchData(data, newSearch);
                             });
                         }
-
                         console.log("newSearch", newSearch);
                     })
                     .catch(function (e) {

@@ -209,8 +209,30 @@ define(["dojo/_base/declare",
             resolve(that.serviceZoneList);
           });
         });
-      }
+      },
+      getFieldValue:function(mapServiceUrl,IDField,IDValue,fieldName){
+        var query = new Query();
+        var queryTask = new QueryTask({
+          url: mapServiceUrl
+        });
+        query.where = "".concat(IDField," =" + IDValue);
+        query.returnGeometry = false;
+        query.outFields = [fieldName];
 
+        return new Promise(function (resolve, reject) {
+          queryTask.execute(query).then(function (result) {
+            if (result.features.length > 0) {
+              var attributes=result.features[0].attributes;
+              resolve(attributes[Object.keys(attributes)[0]]);
+            } else {
+              reject({
+                error: "Return Null: wherecause - "+  query.where +", field name - "+ fieldName
+              });
+            }
+          });
+        });
+      }
+    
     });
 
   });
