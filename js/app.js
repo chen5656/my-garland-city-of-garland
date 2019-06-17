@@ -185,7 +185,7 @@ require([
             }
 
         }, function (e) {
-            console.log(e.error);
+            console.log("warning:",e.error);
             createNewSearch(addressId, insertToHistory);
         });
     }
