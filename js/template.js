@@ -22,6 +22,15 @@ function removeClass(el, className) {
     }
 }
 
+function formatPhoneNumber(phoneNumberString) {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    if (match) {
+      return '' + match[1] + '-' + match[2] + '-' + match[3]
+    }
+    return null
+  }
+
 var myGarland = myGarland || {};
 myGarland.templates = function () {};
 var arrayFrom = function (nodelist) {
@@ -55,6 +64,26 @@ var generateResultItem = function (item) {
             temp = temp.replace(/{{startAdd}}/g, item.startAdd);
             temp = temp.replace(/{{endAdd}}/g, item.endAdd);
         }
+    }
+    console.log(item);
+
+    if (item.displayControl.displayFormat) {
+        debugger;
+        console.log(item.displayControl.displayFormat);
+        item.displayControl.displayFormat.forEach(function (e) {
+            console.log(e);
+            debugger;
+            console.log(  item[e.id]);
+            
+            if (e.value = "phone-number") {
+                item[e.id] = formatPhoneNumber(item[e.id]);
+
+            }
+            console.log(  item[e.id]);
+            
+
+        })
+
     }
 
     temp = temp.replace(/{{index}}/g, item.displayControl.displayID);
@@ -104,11 +133,11 @@ var prepareHtmlData = function (item, searchTerm) {
 
     if (item.displayControl.hyperlinkType == 'googleMap') {
         newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
-        if(item.feature.ADDRESS){
+        if (item.feature.ADDRESS) {
 
             newItem.endAdd = item.feature.ADDRESS.replace(/\s|\t/g, "+")
-        }else{
-            console.log("error, no address info for ",item.feature );
+        } else {
+            console.log("error, no address info for ", item.feature);
         }
     }
     return newItem;

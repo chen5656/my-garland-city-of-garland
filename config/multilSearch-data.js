@@ -188,6 +188,13 @@ var multilSearch_settings = {
       "displayValue2": "PHONE",
       "displayValue3": "INSPECTOR2",
       "displayValue4": "PHONE2",
+      "displayFormat": [{
+        "id": "displayValue2",
+        "value": "phone-number"
+      }, {
+        "id": "displayValue4",
+        "value": "phone-number"
+      }]
     }
   }, {
     "id": "code-commercial-districts",
@@ -200,7 +207,11 @@ var multilSearch_settings = {
       "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{displayValue2}}'></i> </a></span>",
       "displayDistance": false,
       "displayValue1": "INSPECTOR",
-      "displayValue2": "PHONE"
+      "displayValue2": "PHONE",
+      "displayFormat": [{
+        "id": "displayValue2",
+        "value": "phone-number"
+      }]
     }
   }, {
     "id": "neighborhood-watch",
@@ -250,7 +261,11 @@ var multilSearch_settings = {
       "displayDistance": false,
       "displayValue1": "OFFICER",
       "displayValue2": "PHONE",
-      "displayValue3": "EMAIL"
+      "displayValue3": "EMAIL",
+      "displayFormat": [{
+        "id": "displayValue2",
+        "value": "phone-number"
+      }]
     }
   }],
 
