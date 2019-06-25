@@ -26,10 +26,10 @@ function formatPhoneNumber(phoneNumberString) {
     var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
     var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
     if (match) {
-      return '' + match[1] + '-' + match[2] + '-' + match[3]
+        return '' + match[1] + '-' + match[2] + '-' + match[3]
     }
     return null
-  }
+}
 
 var myGarland = myGarland || {};
 myGarland.templates = function () {};
@@ -68,22 +68,11 @@ var generateResultItem = function (item) {
     console.log(item);
 
     if (item.displayControl.displayFormat) {
-        debugger;
-        console.log(item.displayControl.displayFormat);
         item.displayControl.displayFormat.forEach(function (e) {
-            console.log(e);
-            debugger;
-            console.log(  item[e.id]);
-            
             if (e.value = "phone-number") {
                 item[e.id] = formatPhoneNumber(item[e.id]);
-
             }
-            console.log(  item[e.id]);
-            
-
         })
-
     }
 
     temp = temp.replace(/{{index}}/g, item.displayControl.displayID);
