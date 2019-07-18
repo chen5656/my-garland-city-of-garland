@@ -65,7 +65,6 @@ var generateResultItem = function (item) {
             temp = temp.replace(/{{endAdd}}/g, item.endAdd);
         }
     }
-    console.log(item);
 
     if (item.displayControl.displayFormat) {
         item.displayControl.displayFormat.forEach(function (e) {

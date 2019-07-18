@@ -44,7 +44,7 @@ var appSetting = {
       "map": {
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/",
         "sublayers": [{
-          "id": 33,
+          "id": 37,
           "visible": true
         }]
       },
