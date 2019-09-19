@@ -162,6 +162,18 @@ var multilSearch_settings = {
       "displayValue1": "COLOR",
       "displayValue2": null
     }
+  },{
+    "id": "ews-recycling-day", //hardcoded function in template.js to convert to next recycling day
+    "name": "Your Next Recycling Day is",
+    "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
+    "displayControl": {
+      "containerID": "service",
+      "displayID": 6,
+      "hyperlinkType": "none",
+      "displayDistance": false,
+      "displayValue1": "ANCORE_DAY",
+      "displayValue2": null
+    }
   }, {
     "id": "ews-trash",
     "name": "EWS Trash and Brush Pickup Day",
@@ -180,7 +192,7 @@ var multilSearch_settings = {
     "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/30",
     "displayControl": {
       "containerID": "service",
-      "displayID": 6,
+      "displayID": 8,
       "hyperlinkType": "hardcode",
       "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue4}}'></i> </a></span>",
       "displayDistance": false,
