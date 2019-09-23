@@ -8,6 +8,7 @@ myGarland.clientStorage = function () {
 myGarland.clientStorage.prototype = {
     insertInfo: function (key, item) {
         this.myGarlandInstance.setItem(key, item).then();
+
     },
 
     getInfo: function (key) {

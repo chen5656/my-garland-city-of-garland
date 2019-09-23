@@ -1,3 +1,34 @@
+var multiSearch_displayFunctions = {
+  "ews-recycling-day": function (vals) {
+    var ancore = vals[0];
+    if (isNaN(ancore)) {
+      return "NULL".concat("*");
+    }
+    ancoreDate = new Date(ancore);
+    var today = new Date();
+    var dayDiff = Math.floor((today - ancoreDate) / (1000 * 60 * 60 * 24));
+    var dayMod = dayDiff % 14;
+    var newRecyclingDay;
+    if (dayDiff >= 0) {
+      newRecyclingDay = addDays(today, (14 - dayMod));
+
+    } else if (dayDiff >= -14) {
+      newRecyclingDay = ancoreDate;
+    } else {
+      newRecyclingDay = addDays(today, (-dayMod));
+
+    }
+    //format the new day
+    return newRecyclingDay.toDateString().concat("*");
+
+    function addDays(date, days) {
+      const copy = new Date(Number(date))
+      copy.setDate(date.getDate() + days)
+      return copy
+    }
+  }
+
+}
 var multilSearch_settings = {
 
   "containerList": [{
@@ -162,7 +193,7 @@ var multilSearch_settings = {
       "displayValue1": "COLOR",
       "displayValue2": null
     }
-  },{
+  }, {
     "id": "ews-recycling-day", //hardcoded function in template.js to convert to next recycling day
     "name": "Your Next Recycling Day is",
     "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
@@ -172,6 +203,10 @@ var multilSearch_settings = {
       "hyperlinkType": "none",
       "displayDistance": false,
       "displayValue1": "ANCORE_DAY",
+      "displayFunction": {
+        functionParameter: ["displayValue1"],
+        functionCode: "ews-recycling-day"
+      },
       "displayValue2": null
     }
   }, {

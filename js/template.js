@@ -37,7 +37,6 @@ var arrayFrom = function (nodelist) {
     return [].slice.call(nodelist);
 };
 
-
 var containerList = multilSearch_settings.containerList;
 
 var generateCrimeMapIframe = function (urlProp) {
@@ -50,21 +49,12 @@ var generateCrimeMapIframe = function (urlProp) {
 };
 
 var generateResultItem = function (item) {
-    if(item.id=="ews-recycling-day"){
-        var ancoreDate=new Date(item.displayValue1);//10/10
-        var today=new Date("October 21,2019 07:24:00");
-        var dayDiff= Math.floor((today-ancoreDate)/ (1000*60*60*24)); //+11 
-        var dayMod=dayDiff % 14; //11
-        var newRecyclingDay=addDays(today, (dayDiff-dayMod)); 
-console.log(ancoreDate,newRecyclingDay);
-
-function addDays(date, days) {
-    const copy = new Date(Number(date))
-    copy.setDate(date.getDate() + days)
-    return copy
-  }
-       // debugger;
-
+    if (item.displayControl.displayFunction) {
+        var functionParameter = item.displayControl.displayFunction.functionParameter.map(function (parameter) {
+            return item[parameter];
+        });
+        var functionCode = multiSearch_displayFunctions[item.displayControl.displayFunction.functionCode];
+        item.displayValue1  = functionCode(functionParameter);
     }
 
     var temp;

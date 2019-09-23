@@ -160,9 +160,9 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1558542002479)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1570683600000)) {
                 //only read data keeped in 0 days.      
-                console.log("display oldSearch - find search result in indexDB in 30 days");
+                console.log("display oldSearch - find search result in indexDB in 30 days",oldSearch);
                 document.title = "My Garland - ".concat(oldSearch.address);
                 if (insertToHistory) {
                     pushToHistory(addressId);
