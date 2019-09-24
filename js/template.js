@@ -41,11 +41,20 @@ var containerList = multilSearch_settings.containerList;
 
 var generateCrimeMapIframe = function (urlProp) {
     var temp = document.querySelector('#crime-map-iframe').innerHTML;
-    temp = temp.replace(/{{start_date}}/g, urlProp.start_date);
-    temp = temp.replace(/{{end_date}}/g, urlProp.end_date);
-    temp = temp.replace(/{{lat}}/g, urlProp.lat);
-    temp = temp.replace(/{{long}}/g, urlProp.long);
-    return temp;
+    temp = temp.replace(/{{start_date}}/g, urlProp.start_date)
+        .replace(/{{end_date}}/g, urlProp.end_date)
+        .replace(/{{lat}}/g, urlProp.lat)
+        .replace(/{{long}}/g, urlProp.long);
+    var temp1 = document.querySelector('#crime-map-title').innerHTML;
+    temp1 = temp1.replace(/{{start_date}}/g, urlProp.start_date)
+        .replace(/{{end_date}}/g, urlProp.end_date)
+        .replace(/{{lat}}/g, urlProp.lat)
+        .replace(/{{long}}/g, urlProp.long);
+
+    return {
+        title: temp1,
+        iframe: temp
+    };
 };
 
 var generateResultItem = function (item) {
@@ -54,7 +63,7 @@ var generateResultItem = function (item) {
             return item[parameter];
         });
         var functionCode = multiSearch_displayFunctions[item.displayControl.displayFunction.functionCode];
-        item.displayValue1  = functionCode(functionParameter);
+        item.displayValue1 = functionCode(functionParameter);
     }
 
     var temp;

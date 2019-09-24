@@ -150,9 +150,15 @@ require([
                 start_date: start_date,
                 end_date: end_date
             }
-            var node = dom.byId("crimeData");
+            var node = dom.byId("collapseSix");
+            debugger;
+            var str = template.generateCrimeMapIframe(urlProperty);
             node.innerHTML = "";
-            node.innerHTML = template.generateCrimeMapIframe(urlProperty);
+            node.innerHTML = str.iframe;
+            node = dom.byId("headingSix").children[0];
+            node.innerHTML = "";
+            node.innerHTML = str.title;
+
         }
     }
 
@@ -160,9 +166,9 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1570683600000)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1569337360053)) {
                 //only read data keeped in 0 days.      
-                console.log("display oldSearch - find search result in indexDB in 30 days",oldSearch);
+                console.log("display oldSearch - find search result in indexDB in 30 days", oldSearch);
                 document.title = "My Garland - ".concat(oldSearch.address);
                 if (insertToHistory) {
                     pushToHistory(addressId);
