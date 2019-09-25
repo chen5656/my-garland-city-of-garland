@@ -166,7 +166,7 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1569337360053)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1569350265346)) {
                 //only read data keeped in 0 days.      
                 console.log("display oldSearch - find search result in indexDB in 30 days", oldSearch);
                 document.title = "My Garland - ".concat(oldSearch.address);
@@ -450,7 +450,7 @@ require([
         }
     });
 
-    //remove 30 days old data from indexDB.
+    //remove 7 days old data from indexDB.
     (function (days) {
         saveToIndexDB.getAll().then(function (array) {
             array.forEach(function (item) {
@@ -459,6 +459,6 @@ require([
                 }
             })
         });
-    })(30)
+    })(7)
 
 });
