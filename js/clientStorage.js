@@ -43,7 +43,7 @@ myGarland.clientStorage.prototype = {
              return resolve( array);                
             }).catch(function (err) {
                 // This code runs if there were any errors
-                console.log(err);
+                console.error(err);
                 return resolve(  array);
             });        
         });

@@ -191,7 +191,7 @@ require([
             }
 
         }, function (e) {
-            console.log("warning:", e.error);
+            console.error(e.error);
             createNewSearch(addressId, insertToHistory);
         });
     }
@@ -224,7 +224,7 @@ require([
                                     data[0].displayControl.hardcode = data[0].displayControl.hardcode.replace("https://www.garlandtx.gov/758/City-Council", result);
                                     displayAndSaveSearchData(data, newSearch);
                                 }, function (error) {
-                                    console.log("Warning: ", error);
+                                    console.error( error);
                                     displayAndSaveSearchData(data, newSearch);
                                 });
                             });
@@ -339,7 +339,7 @@ require([
             }
         })();
     }, function (error) {
-        console.log(error);
+        console.error(error);
     });
 
     //update html div format.
