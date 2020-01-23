@@ -224,7 +224,7 @@ require([
                                     data[0].displayControl.hardcode = data[0].displayControl.hardcode.replace("https://www.garlandtx.gov/758/City-Council", result);
                                     displayAndSaveSearchData(data, newSearch);
                                 }, function (error) {
-                                    console.error( error);
+                                    console.error(error);
                                     displayAndSaveSearchData(data, newSearch);
                                 });
                             });
