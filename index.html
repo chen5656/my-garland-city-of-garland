@@ -305,7 +305,7 @@
     <h3 id="crime-map-title">Crime ( <time datetime="{{start_date}} 00:00">{{start_date}}</time> to
       <time datetime="{{end_date}} 23:59">{{end_date}}</time> )</h3>      
       <a class="btn" id="open-crime-map" title="Open CrimeReport.com"
-      href="https://www.crimereports.com/home/#!/dashboard?zoom=15&amp;searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&amp;incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&amp;days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&amp;start_time=0&amp;end_time=23&amp;include_sex_offenders=false&amp;current_tab=map&amp;start_date={{start_date}}&end_date={{end_date}}&lat={{lat}}&lng={{long}}"
+      href="https://www.cityprotect.com/map/list/agencies?toUpdateDate={{end_date_encoder}}&fromUpdateDate={{start_date_encoder}}&pageSize=2000&parentIncidentTypeIds=149,150,148,8,97,104,165,98,100,179,178,180,101,99,103,163,168,166,12,161,14,16,15&zoomLevel=12&latitude={{lat}}&longitude={{long}}&days=1,2,3,4,5,6,7&startHour=0&endHour=24&timezone=-06:00"
       target="_blank">
       <i class="esri-icon-link-external blue-icon"></i>
     </a>
@@ -313,7 +313,7 @@
 
   <script id='crime-map-iframe' type='text/template'>
     <iframe id='crimeDataIFrame'
-    src=' https://www.crimereports.com/home/#!/dashboard?zoom=15&searchText=Garland%252C%2520Texas%252075040%252C%2520United%2520States&incident_types=Assault%252CAssault%2520with%2520Deadly%2520Weapon%252CBreaking%2520%2526%2520Entering%252CDisorder%252CDrugs%252CHomicide%252CKidnapping%252CLiquor%252COther%2520Sexual%2520Offense%252CProperty%2520Crime%252CProperty%2520Crime%2520Commercial%252CProperty%2520Crime%2520Residential%252CQuality%2520of%2520Life%252CRobbery%252CSexual%2520Assault%252CSexual%2520Offense%252CTheft%252CTheft%2520from%2520Vehicle%252CTheft%2520of%2520Vehicle&days=sunday%252Cmonday%252Ctuesday%252Cwednesday%252Cthursday%252Cfriday%252Csaturday&start_time=0&end_time=23&include_sex_offenders=false&current_tab=map&start_date={{start_date}}&end_date={{end_date}}&lat={{lat}}&lng={{long}}'
+    src='https://www.cityprotect.com/map/list/agencies?toUpdateDate={{end_date_encoder}}&fromUpdateDate={{start_date_encoder}}&pageSize=2000&parentIncidentTypeIds=149,150,148,8,97,104,165,98,100,179,178,180,101,99,103,163,168,166,12,161,14,16,15&zoomLevel=12&latitude={{lat}}&longitude={{long}}&days=1,2,3,4,5,6,7&startHour=0&endHour=24&timezone=-06:00'
     height='400' width='100%' sandbox='allow-scripts allow-same-origin allow-forms'></iframe>
   </script>
 

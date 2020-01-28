@@ -141,8 +141,8 @@ require([
             today.setHours(0, 0, 0);
             var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
             var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-            var start_date = "".concat(TwoWeeksAgo.getFullYear(), "-", TwoWeeksAgo.getMonth() + 1, "-", TwoWeeksAgo.getDate());
-            var end_date = "".concat(severDaysAgo.getFullYear(), "-", severDaysAgo.getMonth() + 1, "-", severDaysAgo.getDate());
+            var start_date = "" +TwoWeeksAgo.getMonth() + 1+"/"+TwoWeeksAgo.getDate()+"/"+ TwoWeeksAgo.getFullYear();
+            var end_date = "" +severDaysAgo.getMonth() + 1+"/"+severDaysAgo.getDate()+"/"+ severDaysAgo.getFullYear();
 
             var urlProperty = {
                 lat: geometry.latitude,
@@ -151,7 +151,6 @@ require([
                 end_date: end_date
             }
             var node = dom.byId("collapseSix");
-            debugger;
             var str = template.generateCrimeMapIframe(urlProperty);
             node.innerHTML = "";
             node.innerHTML = str.iframe;
