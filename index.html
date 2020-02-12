@@ -197,7 +197,7 @@
                   data-parent='#accordion'>
                   <div id='street-condition'>
 
-                    <div id='street-condition-toggle'>
+                    <div id='street-condition-toggle' class="ios-toggle">
                       <label>
                         <span class='mb-2 pl-4'>Add Street PCI to the detail map</span><br>
                         <input type='checkbox' class='ios-switch' id='street-condition-checkbox' />
@@ -241,6 +241,16 @@
                   data-parent="#accordion">
                   <div id='crimeMap'>
                     <div id='crimeView' style='width: 100%; height: 350px;'></div>
+                  </div>
+                  <div id='crime-legend-toggle' class="ios-toggle">
+                    <label>
+                      <span class='mb-2 pl-4'>Show Legend</span><br>
+                      <input type='checkbox' class='ios-switch' id='crime-legend-checkbox' />
+                      <span class='switch'></span>
+                    </label>
+                  </div>
+                  <div id="crime-legend"  class=' d-none '>
+                    <img src="images/crime-legend.jpg" alt="Crime legend">
                   </div>
                 </div>
               </section>
@@ -303,20 +313,6 @@
     </li>
   </script>
 
-  <script id='crime-map-title' type='text/template'>
-    <i class="esri-icon-minus blue-icon"></i>
-    <h3 id="crime-map-title">Crime </h3>      
-
-      <i class="esri-icon-link-external blue-icon"></i>
-    </a>
-  </script>
-
-  <script id='crime-map-iframe' type='text/template'>
-    <iframe id='crimeDataIFrame'
-    src='<style>.embed-container {position: relative; padding-bottom: 67%; height: 0; max-width: 100%;} .embed-container iframe, .embed-container object, .embed-container iframe{position: absolute; top: 0; left: 0; width: 100%; height: 100%;} small{position: absolute; z-index: 40; bottom: 0; margin-bottom: -15px;}</style><div class="embed-container"><iframe width="300" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="CrimeMap" src="//maps.garlandtx.gov/cogmap/apps/Embed/index.html?webmap=081eff3f9f5842f0a042113fd54fcea3&amp;extent={{lat1}},{{long1}},{{lat2}},{{long2}}&amp;zoom=true&amp;scale=false&amp;legend=true&amp;disable_scroll=true&amp;theme=light&amp;marker={{lat0}};{{long0}};;;;"></iframe></div>'
-    height='400' width='100%' sandbox='allow-scripts allow-same-origin allow-forms'></iframe>
-  </script>
-<!-- https://maps.garlandtx.gov/cogmap/apps/Embed/index.html?webmap=081eff3f9f5842f0a042113fd54fcea3&level=15&center={{lat}},{{long}}&home=true&zoom=true&scale=false&legend=true&disable_scroll=true&theme=dark -->
   <script id='suggest-address' type='text/template'>
     <li><button class="btn btn-link">{{streetNumber}} {{streetLabel}}</button></li>
   </script>

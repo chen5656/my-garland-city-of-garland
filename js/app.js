@@ -26,7 +26,6 @@ require([
 
     'esri/Map',
     'esri/views/MapView',
-    "esri/widgets/Legend",
     "esri/layers/MapImageLayer",
     "esri/layers/FeatureLayer",
 
@@ -43,7 +42,7 @@ require([
 
     'dojo/domReady!'
 ], function (dom, domClass,
-    Map, MapView,Legend, MapImageLayer,FeatureLayer,
+    Map, MapView, MapImageLayer,FeatureLayer,
     Search, Locator, Graphic,
     domQuery, domConstruct,
     MultiSearch, addressSuggestion
@@ -55,6 +54,7 @@ require([
         domClass.add('suggestedAddresses', 'd-none');
         domClass.add('ews_link', 'd-none');
         dom.byId("street-condition-checkbox").checked = false;
+        dom.byId("crime-legend-checkbox").checked = false;
 
         //cardBodies        //  show spinner-grow
         domQuery(".spinner-grow").forEach(function (node) {
@@ -303,6 +303,10 @@ require([
                 rotationEnabled: false
             }
         });
+
+        document.getElementById("crime-legend-checkbox").onclick=function(){
+            domClass.toggle(document.getElementById("crime-legend"),"d-none");
+        };
 
         var searchSource = appSetting.locator.sourceSetting;
         searchSource.locator = new Locator({
