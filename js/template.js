@@ -40,22 +40,21 @@ var arrayFrom = function (nodelist) {
 var containerList = multilSearch_settings.containerList;
 
 var generateCrimeMapIframe = function (urlProp) {
-    var temp = document.querySelector('#crime-map-iframe').innerHTML;
-    temp = temp.replace(/{{start_date}}/g, urlProp.start_date)
-        .replace(/{{end_date}}/g, urlProp.end_date)
-        .replace(/{{lat}}/g, urlProp.lat)
-        .replace(/{{long}}/g, urlProp.long)
-        .replace(/{{start_date_encoder}}/g, urlProp.start_date.replace(/\//g, "%2F"))
-        .replace(/{{end_date_encoder}}/g, urlProp.end_date.replace(/\//g, "%2F"));
-    var temp1 = document.querySelector('#crime-map-title').innerHTML;
-    temp1 = temp1.replace(/{{start_date}}/g, urlProp.start_date)
-        .replace(/{{end_date}}/g, urlProp.end_date)
-        .replace(/{{lat}}/g, urlProp.lat)
-        .replace(/{{long}}/g, urlProp.long)
-        .replace(/{{start_date_encoder}}/g, urlProp.start_date.replace(/\//g, "%2F"))
-        .replace(/{{end_date_encoder}}/g, urlProp.end_date.replace(/\//g, "%2F"));
 
-     return {
+    var temp = document.querySelector('#crime-map-iframe').innerHTML;
+    temp = temp.replace(/{{lat1}}/g, urlProp.lat-0.12)
+        .replace(/{{long1}}/g, urlProp.long-0.05)
+        .replace(/{{lat2}}/g, urlProp.lat+0.12)
+        .replace(/{{long2}}/g, urlProp.long+0.05)
+        .replace(/{{lat0}}/g, urlProp.lat)
+        .replace(/{{long0}}/g, urlProp.long)
+
+
+
+    var temp1 = document.querySelector('#crime-map-title').innerHTML;
+    temp1 = temp1;
+
+    return {
         title: temp1,
         iframe: temp
     };

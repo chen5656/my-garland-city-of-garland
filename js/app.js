@@ -18,7 +18,7 @@ function daysFromNow(milliseconds) {
 var template = new myGarland.templates();
 var saveToIndexDB = new myGarland.clientStorage();
 
-var view, subMap, subView, search;
+var view, subMap, subView, crimeMap, crimeView, search;
 
 require([
     'dojo/dom',
@@ -26,7 +26,9 @@ require([
 
     'esri/Map',
     'esri/views/MapView',
+    "esri/widgets/Legend",
     "esri/layers/MapImageLayer",
+    "esri/layers/FeatureLayer",
 
     "esri/widgets/Search",
     "esri/tasks/Locator",
@@ -41,7 +43,7 @@ require([
 
     'dojo/domReady!'
 ], function (dom, domClass,
-    Map, MapView, MapImageLayer,
+    Map, MapView,Legend, MapImageLayer,FeatureLayer,
     Search, Locator, Graphic,
     domQuery, domConstruct,
     MultiSearch, addressSuggestion
@@ -66,7 +68,7 @@ require([
             val.innerHTML = "";
         });
 
-        [view, subView].forEach(function (view1) {
+        [view, subView, crimeView].forEach(function (view1) {
             if (view1) {
                 view1.graphics.removeAll();
             }
@@ -113,7 +115,8 @@ require([
 
         addPnt(geometry, view);
         addPnt(geometry, subView);
-        displayCrimeMap(geometry);
+        addPnt(geometry, crimeView);
+        // displayCrimeMap(geometry);
 
         //--add last EWS Link
         var node = document.getElementById("ews_link");
@@ -141,8 +144,8 @@ require([
             today.setHours(0, 0, 0);
             var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
             var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-            var start_date = "" +TwoWeeksAgo.getMonth() + 1+"/"+TwoWeeksAgo.getDate()+"/"+ TwoWeeksAgo.getFullYear();
-            var end_date = "" +severDaysAgo.getMonth() + 1+"/"+severDaysAgo.getDate()+"/"+ severDaysAgo.getFullYear();
+            var start_date = "" + TwoWeeksAgo.getMonth() + 1 + "/" + TwoWeeksAgo.getDate() + "/" + TwoWeeksAgo.getFullYear();
+            var end_date = "" + severDaysAgo.getMonth() + 1 + "/" + severDaysAgo.getDate() + "/" + severDaysAgo.getFullYear();
 
             var urlProperty = {
                 lat: geometry.latitude,
@@ -274,6 +277,32 @@ require([
             }
         });
 
+        var template = {
+            title:"<b>{OFFENSE}</b>",
+            content:"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
+            "<b>CASE ID: </b>{CASE}<br>"+
+            "<b>OFFENSE: </b>{OFFENSE}<br>"+
+            "<b>STREETADDR: </b>{STREETADDR}<br>"
+        };
+ 
+        var featureLayer = new FeatureLayer({
+         url:   "https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",        
+          outFields: ["*"],
+          popupTemplate: template
+        });
+        crimeMap = new Map({
+            basemap: "topo",
+            layers: [featureLayer]
+        });
+        crimeView = new MapView({
+            container: 'crimeView',
+            map: crimeMap,
+            zoom: 15,
+            center: appSetting.mapInTop.center,
+            constraints: {
+                rotationEnabled: false
+            }
+        });
 
         var searchSource = appSetting.locator.sourceSetting;
         searchSource.locator = new Locator({
