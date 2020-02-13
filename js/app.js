@@ -447,10 +447,6 @@ require([
             }, tr);
         });
 
-        //turn on street pci by default
-
-
-
     })(appSetting.subMap.streetCondition.legend);
 
     //street-condition-toggle

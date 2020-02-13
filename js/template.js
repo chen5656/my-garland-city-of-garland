@@ -139,6 +139,14 @@ var prepareHtmlData = function (item, searchTerm) {
         }
     });
 
+    ["hardcodeValue1"].forEach(function (val) {
+        if (item[val]) {
+            newItem[val] = item[val];
+        } else {
+            newItem[val] = "";
+        }
+    });
+
     if (item.displayControl.hyperlinkType == 'googleMap') {
         newItem.startAdd = searchTerm.replace(/\s|\t/g, "+");
         if (item.feature.ADDRESS) {
