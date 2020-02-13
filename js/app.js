@@ -42,7 +42,7 @@ require([
 
     'dojo/domReady!'
 ], function (dom, domClass,
-    Map, MapView, MapImageLayer,FeatureLayer,
+    Map, MapView, MapImageLayer, FeatureLayer,
     Search, Locator, Graphic,
     domQuery, domConstruct,
     MultiSearch, addressSuggestion
@@ -53,7 +53,7 @@ require([
         domClass.add('nodeResult', 'd-none');
         domClass.add('suggestedAddresses', 'd-none');
         domClass.add('ews_link', 'd-none');
-        dom.byId("street-condition-checkbox").checked = false;
+        // dom.byId("street-condition-checkbox").checked = false;
         dom.byId("crime-legend-checkbox").checked = false;
 
         //cardBodies        //  show spinner-grow
@@ -116,7 +116,6 @@ require([
         addPnt(geometry, view);
         addPnt(geometry, subView);
         addPnt(geometry, crimeView);
-        // displayCrimeMap(geometry);
 
         //--add last EWS Link
         var node = document.getElementById("ews_link");
@@ -138,30 +137,6 @@ require([
 
         }
 
-        function displayCrimeMap(geometry) {
-            //in chrome, need to remove iframe, add it again to refresh the iframe.
-            var today = new Date();
-            today.setHours(0, 0, 0);
-            var severDaysAgo = new Date(today.getTime() - 1 * 1000 - 6 * 24 * 60 * 60 * 1000); //7 days before yesterday 23:59:59
-            var TwoWeeksAgo = new Date(today.getTime() - (7 + 6) * 24 * 60 * 60 * 1000); //14 days ago 00:00:00
-            var start_date = "" + TwoWeeksAgo.getMonth() + 1 + "/" + TwoWeeksAgo.getDate() + "/" + TwoWeeksAgo.getFullYear();
-            var end_date = "" + severDaysAgo.getMonth() + 1 + "/" + severDaysAgo.getDate() + "/" + severDaysAgo.getFullYear();
-
-            var urlProperty = {
-                lat: geometry.latitude,
-                long: geometry.longitude,
-                start_date: start_date,
-                end_date: end_date
-            }
-            var node = dom.byId("collapseSix");
-            var str = template.generateCrimeMapIframe(urlProperty);
-            node.innerHTML = "";
-            node.innerHTML = str.iframe;
-            node = dom.byId("headingSix").children[0];
-            node.innerHTML = "";
-            node.innerHTML = str.title;
-
-        }
     }
 
     function searchFinish(addressId, insertToHistory) {
@@ -191,6 +166,12 @@ require([
                 //create new search result
                 createNewSearch(addressId, insertToHistory);
             }
+
+            //turn on streets pci by default
+            (function (isOn) {
+                dom.byId("street-condition-checkbox").checked = isOn;
+                toggleSteetPCI(isOn);
+            })(true);
 
         }, function (e) {
             console.error(e.error);
@@ -222,7 +203,6 @@ require([
                             newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
                                 //hardcord to update council district hyperlink
                                 newSearch.getFieldValue("https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35", "DISTRICT_NUMBER", data[0].feature.COUNCIL_ID, "HYPERLINIK").then(function (result) {
-                                    //    "https://www.garlandtx.gov/758/City-Council", result);
                                     data[0].displayControl.hardcode = data[0].displayControl.hardcode.replace("https://www.garlandtx.gov/758/City-Council", result);
                                     displayAndSaveSearchData(data, newSearch);
                                 }, function (error) {
@@ -248,7 +228,41 @@ require([
         );
     }
 
-    //init: map,submap, view
+    function toggleSteetPCI(isOn) {
+        var node = dom.byId("street-condition-legend");
+        if (isOn) {
+
+            if (domClass.contains(node, "d-none")) {
+                domClass.remove(node, 'd-none');
+            }
+            var layer = new MapImageLayer(appSetting.subMap.streetCondition.map);
+            subMap.layers.add(layer);
+        } else {
+            if (domClass.contains(node, "d-none") == false) {
+                domClass.add(node, 'd-none');
+            }
+            var layers = subMap.layers.items.filter(function (layer) {
+
+                if (cleanUrl(layer.url) == cleanUrl(appSetting.subMap.streetCondition.map.url)) {
+
+                    for (var sublayer of layer.sublayers.items) {
+                        if (sublayer.id == appSetting.subMap.streetCondition.map.sublayers[0].id) {
+                            return true;
+                        }
+                    }
+                }
+            });
+            subMap.removeMany(layers);
+
+            function cleanUrl(url) {
+                return url.toLowerCase().split("/rest/")[1].split("/mapserver")[0];
+
+            }
+        }
+
+    }
+
+    //init: map,submap, crimeMap,view
     (function () {
         //dom.byId("offline").innerHTML = "";
         var mapImageLayerList = new MapImageLayer(appSetting.mapInTop.mapImageLayer);
@@ -270,25 +284,17 @@ require([
         subView = new MapView({
             container: 'subMapView',
             map: subMap,
-            zoom: 18,
+            zoom: 15,
             center: appSetting.mapInTop.center,
             constraints: {
                 rotationEnabled: false
             }
         });
 
-        var template = {
-            title:"<b>{OFFENSE}</b>",
-            content:"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
-            "<b>CASE ID: </b>{CASE}<br>"+
-            "<b>OFFENSE: </b>{OFFENSE}<br>"+
-            "<b>STREETADDR: </b>{STREETADDR}<br>"
-        };
- 
         var featureLayer = new FeatureLayer({
-         url:   "https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",        
-          outFields: ["*"],
-          popupTemplate: template
+            url: appSetting.subMap.crimeMap.featureLayerUrl,
+            outFields: ["*"],
+            popupTemplate: appSetting.subMap.crimeMap.popUpTemplate
         });
         crimeMap = new Map({
             basemap: "topo",
@@ -304,8 +310,8 @@ require([
             }
         });
 
-        document.getElementById("crime-legend-checkbox").onclick=function(){
-            domClass.toggle(document.getElementById("crime-legend"),"d-none");
+        document.getElementById("crime-legend-checkbox").onclick = function () {
+            domClass.toggle(document.getElementById("crime-legend"), "d-none");
         };
 
         var searchSource = appSetting.locator.sourceSetting;
@@ -436,43 +442,19 @@ require([
                 innerHTML: item.label
             }, tr);
         });
+
+        //turn on street pci by default
+
+
+
     })(appSetting.subMap.streetCondition.legend);
 
     //street-condition-toggle
     dom.byId("street-condition-toggle").addEventListener("change", function () {
-        var layerOn = dom.byId("street-condition-checkbox").checked;
-        var node = dom.byId("street-condition-legend");
-        if (layerOn) {
-
-            if (domClass.contains(node, "d-none")) {
-                domClass.remove(node, 'd-none');
-            }
-            var layer = new MapImageLayer(appSetting.subMap.streetCondition.map);
-            subMap.layers.add(layer);
-        } else {
-            if (domClass.contains(node, "d-none") == false) {
-                domClass.add(node, 'd-none');
-            }
-            var layers = subMap.layers.items.filter(function (layer) {
-
-                if (cleanUrl(layer.url) == cleanUrl(appSetting.subMap.streetCondition.map.url)) {
-
-                    for (var sublayer of layer.sublayers.items) {
-                        if (sublayer.id == appSetting.subMap.streetCondition.map.sublayers[0].id) {
-                            return true;
-                        }
-                    }
-                }
-            });
-            subMap.removeMany(layers);
-
-            function cleanUrl(url) {
-                return url.toLowerCase().split("/rest/")[1].split("/mapserver")[0];
-
-            }
-        }
-
+        toggleSteetPCI(dom.byId("street-condition-checkbox").checked);
     });
+
+
 
     window.addEventListener("popstate", function (e) {
         if (e.state.value == "my-garland-address-search") {
@@ -491,6 +473,7 @@ require([
                 }
             })
         });
-    })(7)
+    })(7);
+
 
 });

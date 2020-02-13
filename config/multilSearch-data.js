@@ -409,6 +409,7 @@ var multilSearch_settings = {
     "parcel": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5",
     "road": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3",
     "streetAlias": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16",
+    "councilDistricts": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35",
     "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
   }
 };

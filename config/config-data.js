@@ -79,6 +79,16 @@ var appSetting = {
         }]
 
       }
+    },
+    "crimeMap":{
+      "featureLayerUrl":"https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",
+      "popUpTemplate":{
+        "title":"<b>{OFFENSE}</b>",
+        "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
+        "<b>CASE ID: </b>{CASE}<br>"+
+        "<b>OFFENSE: </b>{OFFENSE}<br>"+
+        "<b>STREETADDR: </b>{STREETADDR}<br>"
+    }
     }
   },
 
