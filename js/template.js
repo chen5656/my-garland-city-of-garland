@@ -100,6 +100,7 @@ var generateResultItem = function (item) {
     temp = temp.replace(/{{displayValue2}}/g, item.displayValue2);
     temp = temp.replace(/{{displayValue3}}/g, item.displayValue3);
     temp = temp.replace(/{{displayValue4}}/g, item.displayValue4);
+    temp = temp.replace(/{{hardcodeValue1}}/g, item.hardcodeValue1);
 
     if (item.displayControl.displayDistance) {
         temp = temp.replace(/{{distance}}/g, '(' + item.distance + ' miles)');
@@ -211,7 +212,6 @@ var generateSuggestAddress = function (address) {
 
 myGarland.templates.prototype = {
     generateCrimeMapIframe: generateCrimeMapIframe,
-    //generateResultItem: generateResultItem,
     appendToPage: appendToPage,
     generateSuggestAddress: generateSuggestAddress
 };

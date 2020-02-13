@@ -323,9 +323,10 @@ var multilSearch_settings = {
         "containerID": "parcelInfo",
         "displayID": 1,
         "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'><a href='https://www.garlandtx.gov/758/City-Council' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
+        "hardcode": "<span class='location-data-value'><a href='{{hardcodeValue1}}' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
         "displayDistance": false,
-        "displayValue1": "COUNCIL_ID"
+        "displayValue1": "COUNCIL_ID",
+        "hardcodeValue1":"this field will be updated during the app."
       }
     },
     {
