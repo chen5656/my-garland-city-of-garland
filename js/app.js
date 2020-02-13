@@ -126,6 +126,13 @@ require([
             domClass.remove(node, 'd-none');
         }
 
+        //turn on streets pci by default
+        (function (isOn) {
+            dom.byId("street-condition-checkbox").checked = isOn;
+            toggleSteetPCI(isOn);
+        })(true);
+
+
         function addPnt(geometry, mapView) {
             var pnt = new Graphic({
                 geometry: geometry,
@@ -137,7 +144,6 @@ require([
             mapView.graphics.removeAll();
             mapView.graphics.add(pnt);
             mapView.center = [geometry.longitude, geometry.latitude];
-
         }
 
     }
@@ -170,12 +176,6 @@ require([
                 createNewSearch(addressId, insertToHistory);
             }
 
-            //turn on streets pci by default
-            (function (isOn) {
-                dom.byId("street-condition-checkbox").checked = isOn;
-                toggleSteetPCI(isOn);
-            })(true);
-
         }, function (e) {
             console.error(e.error);
             createNewSearch(addressId, insertToHistory);
@@ -203,9 +203,9 @@ require([
                         newSearch.geometry = geometries[0];
                         addToMap(newSearch.geometry);
                         if (multiSearch.parcelDataList) {
-                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {                                
+                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
                                 //hardcord to update council district hyperlink
-                                data[0].hardcodeValue1 =  councilDistrict_Hyperlink[data[0].feature.COUNCIL_ID];
+                                data[0].hardcodeValue1 = councilDistrict_Hyperlink[data[0].feature.COUNCIL_ID];
                                 displayAndSaveSearchData(data, newSearch);
                             });
                         }
