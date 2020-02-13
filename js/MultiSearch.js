@@ -23,13 +23,24 @@ define([
                     return item;
                 });
                 return resolve();
-            },function(error){
-                error.name="Error when getting information for GIS Server:";
-             return reject(error);            
+            }, function (error) {
+                error.name = "Error when getting information for GIS Server:";
+                return reject(error);
 
             });
         });
     };
+
+    var getAllCouncilHyperlink = function (mapService) {
+        var query = new Query();
+        var queryTask = new QueryTask({
+            url: mapService
+        });
+        query.where = " 1=1";
+        query.returnGeometry = false;
+        query.outFields = ["HYPERLINIK", "DISTRICT_NUMBER"];
+        return queryTask.execute(query);
+    }
 
     return declare(null, {
         constructor: function (settings) {
@@ -38,6 +49,7 @@ define([
             this.serviceZoneSourceList = settings.serviceZoneSourceList;
             this.parcelDataList = settings.parcelDataList;
         },
-        getCityFacilityList: getCityFacilityList
+        getCityFacilityList: getCityFacilityList,
+        getAllCouncilHyperlink: getAllCouncilHyperlink
     });
 });

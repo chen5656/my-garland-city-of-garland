@@ -17,8 +17,11 @@ function daysFromNow(milliseconds) {
 
 var template = new myGarland.templates();
 var saveToIndexDB = new myGarland.clientStorage();
+var recentUpdateTime = new Date(2020, 2, 11);
 
 var view, subMap, subView, crimeMap, crimeView, search;
+
+var councilDistrict_Hyperlink;
 
 require([
     'dojo/dom',
@@ -143,7 +146,7 @@ require([
 
         //get data from local storage first.
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
-            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && (daysFromNow(oldSearch.createdOn) < 30 && oldSearch.createdOn > 1569350265346)) {
+            if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && oldSearch.createdOn > Date.parse(recentUpdateTime)) {
                 //only read data keeped in 0 days.      
                 console.log("display oldSearch - find search result in indexDB in 30 days", oldSearch);
                 document.title = "My Garland - ".concat(oldSearch.address);
@@ -200,15 +203,10 @@ require([
                         newSearch.geometry = geometries[0];
                         addToMap(newSearch.geometry);
                         if (multiSearch.parcelDataList) {
-                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
+                            newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {                                
                                 //hardcord to update council district hyperlink
-                                newSearch.getFieldValue("https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35", "DISTRICT_NUMBER", data[0].feature.COUNCIL_ID, "HYPERLINIK").then(function (result) {
-                                    data[0].displayControl.hardcode = data[0].displayControl.hardcode.replace("https://www.garlandtx.gov/758/City-Council", result);
-                                    displayAndSaveSearchData(data, newSearch);
-                                }, function (error) {
-                                    console.error(error);
-                                    displayAndSaveSearchData(data, newSearch);
-                                });
+                                data[0].displayControl.hardcode = data[0].displayControl.hardcodeOriginal.replace("https://www.garlandtx.gov/758/City-Council", councilDistrict_Hyperlink[data[0].feature.COUNCIL_ID]);
+                                displayAndSaveSearchData(data, newSearch);
                             });
                         }
                         if (multiSearch.serviceZoneSourceList) {
@@ -378,6 +376,12 @@ require([
         })();
     }, function (error) {
         console.error(error);
+    });
+    multiSearch.getAllCouncilHyperlink("https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35").then(function (results) {
+        councilDistrict_Hyperlink = {};
+        results.features.forEach(function (item) {
+            councilDistrict_Hyperlink[item.attributes.DISTRICT_NUMBER] = item.attributes.HYPERLINIK;
+        });
     });
 
     //update html div format.

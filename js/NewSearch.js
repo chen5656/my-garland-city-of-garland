@@ -34,11 +34,7 @@ define(["dojo/_base/declare",
       constructor: function (addressId) {
         this.addressId = addressId;
         this.resultList = [];
-        //this.address = searchAddress.address;
-        //this.addressGeometry = searchAddress.addressGeometry;
-        //this.nearestCityFacilityList = [];
-        //this.serviceZoneList = [];
-        //this.parcelInfo = null;
+
       },
 
       getAddressInfo: function () {
@@ -82,7 +78,7 @@ define(["dojo/_base/declare",
         query.outFields = ["*"];
         return new Promise(function (resolve, reject) {
           queryTask.execute(query).then(function (results) {
-            var result = results.features[0].attributes;
+            var result = results.features[0].attributes;            
             that.parcelInfo = parcelDataList.map(function (item) {
               var newItem = iterationCopy(item);
               newItem.queryPolygonCount = 1;
@@ -100,19 +96,6 @@ define(["dojo/_base/declare",
           });
         });
       },
-
-      // projectToStatePlane: function (spatialReference) {
-      //   var geometryService = new GeometryService(mapService_geometryService);
-      //   var params = new ProjectParameters({
-      //     geometries: [this.geometry],
-      //     outSpatialReference: spatialReference
-      //   });
-      //   return geometryService.project(params);
-
-      ////new SpatialReference({
-      //// wkid: 2276
-      ////})
-      // },
 
       projectToSpatialReference: function (geometries, spatialReference) {
         var geometryService = new GeometryService(mapService_geometryService);
@@ -207,28 +190,6 @@ define(["dojo/_base/declare",
               return newItem;
             });
             resolve(that.serviceZoneList);
-          });
-        });
-      },
-      getFieldValue:function(mapServiceUrl,IDField,IDValue,fieldName){
-        var query = new Query();
-        var queryTask = new QueryTask({
-          url: mapServiceUrl
-        });
-        query.where = "".concat(IDField," =" + IDValue);
-        query.returnGeometry = false;
-        query.outFields = [fieldName];
-
-        return new Promise(function (resolve, reject) {
-          queryTask.execute(query).then(function (result) {
-            if (result.features.length > 0) {
-              var attributes=result.features[0].attributes;
-              resolve(attributes[Object.keys(attributes)[0]]);
-            } else {
-              reject({
-                error: "Return Null: wherecause - "+  query.where +", field name - "+ fieldName
-              });
-            }
           });
         });
       }
