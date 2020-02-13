@@ -154,7 +154,7 @@ require([
         saveToIndexDB.getInfo("" + addressId).then(function (oldSearch) {
             if (oldSearch && oldSearch.nearestCityFacilityList && oldSearch.serviceZoneList && oldSearch.parcelInfo && oldSearch.createdOn > Date.parse(recentUpdateTime)) {
                 //only read data keeped in 0 days.      
-                console.log("display oldSearch - find search result in indexDB in 30 days", oldSearch);
+                console.log("display oldSearch - find search result in indexDB in 7 days", oldSearch);
                 document.title = "My Garland - ".concat(oldSearch.address);
                 if (insertToHistory) {
                     pushToHistory(addressId);
