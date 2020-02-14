@@ -86,8 +86,7 @@ var appSetting = {
         "title":"<b>{OFFENSE}</b>",
         "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
         "<b>CASE ID: </b>{CASE}<br>"+
-        "<b>OFFENSE: </b>{OFFENSE}<br>"+
-        "<b>STREETADDR: </b>{STREETADDR}<br>"
+        "<b>OFFENSE: </b>{OFFENSE}<br>"
     }
     }
   },
