@@ -55,7 +55,7 @@ require([
     function searchStart() {
         domClass.add('nodeResult', 'd-none');
         domClass.add('suggestedAddresses', 'd-none');
-        domClass.add('ews_link', 'd-none');
+        domClass.add('service-hyperlinks', 'd-none');
         // dom.byId("street-condition-checkbox").checked = false;
         dom.byId("crime-legend-checkbox").checked = false;
 
@@ -120,8 +120,8 @@ require([
         addPnt(geometry, subView);
         addPnt(geometry, crimeView);
 
-        //--add last EWS Link
-        var node = document.getElementById("ews_link");
+        //--show hyperlinks
+        var node = document.getElementById("service-hyperlinks");
         if (domClass.contains(node, "d-none") == true) {
             domClass.remove(node, 'd-none');
         }

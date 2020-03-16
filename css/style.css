@@ -11,10 +11,16 @@
   "Droid Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+.hyperlink-button{
+  background-color: #e7fcff;
+    padding: 5px;
+    margin: 5px;
+}
+
 
 /* body {
   font-family:publicSans, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Roboto", "Oxygen",
+    "Segoe UI", "Roboto", "Oxygen",s
     "Ubuntu", "Cantarell", "Fira Sans",
     "Droid Sans", "Helvetica Neue", Arial, sans-serif;
 
