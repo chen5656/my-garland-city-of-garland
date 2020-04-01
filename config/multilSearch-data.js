@@ -166,18 +166,21 @@ var multilSearch_settings = {
         "displayValue1": "ADDRESS",
         "displayValue2": "BLDG_NAME"
       }
+    }, {
+      "id": "nearest-city-facility-with-wifi",
+      "name": "Nearest Public Wi-Fi",
+      "addressValue": "ADDRESS",
+      "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
+      "where": "WIFI ='Yes'",
+      "displayControl": {
+        "containerID": "service",
+        "displayID": 1,
+        "hyperlinkType": "googleMap",
+        "displayDistance": true,
+        "displayValue1": "ADDRESS",
+        "displayValue2": "BLDG_NAME"
+      }
     }
-    // , {
-    //   "id": "nearest-school",
-    //   "name": "Nearest School",
-    //   "addressValue":"ADDRESS",
-    //   "displayValue1":"ADDRESS",
-    //   "displayValue2":"OFFICIALNA",
-    //   "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/20",
-    //   "where": "1=1",
-    //   "containerID": "service",
-    //   "displayID": 1
-    // }
 
   ],
 
@@ -326,7 +329,7 @@ var multilSearch_settings = {
         "hardcode": "<span class='location-data-value'><a href='{{hardcodeValue1}}' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
         "displayDistance": false,
         "displayValue1": "COUNCIL_ID",
-        "hardcodeValue1":"this field will be updated during the app."
+        "hardcodeValue1": "this field will be updated during the app."
       }
     },
     {

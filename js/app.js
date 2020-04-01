@@ -17,7 +17,7 @@ function daysFromNow(milliseconds) {
 
 var template = new myGarland.templates();
 var saveToIndexDB = new myGarland.clientStorage();
-var recentUpdateTime = new Date(2020, 1, 11); //,1, means feb.
+var recentUpdateTime = new Date(2020, 3, 1); //,1, means feb.
 
 var view, subMap, subView, crimeMap, crimeView, search;
 
@@ -204,7 +204,7 @@ require([
                         addToMap(newSearch.geometry);
                         if (multiSearch.parcelDataList) {
                             newSearch.getParcelInfo(multiSearch.parcelDataList).then(function (data) {
-                                //hardcord to update council district hyperlink
+                                //hardcfgrouord to update council district hyperlink
                                 data[0].hardcodeValue1 = councilDistrict_Hyperlink[data[0].feature.COUNCIL_ID];
                                 displayAndSaveSearchData(data, newSearch);
                             });
