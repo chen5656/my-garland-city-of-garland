@@ -85,8 +85,16 @@ var appSetting = {
       "popUpTemplate":{
         "title":"<b>{OFFENSE}</b>",
         "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
-        "<b>CASE ID: </b>{CASE}<br>"+
-        "<b>OFFENSE: </b>{OFFENSE}<br>"
+        "<b>CASE ID: </b>{CASEID}<br>"+
+        "<b>OFFENSE: </b>{OFFENSE}<br>",
+        "fieldInfos": [
+          {
+            "fieldName": "OCCURRED_O",
+            "format": {
+              "dateFormat": "short-date"
+            }
+          }
+        ]
     }
     }
   },

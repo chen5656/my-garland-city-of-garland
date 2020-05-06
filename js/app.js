@@ -23,6 +23,9 @@ var view, subMap, subView, crimeMap, crimeView, search;
 
 var councilDistrict_Hyperlink;
 
+var months = [0,"January", "February", "March", "April", "May", "June", 
+           "July", "August", "September", "October", "November", "December" ];
+
 require([
     'dojo/dom',
     "dojo/dom-class",
@@ -289,6 +292,7 @@ require([
             }
         });
 
+        //get crime map and crime month name
         var featureLayer = new FeatureLayer({
             url: appSetting.subMap.crimeMap.featureLayerUrl,
             outFields: ["*"],
@@ -306,6 +310,13 @@ require([
             constraints: {
                 rotationEnabled: false
             }
+        });
+        
+        featureLayer .queryFeatures().then(function(result){
+            var fileLocation = result.features[0].attributes.IMPORTFROM.split('\\');
+            var year= fileLocation[4].split("_")[0];
+            var monthName = months[Number(fileLocation[4].split("_")[1])];
+            document.getElementById("crime_title_month").innerHTML=""+monthName +" " + year;
         });
 
         document.getElementById("crime-legend-checkbox").onclick = function () {
