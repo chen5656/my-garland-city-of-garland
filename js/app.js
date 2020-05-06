@@ -316,7 +316,7 @@ require([
             var fileLocation = result.features[0].attributes.IMPORTFROM.split('\\');
             var year= fileLocation[4].split("_")[0];
             var monthName = months[Number(fileLocation[4].split("_")[1])];
-            document.getElementById("crime_title_month").innerHTML=""+monthName +" " + year;
+            document.getElementById("crime_title_month").innerHTML=" – "+monthName +" " + year;
         });
 
         document.getElementById("crime-legend-checkbox").onclick = function () {
