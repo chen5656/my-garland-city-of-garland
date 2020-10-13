@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+  <meta name='author' content='Huajun Chen'>
+  <meta name='description'
+    content='My Address aims to provide residents information on nearest city facilities, service zones, neighborhoods and development information. And also provide a crime data map.'>
+  <title>My Garland</title>
+
+  <!-- iOS -->
+  <meta name="apple-mobile-web-app-title" content="My Garland">
+  <meta name="application-name" content="My Garland">
+
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon" sizes="60x60" href="images/icon-60x60.png">
+  <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="76x76" href="images/icon-76x76.png">
+  <!-- For iPhone with @2× display running iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="120x120" href="images/icon-120x120.png">
+  <!-- For iPad with @2× display running iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="152x152" href="images/icon-152x152.png">
+  <!-- For iPhone 6 Plus with @3× display: -->
+  <link rel="apple-touch-icon" sizes="180x180" href="images/icon-180x180.png">
+
+  <!-- Desktop Browsers -->
+  <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="images/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="images/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16">
+
+  <!-- Android: Chrome M31 and up, ignored if manifest is present-->
+  <!-- For Chrome for Android: -->
+  <link rel="icon" sizes="192x192" href="images/android-chrome-192x192.png">
+
+  <!--  <link href='images/favicon.ico' rel='icon' type='image/x-icon' /> -->
+  <link rel='stylesheet' href='resources/bootstrap/bootstrap.4.3.1.min.css' />
+  <link rel='stylesheet' href='https://js.arcgis.com/4.11/esri/css/main.css'>
+</head>
+
+<body>
+  <!-- <div id='browser-check'>
+    <noscript>
+      <div class='browser-compatibility-alert d-block bg-danger text-white'>
+       
+        <p class='browser-error'>Your browser's Javascript functionality is turned off. Please turn it on.</p>
+      
+      </div>
+    </noscript>
+    <div class='browser-compatibility-alert d-block bg-danger text-white'>
+      <p>The web browser you are using right now may not be fully functional. Please use Chrome or Firefox instead.</p>
+    </div>
+  </div> -->
+
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+
+  <script id='search-result-display' type='text/template'>
+    <li index='{{index}}' id='{{id}}'>
+      <span class='location-data-tag'>{{name}}: </span>
+      <span class='location-data-value'>{{displayValue1}}</span>
+      <span class='location-data-distance'> {{distance}}</span>
+      <span class='location-data-value'><a href='{{link}}'
+          target='_blank' title='{{linkTitle}}'> {{displayValue2}}</a></span>
+    </li>
+  </script>
+
+  <script id='search-result-display-hardcode' type='text/template'>
+    <li index='{{index}}' id='{{id}}'>
+      <span class='location-data-tag'>{{name}}: </span>
+      {{hardcode}}
+    </li>
+  </script>
+
+  <script id='suggest-address' type='text/template'>
+    <li><button class="btn btn-link">{{streetNumber}} {{streetLabel}}</button></li>
+  </script>
+
+  <script>
+    //check if IE 7
+    (function () {
+      var ie = IeVersion();
+      console.log('IsIE: ' + ie.IsIE + '||' + 'TrueVersion: ' + ie.TrueVersion + '||' + 'ActingVersion: ' + ie
+        .ActingVersion);
+      if (ie.IsIE == true && (ie.TrueVersion < 11 || ie.ActingVersion < 11)) {
+        document.getElementById('browser-check').style.display = 'block';
+      } else {
+        document.getElementById('browser-check').style.display = 'none';
+      }
+
+      function IeVersion() {
+        //Set defaults
+        var value = {
+          IsIE: false,
+          TrueVersion: 0,
+          ActingVersion: 0,
+          CompatibilityMode: false
+        };
+
+        //Try to find the Trident version number
+        var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+        if (trident) {
+          value.IsIE = true;
+          //Convert from the Trident version number to the IE version number
+          value.TrueVersion = parseInt(trident[1], 10) + 4;
+        }
+
+        //Try to find the MSIE number
+        var msie = navigator.userAgent.match(/MSIE (\d+)/);
+        if (msie) {
+          value.IsIE = true;
+          //Find the IE version number from the user agent string
+          value.ActingVersion = parseInt(msie[1]);
+        } else {
+          //Must be IE 11 in 'edge' mode
+          value.ActingVersion = value.TrueVersion;
+        }
+
+        //If we have both a Trident and MSIE version number, see if they're different
+        if (value.IsIE && value.TrueVersion > 0 && value.ActingVersion > 0) {
+          //In compatibility mode if the trident number doesn't match up with the MSIE number
+          value.CompatibilityMode = value.TrueVersion != value.ActingVersion;
+        }
+        return value;
+      }
+
+    })();
+  </script>
+
+  <script src='config/multilSearch-data.js'></script>
+  <script src='config/config-data.js'></script>
+
+  <script src="resources/localforage/localforage.min.js"></script>
+
+  <script src='https://js.arcgis.com/4.11/'></script>
+
+  <script src='js/clientStorage.js'></script>
+  <script src='js/template.js'></script>
+  <script src='js/app.js'></script>
+</body>
+
+</html>
