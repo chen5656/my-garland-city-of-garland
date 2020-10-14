@@ -9,9 +9,8 @@ export default class AddressSearch extends Component {
         super();
         this.state = {
             isShowResult: false,
-            Ref_ID: null,
+            Ref_ID: 1,
             searchTerm: null,
-            searchTermFromUserInput: null,
         };
         this.handleDisplayResult = this.handleDisplayResult.bind(this);
 
@@ -37,7 +36,7 @@ export default class AddressSearch extends Component {
                  (this.state.Ref_ID ? 
                  <ShowResult RefID={this.state.Ref_ID} /> 
                  : 
-                 <AddressNotFound searchTerm={this.state.searchTerm} />)}
+                 <AddressNotFound searchTerm={this.state.searchTerm}  RefID={this.state.Ref_ID} />)}
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
@@ -15,22 +15,18 @@ const containerStyle = {
 const OneAddress = (props) => {
   return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
 }
-export default class SuggestAddresses extends Component {
+
+
+export default class SuggestAddresses extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       addressList: {},
     };
   }
-  loadEsriQueryModules = () => {
 
-  }
+  querySuggestedAddresses = (prevProps) => {
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.searchTerm === prevProps.searchTerm) {
-      return;
-    }
-    console.log(this.props.searchTerm, prevProps.searchTerm)
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
@@ -129,11 +125,22 @@ export default class SuggestAddresses extends Component {
           }
         });
       })
+
   }
 
-  componentWillUnmount = () => {
-    console.log('componentWillUnmount')
+  componentDidUpdate = (prevProps) => {
+
+    if (this.props.searchTerm === prevProps.searchTerm) {
+      return;
+    }
+
+    if (this.props.RefID) {
+      debugger;
+    }
+    this.querySuggestedAddresses();
   }
+
+
 
   getUnique(array) {
     //get unique value
@@ -234,15 +241,16 @@ export default class SuggestAddresses extends Component {
     return str.join(" ").trim();
   }
   render() {
-    return (
+    return (<>{this.props.hasResult &&
       <Box display="flex" justifyContent="center" style={containerStyle} >
         <Grid lg={4} md={8} xs={12}>
           <Card><CardContent>
             <h4 style={{ marginBottom: 12 }}  >
               Address not found.
-              </h4>
-            <div id='address-links'>
-              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+            </h4>
+            {this.state.addressList.length > 0 ?
+              <>
+                <p>Did you mean?</p>
                 <ul>
                   {
                     this.state.addressList.map((item) => {
@@ -250,10 +258,13 @@ export default class SuggestAddresses extends Component {
                     })
                   }
                 </ul>
-              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-            </div>
-          </CardContent></Card></Grid>
-      </Box>);
+              </>
+              :
+              <>
+                <p>Couldn't find entered address. </p>
+                <p>Please check the address name.</p>
+              </>}
+          </CardContent></Card></Grid></Box>}</>);
 
   }
 }
