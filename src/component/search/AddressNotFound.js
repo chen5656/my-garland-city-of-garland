@@ -5,13 +5,15 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
 
 const containerStyle = {
   margin: '2px',
   padding: '30px 5px 30px 5px',
   background: '#fcfbfa',
-  width:'100%', 
+  width: '100%',
+}
+const OneAddress = (props) => {
+  return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
 }
 export default class SuggestAddresses extends Component {
   constructor(props) {
@@ -19,6 +21,9 @@ export default class SuggestAddresses extends Component {
     this.state = {
       addressList: {},
     };
+  }
+  loadEsriQueryModules = () => {
+
   }
 
   componentDidUpdate = (prevProps) => {
@@ -126,7 +131,7 @@ export default class SuggestAddresses extends Component {
       })
   }
 
-  componentWillUnmount=()=>{
+  componentWillUnmount = () => {
     console.log('componentWillUnmount')
   }
 
@@ -233,20 +238,20 @@ export default class SuggestAddresses extends Component {
       <Box display="flex" justifyContent="center" style={containerStyle} >
         <Grid lg={4} md={8} xs={12}>
           <Card><CardContent>
-            <Typography style={{ marginBottom: 12 }} color='colorTextPrimary' variant='h4' >
+            <h4 style={{ marginBottom: 12 }}  >
               Address not found.
-         </Typography>
-            <Typography id='address-links'>
+              </h4>
+            <div id='address-links'>
               {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
                 <ul>
                   {
                     this.state.addressList.map((item) => {
-                      return <li><Button color="primary">{item.streetNumber} {item.streetLabel}</Button ></li>
+                      return <OneAddress num={item.streetNumber} label={item.streetLabel} key={item.streetNumber.toString() + ' ' + item.streetLabel} />
                     })
                   }
                 </ul>
               </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-            </Typography>
+            </div>
           </CardContent></Card></Grid>
       </Box>);
 
