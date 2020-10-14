@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
+import { loadModules } from 'esri-loader';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { loadModules } from 'esri-loader';
-import Box from '@material-ui/core/Box';
 
 const containerStyle = {
   margin: '2px',
   padding: '30px 5px 30px 5px',
   background: '#fcfbfa',
-  width:'100%'
+  width:'100%', 
 }
 export default class SuggestAddresses extends Component {
   constructor(props) {
@@ -25,6 +25,7 @@ export default class SuggestAddresses extends Component {
     if (this.props.searchTerm === prevProps.searchTerm) {
       return;
     }
+    console.log(this.props.searchTerm, prevProps.searchTerm)
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
@@ -123,6 +124,10 @@ export default class SuggestAddresses extends Component {
           }
         });
       })
+  }
+
+  componentWillUnmount=()=>{
+    console.log('componentWillUnmount')
   }
 
   getUnique(array) {

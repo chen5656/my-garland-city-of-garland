@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
-import ShowResult from './ShowResult';
+import ShowResult from '../SearchResult/ShowResult';
 import SearchWidget from './SearchWidget';
 
 
@@ -33,7 +33,11 @@ export default class AddressSearch extends Component {
         return (
             <div>
                 <SearchWidget displayResult={this.handleDisplayResult} ></SearchWidget>
-                {this.state.isShowResult && (this.state.Ref_ID ? <ShowResult RefID={this.state.Ref_ID} /> : <AddressNotFound searchTerm={this.state.searchTerm} />)}
+                {this.state.isShowResult &&
+                 (this.state.Ref_ID ? 
+                 <ShowResult RefID={this.state.Ref_ID} /> 
+                 : 
+                 <AddressNotFound searchTerm={this.state.searchTerm} />)}
             </div>
         );
     }
