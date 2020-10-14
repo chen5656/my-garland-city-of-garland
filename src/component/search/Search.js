@@ -11,7 +11,6 @@ const containerStyle = {
 }
 
 function SearchResult(props){
-    debugger;
     return(<div>{props.isShowResult && (props.isAddressFound ? <ShowResult /> : <AddressNotFound />)}</div>  );
 }
 
