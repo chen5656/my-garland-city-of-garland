@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
+import Grid from '@material-ui/core/Grid';
+
+const containerStyle = {
+  margin: '2px',
+  padding: '50px 5px 50px 5px',
+  background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
+}
 
 export default class SearchWidget extends Component {
   constructor(props) {
@@ -56,7 +63,15 @@ export default class SearchWidget extends Component {
   }
 
   render() {
-    return <div id='search-widget' className='searchwidget' />;
+    return   <Grid container style={containerStyle} direction='row' justify='center'>
+    <Grid item lg={4} md={8} alignItems="stretch" direction='column' justify='center'>
+        <Grid item   >Enter a valid City of Garland Address to look up City data.</Grid>
+        <Grid item style={{ marginTop: '10px' }} >
+        <div id='search-widget' className='searchwidget' />
+            
+        </Grid>
+    </Grid>
+</Grid>
   }
 };
 

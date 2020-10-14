@@ -75,8 +75,6 @@ export default class SuggestAddresses extends Component {
             //find close nums display data
             var addrList = that.closestNums(AddrNumber, AddList);
             that.setState({ addressList: addrList });
-            console.log(that.state.addressList)
-
 
           } else {
             //street wrong        
@@ -125,9 +123,6 @@ export default class SuggestAddresses extends Component {
       })
   }
 
-  // addressClick(search) {
-  //   search.search(this.textContent);
-  // }
   getUnique(array) {
     //get unique value
     var unique = {};
@@ -227,12 +222,6 @@ export default class SuggestAddresses extends Component {
     return str.join(" ").trim();
   }
   render() {
-    // "<p>Couldn't find entered address. </p><p>Please check the address name.</p>"
-    // node.innerHTML = "<p>Did you mean?</p><ul>".concat(str, "</ul>");
-
-    // domQuery(".btn-link", "suggestedAddresses").forEach(function (btn) {
-    //   btn.onclick = this.addressClick;
-    // });
     return (
       <Grid style={containerStyle}
         direction='row' justify='center'  >
