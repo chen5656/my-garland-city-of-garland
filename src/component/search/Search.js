@@ -27,10 +27,11 @@ export default class AddressSearch extends Component {
     }
 
     handleDisplayResult(searchTerm,Ref_ID = null) {
-        debugger;
         this.setState({ isShowResult: true });
         this.setState({ searchTerm: searchTerm });
         this.setState({ Ref_ID: Ref_ID });    }
+
+
 
     render() {
         return (

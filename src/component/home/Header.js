@@ -59,7 +59,7 @@ export default function Header() {
       <WebMapView />
       <Box component='h1' style={titleStyle} zIndex= 'appBar' position = 'absolute'>
         My Garland
-        </Box>
+      </Box>
     </Box>
   );
 }
