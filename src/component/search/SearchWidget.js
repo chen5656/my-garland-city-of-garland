@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Component, useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 
+export default  class SearchWidget  extends Component {
+  constructor(props) {
+    super(props);    
+  }
 
-export default function SearchWidget(props) {
-  const searchRef = useRef();
-
-  useEffect(
-    () => {
+  componentDidMount = () => {
+    const that=this;
       // lazy load the required ArcGIS API for JavaScript modules and CSS
       loadModules(['esri/widgets/Search', 'esri/tasks/Locator'], { css: true })
         .then(([Search, Locator]) => {
@@ -25,7 +26,7 @@ export default function SearchWidget(props) {
           });
           const searchWidget = new Search({
             // view: view,
-            container: searchRef.current,
+            container:"search-widget",
             includeDefaultSources: false,
             allPlaceholder: ".",
             locationEnabled: false,
@@ -35,14 +36,14 @@ export default function SearchWidget(props) {
           searchWidget.on("search-complete", function (e) {
             
             if (e.numResults === 0) {
-              props.displayResult(null);
+              that.props.displayResult(null);
               //no address find from input, display suggestion.             
             }
           });
 
           searchWidget.on("select-result", function (e) {
             if (e.result) {
-               props.displayResult(e.result.feature.attributes.Ref_ID);
+              that. props.displayResult(e.result.feature.attributes.Ref_ID);
             }
           });
 
@@ -53,8 +54,10 @@ export default function SearchWidget(props) {
           };
         });
     }
-  );
-  return <div className="searchwidget" ref={searchRef} />;
+
+    render() {
+  return <div id="search-widget" />;
+    }
 };
 
 
