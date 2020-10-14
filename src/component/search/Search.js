@@ -1,8 +1,6 @@
-import ReactDOM from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
-import { loadModules } from 'esri-loader';
 import AddressNotFound from './AddressNotFound';
-import SearchResult from './SearchResult';
+import ShowResult from './ShowResult';
 import SearchWidget from './SearchWidget';
 import Grid from '@material-ui/core/Grid';
 
@@ -12,21 +10,27 @@ const containerStyle = {
     background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
 }
 
-export default function Search() {
+function SearchResult(props){
+    debugger;
+    return(<div>{props.isShowResult && (props.isAddressFound ? <ShowResult /> : <AddressNotFound />)}</div>  );
+}
 
-    const [isShowResult, setIsSHowResult] = useState(null);
-    const [isSearchAddressFound, setIsAddressFound] = useState(null);
+export default function AddressSearch() {
+    const [isShowResult, setShowResult] = useState(true);
 
+    var isAddressFound = false;
 
-    function handleSearchResult(Ref_ID) {
-        setIsSHowResult(true);
-        setIsAddressFound(true);
-        alert(Ref_ID);
-    }
-
-    function handleAddressNotFound() {
-        setIsSHowResult(true);
-        setIsAddressFound(false);
+    function handleDisplayResult(Ref_ID) {
+        debugger;
+        setShowResult (false);
+        if (!Ref_ID) {
+            //no address return
+            isAddressFound = false;
+            console.log('No address found')
+        } else {
+            isAddressFound = true;
+            console.log(Ref_ID)
+        }
     }
 
     return (
@@ -35,11 +39,11 @@ export default function Search() {
                 <Grid item lg={4} md={8} alignItems="stretch" direction='column' justify='center'>
                     <Grid item   >Enter a valid City of Garland Address to look up City data.</Grid>
                     <Grid item style={{ marginTop: '10px' }} >
-                        <SearchWidget displaySearchResult={handleSearchResult} addressNotFound={handleAddressNotFound}></SearchWidget>
+                        <SearchWidget displayResult={handleDisplayResult} ></SearchWidget>
                     </Grid>
                 </Grid>
             </Grid>
-            {isShowResult && (isSearchAddressFound ? <SearchResult /> : <AddressNotFound />)}
+            <SearchResult isShowResult= {isShowResult}  isAddressFound ={isAddressFound}/>
         </div>
     );
 }

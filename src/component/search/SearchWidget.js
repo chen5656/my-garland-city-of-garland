@@ -31,16 +31,18 @@ export default function SearchWidget(props) {
             locationEnabled: false,
             sources: [searchSource]
           });
+          
           searchWidget.on("search-complete", function (e) {
+            
             if (e.numResults === 0) {
-              props.addressNotFound();
+              props.displayResult(null);
               //no address find from input, display suggestion.             
             }
           });
 
           searchWidget.on("select-result", function (e) {
             if (e.result) {
-              props.displaySearchResult(e.result.feature.attributes.Ref_ID);
+               props.displayResult(e.result.feature.attributes.Ref_ID);
             }
           });
 
