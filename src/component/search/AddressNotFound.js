@@ -1,23 +1,25 @@
-import React, { PureComponent } from 'react';
-import { loadModules } from 'esri-loader';
+import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import { loadModules } from 'esri-loader';
+import Box from '@material-ui/core/Box';
 
 const containerStyle = {
   margin: '2px',
   padding: '30px 5px 30px 5px',
   background: '#fcfbfa',
-  width: '100%',
+  width:'100%'
 }
+
 const OneAddress = (props) => {
-  return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
+return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
 }
 
 
-export default class SuggestAddresses extends PureComponent {
+export default class SuggestAddresses extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,8 +27,10 @@ export default class SuggestAddresses extends PureComponent {
     };
   }
 
-  querySuggestedAddresses = (prevProps) => {
-
+  componentDidUpdate = (prevProps) => {
+    if (this.props.searchTerm === prevProps.searchTerm) {
+      return;
+    }
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
@@ -125,22 +129,7 @@ export default class SuggestAddresses extends PureComponent {
           }
         });
       })
-
   }
-
-  componentDidUpdate = (prevProps) => {
-
-    if (this.props.searchTerm === prevProps.searchTerm) {
-      return;
-    }
-
-    if (this.props.RefID) {
-      debugger;
-    }
-    this.querySuggestedAddresses();
-  }
-
-
 
   getUnique(array) {
     //get unique value
@@ -241,30 +230,26 @@ export default class SuggestAddresses extends PureComponent {
     return str.join(" ").trim();
   }
   render() {
-    return (<>{this.props.hasResult &&
+    return (
       <Box display="flex" justifyContent="center" style={containerStyle} >
         <Grid lg={4} md={8} xs={12}>
           <Card><CardContent>
-            <h4 style={{ marginBottom: 12 }}  >
+            <Typography style={{ marginBottom: 12 }} color='colorTextPrimary' variant='h4' >
               Address not found.
-            </h4>
-            {this.state.addressList.length > 0 ?
-              <>
-                <p>Did you mean?</p>
+         </Typography>
+            <Typography id='address-links'>
+              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
                 <ul>
                   {
                     this.state.addressList.map((item) => {
-                      return <OneAddress num={item.streetNumber} label={item.streetLabel} key={item.streetNumber.toString() + ' ' + item.streetLabel} />
+                      return <OneAddress key='' num ={item.streetNumber} label={item.streetLabel}/>
                     })
                   }
                 </ul>
-              </>
-              :
-              <>
-                <p>Couldn't find entered address. </p>
-                <p>Please check the address name.</p>
-              </>}
-          </CardContent></Card></Grid></Box>}</>);
+              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+            </Typography>
+          </CardContent></Card></Grid>
+      </Box>);
 
   }
 }
