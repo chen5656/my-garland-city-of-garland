@@ -5,11 +5,13 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { loadModules } from 'esri-loader';
+import Box from '@material-ui/core/Box';
 
 const containerStyle = {
   margin: '2px',
-  padding: '50px 5px 50px 5px',
+  padding: '30px 5px 30px 5px',
   background: '#fcfbfa',
+  width:'100%'
 }
 export default class SuggestAddresses extends Component {
   constructor(props) {
@@ -223,31 +225,26 @@ export default class SuggestAddresses extends Component {
   }
   render() {
     return (
-      <Grid style={containerStyle}
-        direction='row' justify='center'  >
-        <Grid item lg={4} md={8} sm={12} alignItems='stretch' direction='column' justify='center'  >
-          <Card style={{ minWidth: 275 }}>
-            <CardContent className='card-body '>
-              <Typography style={{ marginBottom: 12 }} color='colorTextPrimary' variant='h4' >
-                Address not found.
-                </Typography>
-              <Typography id='address-links'>
-                {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
-                  <ul>
-                    {
-                      this.state.addressList.map((item) => {
-                        return <li><Button color="primary">{item.streetNumber} {item.streetLabel}</Button ></li>
-                      })
-                    }
-                  </ul>
-                </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      <Box display="flex" justifyContent="center" style={containerStyle} >
+        <Grid lg={4} md={8} xs={12}>
+          <Card><CardContent>
+            <Typography style={{ marginBottom: 12 }} color='colorTextPrimary' variant='h4' >
+              Address not found.
+         </Typography>
+            <Typography id='address-links'>
+              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+                <ul>
+                  {
+                    this.state.addressList.map((item) => {
+                      return <li><Button color="primary">{item.streetNumber} {item.streetLabel}</Button ></li>
+                    })
+                  }
+                </ul>
+              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+            </Typography>
+          </CardContent></Card></Grid>
+      </Box>);
 
-    );
   }
 }
 
