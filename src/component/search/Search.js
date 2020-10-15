@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
-import ShowResult from '../SearchResult/ShowResult';
+import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 
 
@@ -17,14 +17,14 @@ export default class AddressSearch extends Component {
     }
 
     handleDisplayResult(searchTerm, Ref_ID = null) {
+        if (this.state.Ref_ID !== Ref_ID) {
+            this.setState({ Ref_ID: Ref_ID });
+        }
         if (!this.state.isShowResult) {
             this.setState({ isShowResult: true });
         }
         if (this.state.searchTerm !== searchTerm) {
             this.setState({ searchTerm: searchTerm });
-        }
-        if (this.state.Ref_ID !== Ref_ID) {
-            this.setState({ Ref_ID: Ref_ID });
         }
     }
 
@@ -34,7 +34,7 @@ export default class AddressSearch extends Component {
                 <SearchWidget displayResult={this.handleDisplayResult} ></SearchWidget>
                 {this.state.isShowResult &&
                  (this.state.Ref_ID ? 
-                 <ShowResult RefID={this.state.Ref_ID} /> 
+                 <Result RefID={this.state.Ref_ID} /> 
                  : 
                  <AddressNotFound searchTerm={this.state.searchTerm}  RefID={this.state.Ref_ID} />)}
             </div>
