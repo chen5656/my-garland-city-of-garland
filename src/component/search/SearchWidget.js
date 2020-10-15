@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
-import Grid from '@material-ui/core/Grid';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 
 const containerStyle = {
   margin: '2px',
@@ -50,7 +50,7 @@ export default class SearchWidget extends Component {
 
         searchWidget.on('select-result', function (e) {
           if (e.result) {
-            that.props.displayResult(e.result.name,e.result.feature.attributes.Ref_ID);
+            that.props.displayResult(e.result.name, e.result.feature.attributes.Ref_ID);
           }
         });
 
@@ -63,15 +63,18 @@ export default class SearchWidget extends Component {
   }
 
   render() {
-    return   <Grid container style={containerStyle} direction='row' justify='center'>
-    <Grid item lg={4} md={8} alignItems="stretch" direction='column' justify='center'>
-        <Grid item   >Enter a valid City of Garland Address to look up City data.</Grid>
-        <Grid item style={{ marginTop: '10px' }} >
-        <div id='search-widget' className='searchwidget' />
-            
-        </Grid>
+    return <Grid fluid style={containerStyle} >
+        <Row center="xs">
+          <Col xl={4} lg={6} md={8} xs={12}>
+            Enter a valid City of Garland Address to look up City data.
+            </Col>
+        </Row>
+        <Row center="xs">
+          <Col xl={4} lg={6} md={8} xs={12} style={{ marginTop: '10px' }}>
+            <div id='search-widget' className='searchwidget' />
+          </Col>
+        </Row>
     </Grid>
-</Grid>
   }
 };
 
