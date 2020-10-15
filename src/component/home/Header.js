@@ -3,16 +3,19 @@ import { loadModules } from 'esri-loader';
 import Box from '@material-ui/core/Box';
 
 const titleStyle = {
-  color: '#007aa3',
   fontWeight: '900',
   textShadow: '2px 2px DarkGray',
   top: '170px',
-  right: '15px',
-  width: '300px',
-  height: '100px'
+  right:0,
+  height: '85px',
+  position: 'absolute',
+  background: 'linear-gradient(0.25turn,#007aa3, rgb(0 122 163 / 64%), rgb(0 122 163 / 24%))',
+  padding:'5px 55px 5px 20px ',
+  borderRadius: '8px',
+
 }
 
-function WebMapView () {
+const WebMapView =()=> {
   const mapRef = useRef();
   useEffect(
     () => {
@@ -22,10 +25,10 @@ function WebMapView () {
         const map = new ArcGISMap({
           basemap: 'gray',
           layers: [ new MapImageLayer({
-            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
-            "sublayers": [{
-              "id": 1,
-              "visible": true
+            'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+            'sublayers': [{
+              'id': 1,
+              'visible': true
             }]
           })]
         });
@@ -47,8 +50,20 @@ function WebMapView () {
       });
     }
   );
-  return <div className="webmap" ref={mapRef} style={{height:'350px'}}/>;
+  return <div className='webmap' ref={mapRef} style={{height:'350px'}}/>;
 };
+const TitlePng=()=>{ 
+  const iconUrl='https://maps.garlandtx.gov/garlandlogos/static/media/COLOR.rev.horz.NOtag.3999f798.png';
+
+  return (<img src={ iconUrl} style={titleStyle}  />)
+  };
+
+
+// const Title =() =>{
+// return (<Box component='h1' style={titleStyle} zIndex= 'appBar'>
+// My Garland
+// </Box>)
+// }
 
 export default function Header() {
 
@@ -57,9 +72,7 @@ export default function Header() {
   return (
     <Box overflow='hidden' position ='relative'>
       <WebMapView />
-      <Box component='h1' style={titleStyle} zIndex= 'appBar' position = 'absolute'>
-        My Garland
-      </Box>
+      <TitlePng/>
     </Box>
   );
 }

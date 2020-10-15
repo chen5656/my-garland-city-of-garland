@@ -69,8 +69,8 @@ const useDefaultSeting = (keyWord) => {
       'name': 'Streets Condition',
       'catagory': 'reference-data'
     }, {
-      'id': 'pavement-condition-map',
-      'name': 'Pavement Condition',
+      'id': 'street-condition-map',
+      'name': 'Street Condition',
       'catagory': 'map-data'
     }, {
       'id': 'crime-map',
@@ -559,7 +559,7 @@ const ChildCard = (props) => {
     <ListItemIcon>
       <InboxIcon />
     </ListItemIcon>
-    <ListItemText primary="Inbox" />
+    <ListItemText primary={props.name} />
     {open ? <ExpandLess /> : <ExpandMore />}
   </ListItem>
     <Collapse in={open} timeout="auto" unmountOnExit>
