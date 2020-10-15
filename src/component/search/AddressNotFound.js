@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
 import { loadModules } from 'esri-loader';
-import Box from '@material-ui/core/Box';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 
 const containerStyle = {
   margin: '2px',
@@ -252,48 +251,28 @@ export default class SuggestAddresses extends Component {
   render() {
 
     return (
-      <Grid container   style={containerStyle} >
-          <Grid container justify="center" >
-          <Grid  lg={4} md={6} xs={12}>
-          <Card><CardContent>
-            <h4 style={{ marginBottom: 12 }}  >
-              Address not found.
+      <Grid style={containerStyle} >
+        <Row center='xs'>
+          <Col lg={4} md={6} xs={12}>
+            <Card><CardContent>
+              <h4 style={{ marginBottom: 12 }}  >
+                Address not found.
             </h4>
               {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
                 <ul>
                   {
                     this.state.addressList.map((item) => {
-                      return <OneAddress key={' ' +item.streetNumber + ' '+item.streetLabel } num={item.streetNumber} label={item.streetLabel} />
+                      return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
                     })
                   }
                 </ul>
               </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-            
-          </CardContent></Card>
-          </Grid>
-        </Grid>
+
+            </CardContent></Card>
+          </Col>
+        </Row>
       </Grid>
     );
-
-    return (
-      <Grid display="flex" justifyContent="center" style={containerStyle} >
-        <Grid item lg={4} md={6} xs={12}>
-          <Card><CardContent>
-            <h4 style={{ marginBottom: 12 }}  >
-              Address not found.
-            </h4>
-              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
-                <ul>
-                  {
-                    this.state.addressList.map((item) => {
-                      return <OneAddress key={' ' +item.streetNumber + ' '+item.streetLabel } num={item.streetNumber} label={item.streetLabel} />
-                    })
-                  }
-                </ul>
-              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-            
-          </CardContent></Card></Grid>
-      </Grid>);
 
   }
 }
