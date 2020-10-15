@@ -9,7 +9,7 @@ const titleStyle = {
   right:0,
   height: '85px',
   position: 'absolute',
-  background: 'linear-gradient(0.25turn,#007aa3, rgb(0 122 163 / 64%), rgb(0 122 163 / 24%))',
+  background: 'linear-gradient(0.25turn,rgb(0 122 163 / 90%), rgb(0 122 163 / 64%), rgb(0 122 163 / 24%))',
   padding:'5px 55px 5px 20px ',
   borderRadius: '8px',
 

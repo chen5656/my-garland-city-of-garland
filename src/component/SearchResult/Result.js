@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,6 +18,10 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 import Paper from '@material-ui/core/Paper';
+
+import Icon from '@material-ui/core/Icon';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 function iterationCopy(src) {
   var target = {};
@@ -534,52 +539,41 @@ const resultControl = {
 
   ],
 }
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
 
 const OneInfo = (props) => {
 
 }
 const ChildCard = (props) => {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
   const handleClick = () => {
     setOpen(!open);
   };
-  return (<><ListItem button onClick={handleClick}>
-    <ListItemIcon>
-      <InboxIcon />
-    </ListItemIcon>
-    <ListItemText primary={props.name} />
-    {open ? <ExpandLess /> : <ExpandMore />}
-  </ListItem>
+  return (<>
+    <ListItem button onClick={handleClick}>
+      <ListItemIcon>
+        {open ? <RemoveIcon /> : <AddIcon />}
+      </ListItemIcon>
+      <ListItemText primary={props.name} />
+      {open ? <ExpandLess /> : <ExpandMore />}
+    </ListItem>
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="div" disablePadding>
-        <ListItem button className={classes.nested}>
+        <ListItem button >
           <ListItemIcon>
             <StarBorder />
           </ListItemIcon>
           <ListItemText primary="Starred" />
         </ListItem>
       </List>
-    </Collapse></>
+    </Collapse>
+  </>
   )
 
 }
 
 
 const Section = (props) => {
-  const classes = useStyles();
-
   const containerList = useDefaultSeting('containerList')
     .filter(item => item.catagory === props.catagory)
 
@@ -591,7 +585,6 @@ const Section = (props) => {
             {props.name}
           </ListSubheader>
         }
-        className={classes.root}
       >
         {
           containerList.map((item) => {
