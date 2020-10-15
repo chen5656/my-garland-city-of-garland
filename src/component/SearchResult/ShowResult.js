@@ -1,7 +1,9 @@
-import React, { Component }  from 'react';
+import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
 import Box from '@material-ui/core/Box';
-
+// "address": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4",
+// "parcel": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5",
+// "geometry": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer"
 export default class ShowResult extends Component {
 
   constructor(props) {
@@ -10,17 +12,24 @@ export default class ShowResult extends Component {
     };
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.RefID === prevProps.RefID) {
-      return;
-    }
+  doQuery() {
     const that = this;
-
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
-    .then(([Query, QueryTask]) => {
+      .then(([Query, QueryTask]) => {
 
+      });
+  }
+
+  componentDidMount = () => {
+    this.doQuery();
+  }
+
+  componentDidUpdate = (prevProps) => {
+    if (this.props.RefID !== prevProps.RefID) {
+      this.doQuery();
     }
-    );
+
+
 
   }
 

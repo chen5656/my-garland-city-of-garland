@@ -14,6 +14,11 @@ const containerStyle = {
   width: '100%'
 }
 
+const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
+const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
+const streetAliasUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16";
+
+
 const OneAddress = (props) => {
   return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
 }
@@ -61,7 +66,7 @@ export default class SuggestAddresses extends Component {
           outFields: ["*"]
         });
         var queryTask = new QueryTask({
-          url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4"
+          url: addressURL
         });
 
         queryTask.execute(query).then(function (results) {
@@ -78,7 +83,7 @@ export default class SuggestAddresses extends Component {
               return a.streetNumber - b.streetNumber;
             });
             //find close nums display data
-            var addrList = that.closestNums(addr_number, addr_list);
+            var addrList = that.nearestNums(addr_number, addr_list);
             that.setState({ addressList: addrList });
 
           } else {
@@ -97,7 +102,7 @@ export default class SuggestAddresses extends Component {
               outFields: ["*"]
             });
             var queryTask = new QueryTask({
-              url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3"
+              url: streetUrl
             });
             queryTask.execute(query).then(function (results) {
               if (results.features.length > 0) {
@@ -113,7 +118,7 @@ export default class SuggestAddresses extends Component {
                   outFields: ["*"]
                 });
                 var queryTask = new QueryTask({
-                  url: "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16"
+                  url: streetAliasUrl
                 });
                 queryTask.execute(query).then(function (results) {
                   if (results.features.length > 0) {
@@ -157,7 +162,7 @@ export default class SuggestAddresses extends Component {
     }
     return distinct;
   }
-  closestNums(num, arr) {
+  nearestNums(num, arr) {
     var numsIndex = arr.length - 1;
     if (arr.length > 5) {
       for (var i = 0; i < arr.length; i++) {
@@ -247,22 +252,21 @@ export default class SuggestAddresses extends Component {
   render() {
     return (
       <Box display="flex" justifyContent="center" style={containerStyle} >
-        <Grid lg={4} md={8} xs={12}>
+        <Grid lg={4} md={6} xs={12}>
           <Card><CardContent>
-            <Typography style={{ marginBottom: 12 }} color='colorTextPrimary' variant='h4' >
+            <h4 style={{ marginBottom: 12 }}  >
               Address not found.
-         </Typography>
-            <Typography id='address-links'>
+            </h4>
               {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
                 <ul>
                   {
                     this.state.addressList.map((item) => {
-                      return <OneAddress key='' num={item.streetNumber} label={item.streetLabel} />
+                      return <OneAddress key={' ' +item.streetNumber + ' '+item.streetLabel } num={item.streetNumber} label={item.streetLabel} />
                     })
                   }
                 </ul>
               </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
-            </Typography>
+            
           </CardContent></Card></Grid>
       </Box>);
 
