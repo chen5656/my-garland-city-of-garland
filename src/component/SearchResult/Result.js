@@ -31,6 +31,61 @@ function iterationCopy(src) {
 const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
 const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
 const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
+
+const useDefaultSeting = (keyWord) => {
+  const defaultSetting = {
+    sectionList: [{
+      id: 'location-data',
+      name: 'Location Data',
+    }, {
+      id: 'reference-data',
+      name: 'Reference Data',
+    }, {
+      id: 'map-data',
+      name: 'Map Data',
+    }],
+    containerList: [{
+      'id': 'nearest-city-facility',
+      'name': 'Nearby City Facilities',
+      'catagory': 'location-data'
+    }, {
+      'id': 'services',
+      'name': 'Services',
+      'catagory': 'location-data'
+    }, {
+      'id': 'reference',
+      'name': 'Reference',
+      'catagory': 'reference-data'
+    }, {
+      'id': 'neighborhoods',
+      'name': 'Neighborhoods',
+      'catagory': 'reference-data'
+    }, {
+      'id': 'planning-development-zoning',
+      'name': 'Planning & Development / Zoing',
+      'catagory': 'reference-data'
+    }, {
+      'id': 'streets-condition',
+      'name': 'Streets Condition',
+      'catagory': 'reference-data'
+    }, {
+      'id': 'pavement-condition-map',
+      'name': 'Pavement Condition',
+      'catagory': 'map-data'
+    }, {
+      'id': 'crime-map',
+      'name': 'Crime Map',
+      'catagory': 'map-data'
+    }]
+  };
+  if (keyWord in defaultSetting) {
+    return defaultSetting[keyWord];
+  } else {
+    return null;
+  }
+};
+
+
 const parcelDataList = [{
   "id": "council-dist",
   "name": "City Council District",
@@ -493,7 +548,7 @@ const useStyles = makeStyles((theme) => ({
 const OneInfo = (props) => {
 
 }
-const OneCard = (props) => {
+const ChildCard = (props) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -521,51 +576,13 @@ const OneCard = (props) => {
 
 }
 
-const CardList = (props) => {
-  const classes = useStyles();
-  return (<div>
-    < OneCard />
-    < OneCard />
-    < OneCard />
-  </div>)
-}
 
-const ChildSection = (props) => {
+const Section = (props) => {
   const classes = useStyles();
-  const containerList = [{
-    'id': 'nearest-city-facility',
-    'name': 'Nearby City Facilities',
-    'catagory': 'location-data'
-  }, {
-    'id': 'services',
-    'name': 'Services',
-    'catagory': 'location-data'
-  }, {
-    'id': 'reference',
-    'name': 'Reference',
-    'catagory': 'reference-data'
-  }, {
-    'id': 'neighborhoods',
-    'name': 'Neighborhoods',
-    'catagory': 'reference-data'
-  }, {
-    'id': 'planning-development-zoning',
-    'name': 'Planning & Development / Zoing',
-    'catagory': 'reference-data'
-  }, {
-    'id': 'streets-condition',
-    'name': 'Streets Condition',
-    'catagory': 'reference-data'
-  }, {
-    'id': 'pavement-condition-map',
-    'name': 'Pavement Condition',
-    'catagory': 'map'
-  }, {
-    'id': 'crime-map',
-    'name': 'Crime Map',
-    'catagory': 'map'
-  }];
-  //title
+
+  const containerList = useDefaultSeting('containerList')
+    .filter(item => item.catagory === props.catagory)
+
   return (<Col lg={4} md={6} xs={12} style={{ padding: '15px' }}>
     <Paper elevation={3}>
       <List component="section"
@@ -575,33 +592,29 @@ const ChildSection = (props) => {
           </ListSubheader>
         }
         className={classes.root}
-      ><CardList /></List>
+      >
+        {
+          containerList.map((item) => {
+            return <ChildCard name={item.name} catagory={item.id} key={item.id} />
+          })
+        }
+      </List>
 
     </Paper>
   </Col>)
-
 }
 
 const ResultContent = () => {
-
-  const sectionList = [{
-    id: 'location-section',
-    name: 'Location Data',
-  }, {
-    id: 'referernce-section',
-    name: 'Reference Data',
-  }, {
-    id: 'map-section',
-    name: 'Map Data',
-  }]
+  const sectionList = useDefaultSeting('sectionList');
   return (<Row >
     {
       sectionList.map((item) => {
-        return <ChildSection  name={item.name} key={item.id} />
+        return <Section name={item.name} catagory={item.id} key={item.id} />
       })
     }
   </Row>)
 }
+
 export default class Result extends Component {
 
   constructor(props) {
