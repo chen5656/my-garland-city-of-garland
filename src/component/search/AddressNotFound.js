@@ -2,9 +2,14 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 // import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { loadModules } from 'esri-loader';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+
+const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
+const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
+const streetAliasUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16";
 
 const containerStyle = {
   margin: '2px',
@@ -13,13 +18,11 @@ const containerStyle = {
   width: '100%'
 }
 
-const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
-const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
-const streetAliasUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16";
-
-
 const OneAddress = (props) => {
-  return <li><Button color="primary">{props.num} {props.label}</Button ></li>;
+  function searchAddress() {
+    alert(props.label);
+  }
+  return <li><Button color="primary" onClick={searchAddress}>{props.num} {props.label}</Button ></li>;
 }
 
 
@@ -254,21 +257,21 @@ export default class SuggestAddresses extends Component {
       <Grid style={containerStyle} >
         <Row center='xs'>
           <Col lg={4} md={6} xs={12}>
-            <Card><CardContent>
-              <h4 style={{ marginBottom: 12 }}  >
-                Address not found.
-            </h4>
-              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
-                <ul>
-                  {
-                    this.state.addressList.map((item) => {
-                      return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
-                    })
-                  }
-                </ul>
-              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+            <Card>
+              <CardHeader title="Address not found." />
+              <CardContent  style={{textAlign: 'left'}}>
+                {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+                  <ul>
+                    {
+                      this.state.addressList.map((item) => {
+                        return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
+                      })
+                    }
+                  </ul>
+                </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
 
-            </CardContent></Card>
+              </CardContent>
+              </Card>
           </Col>
         </Row>
       </Grid>
