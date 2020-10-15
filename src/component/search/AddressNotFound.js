@@ -250,9 +250,34 @@ export default class SuggestAddresses extends Component {
     return str.join(" ").trim();
   }
   render() {
+
     return (
-      <Box display="flex" justifyContent="center" style={containerStyle} >
-        <Grid lg={4} md={6} xs={12}>
+      <Grid container   style={containerStyle} >
+          <Grid container justify="center" >
+          <Grid  lg={4} md={6} xs={12}>
+          <Card><CardContent>
+            <h4 style={{ marginBottom: 12 }}  >
+              Address not found.
+            </h4>
+              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+                <ul>
+                  {
+                    this.state.addressList.map((item) => {
+                      return <OneAddress key={' ' +item.streetNumber + ' '+item.streetLabel } num={item.streetNumber} label={item.streetLabel} />
+                    })
+                  }
+                </ul>
+              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+            
+          </CardContent></Card>
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+
+    return (
+      <Grid display="flex" justifyContent="center" style={containerStyle} >
+        <Grid item lg={4} md={6} xs={12}>
           <Card><CardContent>
             <h4 style={{ marginBottom: 12 }}  >
               Address not found.
@@ -268,7 +293,7 @@ export default class SuggestAddresses extends Component {
               </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
             
           </CardContent></Card></Grid>
-      </Box>);
+      </Grid>);
 
   }
 }
