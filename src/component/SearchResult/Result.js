@@ -13,7 +13,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import LinearProgress from '@material-ui/core/LinearProgress';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import AddIcon from '@material-ui/icons/Add';
@@ -590,17 +589,15 @@ const MyGarlandItemValue = (props) => {
 
 const MyGarlandItem = (props) => {
   const classes = useStyles();
-  //props.data.id
-  //props.data.name
-  //props.data.inputControl
-  //props.data.outputData
-  console.log(props.name)
+  //props.name
+  //props.data
+  console.log(props.data)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    <MyGarlandItemValue />
+    {(props.data&&props.data.length)?props.data.length:<MyGarlandItemValue />}
   </ListItem>)
 }
 const Category = (props) => {
@@ -625,7 +622,7 @@ const Category = (props) => {
         {
           infoList.map((item) => {
             return <MyGarlandItem key={item.id} name={item.name} data={item.outputData} />
-          })
+          }) 
         }
       </List>
     </Collapse>
@@ -723,7 +720,7 @@ export default class Result extends Component {
 
     });
   }
-  getInfoFromParcelTable(Query, QueryTask, parcelUrl, parcelId, keyword='parcel-data') {
+  getInfoFromParcelTable(Query, QueryTask, parcelUrl, parcelId, keyword = 'parcel-data') {
     var that = this;
     var query = new Query();
     var queryTask = new QueryTask({
@@ -735,21 +732,20 @@ export default class Result extends Component {
     query.outFields = ["*"];
     queryTask.execute(query).then(function (results) {
       var attr = results.features[0].attributes;
-      var myGarlandItemList_parcel = that.state.myGarlandItemList.filter(item => item.inputControl.category ===keyword);
-      myGarlandItemList_parcel.map(function (item) {
-        var newItem = {};
-        newItem.id= item.id
-        newItem.outputData = item.outputControl.displayValues.map((item) => {
-          var data = {};
-          data[item] = attr[item]
-          return data;
-        })
-        return newItem;
-      })
+      var newArray = that.state.myGarlandItemList.slice().map((item) => {
+        if (item.inputControl.category === keyword) {
+          item.outputData = item.outputControl.displayValues.map((item) => {
+            var data = {};
+            data[item] = attr[item]
+            return data;
+          });
+        }
+        return item;
+      });
 
-      var newArray = that.state.myGarlandItemList.slice()
+      that.setState({myGarlandItemList:newArray});
 
-      
+
     });
   }
   componentDidMount = () => {
