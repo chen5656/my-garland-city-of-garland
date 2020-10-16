@@ -11,7 +11,7 @@ const titleStyle = {
   position: 'absolute',
   background: 'linear-gradient(0.25turn,rgb(0 122 163 / 90%), rgb(0 122 163 / 64%), rgb(0 122 163 / 24%))',
   padding:'5px 55px 5px 20px ',
-  borderRadius: '8px',
+  borderRadius: '8px 0 0 8px',
 
 }
 
@@ -55,7 +55,7 @@ const WebMapView =()=> {
 const TitlePng=()=>{ 
   const iconUrl='https://maps.garlandtx.gov/garlandlogos/static/media/COLOR.rev.horz.NOtag.3999f798.png';
 
-  return (<img src={ iconUrl} style={titleStyle}  />)
+  return (<img src={ iconUrl} style={titleStyle}  alt='City of Garland'/>)
   };
 
 
