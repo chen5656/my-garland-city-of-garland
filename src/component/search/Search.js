@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
-import Result from '../SearchResult/Result';
+import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 
 
