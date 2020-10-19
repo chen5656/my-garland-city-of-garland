@@ -1,0 +1,33 @@
+[{
+      "id": "nearest-city-facility",
+      "name": "Nearby City Facilities",
+      "category": "location-data"
+    }, {
+      "id": "services",
+      "name": "Services",
+      "category": "location-data"
+    }, {
+      "id": "reference",
+      "name": "Reference",
+      "category": "reference-data"
+    }, {
+      "id": "neighborhoods",
+      "name": "Neighborhoods",
+      "category": "reference-data"
+    }, {
+      "id": "planning-development-zoning",
+      "name": "Planning & Development / Zoing",
+      "category": "reference-data"
+    }, {
+      "id": "streets-condition",
+      "name": "Streets Condition",
+      "category": "reference-data"
+    }, {
+      "id": "street-condition-map",
+      "name": "Street Condition",
+      "category": "map-data"
+    }, {
+      "id": "crime-map",
+      "name": "Crime Map",
+      "category": "map-data"
+    }]

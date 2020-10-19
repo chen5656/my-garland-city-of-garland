@@ -1,0 +1,10 @@
+ [{
+    "id": "location-data",
+    "name": "Location Data"
+  }, {
+    "id": "reference-data",
+    "name": "Reference Data"
+  }, {
+    "id": "map-data",
+    "name": "Map Data"
+  }]
