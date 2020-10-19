@@ -25,8 +25,6 @@ import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
 
-const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
-const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
 const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
 
@@ -171,6 +169,9 @@ export default class Result extends Component {
       address: null,
       MyGarlandFactorList: [],
     };
+
+    this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
+    this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
   }
 
   init() {
@@ -185,15 +186,15 @@ export default class Result extends Component {
     const that = this;
     loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
       .then(([Query, QueryTask]) => {
-        this.getAddressInfo(Query, QueryTask, addressUrl, this.props.RefID)
+        this.getAddressInfo(Query, QueryTask,  this.props.RefID)
       });
   }
 
-  getAddressInfo(Query, QueryTask, addressUrl, addressId) {
+  getAddressInfo(Query, QueryTask,  addressId) {
     var that = this;
     var query = new Query();
     var queryTask = new QueryTask({
-      url: addressUrl
+      url: this.addressUrl
     });
     query.where = "ADDRESSID =" + addressId;
     //query.outSpatialReference = spatialReference2276;
@@ -209,16 +210,17 @@ export default class Result extends Component {
           geometryStatePlane: result.features[0].geometry
         });
 
-        that.getInfoFromParcelTable(Query, QueryTask, parcelUrl, attr.PARCELID)
+        that.getInfoFromParcelTable(Query, QueryTask,  attr.PARCELID)
+        // that.getNearestCityFacilityList(that.geometryStatePlane);
       }
 
     });
   }
-  getInfoFromParcelTable(Query, QueryTask, parcelUrl, parcelId, keyword = 'parcel-data') {
+  getInfoFromParcelTable(Query, QueryTask,  parcelId, category = 'parcel-data') {
     var that = this;
     var query = new Query();
     var queryTask = new QueryTask({
-      url: parcelUrl
+      url: this.parcelUrl
     });
     query.where = "PARCELID  =" + parcelId;
     //query.outSpatialReference = spatialReference2276;
@@ -227,7 +229,7 @@ export default class Result extends Component {
     queryTask.execute(query).then(function (results) {
       var attr = results.features[0].attributes;
       var newArray = that.state.MyGarlandFactorList.slice().map((item) => {
-        if (item.inputControl.category === keyword) {
+        if (item.inputControl.category === category) {
           item.outputData = item.outputControl.displayValues.map((item) => {
             return attr[item];
           });
@@ -240,6 +242,66 @@ export default class Result extends Component {
 
     });
   }
+
+  getNearestCityFacilityList(geometryStatePlane,category = 'city-facility',cityFacilityList,iterationCopy,geometryEngineAsync,all) {
+    return;
+    var that = this;
+    var allCityFacilities = getFeaturesOfCityFacilityList(cityFacilityList);
+    return new Promise(function (resolve, reject) {
+      getDistances(allCityFacilities, that.geometryStatePlane).then(function (result) {
+        var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
+          val.distance = result[i];
+          return val;
+        });
+        that.nearestCityFacilityList = cityFacilityList.map(function (item) {
+          var newItem = iterationCopy(item);
+          delete newItem.features;
+          var features = cityFacilityDistanceList.filter(function (val) {
+            return val.layer == item.id;
+          });
+          if (features.length > 0) {
+            var nearestFeature = features.reduce(function (a, b) {
+              if (a.distance < b.distance) {
+                return a;
+              } else {
+                return b;
+              }
+            });
+            newItem.distance = nearestFeature.distance.toFixed(2);
+            newItem.queryPolygonCount = 1;
+            newItem.feature = nearestFeature.attributes;
+          } else {
+            newItem.queryPolygonCount = 0;
+          }
+          return newItem;
+        });
+        resolve(that.nearestCityFacilityList);
+      });
+
+    });
+
+    function getDistances(features, geometryStatePlane) {
+      var distanceRequestList = features.map(function (item) {
+        return geometryEngineAsync.distance(geometryStatePlane, item.geometry, "miles")
+      });
+      var promises = new all(distanceRequestList);
+      return promises;
+    }
+
+    function getFeaturesOfCityFacilityList(cityFacilityList) {
+      var allPnts = cityFacilityList.map(function (val) {
+        return val.features.map(function (item) {
+          item.layer = val.id;
+          return item;
+        });
+      });
+
+      return allPnts.reduce(function (a, b) {
+        return a.concat(b);
+      });
+    }
+  }
+
   componentDidMount = () => {
     this.init();
     this.doQuery();
