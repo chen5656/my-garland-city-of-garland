@@ -164,26 +164,11 @@ export default class Result extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      parcelId: null,
-      address: null,
-      MyGarlandFactorList: [],
-    };
-
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
   }
 
-  init() {
-    this.setState({
-      parcelId: null, address: null,
-      geometryStatePlane: null,//in stateplane
-      MyGarlandFactorList: json_factorList .sort((a, b) => { return a.outputControl.displayID - b.outputControl.displayID })
-    });
-  }
-
   doQuery() {
-    const that = this;
     loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
       .then(([Query, QueryTask]) => {
         this.getAddressInfo(Query, QueryTask,  this.props.RefID)
@@ -204,14 +189,12 @@ export default class Result extends Component {
     queryTask.execute(query).then(function (result) {
       if (result.features.length > 0) {
         var attr = result.features[0].attributes;
-        that.setState({
-          parcelId: attr.PARCELID,
-          address: ("" + attr.STREETNUM, " ", attr.STREETLABEL, ", ", attr.CITY, ", ", attr.STATE, ", ", attr.ZIPCODE),
-          geometryStatePlane: result.features[0].geometry
-        });
-
-        that.getInfoFromParcelTable(Query, QueryTask,  attr.PARCELID)
-        // that.getNearestCityFacilityList(that.geometryStatePlane);
+        that.getInfoFromParcelTable(Query, QueryTask,attr.PARCELID)
+        console.log({
+          'Parcel Id:': attr.PARCELID,
+          'Address:': ("" + attr.STREETNUM+ " "+ attr.STREETLABEL+ ", "+ attr.CITY+ ", "+ attr.STATE+ ", "+ attr.ZIPCODE)
+        })
+        // that.getNearestCityFacilityList(result.features[0].geometry);
       }
 
     });
@@ -303,13 +286,11 @@ export default class Result extends Component {
   }
 
   componentDidMount = () => {
-    this.init();
     this.doQuery();
   }
 
   componentDidUpdate = (prevProps) => {
     if (this.props.RefID !== prevProps.RefID) {
-      this.init();
       this.doQuery();
     }
 
@@ -319,11 +300,10 @@ export default class Result extends Component {
 
   render() {
     // return <div>{this.props.RefID}</div>;
-    console.log(this.state.MyGarlandFactorList)
 
     return (<article>
       <Grid fluid  >
-        <ResultContent MyGarlandFactorList={this.state.MyGarlandFactorList} />
+        <ResultContent MyGarlandFactorList={json_factorList} />
       </Grid>
     </article>
     )
