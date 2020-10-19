@@ -429,11 +429,8 @@ const useDefaultSeting = (keyWord) => {
         "category": "reference",
         "displayID": 1,
         "displayValues": ["COUNCIL_ID"],
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'><a href='{{hardcodeValue1}}' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue1}}</a></span>",
+        "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue}}</a></span>",
         "displayDistance": false,
-        "displayValue1": "COUNCIL_ID",
-        "hardcodeValue1": "this field will be updated during the app."
       }
     },
     {
@@ -581,23 +578,34 @@ const useStyles = makeStyles((theme) => ({
 
 const MyGarlandItemValue = (props) => {
   const classes = useStyles();
-  return <CircularProgress
-    className={classes.top}
-    size={25}
-  />
+  console.log(props.data, props.outputControl);
+  if(props.outputControl.hardcode){
+    var str =props.outputControl.hardcode.split('{{displayValue}}');
+    var newStr =[];
+    for(let i=0;i<str.length;i++){
+      newStr.push(str[i]);
+      if(i<props.data.length){
+        newStr.push(props.data[i])
+      }
+    }
+    return <div>{newStr}</div>
+
+  }
+
+  return <div>{props.data.length}</div>
 }
 
 const MyGarlandItem = (props) => {
   const classes = useStyles();
-  //props.name
-  //props.data
-  console.log(props.data)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data&&props.data.length)?props.data.length:<MyGarlandItemValue />}
+    {(props.data && props.data.length) ? <MyGarlandItemValue data={props.data} outputControl={props.outputControl}/> : <CircularProgress
+      className={classes.top}
+      size={25}
+    />}
   </ListItem>)
 }
 const Category = (props) => {
@@ -621,8 +629,8 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           infoList.map((item) => {
-            return <MyGarlandItem key={item.id} name={item.name} data={item.outputData} />
-          }) 
+            return <MyGarlandItem key={item.id} name={item.name} data={item.outputData} outputControl={item.outputControl} />
+          })
         }
       </List>
     </Collapse>
@@ -735,15 +743,13 @@ export default class Result extends Component {
       var newArray = that.state.myGarlandItemList.slice().map((item) => {
         if (item.inputControl.category === keyword) {
           item.outputData = item.outputControl.displayValues.map((item) => {
-            var data = {};
-            data[item] = attr[item]
-            return data;
+            return attr[item];
           });
         }
         return item;
       });
 
-      that.setState({myGarlandItemList:newArray});
+      that.setState({ myGarlandItemList: newArray });
 
 
     });
