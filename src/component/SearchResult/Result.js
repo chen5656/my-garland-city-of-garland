@@ -25,533 +25,10 @@ import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
 
-
 const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
 const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
 const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
-const useDefaultSeting = (keyWord) => {
-  const defaultSetting = {
-    sectionList: [{
-      id: 'location-data',
-      name: 'Location Data',
-    }, {
-      id: 'reference-data',
-      name: 'Reference Data',
-    }, {
-      id: 'map-data',
-      name: 'Map Data',
-    }],
-    categoryList: [{
-      'id': 'nearest-city-facility',
-      'name': 'Nearby City Facilities',
-      'category': 'location-data'
-    }, {
-      'id': 'services',
-      'name': 'Services',
-      'category': 'location-data'
-    }, {
-      'id': 'reference',
-      'name': 'Reference',
-      'category': 'reference-data'
-    }, {
-      'id': 'neighborhoods',
-      'name': 'Neighborhoods',
-      'category': 'reference-data'
-    }, {
-      'id': 'planning-development-zoning',
-      'name': 'Planning & Development / Zoing',
-      'category': 'reference-data'
-    }, {
-      'id': 'streets-condition',
-      'name': 'Streets Condition',
-      'category': 'reference-data'
-    }, {
-      'id': 'street-condition-map',
-      'name': 'Street Condition',
-      'category': 'map-data'
-    }, {
-      'id': 'crime-map',
-      'name': 'Crime Map',
-      'category': 'map-data'
-    }],
-    infoList: [{
-      "id": "city-hall",
-      "name": "City Hall",
-      "inputControl": {
-        "category": "city-facility",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='CITY HALL'",
-        "addressValue": "ADDRESS",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "1",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      },
-    },
-    {
-      "id": "police-station",
-      "name": "Police Station",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='POLICE STATION'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "2",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "municipal-courts",
-      "name": "Municipal Courts",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='COURTS'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "3",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "nearest-fire-station",
-      "name": "Nearest Fire Station",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='FIRE' and BLDG_NAME like 'FIRE STATION%'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "4",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "customer-service",
-      "name": "Customer Service",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='UTILITY SERVICES'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "5",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "nearest-library",
-      "name": "Nearest Library",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='LIBRARY'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "16",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    }, {
-      "id": "nearest-park",
-      "name": "Nearest Park",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": null,
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/28",
-        "where": "1=1",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 2,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'><a href='{{displayValue2}}' target='_blank' title='Open to see details'>{{displayValue1}}</a></span>",
-        "displayDistance": false,
-        "displayValue1": "PARK",
-        "displayValue2": "PARK_WEBLI"
-      }
-    }, {
-      "id": "nearest-recreation-center",
-      "name": "Nearest Recreation Center",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='PARKS' and CAMPUS like '%RECREATION%'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 3,
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    }, {
-      "id": "nearest-city-facility-with-wifi",
-      "name": "Nearest Public Wi-Fi",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
-        "where": "WIFI ='Yes'",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 1,
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "ews-recycling",
-      "name": "EWS Recycling Pickup Week", "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 5,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "COLOR",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "ews-recycling-day", //hardcoded function in template.js to convert to next recycling day
-      "name": "Your Next Recycling Day is",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 6,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ANCORE_DAY",
-        "displayFunction": {
-          functionParameter: ["displayValue1"],
-          functionCode: "ews-recycling-day"
-        },
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "ews-trash",
-      "name": "EWS Trash and Brush Pickup Day",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 4,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "T_DAY",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "code-nuisance-districts",
-      "name": "Code Nuisance Inspector",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/30",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 8,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue4}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "INSPECTOR",
-        "displayValue2": "PHONE",
-        "displayValue3": "INSPECTOR2",
-        "displayValue4": "PHONE2",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }, {
-          "id": "displayValue4",
-          "value": "phone-number"
-        }]
-      }
-    },
-    {
-      "id": "code-commercial-districts",
-      "name": "Code Commercial Inspector",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/31",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 7,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{displayValue2}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "INSPECTOR",
-        "displayValue2": "PHONE",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }]
-      }
-    },
-    {
-      "id": "neighborhood-watch",
-      "name": "Neighborhood Watch",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 3,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NAME",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "neighborhood-assoc",
-      "name": "Neighborhood Association",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 4,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NAME",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "gdc-zoning",
-      "name": "GDC Zoning",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 3,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "GDC_ZONING",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "npo",
-      "name": "Neighborhood Police Officer",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/18",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 2,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><a target='_blank' href='mailto:{{displayValue3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{displayValue3}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "OFFICER",
-        "displayValue2": "PHONE",
-        "displayValue3": "EMAIL",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }]
-      }
-    },
-
-    {
-      "id": "council-dist",
-      "name": "City Council District",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 1,
-        "displayValues": ["COUNCIL_ID"],
-        "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue}}</a></span>",
-        "displayDistance": false,
-      }
-    },
-    {
-      "id": "zipcode",
-      "name": "Zip Code",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 2,
-        "displayValues": ["ZIP_CODE"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ZIP_CODE",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "mapsco",
-      "name": "Mapsco Grid",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 3,
-        "displayValues": ["MAPSCO"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "MAPSCO",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "school-district",
-      "name": "School District",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 4,
-        "displayValues": ["SCHOOL_DISTRICT"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "SCHOOL_DISTRICT",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "landuse",
-      "name": "Land Use",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 1,
-        "displayValues": ["LANDUSE"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "LANDUSE",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "zoning",
-      "name": "ZONING",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 2,
-        "displayValues": ["ZONING"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ZONING",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "neighborhood-parcel",
-      "name": "Neighborhood",
-      "inputControl": {
-        "category": "parcel-data",
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 1,
-        "displayValues": ["NEIGHBORHOOD"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NEIGHBORHOOD",
-        "displayValue2": null
-      }
-    }
-    ],
-
-  }
-
-
-  // debugger;
-  // const cloneItem = {...defaultSetting};
-  if (keyWord in defaultSetting) {
-    return defaultSetting[keyWord];
-  } else {
-    return null;
-  }
-};
 
 const useStyles = makeStyles((theme) => ({
   sectionHead: {
@@ -580,33 +57,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const MyGarlandItemValue = (props) => {
+const FactorValue_Address_Distant_GoogleMapLink =(props)=>{
+  return (<>
+  <span></span>
+  <span></span>
+  <span></span>
+  </>)
+}
+const MyGarlandFactorValue = (props) => {
   const classes = useStyles();
   console.log(props.data, props.outputControl);
-  if(props.outputControl.hardcode){
-    var str =props.outputControl.hardcode.split('{{displayValue}}');
-    var newStr =[];
-    for(let i=0;i<str.length;i++){
-      newStr.push(str[i]);
-      if(i<props.data.length){
-        newStr.push(props.data[i])
-      }
-    }
-    return <div>{newStr}</div>
+  // if(props.outputControl.hardcode){
+  //   var str =props.outputControl.hardcode.split('{{displayValue}}');
+  //   var newStr =[];
+  //   for(let i=0;i<str.length;i++){
+  //     newStr.push(str[i]);
+  //     if(i<props.data.length){
+  //       newStr.push(props.data[i])
+  //     }
+  //   }
+  //   return <div>{newStr}</div>
 
-  }
-
+  // }
   return <div>{props.data.length}</div>
 }
 
-const MyGarlandItem = (props) => {
+const MyGarlandFactor = (props) => {
   const classes = useStyles();
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data && props.data.length) ? <MyGarlandItemValue data={props.data} outputControl={props.outputControl}/> : <CircularProgress
+    {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl}/> : <CircularProgress
       className={classes.top}
       size={25}
     />}
@@ -619,7 +102,7 @@ const Category = (props) => {
   const handleClick = () => {
     setOpen(!open);
   };
-  const infoList = props.myGarlandItemList.filter(item => item.outputControl.category === props.category)
+  const factorList = props.MyGarlandFactorList.filter(item => item.outputControl.category === props.category)
 
   return (<>
     <ListItem button onClick={handleClick} className={classes.categoryHead}>
@@ -632,8 +115,8 @@ const Category = (props) => {
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="div" disablePadding>
         {
-          infoList.map((item) => {
-            return <MyGarlandItem key={item.id} name={item.name} data={item.outputData} outputControl={item.outputControl} />
+          factorList.map((item) => {
+            return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData} outputControl={item.outputControl} />
           })
         }
       </List>
@@ -646,8 +129,7 @@ const Category = (props) => {
 
 const Section = (props) => {
   const classes = useStyles();
-  const categoryList = useDefaultSeting('categoryList')
-    .filter(item => item.category === props.category)
+  const categoryList = json_categoryList.filter(item => item.category === props.category)
 
   return (<Col lg={4} md={6} xs={12} style={{ padding: '15px' }}>
     <Paper elevation={3} >
@@ -660,7 +142,7 @@ const Section = (props) => {
       >
         {
           categoryList.map((item) => {
-            return <Category name={item.name} category={item.id} key={item.id} myGarlandItemList={props.myGarlandItemList} />
+            return <Category name={item.name} category={item.id} key={item.id} MyGarlandFactorList={props.MyGarlandFactorList} />
           })
         }
       </List>
@@ -670,11 +152,11 @@ const Section = (props) => {
 }
 
 const ResultContent = (props) => {
-  const sectionList = useDefaultSeting('sectionList');
+  const sectionList = json_sectionList ;
   return (<Row >
     {
       sectionList.map((item) => {
-        return <Section name={item.name} category={item.id} key={item.id} myGarlandItemList={props.myGarlandItemList} />
+        return <Section name={item.name} category={item.id} key={item.id} MyGarlandFactorList={props.MyGarlandFactorList} />
       })
     }
   </Row>)
@@ -687,7 +169,7 @@ export default class Result extends Component {
     this.state = {
       parcelId: null,
       address: null,
-      myGarlandItemList: [],
+      MyGarlandFactorList: [],
     };
   }
 
@@ -695,7 +177,7 @@ export default class Result extends Component {
     this.setState({
       parcelId: null, address: null,
       geometryStatePlane: null,//in stateplane
-      myGarlandItemList: useDefaultSeting('infoList').sort((a, b) => { return a.outputControl.displayID - b.outputControl.displayID })
+      MyGarlandFactorList: json_factorList .sort((a, b) => { return a.outputControl.displayID - b.outputControl.displayID })
     });
   }
 
@@ -744,7 +226,7 @@ export default class Result extends Component {
     query.outFields = ["*"];
     queryTask.execute(query).then(function (results) {
       var attr = results.features[0].attributes;
-      var newArray = that.state.myGarlandItemList.slice().map((item) => {
+      var newArray = that.state.MyGarlandFactorList.slice().map((item) => {
         if (item.inputControl.category === keyword) {
           item.outputData = item.outputControl.displayValues.map((item) => {
             return attr[item];
@@ -753,7 +235,7 @@ export default class Result extends Component {
         return item;
       });
 
-      that.setState({ myGarlandItemList: newArray });
+      that.setState({ MyGarlandFactorList: newArray });
 
 
     });
@@ -775,10 +257,11 @@ export default class Result extends Component {
 
   render() {
     // return <div>{this.props.RefID}</div>;
+    console.log(this.state.MyGarlandFactorList)
 
     return (<article>
       <Grid fluid  >
-        <ResultContent myGarlandItemList={this.state.myGarlandItemList} />
+        <ResultContent MyGarlandFactorList={this.state.MyGarlandFactorList} />
       </Grid>
     </article>
     )
