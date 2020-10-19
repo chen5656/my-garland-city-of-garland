@@ -23,7 +23,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_factorList from '../../data/factorList.json';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
+import { DeviceHubSharp } from '@material-ui/icons';
 
+ const filedList_Parcel =[ "COUNCIL_ID","ZIP_CODE","MAPSCO","SCHOOL_DISTRICT","LANDUSE","ZONING","NEIGHBORHOOD"];
 
 const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
@@ -100,7 +102,6 @@ const Category = (props) => {
   const handleClick = () => {
     setOpen(!open);
   };
-  const factorList = props.MyGarlandFactorList.filter(item => item.outputControl.category === props.category)
 
   return (<>
     <ListItem button onClick={handleClick} className={classes.categoryHead}>
@@ -113,7 +114,7 @@ const Category = (props) => {
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="div" disablePadding>
         {
-          factorList.map((item) => {
+          props.MyGarlandFactorList.map((item) => {
             return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData} outputControl={item.outputControl} />
           })
         }
@@ -129,6 +130,7 @@ const Section = (props) => {
   const classes = useStyles();
   const categoryList = json_categoryList.filter(item => item.category === props.category)
 
+
   return (<Col lg={4} md={6} xs={12} style={{ padding: '15px' }}>
     <Paper elevation={3} >
       <List component="section"
@@ -139,8 +141,8 @@ const Section = (props) => {
         }
       >
         {
-          categoryList.map((item) => {
-            return <Category name={item.name} category={item.id} key={item.id} MyGarlandFactorList={props.MyGarlandFactorList} />
+          categoryList.map((item) => {      
+            return <Category name={item.name} category={item.id} key={item.id} MyGarlandFactorList={props.MyGarlandFactorList.filter(factor => factor.outputControl.category === item.id)} />
           })
         }
       </List>
@@ -150,10 +152,9 @@ const Section = (props) => {
 }
 
 const ResultContent = (props) => {
-  const sectionList = json_sectionList ;
   return (<Row >
     {
-      sectionList.map((item) => {
+      props.sectionList.map((item) => {
         return <Section name={item.name} category={item.id} key={item.id} MyGarlandFactorList={props.MyGarlandFactorList} />
       })
     }
@@ -166,6 +167,7 @@ export default class Result extends Component {
     super(props);
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
+    this.parcelFields=filedList_Parcel ;
   }
 
   doQuery() {
@@ -190,6 +192,7 @@ export default class Result extends Component {
       if (result.features.length > 0) {
         var attr = result.features[0].attributes;
         that.getInfoFromParcelTable(Query, QueryTask,attr.PARCELID)
+
         console.log({
           'Parcel Id:': attr.PARCELID,
           'Address:': ("" + attr.STREETNUM+ " "+ attr.STREETLABEL+ ", "+ attr.CITY+ ", "+ attr.STATE+ ", "+ attr.ZIPCODE)
@@ -211,16 +214,17 @@ export default class Result extends Component {
     query.outFields = ["*"];
     queryTask.execute(query).then(function (results) {
       var attr = results.features[0].attributes;
-      var newArray = that.state.MyGarlandFactorList.slice().map((item) => {
-        if (item.inputControl.category === category) {
-          item.outputData = item.outputControl.displayValues.map((item) => {
-            return attr[item];
-          });
-        }
-        return item;
+     
+      //loop through keys of a object.
+      that.parcelFields.forEach(item=>{
+
       });
 
-      that.setState({ MyGarlandFactorList: newArray });
+      for (const [key, value] of Object.entries(attr)) {
+        if(that.parcelFields.includes(key)){
+          that.setState({ [key]: value });
+        }
+      }     
 
 
     });
@@ -303,7 +307,7 @@ export default class Result extends Component {
 
     return (<article>
       <Grid fluid  >
-        <ResultContent MyGarlandFactorList={json_factorList} />
+        <ResultContent MyGarlandFactorList={json_factorList}    sectionList = {json_sectionList} />
       </Grid>
     </article>
     )
