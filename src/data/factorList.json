@@ -1,467 +1,479 @@
- [{
-      "id": "city-hall",
-      "name": "City Hall",
-      "inputControl": {
-        "category": "city-facility",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='CITY HALL'",
-        "addressValue": "ADDRESS"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "1",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
+[
     {
-      "id": "police-station",
-      "name": "Police Station",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='POLICE STATION'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "2",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "municipal-courts",
-      "name": "Municipal Courts",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='COURTS'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "3",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "nearest-fire-station",
-      "name": "Nearest Fire Station",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='FIRE' and BLDG_NAME like 'FIRE STATION%'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "4",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "customer-service",
-      "name": "Customer Service",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "BLDG_NAME='UTILITY SERVICES'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "5",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "nearest-library",
-      "name": "Nearest Library",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='LIBRARY'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "nearest-city-facility",
-        "displayID": "16",
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    }, {
-      "id": "nearest-park",
-      "name": "Nearest Park",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": null,
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/28",
-        "where": "1=1"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 2,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'><a href='{{displayValue2}}' target='_blank' title='Open to see details'>{{displayValue1}}</a></span>",
-        "displayDistance": false,
-        "displayValue1": "PARK",
-        "displayValue2": "PARK_WEBLI"
-      }
-    }, {
-      "id": "nearest-recreation-center",
-      "name": "Nearest Recreation Center",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
-        "where": "DEPT='PARKS' and CAMPUS like '%RECREATION%'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 3,
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    }, {
-      "id": "nearest-city-facility-with-wifi",
-      "name": "Nearest Public Wi-Fi",
-      "inputControl": {
-        "category": "city-facility",
-        "addressValue": "ADDRESS",
-        "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
-        "where": "WIFI ='Yes'"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 1,
-        "hyperlinkType": "googleMap",
-        "displayDistance": true,
-        "displayValue1": "ADDRESS",
-        "displayValue2": "BLDG_NAME"
-      }
-    },
-    {
-      "id": "ews-recycling",
-      "name": "EWS Recycling Pickup Week", "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 5,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "COLOR",
-        "displayValue2": null
-      }
-    },
-    {
-      "id": "ews-recycling-day", 
-      "name": "Your Next Recycling Day is",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 6,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ANCORE_DAY",
-        "displayFunction": {
-          "functionParameter": ["displayValue1"],
-          "functionCode": "ews-recycling-day"
+        "id": "city-hall",
+        "name": "City Hall",
+        "inputControl": {
+            "category": "city-facility",
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "BLDG_NAME='CITY HALL'",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ]
         },
-        "displayValue2": null
-      }
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "1",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "ews-trash",
-      "name": "EWS Trash and Brush Pickup Day",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 4,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "T_DAY",
-        "displayValue2": null
-      }
+        "id": "police-station",
+        "name": "Police Station",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "BLDG_NAME='POLICE STATION'"
+        },
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "2",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "code-nuisance-districts",
-      "name": "Code Nuisance Inspector",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/30"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 8,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue4}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "INSPECTOR",
-        "displayValue2": "PHONE",
-        "displayValue3": "INSPECTOR2",
-        "displayValue4": "PHONE2",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }, {
-          "id": "displayValue4",
-          "value": "phone-number"
-        }]
-      }
+        "id": "municipal-courts",
+        "name": "Municipal Courts",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "DEPT='COURTS'"
+        },
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "3",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "code-commercial-districts",
-      "name": "Code Commercial Inspector",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/31"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "services",
-        "displayID": 7,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{displayValue2}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "INSPECTOR",
-        "displayValue2": "PHONE",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }]
-      }
+        "id": "nearest-fire-station",
+        "name": "Nearest Fire Station",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "DEPT='FIRE' and BLDG_NAME like 'FIRE STATION%'"
+        },
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "4",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "neighborhood-watch",
-      "name": "Neighborhood Watch",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 3,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NAME",
-        "displayValue2": null
-      }
+        "id": "customer-service",
+        "name": "Customer Service",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "BLDG_NAME='UTILITY SERVICES'"
+        },
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "5",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "neighborhood-assoc",
-      "name": "Neighborhood Association",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 4,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NAME",
-        "displayValue2": null
-      }
+        "id": "nearest-library",
+        "name": "Nearest Library",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "DEPT='LIBRARY'"
+        },
+        "outputControl": {
+            "category": "nearest-city-facility",
+            "displayID": "16",
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "gdc-zoning",
-      "name": "GDC Zoning",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 3,
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "GDC_ZONING",
-        "displayValue2": null
-      }
+        "id": "nearest-park",
+        "name": "Nearest Park",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "PARK",
+                "PARK_WEBLI"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/28",
+            "where": "1=1"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 2,
+            "hyperlinkType": "hardcode",
+            "hardcode": "<span class='location-data-value'><a href='{{outputFields2}}' target='_blank' title='Open to see details'>{{outputFields1}}</a></span>",
+            "displayDistance": false
+        }
     },
     {
-      "id": "npo",
-      "name": "Neighborhood Police Officer",
-      "inputControl": {
-        "category": "service-zone",
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/18"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 2,
-        "hyperlinkType": "hardcode",
-        "hardcode": "<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><a target='_blank' href='mailto:{{displayValue3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{displayValue3}}'></i> </a></span>",
-        "displayDistance": false,
-        "displayValue1": "OFFICER",
-        "displayValue2": "PHONE",
-        "displayValue3": "EMAIL",
-        "displayFormat": [{
-          "id": "displayValue2",
-          "value": "phone-number"
-        }]
-      }
-    },
-
-    {
-      "id": "council-dist",
-      "name": "City Council District",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 1,
-        "displayValues": ["COUNCIL_ID"],
-        "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{displayValue}}</a></span>",
-        "displayDistance": false
-      }
+        "id": "nearest-recreation-center",
+        "name": "Nearest Recreation Center",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/2",
+            "where": "DEPT='PARKS' and CAMPUS like '%RECREATION%'"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 3,
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "zipcode",
-      "name": "Zip Code",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 2,
-        "displayValues": ["ZIP_CODE"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ZIP_CODE",
-        "displayValue2": null
-      }
+        "id": "nearest-city-facility-with-wifi",
+        "name": "Nearest Public Wi-Fi",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
+            "where": "WIFI ='Yes'"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 1,
+            "hyperlinkType": "googleMap",
+            "displayDistance": true
+        }
     },
     {
-      "id": "mapsco",
-      "name": "Mapsco Grid",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 3,
-        "displayValues": ["MAPSCO"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "MAPSCO",
-        "displayValue2": null
-      }
+        "id": "ews-recycling",
+        "name": "EWS Recycling Pickup Week",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "COLOR"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 5,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
     },
     {
-      "id": "school-district",
-      "name": "School District",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "reference",
-        "displayID": 4,
-        "displayValues": ["SCHOOL_DISTRICT"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "SCHOOL_DISTRICT",
-        "displayValue2": null
-      }
+        "id": "ews-recycling-day",
+        "name": "Your Next Recycling Day is",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "ANCORE_DAY"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/8"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 6,
+            "hyperlinkType": "none",
+            "displayDistance": false,
+            "displayFunction": {
+                "functionParameter": [
+                    "outputFields1"
+                ],
+                "functionCode": "ews-recycling-day"
+            }
+        }
     },
     {
-      "id": "landuse",
-      "name": "Land Use",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 1,
-        "displayValues": ["LANDUSE"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "LANDUSE",
-        "displayValue2": null
-      }
+        "id": "ews-trash",
+        "name": "EWS Trash and Brush Pickup Day",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "T_DAY"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/6"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 4,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
     },
     {
-      "id": "zoning",
-      "name": "ZONING",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "planning-development-zoning",
-        "displayID": 2,
-        "displayValues": ["ZONING"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "ZONING",
-        "displayValue2": null
-      }
+        "id": "code-nuisance-districts",
+        "name": "Code Nuisance Inspector",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "INSPECTOR",
+                "PHONE",
+                "INSPECTOR2",
+                "PHONE2"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/30"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 8,
+            "hyperlinkType": "hardcode",
+            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><span>, {{outputFields3}}</span><a href='tel:{{outputFields4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields4}}'></i> </a></span>",
+            "displayDistance": false,
+            "displayFormat": [
+                {
+                    "id": "outputFields2",
+                    "value": "phone-number"
+                },
+                {
+                    "id": "outputFields4",
+                    "value": "phone-number"
+                }
+            ]
+        }
     },
     {
-      "id": "neighborhood-parcel",
-      "name": "Neighborhood",
-      "inputControl": {
-        "category": "parcel-data"
-      },
-      "outputData": [],
-      "outputControl": {
-        "category": "neighborhoods",
-        "displayID": 1,
-        "displayValues": ["NEIGHBORHOOD"],
-        "hyperlinkType": "none",
-        "displayDistance": false,
-        "displayValue1": "NEIGHBORHOOD",
-        "displayValue2": null
-      }
+        "id": "code-commercial-districts",
+        "name": "Code Commercial Inspector",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "INSPECTOR",
+                "PHONE"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/31"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 7,
+            "hyperlinkType": "hardcode",
+            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
+            "displayDistance": false,
+            "displayFormat": [
+                {
+                    "id": "outputFields2",
+                    "value": "phone-number"
+                }
+            ]
+        }
+    },
+    {
+        "id": "neighborhood-watch",
+        "name": "Neighborhood Watch",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/9"
+        },
+        "outputControl": {
+            "category": "neighborhoods",
+            "displayID": 3,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "neighborhood-assoc",
+        "name": "Neighborhood Association",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/10"
+        },
+        "outputControl": {
+            "category": "neighborhoods",
+            "displayID": 4,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "gdc-zoning",
+        "name": "GDC Zoning",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "GDC_ZONING"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/11"
+        },
+        "outputControl": {
+            "category": "planning-development-zoning",
+            "displayID": 3,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "npo",
+        "name": "Neighborhood Police Officer",
+        "inputControl": {
+            "category": "service-zone",
+            "outputFields": [
+                "OFFICER",
+                "PHONE",
+                "EMAIL"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/18"
+        },
+        "outputControl": {
+            "category": "neighborhoods",
+            "displayID": 2,
+            "hyperlinkType": "hardcode",
+            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><a target='_blank' href='mailto:{{outputFields3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{outputFields3}}'></i> </a></span>",
+            "displayDistance": false,
+            "displayFormat": [
+                {
+                    "id": "outputFields2",
+                    "value": "phone-number"
+                }
+            ]
+        }
+    },
+    {
+        "id": "council-dist",
+        "name": "City Council District",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "COUNCIL_ID"
+            ]
+        },
+        "outputControl": {
+            "category": "reference",
+            "displayID": 1,
+            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "zipcode",
+        "name": "Zip Code",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "ZIP_CODE"
+            ]
+        },
+        "outputControl": {
+            "category": "reference",
+            "displayID": 2,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "mapsco",
+        "name": "Mapsco Grid",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "MAPSCO"
+            ]
+        },
+        "outputControl": {
+            "category": "reference",
+            "displayID": 3,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "school-district",
+        "name": "School District",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "SCHOOL_DISTRICT"
+            ]
+        },
+        "outputControl": {
+            "category": "reference",
+            "displayID": 4,
+            "outputFieldss": [
+                "SCHOOL_DISTRICT"
+            ],
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "landuse",
+        "name": "Land Use",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "LANDUSE"
+            ]
+        },
+        "outputControl": {
+            "category": "planning-development-zoning",
+            "displayID": 1,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "zoning",
+        "name": "ZONING",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "ZONING"
+            ]
+        },
+        "outputControl": {
+            "category": "planning-development-zoning",
+            "displayID": 2,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
+    },
+    {
+        "id": "neighborhood-parcel",
+        "name": "Neighborhood",
+        "inputControl": {
+            "category": "parcel-data",
+            "outputFields": [
+                "NEIGHBORHOOD"
+            ]
+        },
+        "outputControl": {
+            "category": "neighborhoods",
+            "displayID": 1,
+            "hyperlinkType": "none",
+            "displayDistance": false
+        }
     }
-    ]
-
-  
+]

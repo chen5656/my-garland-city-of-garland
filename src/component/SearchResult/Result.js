@@ -23,12 +23,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_factorList from '../../data/factorList.json';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
-import { DeviceHubSharp } from '@material-ui/icons';
-
-import {factorList, sectionList, categoryList} from './prepareData.js';
-debugger;
-
-const filedList_Parcel = ["COUNCIL_ID", "ZIP_CODE", "MAPSCO", "SCHOOL_DISTRICT", "LANDUSE", "ZONING", "NEIGHBORHOOD"];
 
 const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
@@ -120,7 +114,9 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.MyGarlandFactorList.map((item) => {
-            return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData} outputControl={item.outputControl} />
+            return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData}
+
+              outputControl={item.outputControl} />
           })
         }
       </List>
@@ -146,7 +142,8 @@ const Section = (props) => {
       >
         {
           categoryList.map((item) => {
-            return <Category name={item.name} category={item.id} key={item.id} MyGarlandFactorList={json_factorList.filter(factor => factor.outputControl.category === item.id)} />
+            return <Category name={item.name} category={item.id} key={item.id}
+              MyGarlandFactorList={json_factorList.filter(factor => factor.outputControl.category === item.id)} />
           })
         }
       </List>
@@ -162,7 +159,6 @@ export default class Result extends Component {
     super(props);
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
-    this.parcelFields = filedList_Parcel;
   }
 
   doQuery() {
@@ -192,7 +188,8 @@ export default class Result extends Component {
           'Parcel Id:': attr.PARCELID,
           'Address:': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
         })
-        // that.getNearestCityFacilityList(result.features[0].geometry);
+        // result.features[0].geometry; //geometry in stateplane
+        that.getNearestCityFacilityList(result.features[0].geometry);
       }
 
     });
@@ -211,68 +208,41 @@ export default class Result extends Component {
       var attr = results.features[0].attributes;
 
       //loop through keys of a object.
-      that.parcelFields.forEach(item => {
-
+      that.props.parcelFieldList.forEach(fieldname => {
+        that.setState({ [fieldname]: attr[fieldname] });
       });
-
-      for (const [key, value] of Object.entries(attr)) {
-        if (that.parcelFields.includes(key)) {
-          that.setState({ [key]: value });
-        }
-      }
-
 
     });
   }
 
-  getNearestCityFacilityList(geometryStatePlane, category = 'city-facility',  iterationCopy, geometryEngineAsync, all) {
-   
+  getNearestCityFacilityList(geometry) {
+
     var that = this;
-    var cityFacilityList;
-    var allCityFacilities= json_factorList.filter(item=>item.inputControl.category===category).forEach(function(factor){
-      getDistances(factor, geometryStatePlane).then(function (result) {
+    loadModules(['esri/geometry/geometryEngine'], { css: true })
+      .then(([geometryEngine]) => {
 
-      });
-    })
-      getDistances(allCityFacilities, geometryStatePlane).then(function (result) {
-        var cityFacilityDistanceList = allCityFacilities.map(function (val, i) {
-          val.distance = result[i];
-          return val;
-        });
-        that.nearestCityFacilityList = cityFacilityList.map(function (item) {
-          var newItem = iterationCopy(item);
-          delete newItem.features;
-          var features = cityFacilityDistanceList.filter(function (val) {
-            return val.layer == item.id;
-          });
-          if (features.length > 0) {
-            var nearestFeature = features.reduce(function (a, b) {
-              if (a.distance < b.distance) {
-                return a;
-              } else {
-                return b;
-              }
+        that.props.cityFacilityList.slice().forEach(function (factor) {
+          var nearestFeature = factor.inputControl.features.map((feature) => {
+            var distance = geometryEngine.distance(geometry, feature.geometry, "miles");
+            var outputAttributes = factor.inputControl.outputFields.map(field => {
+              return feature.attributes[field];
             });
-            newItem.distance = nearestFeature.distance.toFixed(2);
-            newItem.queryPolygonCount = 1;
-            newItem.feature = nearestFeature.attributes;
-          } else {
-            newItem.queryPolygonCount = 0;
-          }
-          return newItem;
+            return {
+              attributes: outputAttributes,
+              distance: distance
+            };
+          }).reduce(function (a, b) {
+            if (a.distance < b.distance) {
+              return a;
+            } else {
+              return b;
+            }
+          });
+
+          that.setState({ [factor.id]: nearestFeature })
         });
-        return (that.nearestCityFacilityList);
-      });
 
-  
-
-    function getDistances(features, geometryStatePlane) {
-      var distanceRequestList = features.map(function (item) {
-        return geometryEngineAsync.distance(geometryStatePlane, item.geometry, "miles")
-      });
-      var promises = new all(distanceRequestList);
-      return promises;
-    }
+      })
 
   }
 
@@ -283,10 +253,9 @@ export default class Result extends Component {
   componentDidUpdate = (prevProps) => {
     if (this.props.RefID !== prevProps.RefID) {
       this.doQuery();
+    } else {
+      // console.log(this.state)
     }
-
-
-
   }
 
   render() {
@@ -297,7 +266,7 @@ export default class Result extends Component {
         <Row >
           {
             json_sectionList.map((item) => {
-              return <Section name={item.name} category={item.id} key={item.id} />
+              return <Section name={item.name} category={item.id} key={item.id} data={this.state}/>
             })
           }
         </Row>
