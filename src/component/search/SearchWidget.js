@@ -39,6 +39,9 @@ export default class SearchWidget extends Component {
           locationEnabled: false,
           sources: [searchSource]
         });
+        searchWidget.on('search-start',function(e){
+          that.props.newSearch();
+        })
 
         searchWidget.on('search-complete', function (e) {
 

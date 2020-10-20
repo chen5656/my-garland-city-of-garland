@@ -64,7 +64,11 @@ const FactorValue_Address_Distant_GoogleMapLink = (props) => {
 
 const MyGarlandFactorValue = (props) => {
   const classes = useStyles();
-  console.log(props.data, props.outputControl);
+  let count = 0;
+  count++;
+  debugger;
+  // console.log(props.data, props.outputControl);
+  console.log(props.outputControl.category, props.outputControl.displayID, '--', count)
   // if(props.outputControl.hardcode){
   //   var str =props.outputControl.hardcode.split('{{displayValue}}');
   //   var newStr =[];
@@ -82,15 +86,16 @@ const MyGarlandFactorValue = (props) => {
 
 const MyGarlandFactor = (props) => {
   const classes = useStyles();
+  console.log(props.name)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl} /> : <CircularProgress
+    {/* {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl} /> : <CircularProgress
       className={classes.top}
       size={25}
-    />}
+    />} */}
   </ListItem>)
 }
 const Category = (props) => {
@@ -113,7 +118,7 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.factorList.map((item) => {
-            return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData}
+            return <MyGarlandFactor key={item.id} name={item.name} data={[1]}
 
               outputControl={item.outputControl} />
           })
@@ -141,9 +146,8 @@ const Section = (props) => {
       >
         {
           categoryList.map((item) => {
-            debugger
             return <Category name={item.name} category={item.id} key={item.id}
-            factorList={props.factorList.filter(factor=>factor.outputControl.category===item.id)} 
+              factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
             />
           })
         }
@@ -160,10 +164,12 @@ export default class Result extends Component {
     super(props);
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
-    this.state={};
+    this.state = {
+      factorDataList: [],
+    };
   }
 
-  doQuery() {
+  getFactorDataList() {
     loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
       .then(([Query, QueryTask]) => {
         this.getAddressInfo(Query, QueryTask, this.props.RefID)
@@ -210,12 +216,18 @@ export default class Result extends Component {
       var attr = results.features[0].attributes;
 
       //loop through keys of a object.
-      that.props.factorList[category].slice().forEach((factor) => {
-        factor.outputData = factor.inputControl.outputFields.map((field)=>{
-          return  attr[field];          
+      var factorDataList = that.props.factorList[category].slice().map((factor) => {
+        let outputData = factor.inputControl.outputFields.map((field) => {
+          return attr[field];
         });
-        that.setState({ [factor.id]: factor });
+        return {
+          id: factor.id,
+          outputControl: factor.outputControl,
+          outputData: outputData
+        }
       })
+      // factorDataList
+      that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
 
     });
   }
@@ -226,7 +238,7 @@ export default class Result extends Component {
     loadModules(['esri/geometry/geometryEngine'], { css: true })
       .then(([geometryEngine]) => {
 
-        that.props.factorList[category].slice().forEach(function (factor) {
+       var factorDataList= that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
             var distance = geometryEngine.distance(geometry, feature.geometry, "miles");
             var outputAttributes = factor.inputControl.outputFields.map(field => {
@@ -244,45 +256,39 @@ export default class Result extends Component {
             }
           });
           factor.outputData = nearestFeature.attributes.concat(nearestFeature.distance);
-          that.setState({ [factor.id]: factor })
+          return factor;
+
         });
+        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
 
       })
 
   }
 
   componentDidMount = () => {
-
-    //list all the factors as state
-    this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'])
-    .forEach((factor) => {
-      this.setState({[factor.id]:factor});
-    });
-
-    this.doQuery();
+    this.getFactorDataList();
+    console.log(this.state)
   }
 
   componentDidUpdate = (prevProps) => {
     if (this.props.RefID !== prevProps.RefID) {
-      this.doQuery();
-    } else {
+      this.getFactorDataList();
+    }
+    else {
       console.log(this.state)
-     debugger;
+      debugger;
     }
   }
 
   render() {
-    // return <div>{this.props.RefID}</div>;
-    let factorList= Object.entries(this.state).map((item)=>{
-      return item[1];
-    });
-
     return (<article>
       <Grid fluid  >
         <Row >
           {
             json_sectionList.map((item) => {
-              return <Section name={item.name} category={item.id} key={item.id} factorList={factorList} />
+              return <Section name={item.name} category={item.id} key={item.id}
+                factorList={this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'])}
+              />
             })
           }
         </Row>

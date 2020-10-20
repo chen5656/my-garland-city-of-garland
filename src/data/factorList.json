@@ -108,7 +108,7 @@
         },
         "outputControl": {
             "category": "nearest-city-facility",
-            "displayID": "16",
+            "displayID": "6",
             "hyperlinkType": "googleMap",
             "displayDistance": true
         }

@@ -11,12 +11,11 @@ export default class AddressSearch extends Component {
         super();
         this.state = {
             isShowResult: false,
-            Ref_ID: 1,
+            Ref_ID: null,
             searchTerm: null,
         };
         this.handleDisplayResult = this.handleDisplayResult.bind(this);
-
-
+        this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -74,10 +73,17 @@ export default class AddressSearch extends Component {
         }
     }
 
+    handleNewSearch() {
+
+        this.setState({ isShowResult: false });
+        this.setState({ Ref_ID: null });
+        this.setState({ searchTerm: null });
+    }
+
     render() {
         return (
             <div>
-                <SearchWidget displayResult={this.handleDisplayResult} ></SearchWidget>
+                <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
                 {this.state.isShowResult &&
                     (this.state.Ref_ID ?
                         <Result RefID={this.state.Ref_ID} factorList={{
