@@ -13,44 +13,44 @@ export default class AddressSearch extends Component {
             isShowResult: false,
             Ref_ID: 1,
             searchTerm: null,
-            cityFacilityList:[],
-            parcelFieldList:[],
         };
-        this.handleDisplayResult = this.handleDisplayResult.bind(this);        
+        this.handleDisplayResult = this.handleDisplayResult.bind(this);
 
 
     }
 
-    getCityFacilityList(factorList,category='city-facility'){
-        const that= this;
+    getCityFacilityList(factorList, category = 'city-facility') {
+        const that = this;
         loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
-        .then(([Query, QueryTask]) => {
-            let array=factorList.filter(item=>item.inputControl.category===category)    ;       
-            let queryList = array.map(function (item) {
-                return new QueryTask({
-                    url: item.inputControl.url
-                }).execute(new Query({
-                    where: item.inputControl.where,
-                    returnGeometry: true,
-                    outFields: ['*']
-                }));
+            .then(([Query, QueryTask]) => {
+                let array = factorList.filter(item => item.inputControl.category === category);
+                let queryList = array.map(function (item) {
+                    return new QueryTask({
+                        url: item.inputControl.url
+                    }).execute(new Query({
+                        where: item.inputControl.where,
+                        returnGeometry: true,
+                        outFields: ['*']
+                    }));
+                });
+                Promise.all(queryList).then((values) => {
+                    that.setState({
+                        [category]: array.map(function (item, i) {
+                            item.inputControl.features = values[i].features;
+                            return item;
+                        })
+                    })
+                });
             });
-            
-            Promise.all(queryList).then((values)=>{
-                that.setState({ cityFacilityList:array.map(function (item, i) {
-                    item.inputControl.features = values[i].features;
-                    return item;
-                })})
-            });
-        });
 
- 
+
     }
 
-    getParcelFieldLit(factorList,category='parcel-data' ){
-        let array=factorList.filter(item=>item.inputControl.category===category);
-        let newArray=   array.map( item=>item.inputControl.outputFields).flat();
-        this.setState({ parcelFieldList:newArray})        
+    getParcelFieldLit(factorList, category = 'parcel-data') {
+        let array = factorList.filter(item => item.inputControl.category === category);
+        let newArray = array.map(item => item.inputControl.outputFields).flat();
+        this.setState({ [category]: array })
+        this.setState({ parcelFields: newArray })
     }
 
     componentDidMount = () => {
@@ -58,7 +58,7 @@ export default class AddressSearch extends Component {
         this.getParcelFieldLit(json_factorList);
     }
 
-    componentDidUpdate=()=>{
+    componentDidUpdate = () => {
         console.log(this.state)
     }
 
@@ -79,15 +79,15 @@ export default class AddressSearch extends Component {
             <div>
                 <SearchWidget displayResult={this.handleDisplayResult} ></SearchWidget>
                 {this.state.isShowResult &&
-                 (this.state.Ref_ID ? 
-                 <Result RefID={this.state.Ref_ID} factorList= {{
-                     cityFacilityList:this.state.cityFacilityList,
-                     parcelFields:this.state.parcelFields,
-                     parcelFieldList:this.state.parcelFieldList,
-
-                 } }/> 
-                 : 
-                 <AddressNotFound searchTerm={this.state.searchTerm}  RefID={this.state.Ref_ID} />)}
+                    (this.state.Ref_ID ?
+                        <Result RefID={this.state.Ref_ID} factorList={{
+                            'city-facility': this.state['city-facility'],
+                            'parcel-data': this.state['parcel-data'],
+                        }}
+                            parcelFields={this.state.parcelFields}
+                        />
+                        :
+                        <AddressNotFound searchTerm={this.state.searchTerm} RefID={this.state.Ref_ID} />)}
             </div>
         );
     }

@@ -20,7 +20,6 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import json_factorList from '../../data/factorList.json';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
@@ -113,7 +112,7 @@ const Category = (props) => {
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="div" disablePadding>
         {
-          props.MyGarlandFactorList.map((item) => {
+          props.factorList.map((item) => {
             return <MyGarlandFactor key={item.id} name={item.name} data={item.outputData}
 
               outputControl={item.outputControl} />
@@ -142,8 +141,10 @@ const Section = (props) => {
       >
         {
           categoryList.map((item) => {
+            debugger
             return <Category name={item.name} category={item.id} key={item.id}
-              MyGarlandFactorList={json_factorList.filter(factor => factor.outputControl.category === item.id)} />
+            factorList={props.factorList} 
+            />
           })
         }
       </List>
@@ -208,20 +209,23 @@ export default class Result extends Component {
       var attr = results.features[0].attributes;
 
       //loop through keys of a object.
-      that.props.parcelFieldList.forEach(fieldname => {
-        that.setState({ [fieldname]: attr[fieldname] });
-      });
+      that.props.factorList[category].slice().forEach((factor) => {
+        factor.outputData = factor.inputControl.outputFields.map((field)=>{
+          return  attr[field];          
+        });
+        that.setState({ [factor.id]: factor });
+      })
 
     });
   }
 
-  getNearestCityFacilityList(geometry) {
+  getNearestCityFacilityList(geometry, category = 'city-facility') {
 
     var that = this;
     loadModules(['esri/geometry/geometryEngine'], { css: true })
       .then(([geometryEngine]) => {
 
-        that.props.cityFacilityList.slice().forEach(function (factor) {
+        that.props.factorList[category].slice().forEach(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
             var distance = geometryEngine.distance(geometry, feature.geometry, "miles");
             var outputAttributes = factor.inputControl.outputFields.map(field => {
@@ -238,8 +242,8 @@ export default class Result extends Component {
               return b;
             }
           });
-
-          that.setState({ [factor.id]: nearestFeature })
+          factor.outputData = nearestFeature.attributes.concat(nearestFeature.distance);
+          that.setState({ [factor.id]: factor })
         });
 
       })
@@ -247,6 +251,13 @@ export default class Result extends Component {
   }
 
   componentDidMount = () => {
+
+    //list all the factors as state
+    this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'])
+    .forEach((factor) => {
+      this.setState({[factor.id]:factor});
+    });
+
     this.doQuery();
   }
 
@@ -254,19 +265,23 @@ export default class Result extends Component {
     if (this.props.RefID !== prevProps.RefID) {
       this.doQuery();
     } else {
-      // console.log(this.state)
+      console.log(this.state)
+     debugger;
     }
   }
 
   render() {
     // return <div>{this.props.RefID}</div>;
+    let factorList= Object.entries(this.state).map((item)=>{
+      return item[1];
+    });
 
     return (<article>
       <Grid fluid  >
         <Row >
           {
             json_sectionList.map((item) => {
-              return <Section name={item.name} category={item.id} key={item.id} data={this.state}/>
+              return <Section name={item.name} category={item.id} key={item.id} factorList={factorList} />
             })
           }
         </Row>
