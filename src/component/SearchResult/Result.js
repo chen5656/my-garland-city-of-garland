@@ -115,12 +115,12 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.factorList.map((item) => {
-            
+
             return <MyGarlandFactor key={item.id} name={item.name} data={[1]}
 
-              outputControl={item.outputControl} data= {props.factorDataList.filter(data=>{
-                return data.id===item.id;
-              })}/>
+              outputControl={item.outputControl} data={props.factorDataList.filter(data => {
+                return data.id === item.id;
+              })} />
           })
         }
       </List>
@@ -199,6 +199,8 @@ export default class Result extends Component {
         })
         // result.features[0].geometry; //geometry in stateplane
         that.getNearestCityFacilityList(result.features[0].geometry);
+        that.getLocatedServiceZoneList(result.features[0].geometry);
+
       }
 
     });
@@ -258,14 +260,52 @@ export default class Result extends Component {
               return b;
             }
           });
-          factor.outputData = nearestFeature.attributes.concat(nearestFeature.distance);
-          return factor;
+          var outputData = nearestFeature.attributes.concat(nearestFeature.distance);
+
+
+          return {
+            id: factor.id,
+            outputControl: factor.outputControl,
+            outputData: outputData
+          }
 
         });
         that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
 
       })
 
+  }
+
+  getLocatedServiceZoneList(geometry, category = 'service-zone') {
+    var that = this;
+    loadModules(['esri/geometry/geometryEngine'])
+      .then(([geometryEngine]) => {
+
+        var factorDataList = that.props.factorList[category].slice().map(function (factor) {
+
+          var containerZone = factor.inputControl.features.find((feature) => {
+            return geometryEngine.contains(feature.geometry, geometry);
+          });
+
+          if (containerZone) {
+            var outputData = factor.inputControl.outputFields.map(field => {
+              return containerZone.attributes[field];
+            });
+          } else {
+            var outputData = factor.inputControl.outputFields.map(field => {
+              return 'NULL'
+            });
+          }
+
+          return {
+            id: factor.id,
+            outputControl: factor.outputControl,
+            outputData: outputData
+          }
+        });
+
+        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
+      })
   }
 
   componentDidMount = () => {
@@ -289,7 +329,7 @@ export default class Result extends Component {
           {
             json_sectionList.map((item) => {
               return <Section name={item.name} category={item.id} key={item.id}
-                factorList={this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'])}
+                factorList={this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'], this.props.factorList['service-zone'])}
                 factorDataList={this.state.factorDataList}
               />
             })
