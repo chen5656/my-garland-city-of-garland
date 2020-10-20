@@ -20,7 +20,7 @@ export default class AddressSearch extends Component {
 
     getCityFacilityList(factorList, category = 'city-facility') {
         const that = this;
-        loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
+        loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
             .then(([Query, QueryTask]) => {
                 let array = factorList.filter(item => item.inputControl.category === category);
                 let queryList = array.map(function (item) {
@@ -41,8 +41,6 @@ export default class AddressSearch extends Component {
                     })
                 });
             });
-
-
     }
 
     getParcelFieldLit(factorList, category = 'parcel-data') {
@@ -52,9 +50,41 @@ export default class AddressSearch extends Component {
         this.setState({ parcelFields: newArray })
     }
 
+    // getServiceZoneLit(factorList, category = 'service-zone') {
+    //     let array = factorList.filter(item => item.inputControl.category === category);
+    //     debugger;;
+    //     const that = this;
+    //     loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
+    //         .then(([Query, QueryTask]) => {
+    //             let array = factorList.filter(item => item.inputControl.category === category);
+    //             let queryList = array.map(function (item) {
+    //                 return new QueryTask({
+    //                     url: item.inputControl.url
+    //                 }).execute(new Query({
+    //                     where: item.inputControl.where,
+    //                     returnGeometry: true,
+    //                     outFields: ['*']
+    //                 }));
+    //             });
+    //             Promise.all(queryList).then((values) => {
+    //                 that.setState({
+    //                     [category]: array.map(function (item, i) {
+    //                         item.inputControl.features = values[i].features;
+    //                         return item;
+    //                     })
+    //                 })
+    //             });
+    //         });
+
+
+    //     this.setState({ [category]: array })
+
+    // }
+
     componentDidMount = () => {
         this.getCityFacilityList(json_factorList);
         this.getParcelFieldLit(json_factorList);
+        // this.getServiceZoneLit(json_factorList);
     }
 
     componentDidUpdate = () => {
@@ -91,6 +121,7 @@ export default class AddressSearch extends Component {
                         <Result RefID={this.state.Ref_ID} factorList={{
                             'city-facility': this.state['city-facility'],
                             'parcel-data': this.state['parcel-data'],
+                            'service-zone': 1
                         }}
                             parcelFields={this.state.parcelFields}
                         />

@@ -23,7 +23,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
-const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
+// const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -64,11 +64,8 @@ const FactorValue_Address_Distant_GoogleMapLink = (props) => {
 
 const MyGarlandFactorValue = (props) => {
   const classes = useStyles();
-  let count = 0;
-  count++;
-  debugger;
   // console.log(props.data, props.outputControl);
-  console.log(props.outputControl.category, props.outputControl.displayID, '--', count)
+  // console.log(props.outputControl.category, props.outputControl.displayID, '--', count)
   // if(props.outputControl.hardcode){
   //   var str =props.outputControl.hardcode.split('{{displayValue}}');
   //   var newStr =[];
@@ -86,16 +83,16 @@ const MyGarlandFactorValue = (props) => {
 
 const MyGarlandFactor = (props) => {
   const classes = useStyles();
-  // console.log(props.name)
+  console.log(props)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {/* {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl} /> : <CircularProgress
+    {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl} /> : <CircularProgress
       className={classes.top}
       size={25}
-    />} */}
+    />}
   </ListItem>)
 }
 const Category = (props) => {
@@ -118,9 +115,12 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.factorList.map((item) => {
+            
             return <MyGarlandFactor key={item.id} name={item.name} data={[1]}
 
-              outputControl={item.outputControl} />
+              outputControl={item.outputControl} data= {props.factorDataList.filter(data=>{
+                return data.id===item.id;
+              })}/>
           })
         }
       </List>
@@ -133,7 +133,7 @@ const Category = (props) => {
 
 const Section = (props) => {
   const classes = useStyles();
-  const categoryList = json_categoryList.filter(item => item.category === props.category)
+  const categoryList = json_categoryList.filter(item => item.category === props.category);
 
   return (<Col lg={4} md={6} xs={12} style={{ padding: '15px' }}>
     <Paper elevation={3} >
@@ -148,6 +148,7 @@ const Section = (props) => {
           categoryList.map((item) => {
             return <Category name={item.name} category={item.id} key={item.id}
               factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
+              factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
             />
           })
         }
@@ -170,7 +171,7 @@ export default class Result extends Component {
   }
 
   getFactorDataList() {
-    loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'], { css: true })
+    loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
       .then(([Query, QueryTask]) => {
         this.getAddressInfo(Query, QueryTask, this.props.RefID)
       });
@@ -227,16 +228,17 @@ export default class Result extends Component {
         }
       })
       // factorDataList
-      var newFactors = that.state.factorDataList.concat(factorDataList);
-      that.setState({ factorDataList: newFactors });
+      that.setState({ factorDataList: that.state.factorDataList.concat(factorDataList) });
 
     });
   }
 
+
+
   getNearestCityFacilityList(geometry, category = 'city-facility') {
 
     var that = this;
-    loadModules(['esri/geometry/geometryEngine'], { css: true })
+    loadModules(['esri/geometry/geometryEngine'])
       .then(([geometryEngine]) => {
 
         var factorDataList = that.props.factorList[category].slice().map(function (factor) {
@@ -260,8 +262,7 @@ export default class Result extends Component {
           return factor;
 
         });
-        var newFactors = this.state.factorDataList.concat(factorDataList);
-        that.setState({ factorDataList: newFactors });
+        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
 
       })
 
@@ -278,7 +279,6 @@ export default class Result extends Component {
     }
     else {
       console.log(this.state)
-      debugger;
     }
   }
 
@@ -290,6 +290,7 @@ export default class Result extends Component {
             json_sectionList.map((item) => {
               return <Section name={item.name} category={item.id} key={item.id}
                 factorList={this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'])}
+                factorDataList={this.state.factorDataList}
               />
             })
           }
