@@ -75,9 +75,11 @@ export default class AddressSearch extends Component {
 
     handleNewSearch() {
 
-        this.setState({ isShowResult: false });
-        this.setState({ Ref_ID: null });
-        this.setState({ searchTerm: null });
+        this.setState({
+            isShowResult: false,
+            Ref_ID: null,
+            searchTerm: null,
+        });
     }
 
     render() {
@@ -93,7 +95,7 @@ export default class AddressSearch extends Component {
                             parcelFields={this.state.parcelFields}
                         />
                         :
-                        <AddressNotFound searchTerm={this.state.searchTerm} RefID={this.state.Ref_ID} />)}
+                        <AddressNotFound searchTerm={this.state.searchTerm} />)}
             </div>
         );
     }

@@ -86,7 +86,7 @@ const MyGarlandFactorValue = (props) => {
 
 const MyGarlandFactor = (props) => {
   const classes = useStyles();
-  console.log(props.name)
+  // console.log(props.name)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <PlayArrowIcon style={{ fontSize: '15px' }} />
@@ -193,8 +193,8 @@ export default class Result extends Component {
         that.getInfoFromParcelTable(Query, QueryTask, attr.PARCELID)
 
         console.log({
-          'Parcel Id:': attr.PARCELID,
-          'Address:': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
+          'Parcel Id': attr.PARCELID,
+          'Address': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
         })
         // result.features[0].geometry; //geometry in stateplane
         that.getNearestCityFacilityList(result.features[0].geometry);
@@ -227,7 +227,8 @@ export default class Result extends Component {
         }
       })
       // factorDataList
-      that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
+      var newFactors = that.state.factorDataList.concat(factorDataList);
+      that.setState({ factorDataList: newFactors });
 
     });
   }
@@ -238,7 +239,7 @@ export default class Result extends Component {
     loadModules(['esri/geometry/geometryEngine'], { css: true })
       .then(([geometryEngine]) => {
 
-       var factorDataList= that.props.factorList[category].slice().map(function (factor) {
+        var factorDataList = that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
             var distance = geometryEngine.distance(geometry, feature.geometry, "miles");
             var outputAttributes = factor.inputControl.outputFields.map(field => {
@@ -259,7 +260,8 @@ export default class Result extends Component {
           return factor;
 
         });
-        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
+        var newFactors = this.state.factorDataList.concat(factorDataList);
+        that.setState({ factorDataList: newFactors });
 
       })
 
