@@ -143,7 +143,7 @@ const Section = (props) => {
           categoryList.map((item) => {
             debugger
             return <Category name={item.name} category={item.id} key={item.id}
-            factorList={props.factorList} 
+            factorList={props.factorList.filter(factor=>factor.outputControl.category===item.id)} 
             />
           })
         }
@@ -160,6 +160,7 @@ export default class Result extends Component {
     super(props);
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
+    this.state={};
   }
 
   doQuery() {
