@@ -56,18 +56,36 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+// const Factor1 = (props) => {
+//   const classes = useStyles();
+//   return (<ListItem className={classes.nested}>
+//     <ListItemIcon className={classes.nestedIcon}>
+//       <StopSharpIcon className={classes.itemIcon} />
+//     </ListItemIcon>
+//     <ListItemText primary={props.name} />
+//     {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
+//         className={classes.top}
+//         size={25}
+//       />}
+//   </ListItem>)
+// }
+
+
 const Factor = (props) => {
   const classes = useStyles();
-  return (<ListItem className={classes.nested}>
-    <ListItemIcon className={classes.nestedIcon}>
-      <StopSharpIcon className={classes.itemIcon} />
-    </ListItemIcon>
-    <ListItemText primary={props.name} />
-    {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
+  return (
+    < div className='row pl-5'>
+      <div className='col-4 pt-3 ' >{props.name}
+      </div>
+      <div className='col-8' >
+        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
         className={classes.top}
         size={25}
-      />}
-  </ListItem>)
+      />} 
+      </div>
+
+
+    </div>)
 }
 const Category = (props) => {
   const [open, setOpen] = useState(true);
