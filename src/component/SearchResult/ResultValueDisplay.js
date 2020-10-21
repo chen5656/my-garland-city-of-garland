@@ -1,5 +1,10 @@
 import React, { Component, useState } from 'react';
 
+const GoogleMapLink =(props)=>{
+    return(
+null
+    )
+}
 
 
 const FactorValue_Address_Distant_GoogleMapLink = (props) => {
@@ -10,42 +15,36 @@ const FactorValue_Address_Distant_GoogleMapLink = (props) => {
     </>)
 }
 
-
-const MyGarlandFactorValue = (props) => {
-    // const classes = useStyles();
-    console.log(props.data, props.outputControl);
-    // if(props.outputControl.hardcode){
-    //   var str =props.outputControl.hardcode.split('{{displayValue}}');
-    //   var newStr =[];
-    //   for(let i=0;i<str.length;i++){
-    //     newStr.push(str[i]);
-    //     if(i<props.data.length){
-    //       newStr.push(props.data[i])
-    //     }
-    //   }
-    //   return <div>{newStr}</div>
-
-    // }
-    return <div>{props.data.length}</div>
+const Nearest_city_facility = (props) => {
+        var data = props.data;
+    return (<div> 
+        <span class='location-data-value'>{data.outputData.attributeDate[0]}</span>
+        <span class='location-data-distance'> {data.outputData.distance}</span>
+        <span class='location-data-value'><a href={'https://www.google.com/maps/dir/?api=1&origin=' + data.outputData.attributeDate[0] + '&destination=' + data.outputData.fullAddress}
+            target='_blank' title='Open in Google Map'> {data.outputData.attributeDate[1]}</a>
+        </span>
+    </div>)
 }
 
 export default class ResultValueDisplay extends Component {
     constructor(props) {
         super(props);
+    }
 
+    renderResult(param) {
+        switch(param) {
+          case 'nearest-city-facility':
+            return <Nearest_city_facility data= {this.props.data[0]}/>;
+          default:
+            return <div></div>;
+        }
     }
 
     render() {
-        console.log(this.props.data[0].outputControl.category,this.props)
-        var str = <div></div>;
-        if (this.props.data[0].outputControl.category==="nearest-city-facility") {
-            str = <div> <span class='location-data-value'>{this.props.data[0].outputData[0]}</span>
-                <span class='location-data-distance'> {this.props.data[0].outputData[2]}</span>
-                <span class='location-data-value'><a href={'https://www.google.com/maps/dir/?api=1&origin='+this.props.data[0].outputData[0]+'&destination='+this.props.fullAddress}
-                    target='_blank' title='Open in Google Map'> {this.props.data[0].outputData[1]}</a></span></div>;
-        }
+        var data = this.props.data[0];
+        console.log(data.outputControl.category, this.props)      
         return <>
-            {str}
+            {this.renderResult(data.outputControl.category)}
         </>;
     }
 
