@@ -14,7 +14,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -33,7 +33,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -52,7 +52,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -71,7 +71,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -90,7 +90,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -109,7 +109,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -128,9 +128,8 @@
         "outputControl": {
             "category": "services",
             "displayID": 2,
-            "hyperlinkType": "hardcode",
-            "hardcode": "<span class='location-data-value'><a href='{{outputFields2}}' target='_blank' title='Open to see details'>{{outputFields1}}</a></span>",
-            "displayDistance": false
+            "hyperlink": "hardcode",
+            "hardcode": "<span class='location-data-value'><a href='{{outputFields2}}' target='_blank' title='Open to see details'>{{outputFields1}}</a></span>"           
         }
     },
     {
@@ -148,7 +147,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -167,7 +166,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
-            "hyperlinkType": "googleMap",
+            "hyperlink": "googleMap",
             "displayDistance": true
         }
     },
@@ -183,9 +182,7 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 5,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 5
         }
     },
     {
@@ -201,8 +198,6 @@
         "outputControl": {
             "category": "services",
             "displayID": 6,
-            "hyperlinkType": "none",
-            "displayDistance": false,
             "displayFunction": {
                 "functionParameter": [
                     "outputFields1"
@@ -223,9 +218,7 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 4,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 4
         }
     },
     {
@@ -244,9 +237,9 @@
         "outputControl": {
             "category": "services",
             "displayID": 8,
-            "hyperlinkType": "hardcode",
+            "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><span>, {{outputFields3}}</span><a href='tel:{{outputFields4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields4}}'></i> </a></span>",
-            "displayDistance": false,
+            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -273,9 +266,9 @@
         "outputControl": {
             "category": "services",
             "displayID": 7,
-            "hyperlinkType": "hardcode",
+            "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
-            "displayDistance": false,
+            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -296,9 +289,7 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 3,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 3
         }
     },
     {
@@ -313,9 +304,7 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 4,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 4
         }
     },
     {
@@ -330,9 +319,7 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 3,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 3
         }
     },
     {
@@ -350,9 +337,9 @@
         "outputControl": {
             "category": "neighborhoods",
             "displayID": 2,
-            "hyperlinkType": "hardcode",
+            "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><a target='_blank' href='mailto:{{outputFields3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{outputFields3}}'></i> </a></span>",
-            "displayDistance": false,
+            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -373,8 +360,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 1,
-            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>",
-            "displayDistance": false
+            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>" 
         }
     },
     {
@@ -388,9 +374,7 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 2,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 2
         }
     },
     {
@@ -404,9 +388,7 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 3,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 3
         }
     },
     {
@@ -420,12 +402,7 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 4,
-            "outputFieldss": [
-                "SCHOOL_DISTRICT"
-            ],
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 4
         }
     },
     {
@@ -439,9 +416,7 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 1,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 1
         }
     },
     {
@@ -455,9 +430,7 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 2,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 2
         }
     },
     {
@@ -471,9 +444,7 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 1,
-            "hyperlinkType": "none",
-            "displayDistance": false
+            "displayID": 1
         }
     }
 ]

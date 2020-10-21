@@ -122,14 +122,14 @@ const Section = (props) => {
       >
         {
           categoryList.map((item, index) => {
-            return <>
-              <Category name={item.name} category={item.id} key={item.id}
+            return <div key={item.id}>
+              <Category name={item.name} category={item.id} 
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
-              {index !== (categoryList.length - 1) && <Divider variant="middle" key={'d-' + item.id} />}
+              {index !== (categoryList.length - 1) && <Divider variant="middle"  />}
 
-            </>
+            </div>
           })
         }
       </List>
