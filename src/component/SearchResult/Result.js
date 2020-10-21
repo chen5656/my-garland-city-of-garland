@@ -62,15 +62,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const MyGarlandFactor = (props) => {
+const Factor = (props) => {
   const classes = useStyles();
-  // console.log(props)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
       <StopSharpIcon className={classes.itemIcon} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data && props.data.length) ? <ResultValueDisplay data={props.data} outputControl={props.outputControl} /> : <CircularProgress
+    {(props.data.length) ? <ResultValueDisplay data={props.data} /> : <CircularProgress
       className={classes.top}
       size={25}
     />}
@@ -96,10 +95,8 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.factorList.map((item) => {
-
-            return <MyGarlandFactor key={item.id} name={item.name} data={[1]}
-
-              outputControl={item.outputControl} data={props.factorDataList.filter(data => {
+            return <Factor key={item.id} name={item.name} 
+              data={props.factorDataList.filter(data => {
                 return data.id === item.id;
               })} />
           })
@@ -132,7 +129,7 @@ const Section = (props) => {
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
-              {index!==(categoryList.length-1)&&<Divider variant="middle" />}
+              {index!==(categoryList.length-1)&&<Divider variant="middle" key={'d-' + item.id}/>}
 
             </>
           })
@@ -307,10 +304,6 @@ export default class Result extends Component {
   }
 
   componentDidUpdate = (prevProps) => {
-    // if (this.props.RefID !== prevProps.RefID) {
-    //   console.log('update',this.props.RefID)
-    //   this.getFactorDataList();
-    // }
     if(this.props.factorList.length>prevProps.factorList.length){
       var array = [];
     for (const [key, value] of Object.entries(this.props.factorList)) {
