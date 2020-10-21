@@ -83,7 +83,6 @@ export default class AddressSearch extends Component {
     }
 
     componentDidUpdate = () => {
-        console.log(this.state)
     }
 
     handleDisplayResult(searchTerm, Ref_ID = null) {

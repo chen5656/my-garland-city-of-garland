@@ -13,8 +13,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
 
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopSharpIcon from '@material-ui/icons/StopSharp';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -23,10 +24,15 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
+import ResultValueDisplay from '../searchResult/ResultValueDisplay';
+
+
+
 // const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 
 
 const useStyles = makeStyles((theme) => ({
+  sectionPadding:{ padding: '15px' },
   sectionHead: {
     borderRadius: '5px 5px 0 0', color: 'white', fontWeight: 600,
     backgroundImage: 'linear-gradient(to right,rgb(0 122 163 / 90%), rgb(0 122 163 / 54%), rgb(0 122 163 / 24%))',
@@ -50,46 +56,21 @@ const useStyles = makeStyles((theme) => ({
 
   },
 
+  itemIcon:{
+     fontSize: '12px' , color: '#c5d5da'
+  }
+
 }));
-
-
-const FactorValue_Address_Distant_GoogleMapLink = (props) => {
-  return (<>
-    <span></span>
-    <span></span>
-    <span></span>
-  </>)
-}
-
-
-const MyGarlandFactorValue = (props) => {
-  const classes = useStyles();
-  // console.log(props.data, props.outputControl);
-  // console.log(props.outputControl.category, props.outputControl.displayID, '--', count)
-  // if(props.outputControl.hardcode){
-  //   var str =props.outputControl.hardcode.split('{{displayValue}}');
-  //   var newStr =[];
-  //   for(let i=0;i<str.length;i++){
-  //     newStr.push(str[i]);
-  //     if(i<props.data.length){
-  //       newStr.push(props.data[i])
-  //     }
-  //   }
-  //   return <div>{newStr}</div>
-
-  // }
-  return <div>{props.data.length}</div>
-}
 
 const MyGarlandFactor = (props) => {
   const classes = useStyles();
-  console.log(props)
+  // console.log(props)
   return (<ListItem className={classes.nested}>
     <ListItemIcon className={classes.nestedIcon}>
-      <PlayArrowIcon style={{ fontSize: '15px' }} />
+      <StopSharpIcon className={classes.itemIcon} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data && props.data.length) ? <MyGarlandFactorValue data={props.data} outputControl={props.outputControl} /> : <CircularProgress
+    {(props.data && props.data.length) ? <ResultValueDisplay data={props.data} outputControl={props.outputControl} /> : <CircularProgress
       className={classes.top}
       size={25}
     />}
@@ -135,7 +116,7 @@ const Section = (props) => {
   const classes = useStyles();
   const categoryList = json_categoryList.filter(item => item.category === props.category);
 
-  return (<Col lg={4} md={6} xs={12} style={{ padding: '15px' }}>
+  return (<Col lg={4} md={6} xs={12} className={classes.sectionPadding}>
     <Paper elevation={3} >
       <List component="section"
         subheader={
@@ -145,11 +126,15 @@ const Section = (props) => {
         }
       >
         {
-          categoryList.map((item) => {
-            return <Category name={item.name} category={item.id} key={item.id}
-              factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
-              factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
-            />
+          categoryList.map((item, index) => {
+            return <>
+              <Category name={item.name} category={item.id} key={item.id}
+                factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
+                factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
+              />
+              {index!==(categoryList.length-1)&&<Divider variant="middle" />}
+
+            </>
           })
         }
       </List>
@@ -165,9 +150,12 @@ export default class Result extends Component {
     super(props);
     this.addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
     this.parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
+
     this.state = {
       factorDataList: [],
+      factorList: []
     };
+    
   }
 
   getFactorDataList() {
@@ -270,7 +258,7 @@ export default class Result extends Component {
           }
 
         });
-        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
+        that.setState({ factorDataList: that.state.factorDataList.concat(factorDataList) });
 
       })
 
@@ -309,16 +297,28 @@ export default class Result extends Component {
   }
 
   componentDidMount = () => {
-    this.getFactorDataList();
-    console.log(this.state)
+    this.getFactorDataList();       
+    var array = [];
+    for (const [key, value] of Object.entries(this.props.factorList)) {
+      array.push(value);
+    }
+    array=array.flat();
+    this.setState({factorList:array});
   }
 
   componentDidUpdate = (prevProps) => {
-    if (this.props.RefID !== prevProps.RefID) {
-      this.getFactorDataList();
+    // if (this.props.RefID !== prevProps.RefID) {
+    //   console.log('update',this.props.RefID)
+    //   this.getFactorDataList();
+    // }
+    if(this.props.factorList.length>prevProps.factorList.length){
+      var array = [];
+    for (const [key, value] of Object.entries(this.props.factorList)) {
+      array.push(value);
     }
-    else {
-      console.log(this.state)
+    array=array.flat();
+    console.log('update',array)
+    this.setState({factorList:array});
     }
   }
 
@@ -329,7 +329,7 @@ export default class Result extends Component {
           {
             json_sectionList.map((item) => {
               return <Section name={item.name} category={item.id} key={item.id}
-                factorList={this.props.factorList['city-facility'].concat(this.props.factorList['parcel-data'], this.props.factorList['service-zone'])}
+                factorList={this.state.factorList }
                 factorDataList={this.state.factorDataList}
               />
             })
