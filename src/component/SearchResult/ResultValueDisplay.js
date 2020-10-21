@@ -1,5 +1,13 @@
-import React, { Component, useState } from 'react';
-
+import React, { Component,  } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import ImageIcon from '@material-ui/icons/Image';
+import WorkIcon from '@material-ui/icons/Work';
+import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 const GoogleMapLink = (props) => {
     return (<span >
         <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.endPnt + '&destination=' + props.startPnt}
@@ -11,17 +19,25 @@ const Distance = (props)=>{
     return <span>({props.value} miles)</span>
 }
 
+{/*
+     <ListItem>
+<ListItemAvatar>
+  <Avatar>
+    <ImageIcon />
+  </Avatar>
+</ListItemAvatar>
+<ListItemText primary="Photos" secondary="Jan 9, 2014" />
+</ListItem> 
+*/}
 
 const Nearest_city_facility = (props) => {
     var data = props.data;
-    return (<div>
-        <span >{data.outputData.attributeDate[0]}</span>
-        <Distance value= {data.outputData.distance}/>
-        {data.outputControl.hyperlink && data.outputControl.hyperlink === 'googleMap' &&
-            <GoogleMapLink endPnt={data.outputData.attributeDate[0]} startPnt={data.outputData.fullAddress}
-                name={data.outputData.attributeDate[1]} />}
-
-    </div>)
+    return ( <ListItem>
+        <ListItemText primary={<GoogleMapLink endPnt={data.outputData.attributeDate[0]} startPnt={data.outputData.fullAddress}
+                name={data.outputData.attributeDate[1]} />} 
+                secondary={<div> <span >{data.outputData.attributeDate[0]}</span>
+                <Distance value= {data.outputData.distance}/></div>} />
+        </ListItem> )
 }
 
 export default class ResultValueDisplay extends Component {
