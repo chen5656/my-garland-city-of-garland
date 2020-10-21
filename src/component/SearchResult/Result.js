@@ -32,7 +32,7 @@ import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
 
 const useStyles = makeStyles((theme) => ({
-  sectionPadding:{ padding: '15px' },
+  sectionPadding: { padding: '15px' },
   sectionHead: {
     borderRadius: '5px 5px 0 0', color: 'white', fontWeight: 600,
     backgroundImage: 'linear-gradient(to right,rgb(0 122 163 / 90%), rgb(0 122 163 / 54%), rgb(0 122 163 / 24%))',
@@ -56,8 +56,8 @@ const useStyles = makeStyles((theme) => ({
 
   },
 
-  itemIcon:{
-     fontSize: '12px' , color: '#c5d5da'
+  itemIcon: {
+    fontSize: '12px', color: '#c5d5da'
   }
 
 }));
@@ -69,10 +69,10 @@ const Factor = (props) => {
       <StopSharpIcon className={classes.itemIcon} />
     </ListItemIcon>
     <ListItemText primary={props.name} />
-    {(props.data.length) ? <ResultValueDisplay data={props.data} /> : <CircularProgress
-      className={classes.top}
-      size={25}
-    />}
+    {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
+        className={classes.top}
+        size={25}
+      />}
   </ListItem>)
 }
 const Category = (props) => {
@@ -95,10 +95,10 @@ const Category = (props) => {
       <List component="div" disablePadding>
         {
           props.factorList.map((item) => {
-            return <Factor key={item.id} name={item.name} 
+            return <Factor key={item.id} name={item.name}
               data={props.factorDataList.filter(data => {
                 return data.id === item.id;
-              })} />
+              })}  />
           })
         }
       </List>
@@ -129,7 +129,7 @@ const Section = (props) => {
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
-              {index!==(categoryList.length-1)&&<Divider variant="middle" key={'d-' + item.id}/>}
+              {index !== (categoryList.length - 1) && <Divider variant="middle" key={'d-' + item.id} />}
 
             </>
           })
@@ -150,9 +150,10 @@ export default class Result extends Component {
 
     this.state = {
       factorDataList: [],
-      factorList: []
+      factorList: [],
+      fullAddress: null,
     };
-    
+
   }
 
   getFactorDataList() {
@@ -182,6 +183,7 @@ export default class Result extends Component {
           'Parcel Id': attr.PARCELID,
           'Address': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
         })
+        that.fullAddress = ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE);
         // result.features[0].geometry; //geometry in stateplane
         that.getNearestCityFacilityList(result.features[0].geometry);
         that.getLocatedServiceZoneList(result.features[0].geometry);
@@ -205,13 +207,16 @@ export default class Result extends Component {
 
       //loop through keys of a object.
       var factorDataList = that.props.factorList[category].slice().map((factor) => {
-        let outputData = factor.inputControl.outputFields.map((field) => {
+        let attributeDate = factor.inputControl.outputFields.map((field) => {
           return attr[field];
         });
         return {
           id: factor.id,
           outputControl: factor.outputControl,
-          outputData: outputData
+          outputData: {
+            attributeDate: attributeDate,
+            fullAddress: that.fullAddress,
+          }
         }
       })
       // factorDataList
@@ -230,7 +235,7 @@ export default class Result extends Component {
 
         var factorDataList = that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
-            var distance = geometryEngine.distance(geometry, feature.geometry, "miles");
+            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
             var outputAttributes = factor.inputControl.outputFields.map(field => {
               return feature.attributes[field];
             });
@@ -245,13 +250,15 @@ export default class Result extends Component {
               return b;
             }
           });
-          var outputData = nearestFeature.attributes.concat(nearestFeature.distance);
-
 
           return {
             id: factor.id,
             outputControl: factor.outputControl,
-            outputData: outputData
+            outputData: {
+              attributeDate: nearestFeature.attributes,
+              distance: nearestFeature.distance,
+              fullAddress: that.fullAddress,
+            }
           }
 
         });
@@ -273,11 +280,11 @@ export default class Result extends Component {
           });
 
           if (containerZone) {
-            var outputData = factor.inputControl.outputFields.map(field => {
+            var attributeDate = factor.inputControl.outputFields.map(field => {
               return containerZone.attributes[field];
             });
           } else {
-            var outputData = factor.inputControl.outputFields.map(field => {
+            var attributeDate = factor.inputControl.outputFields.map(field => {
               return 'NULL'
             });
           }
@@ -285,7 +292,10 @@ export default class Result extends Component {
           return {
             id: factor.id,
             outputControl: factor.outputControl,
-            outputData: outputData
+            outputData: {
+              attributeDate: attributeDate,
+              fullAddress: that.fullAddress,
+            }
           }
         });
 
@@ -294,24 +304,24 @@ export default class Result extends Component {
   }
 
   componentDidMount = () => {
-    this.getFactorDataList();       
+    this.getFactorDataList();
     var array = [];
     for (const [key, value] of Object.entries(this.props.factorList)) {
       array.push(value);
     }
-    array=array.flat();
-    this.setState({factorList:array});
+    array = array.flat();
+    this.setState({ factorList: array });
   }
 
   componentDidUpdate = (prevProps) => {
-    if(this.props.factorList.length>prevProps.factorList.length){
+    if (this.props.factorList.length > prevProps.factorList.length) {
       var array = [];
-    for (const [key, value] of Object.entries(this.props.factorList)) {
-      array.push(value);
-    }
-    array=array.flat();
-    console.log('update',array)
-    this.setState({factorList:array});
+      for (const [key, value] of Object.entries(this.props.factorList)) {
+        array.push(value);
+      }
+      array = array.flat();
+      console.log('update', array)
+      this.setState({ factorList: array });
     }
   }
 
@@ -322,7 +332,7 @@ export default class Result extends Component {
           {
             json_sectionList.map((item) => {
               return <Section name={item.name} category={item.id} key={item.id}
-                factorList={this.state.factorList }
+                factorList={this.state.factorList}
                 factorDataList={this.state.factorDataList}
               />
             })

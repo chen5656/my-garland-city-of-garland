@@ -4,14 +4,14 @@ import React, { Component, useState } from 'react';
 
 const FactorValue_Address_Distant_GoogleMapLink = (props) => {
     return (<>
-      <span></span>
-      <span></span>
-      <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
     </>)
-  }
-  
-  
-  const MyGarlandFactorValue = (props) => {
+}
+
+
+const MyGarlandFactorValue = (props) => {
     // const classes = useStyles();
     console.log(props.data, props.outputControl);
     // if(props.outputControl.hardcode){
@@ -24,22 +24,30 @@ const FactorValue_Address_Distant_GoogleMapLink = (props) => {
     //     }
     //   }
     //   return <div>{newStr}</div>
-  
+
     // }
     return <div>{props.data.length}</div>
-  }
+}
 
 export default class ResultValueDisplay extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
     }
 
-render (){
-     console.log(this.props)
-     debugger;
-    return null
-}
+    render() {
+        console.log(this.props.data[0].outputControl.category,this.props)
+        var str = <div></div>;
+        if (this.props.data[0].outputControl.category==="nearest-city-facility") {
+            str = <div> <span class='location-data-value'>{this.props.data[0].outputData[0]}</span>
+                <span class='location-data-distance'> {this.props.data[0].outputData[2]}</span>
+                <span class='location-data-value'><a href={'https://www.google.com/maps/dir/?api=1&origin='+this.props.data[0].outputData[0]+'&destination='+this.props.fullAddress}
+                    target='_blank' title='Open in Google Map'> {this.props.data[0].outputData[1]}</a></span></div>;
+        }
+        return <>
+            {str}
+        </>;
+    }
 
 
 }
