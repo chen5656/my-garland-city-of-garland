@@ -2,8 +2,6 @@ import React, { Component, useState } from 'react';
 import { loadModules } from 'esri-loader';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
-
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -113,7 +111,7 @@ const Section = (props) => {
   const classes = useStyles();
   const categoryList = json_categoryList.filter(item => item.category === props.category);
 
-  return (<Col lg={4} md={6} xs={12} className={classes.sectionPadding}>
+  return (<div  className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
     <Paper elevation={3} >
       <List component="section"
         subheader={
@@ -137,7 +135,7 @@ const Section = (props) => {
       </List>
 
     </Paper>
-  </Col>)
+  </div>)
 }
 
 
@@ -327,8 +325,8 @@ export default class Result extends Component {
 
   render() {
     return (<article>
-      <Grid fluid  >
-        <Row >
+      <div className= 'container-fluid' >
+        <div className='row ' >
           {
             json_sectionList.map((item) => {
               return <Section name={item.name} category={item.id} key={item.id}
@@ -337,8 +335,8 @@ export default class Result extends Component {
               />
             })
           }
-        </Row>
-      </Grid>
+        </div>
+      </div>
     </article>
     )
   }
