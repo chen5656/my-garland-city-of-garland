@@ -7,13 +7,16 @@ const GoogleMapLink = (props) => {
     </span>)
 }
 
+const Distance = (props)=>{
+    return <span>({props.value} miles)</span>
+}
 
 
 const Nearest_city_facility = (props) => {
     var data = props.data;
     return (<div>
         <span >{data.outputData.attributeDate[0]}</span>
-        <span > {data.outputData.distance}</span>
+        <Distance value= {data.outputData.distance}/>
         {data.outputControl.hyperlink && data.outputControl.hyperlink === 'googleMap' &&
             <GoogleMapLink endPnt={data.outputData.attributeDate[0]} startPnt={data.outputData.fullAddress}
                 name={data.outputData.attributeDate[1]} />}

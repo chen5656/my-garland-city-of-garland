@@ -24,11 +24,6 @@ import json_categoryList from '../../data/categoryList.json';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
-
-
-// const geometryServiceUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
-
-
 const useStyles = makeStyles((theme) => ({
   sectionPadding: { padding: '15px' },
   sectionHead: {
@@ -51,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
   top: {
     color: 'rgb(0 122 163 / 74%)',
     animationDuration: '1550ms',
-
   },
 
   itemIcon: {
