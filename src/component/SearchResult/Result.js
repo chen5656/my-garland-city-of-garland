@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 const Factor = (props) => {
   const classes = useStyles();
   return (
-    < div className='row pl-5'>
+    <li className='row pl-5'>
       <div className='col-4 pt-3 ' >{props.name}
       </div>
       <div className='col-8' >
@@ -83,9 +83,7 @@ const Factor = (props) => {
         size={25}
       />} 
       </div>
-
-
-    </div>)
+    </li>)
 }
 const Category = (props) => {
   const [open, setOpen] = useState(true);
@@ -104,7 +102,7 @@ const Category = (props) => {
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
     <Collapse in={open} timeout="auto" unmountOnExit>
-      <List component="div" disablePadding>
+      <List component="ul" disablePadding>
         {
           props.factorList.map((item) => {
             return <Factor key={item.id} name={item.name}
@@ -141,7 +139,7 @@ const Section = (props) => {
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
-              {index !== (categoryList.length - 1) && <Divider variant="middle"  />}
+              {index !== (categoryList.length - 1) ? <Divider variant="middle"/>:''  }
 
             </div>
           })

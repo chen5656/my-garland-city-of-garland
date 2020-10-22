@@ -1,4 +1,4 @@
-import React, { Component,  } from 'react';
+import React, { Component, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,36 +8,43 @@ import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
 import WorkIcon from '@material-ui/icons/Work';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
-const GoogleMapLink = (props) => {
-    return (<span >
-        <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.endPnt + '&destination=' + props.startPnt}
-            target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {props.name}</a>
-    </span>)
+import { SignalCellularNullOutlined } from '@material-ui/icons';
+
+String.prototype.capitalize = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
-const Distance = (props)=>{
-    return <span>({props.value} miles)</span>
+
+const BLDGName = (props) => {
+    const name=props.data.outputData.attributeDate[1].capitalize();
+    if(props.data.outputControl.hyperlink&&props.data.outputControl.hyperlink==='Google map' ){
+        let endPnt=props.data.outputData.attributeDate[0] ;
+        let startPnt=props.data.outputData.fullAddress;
+       return (<span >
+            <a href={'https://www.google.com/maps/dir/?api=1&origin=' + endPnt + '&destination=' + startPnt}
+                target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {name}</a>
+        </span>)
+    }else{
+        return <span>name</span>;
+    }
+    
+    return 
 }
 
-{/*
-     <ListItem>
-<ListItemAvatar>
-  <Avatar>
-    <ImageIcon />
-  </Avatar>
-</ListItemAvatar>
-<ListItemText primary="Photos" secondary="Jan 9, 2014" />
-</ListItem> 
-*/}
+const Distance = (props) => {
+    return <span> ({props.value} miles)</span>
+}
 
-const Nearest_city_facility = (props) => {
+const FactorValue_Building = (props) => {
     var data = props.data;
-    return ( <ListItem>
-        <ListItemText primary={<GoogleMapLink endPnt={data.outputData.attributeDate[0]} startPnt={data.outputData.fullAddress}
-                name={data.outputData.attributeDate[1]} />} 
-                secondary={<div> <span >{data.outputData.attributeDate[0]}</span>
-                <Distance value= {data.outputData.distance}/></div>} />
-        </ListItem> )
+    console.log(data);
+    return (<ListItem>
+        <ListItemText primary={<BLDGName data={data} />}
+            secondary={<div>
+                <span >{data.outputData.attributeDate[0]}</span>
+                {data.outputControl.displayDistance && <Distance value={data.outputData.distance} />}
+            </div>} />
+    </ListItem>)
 }
 
 export default class ResultValueDisplay extends Component {
@@ -48,7 +55,9 @@ export default class ResultValueDisplay extends Component {
     renderResult(param) {
         switch (param) {
             case 'nearest-city-facility':
-                return <Nearest_city_facility data={this.props.data[0]} />;
+                return <FactorValue_Building data={this.props.data[0]} />;
+            case 'nearest-city-1':
+                return null;
             default:
                 return <div></div>;
         }

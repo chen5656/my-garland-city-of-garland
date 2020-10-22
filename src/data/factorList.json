@@ -14,7 +14,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -33,7 +33,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -52,7 +52,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -71,7 +71,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -90,7 +90,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -109,7 +109,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -147,7 +147,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
@@ -166,7 +166,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
-            "hyperlink": "googleMap",
+            "hyperlink": "Google map",
             "displayDistance": true
         }
     },
