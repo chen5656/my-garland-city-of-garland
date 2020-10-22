@@ -1,13 +1,25 @@
 import React, { Component, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
 const useStyles = makeStyles((theme) => ({
+    listItem:{
+        paddingLeft: '12px',
+        paddingRight: '8px',
+        width: '100%',
+        position: 'relative',
+        boxSizing: 'border-box',
+        textAlign: 'left',
+        alignItems: 'center',
+        paddingTop: '10px',
+        paddingBottom: '10px',
+        justifyContent: 'flex-start',
+        textDecoration: 'none',
+
+    },
     primary:{
         display: 'block',
         fontSize: '1rem',
@@ -48,7 +60,7 @@ const Address =(props)=>{
 return <span>{props.value}</span>;
 }
 const Distance = (props) => {
-    return <span> ({props.value} miles)</span>
+    return <span> ({props.value} miles)</span>;
 }
 const FactorValue_Building = (props) => {
     const classes = useStyles();
@@ -64,13 +76,7 @@ const FactorValue_Building = (props) => {
         distance=data.outputData.distance;
     }
 
-    console.log(data);
-    // <ListItemText primary={name && <Name  name={name} address ={address} data={data}/>}             
-    //         secondary={<div>                
-    //             {address && <Address value={address} />}
-    //             {distance && <Distance value={distance} />}
-    //         </div>} />
-    return (<div>
+    return (<div className={classes.listItem}>
         <div className={classes.primary}>
             {name && <Name  name={name} address ={address} data={data}/>}   
         </div>
