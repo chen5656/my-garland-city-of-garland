@@ -16,6 +16,7 @@ String.prototype.capitalize = function () {
 
 
 const BLDGName = (props) => {
+    debugger;
     const name=props.data.outputData.attributeDate[1].capitalize();
     if(props.data.outputControl.hyperlink&&props.data.outputControl.hyperlink==='Google map' ){
         let endPnt=props.data.outputData.attributeDate[0] ;
@@ -25,10 +26,9 @@ const BLDGName = (props) => {
                 target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {name}</a>
         </span>)
     }else{
-        return <span>name</span>;
+        return <span>{name}</span>;
     }
     
-    return 
 }
 
 const Distance = (props) => {

@@ -218,7 +218,7 @@ export default class Result extends Component {
       //loop through keys of a object.
       var factorDataList = that.props.factorList[category].slice().map((factor) => {
         let attributeDate = factor.inputControl.outputFields.map((field) => {
-          return attr[field];
+          return {field:attr[field]};
         });
         return {
           id: factor.id,
@@ -247,7 +247,7 @@ export default class Result extends Component {
           var nearestFeature = factor.inputControl.features.map((feature) => {
             var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
             var outputAttributes = factor.inputControl.outputFields.map(field => {
-              return feature.attributes[field];
+              return {field:feature.attributes[field]};
             });
             return {
               attributes: outputAttributes,
@@ -291,7 +291,7 @@ export default class Result extends Component {
 
           if (containerZone) {
             var attributeDate = factor.inputControl.outputFields.map(field => {
-              return containerZone.attributes[field];
+              return {field:containerZone.attributes[field]};
             });
           } else {
             var attributeDate = factor.inputControl.outputFields.map(field => {
