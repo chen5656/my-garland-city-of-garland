@@ -38,20 +38,26 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: 1.43,
         letterSpacing: '0.01071em',
 
+    },
+    council: {
+        fontWeight: 900,
+        color: 'white',
+        padding: '4px',
+        backgroundColor: '#207ff7',
     }
 
 }));
 
-const fillNullInfo = (input)=>{
-    if(input){
+const fillNullInfo = (input) => {
+    if (input) {
         return input
-    }else{
+    } else {
         return 'NULL'
     }
 }
 const GoogleMapLink = (props) => {
     return (
-        <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.endPnt + '&destination=' + props.startPnt}
+        <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.startPnt  + '&destination=' + props.endPnt}
             target='_blank' rel="noopener noreferrer" title='Open in Google Map'>
             {props.children}
         </a>
@@ -70,53 +76,56 @@ const Name = (props) => {
     if (props.data.outputControl.hyperlink) {
         if (props.data.outputControl.hyperlink === 'Google map') {
             return (
-                <GoogleMapLink startPnt={props.data.outputData.fullAddress} endPnt={props.address}>
-                    {props.name}
+                <GoogleMapLink startPnt={props.data.outputData.fullAddress} endPnt={ props.data.outputData.attributeData[props.data.outputControl.address]}>
+                    {props.children}
                 </GoogleMapLink>
             )
         } else if (props.data.outputControl.hyperlink === 'field') {
             return (
                 <FieldLink url={props.data.outputData.attributeData[props.data.outputControl.hyperlinkFieldname]}>
-                    {props.name}
+                    {props.children}
                 </FieldLink>
-                )
+            )
 
         }
 
     } else {
-        return <span>{props.name}</span>;
+        return <span>{props.children}</span>;
     }
 
 }
 
 const Address = (props) => {
-    return <span>{props.value}</span>;
+    return <span>{props.children}</span>;
 }
 const Distance = (props) => {
-    return <span> ({props.value} miles)</span>;
+    return <span> ({props.children} miles)</span>;
+}
+const Phone =(props) =>{
+    
+}
+const Email =(props) =>{
+    
 }
 const FactorValueSingleValue = (props) => {
     const classes = useStyles();
     var data = props.data;
-    var name = null, address = null, distance = null;
+    var name = null, address = null;
     if (data.outputControl.name) {
         name = fillNullInfo(data.outputData.attributeData[data.outputControl.name]);
     }
     if (data.outputControl.address) {
         address = data.outputData.attributeData[data.outputControl.address];
     }
-    if (data.outputControl.distance) {
-        distance = data.outputData.distance;
-    }
 
     return (<div className={classes.listItem}>
         <div className={classes.primary}>
-            {name && <Name name={name} address={address} data={data} />}
+            {name && <Name data={data} >{name}</Name>}
         </div>
         <div className={classes.secondary}>
             {<div>
-                {address && <Address value={address} />}
-                {distance && <Distance value={distance} />}
+                {address && <Address>{address}</Address>}
+                {data.outputControl.distance && <Distance>{data.outputData.distance}</Distance> }
             </div>}
 
         </div>
@@ -124,23 +133,16 @@ const FactorValueSingleValue = (props) => {
     </div>)
 }
 
-// const FactorValueCouncil =(props) =>{
-//    return <a href='' target='_blank' title='Open to see details' class='blue-icon '> 
-//    {{outputFields}}</a>
-
-// }
-
-
 export default class ResultValueDisplay extends Component {
     renderResult(category, data) {
         switch (category) {
             case 'singleValue':
                 return <FactorValueSingleValue data={data} />;
-            case 'council':
-                // return <FactorValueCouncil data={data} />;
+            case 'name_phone_email':
+                return <div></div>
             default:
                 return <div></div>;
-               
+
         }
     }
     render() {

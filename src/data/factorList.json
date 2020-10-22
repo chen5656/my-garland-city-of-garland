@@ -385,17 +385,19 @@
         "id": "council-dist",
         "name": "City Council District",
         "inputControl": {
-            "category": "parcel-data",
+            "category": "service-zone",
             "outputFields": [
-                "COUNCIL_ID",
+                "DISTRICT_NUMBER",
                 "HYPERLINIK"
-            ]
+            ]  ,
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35"
+  
         },
         "outputControl": {
             "category": "reference",
             "displayID": 1,
             "formatType": "singleValue",
-            "name": "COUNCIL_ID",
+            "name": "DISTRICT_NUMBER",
             "hyperlink": "field",
             "hyperlinkFieldname": "HYPERLINIK"
         }
