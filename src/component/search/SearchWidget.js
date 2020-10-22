@@ -9,11 +9,7 @@ const containerStyle = {
 }
 
 export default class SearchWidget extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount = () => {
+   componentDidMount = () => {
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules(['esri/widgets/Search', 'esri/tasks/Locator'], { css: true })

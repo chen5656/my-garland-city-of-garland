@@ -14,6 +14,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -35,6 +36,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -56,6 +58,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -77,6 +80,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -98,6 +102,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -119,6 +124,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -159,6 +165,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",
@@ -180,6 +187,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
+            "formatType":"building",
             "hyperlink": "Google map",
             "distance": true,
             "name":"BLDG_NAME",

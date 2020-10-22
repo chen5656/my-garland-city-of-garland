@@ -13,7 +13,6 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
-import StopSharpIcon from '@material-ui/icons/StopSharp';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -44,10 +43,13 @@ const useStyles = makeStyles((theme) => ({
   nestedIcon: {
     minWidth: '40px',
   },
-  top: {
+  circularProgressWrap:{    
+    paddingTop:'15px',
+    paddingBottom:'18px',
+  },
+  circularProgress: {
     color: 'rgb(0 122 163 / 74%)',
     animationDuration: '1550ms',
-
   },
 
   itemIcon: {
@@ -63,10 +65,10 @@ const Factor = (props) => {
       <div className='col-4 pt-3 ' >{props.name}
       </div>
       <div className='col-8' >
-        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
-        className={classes.top}
+        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <div className={classes.circularProgressWrap}><CircularProgress
+        className={classes.circularProgress}
         size={25}
-      />} 
+      /></div>} 
       </div>
     </li>)
 }
@@ -228,7 +230,6 @@ export default class Result extends Component {
     var that = this;
     loadModules(['esri/geometry/geometryEngine'])
       .then(([geometryEngine]) => {
-
         var factorDataList = that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
             var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);           

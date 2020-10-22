@@ -62,7 +62,7 @@ return <span>{props.value}</span>;
 const Distance = (props) => {
     return <span> ({props.value} miles)</span>;
 }
-const FactorValue_Building = (props) => {
+const FactorValueBuilding = (props) => {
     const classes = useStyles();
     var data = props.data;
     var name=null, address=null, distance=null;
@@ -92,25 +92,20 @@ const FactorValue_Building = (props) => {
 }
 
 export default class ResultValueDisplay extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     renderResult(category,data) {
         switch (category) {
-            case 'nearest-city-facility':
-                return <FactorValue_Building data={data} />;
+            case 'building':
+                return <FactorValueBuilding data={data} />;
             case 'nearest-city-1':
                 return null;
             default:
                 return <div></div>;
         }
     }
-
     render() {
         console.log(this.props.data[0])
         return <>
-            {this.renderResult(this.props.data[0].outputControl.category,this.props.data[0])}
+            {this.renderResult(this.props.data[0].outputControl.formatType,this.props.data[0])}
         </>;
     }
 
