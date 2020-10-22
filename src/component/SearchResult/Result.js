@@ -217,8 +217,9 @@ export default class Result extends Component {
 
       //loop through keys of a object.
       var factorDataList = that.props.factorList[category].slice().map((factor) => {
-        let attributeDate = factor.inputControl.outputFields.map((field) => {
-          return {field:attr[field]};
+        let attributeDate ={};
+         factor.inputControl.outputFields.forEach((field) => {
+          attributeDate[field]=attr[field];
         });
         return {
           id: factor.id,
@@ -245,12 +246,9 @@ export default class Result extends Component {
 
         var factorDataList = that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
-            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
-            var outputAttributes = factor.inputControl.outputFields.map(field => {
-              return {field:feature.attributes[field]};
-            });
+            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);           
             return {
-              attributes: outputAttributes,
+              attributes: feature.attributes,
               distance: distance
             };
           }).reduce(function (a, b) {
@@ -288,22 +286,12 @@ export default class Result extends Component {
           var containerZone = factor.inputControl.features.find((feature) => {
             return geometryEngine.contains(feature.geometry, geometry);
           });
-
-          if (containerZone) {
-            var attributeDate = factor.inputControl.outputFields.map(field => {
-              return {field:containerZone.attributes[field]};
-            });
-          } else {
-            var attributeDate = factor.inputControl.outputFields.map(field => {
-              return 'NULL'
-            });
-          }
-
+   
           return {
             id: factor.id,
             outputControl: factor.outputControl,
             outputData: {
-              attributeDate: attributeDate,
+              attributeDate: containerZone?containerZone.attributes:{},
               fullAddress: that.fullAddress,
             }
           }

@@ -16,7 +16,8 @@ String.prototype.capitalize = function () {
 
 
 const BLDGName = (props) => {
-    debugger;
+    // debugger;/
+    return null
     const name=props.data.outputData.attributeDate[1].capitalize();
     if(props.data.outputControl.hyperlink&&props.data.outputControl.hyperlink==='Google map' ){
         let endPnt=props.data.outputData.attributeDate[0] ;
@@ -30,6 +31,9 @@ const BLDGName = (props) => {
     }
     
 }
+const Address =(props)=>{
+
+}
 
 const Distance = (props) => {
     return <span> ({props.value} miles)</span>
@@ -42,7 +46,7 @@ const FactorValue_Building = (props) => {
         <ListItemText primary={<BLDGName data={data} />}
             secondary={<div>
                 <span >{data.outputData.attributeDate[0]}</span>
-                {data.outputControl.displayDistance && <Distance value={data.outputData.distance} />}
+                {data.outputControl.distance && <Distance value={data.outputData.distance} />}
             </div>} />
     </ListItem>)
 }
@@ -65,7 +69,7 @@ export default class ResultValueDisplay extends Component {
 
     render() {
         var data = this.props.data[0];
-        console.log(data.outputControl.category, this.props)
+        console.log(this.props.data[0])
         return <>
             {this.renderResult(data.outputControl.category)}
         </>;

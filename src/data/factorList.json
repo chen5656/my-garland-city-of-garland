@@ -15,7 +15,7 @@
             "category": "nearest-city-facility",
             "displayID": "1",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -36,7 +36,7 @@
             "category": "nearest-city-facility",
             "displayID": "2",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -57,7 +57,7 @@
             "category": "nearest-city-facility",
             "displayID": "3",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -78,7 +78,7 @@
             "category": "nearest-city-facility",
             "displayID": "4",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -99,7 +99,7 @@
             "category": "nearest-city-facility",
             "displayID": "5",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -120,7 +120,7 @@
             "category": "nearest-city-facility",
             "displayID": "6",
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -160,7 +160,7 @@
             "category": "services",
             "displayID": 3,
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
@@ -181,7 +181,7 @@
             "category": "services",
             "displayID": 1,
             "hyperlink": "Google map",
-            "displayDistance": true,
+            "distance": true,
             "name":"BLDG_NAME",
             "address":"ADDRESS"
         }
