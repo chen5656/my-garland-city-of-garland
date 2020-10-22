@@ -82,6 +82,7 @@ const Category = (props) => {
   const handleClick = () => {
     setOpen(!open);
   };
+  debugger;
 
   return (<>
     <ListItem button onClick={handleClick} className={classes.categoryHead}>
@@ -91,10 +92,11 @@ const Category = (props) => {
       <ListItemText primary={props.name} />
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
+    {props.factorList.length&&
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="ul" disablePadding>
         {
-          props.factorList.map((item) => {
+          props.factorList.sort((a,b)=>{return a.outputControl.displayID-b.outputControl.displayID}).map((item) => {
             return <Factor key={item.id} name={item.name}
               data={props.factorDataList.filter(data => {
                 return data.id === item.id;
@@ -102,7 +104,7 @@ const Category = (props) => {
           })
         }
       </List>
-    </Collapse>
+    </Collapse>}
   </>
   )
 

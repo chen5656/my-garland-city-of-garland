@@ -117,28 +117,23 @@ export default class AddressSearch extends Component {
 
     render() {
         return (
-            <div>
-
+            <div style={{minHeight:'200px'}}>
                 {this.state.searchReady ?
-                    <>
-                        <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
-                        {this.state.isShowResult &&
-                            (this.state.Ref_ID ?
-                                <Result RefID={this.state.Ref_ID} factorList={{
-                                    'city-facility': this.state['city-facility'],
-                                    'parcel-data': this.state['parcel-data'],
-                                    'service-zone': this.state['service-zone'],
-                                }}
-                                    parcelFields={this.state.parcelFields}
-                                />
-                                :
-                                <AddressNotFound searchTerm={this.state.searchTerm} />)}
-                    </>
+                    <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
                     :
-                    <>
-                        <LinearProgress />
-
-                    </>}
+                    <LinearProgress style={{top:'20px', background: '#c5c0c0'}}/>
+                }
+                {this.state.isShowResult &&
+                    (this.state.Ref_ID ?
+                        <Result RefID={this.state.Ref_ID} factorList={{
+                            'city-facility': this.state['city-facility'],
+                            'parcel-data': this.state['parcel-data'],
+                            'service-zone': this.state['service-zone'],
+                        }}
+                            parcelFields={this.state.parcelFields}
+                        />
+                        :
+                        <AddressNotFound searchTerm={this.state.searchTerm} />)}
             </div>
         );
     }
