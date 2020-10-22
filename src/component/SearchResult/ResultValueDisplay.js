@@ -1,52 +1,50 @@
 import React, { Component, } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
-import { SignalCellularNullOutlined } from '@material-ui/icons';
 
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
-
-const BLDGName = (props) => {
-    // debugger;/
-    return null
-    const name=props.data.outputData.attributeDate[1].capitalize();
+// name={name} address ={address} data={data}
+const Name = (props) => {
     if(props.data.outputControl.hyperlink&&props.data.outputControl.hyperlink==='Google map' ){
-        let endPnt=props.data.outputData.attributeDate[0] ;
         let startPnt=props.data.outputData.fullAddress;
        return (<span >
-            <a href={'https://www.google.com/maps/dir/?api=1&origin=' + endPnt + '&destination=' + startPnt}
-                target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {name}</a>
+            <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.address + '&destination=' + startPnt}
+                target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {props.name}</a>
         </span>)
     }else{
-        return <span>{name}</span>;
+        return <span>{props.name}</span>;
     }
     
 }
+
 const Address =(props)=>{
-
+return <span>{props.value}</span>;
 }
-
 const Distance = (props) => {
     return <span> ({props.value} miles)</span>
 }
-
 const FactorValue_Building = (props) => {
     var data = props.data;
+    var name=null, address=null, distance=null;
+    if(data.outputControl.name){
+        name=data.outputData.attributeDate[data.outputControl.name].capitalize();
+    }
+    if(data.outputControl.address){
+        address=data.outputData.attributeDate[data.outputControl.address];
+    }
+    if(data.outputControl.distance){
+        distance=data.outputData.distance;
+    }
+
     console.log(data);
     return (<ListItem>
-        <ListItemText primary={<BLDGName data={data} />}
-            secondary={<div>
-                <span >{data.outputData.attributeDate[0]}</span>
-                {data.outputControl.distance && <Distance value={data.outputData.distance} />}
+        <ListItemText primary={name && <Name  name={name} address ={address} data={data}/>}             
+            secondary={<div>                
+                {address && <Address value={address} />}
+                {distance && <Distance value={distance} />}
             </div>} />
     </ListItem>)
 }
@@ -56,10 +54,10 @@ export default class ResultValueDisplay extends Component {
         super(props);
     }
 
-    renderResult(param) {
-        switch (param) {
+    renderResult(category,data) {
+        switch (category) {
             case 'nearest-city-facility':
-                return <FactorValue_Building data={this.props.data[0]} />;
+                return <FactorValue_Building data={data} />;
             case 'nearest-city-1':
                 return null;
             default:
@@ -68,10 +66,9 @@ export default class ResultValueDisplay extends Component {
     }
 
     render() {
-        var data = this.props.data[0];
         console.log(this.props.data[0])
         return <>
-            {this.renderResult(data.outputControl.category)}
+            {this.renderResult(this.props.data[0].outputControl.category,this.props.data[0])}
         </>;
     }
 
