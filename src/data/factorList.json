@@ -14,7 +14,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -36,7 +36,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -58,7 +58,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -80,7 +80,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -102,7 +102,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -124,7 +124,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -146,7 +146,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 2,
-            "formatType": "building",
+            "formatType": "singleValue",
             "name": "PARK",
             "hyperlink": "field",
             "hyperlinkFieldname": "PARK_WEBLI"
@@ -167,7 +167,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -189,7 +189,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
-            "formatType": "building",
+            "formatType": "singleValue",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -208,7 +208,9 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 5
+            "displayID": 5,
+            "formatType": "singleValue",
+            "name": "COLOR"
         }
     },
     {
@@ -244,7 +246,9 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 4
+            "displayID": 4,
+            "formatType": "singleValue",
+            "name": "T_DAY"
         }
     },
     {
@@ -313,7 +317,9 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 3
+            "displayID": 3,
+            "formatType": "singleValue",
+            "name": "NAME"
         }
     },
     {
@@ -328,7 +334,9 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 4
+            "displayID": 4,
+            "formatType": "singleValue",
+            "name": "NAME"
         }
     },
     {
@@ -343,7 +351,9 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 3
+            "displayID": 3,
+            "formatType": "singleValue",
+            "name": "GDC_ZONING"
         }
     },
     {
@@ -377,13 +387,17 @@
         "inputControl": {
             "category": "parcel-data",
             "outputFields": [
-                "COUNCIL_ID"
+                "COUNCIL_ID",
+                "HYPERLINIK"
             ]
         },
         "outputControl": {
             "category": "reference",
             "displayID": 1,
-            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>"
+            "formatType": "singleValue",
+            "name": "COUNCIL_ID",
+            "hyperlink": "field",
+            "hyperlinkFieldname": "HYPERLINIK"
         }
     },
     {
@@ -397,7 +411,9 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 2
+            "displayID": 2,
+            "formatType": "singleValue",
+            "name": "ZIP_CODE"
         }
     },
     {
@@ -411,7 +427,9 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 3
+            "displayID": 3,
+            "formatType": "singleValue",
+            "name": "MAPSCO"
         }
     },
     {
@@ -425,7 +443,9 @@
         },
         "outputControl": {
             "category": "reference",
-            "displayID": 4
+            "displayID": 4,
+            "formatType": "singleValue",
+            "name": "SCHOOL_DISTRICT"
         }
     },
     {
@@ -439,7 +459,9 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 1
+            "displayID": 1,
+            "formatType": "singleValue",
+            "name": "LANDUSE"
         }
     },
     {
@@ -453,7 +475,9 @@
         },
         "outputControl": {
             "category": "planning-development-zoning",
-            "displayID": 2
+            "displayID": 2,
+            "formatType": "singleValue",
+            "name": "ZONING"
         }
     },
     {
@@ -467,7 +491,9 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 1
+            "displayID": 1,
+            "formatType": "singleValue",
+            "name": "NEIGHBORHOOD"
         }
     }
 ]

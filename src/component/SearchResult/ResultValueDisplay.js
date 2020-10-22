@@ -42,6 +42,13 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const fillNullInfo = (input)=>{
+    if(input){
+        return input
+    }else{
+        return 'NULL'
+    }
+}
 const GoogleMapLink = (props) => {
     return (
         <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.endPnt + '&destination=' + props.startPnt}
@@ -69,7 +76,7 @@ const Name = (props) => {
             )
         } else if (props.data.outputControl.hyperlink === 'field') {
             return (
-                <FieldLink url={props.data.outputData.attributeDate[props.data.outputControl.hyperlinkFieldname]}>
+                <FieldLink url={props.data.outputData.attributeData[props.data.outputControl.hyperlinkFieldname]}>
                     {props.name}
                 </FieldLink>
                 )
@@ -88,15 +95,15 @@ const Address = (props) => {
 const Distance = (props) => {
     return <span> ({props.value} miles)</span>;
 }
-const FactorValueBuilding = (props) => {
+const FactorValueSingleValue = (props) => {
     const classes = useStyles();
     var data = props.data;
     var name = null, address = null, distance = null;
     if (data.outputControl.name) {
-        name = data.outputData.attributeDate[data.outputControl.name].capitalize();
+        name = fillNullInfo(data.outputData.attributeData[data.outputControl.name]);
     }
     if (data.outputControl.address) {
-        address = data.outputData.attributeDate[data.outputControl.address];
+        address = data.outputData.attributeData[data.outputControl.address];
     }
     if (data.outputControl.distance) {
         distance = data.outputData.distance;
@@ -117,20 +124,26 @@ const FactorValueBuilding = (props) => {
     </div>)
 }
 
+// const FactorValueCouncil =(props) =>{
+//    return <a href='' target='_blank' title='Open to see details' class='blue-icon '> 
+//    {{outputFields}}</a>
+
+// }
+
 
 export default class ResultValueDisplay extends Component {
     renderResult(category, data) {
         switch (category) {
-            case 'building':
-                return <FactorValueBuilding data={data} />;
-            case 'nearest-city-1':
-                return null;
+            case 'singleValue':
+                return <FactorValueSingleValue data={data} />;
+            case 'council':
+                // return <FactorValueCouncil data={data} />;
             default:
                 return <div></div>;
+               
         }
     }
     render() {
-        console.log(this.props.data[0])
         return <>
             {this.renderResult(this.props.data[0].outputControl.formatType, this.props.data[0])}
         </>;

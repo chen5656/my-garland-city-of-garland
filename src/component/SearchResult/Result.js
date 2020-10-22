@@ -82,7 +82,6 @@ const Category = (props) => {
   const handleClick = () => {
     setOpen(!open);
   };
-  debugger;
 
   return (<>
     <ListItem button onClick={handleClick} className={classes.categoryHead}>
@@ -92,7 +91,7 @@ const Category = (props) => {
       <ListItemText primary={props.name} />
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
-    {props.factorList.length&&
+    {props.factorList.length>0&&
     <Collapse in={open} timeout="auto" unmountOnExit>
       <List component="ul" disablePadding>
         {
@@ -209,15 +208,15 @@ export default class Result extends Component {
 
       //loop through keys of a object.
       var factorDataList = that.props.factorList[category].slice().map((factor) => {
-        let attributeDate ={};
+        let attributeData ={};
          factor.inputControl.outputFields.forEach((field) => {
-          attributeDate[field]=attr[field];
+          attributeData[field]=attr[field];
         });
         return {
           id: factor.id,
           outputControl: factor.outputControl,
           outputData: {
-            attributeDate: attributeDate,
+            attributeData: attributeData,
             fullAddress: that.fullAddress,
           }
         }
@@ -254,7 +253,7 @@ export default class Result extends Component {
             id: factor.id,
             outputControl: factor.outputControl,
             outputData: {
-              attributeDate: nearestFeature.attributes,
+              attributeData: nearestFeature.attributes,
               distance: nearestFeature.distance,
               fullAddress: that.fullAddress,
             }
@@ -277,12 +276,17 @@ export default class Result extends Component {
           var containerZone = factor.inputControl.features.find((feature) => {
             return geometryEngine.contains(feature.geometry, geometry);
           });
-   
+          if(!containerZone){
+            containerZone={attributes:{}};
+            factor.inputControl.outputFields.forEach((field)=>{
+              containerZone.attributes[field]='';
+            })
+          }
           return {
             id: factor.id,
             outputControl: factor.outputControl,
             outputData: {
-              attributeDate: containerZone?containerZone.attributes:{},
+              attributeData: containerZone.attributes,
               fullAddress: that.fullAddress,
             }
           }
