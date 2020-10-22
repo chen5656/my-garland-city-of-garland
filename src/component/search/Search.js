@@ -86,8 +86,7 @@ export default class AddressSearch extends Component {
         this.getServiceZoneList(json_factorList);
     }
 
-    componentDidUpdate = (prevProps) => {
-        debugger;
+    componentDidUpdate = () => {
         if (this.state['city-facility'] && this.state['parcel-data'] && this.state['service-zone']) {
             if (!this.state.searchReady) {
                 this.setState({ searchReady: true });

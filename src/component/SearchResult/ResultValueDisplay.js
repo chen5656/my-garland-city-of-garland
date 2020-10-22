@@ -42,14 +42,40 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-// name={name} address ={address} data={data}
+const GoogleMapLink = (props) => {
+    return (
+        <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.endPnt + '&destination=' + props.startPnt}
+            target='_blank' rel="noopener noreferrer" title='Open in Google Map'>
+            {props.children}
+        </a>
+    )
+}
+const FieldLink = (props) => {
+    return (
+        <a href={props.url} target='_blank' rel="noopener noreferrer"
+            title='Open to see details'>
+            {props.children}
+        </a>
+    )
+}
 const Name = (props) => {
-    if (props.data.outputControl.hyperlink && props.data.outputControl.hyperlink === 'Google map') {
-        let startPnt = props.data.outputData.fullAddress;
-        return (<span >
-            <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.address + '&destination=' + startPnt}
-                target='_blank' rel="noopener noreferrer" title='Open in Google Map'> {props.name}</a>
-        </span>)
+
+    if (props.data.outputControl.hyperlink) {
+        if (props.data.outputControl.hyperlink === 'Google map') {
+            return (
+                <GoogleMapLink startPnt={props.data.outputData.fullAddress} endPnt={props.address}>
+                    {props.name}
+                </GoogleMapLink>
+            )
+        } else if (props.data.outputControl.hyperlink === 'field') {
+            return (
+                <FieldLink url={props.data.outputData.attributeDate[props.data.outputControl.hyperlinkFieldname]}>
+                    {props.name}
+                </FieldLink>
+                )
+
+        }
+
     } else {
         return <span>{props.name}</span>;
     }
@@ -91,22 +117,12 @@ const FactorValueBuilding = (props) => {
     </div>)
 }
 
-const FactorValuePark = (props) => {
-    const classes = useStyles();
-    var data = props.data;
-    debugger;
-
-    return <div></div>;
-
-}
 
 export default class ResultValueDisplay extends Component {
     renderResult(category, data) {
         switch (category) {
             case 'building':
                 return <FactorValueBuilding data={data} />;
-                case 'park':
-                    return <FactorValuePark data={data} />;
             case 'nearest-city-1':
                 return null;
             default:

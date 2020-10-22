@@ -14,11 +14,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -36,11 +36,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -58,11 +58,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -80,11 +80,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -102,11 +102,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -124,11 +124,11 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -146,8 +146,10 @@
         "outputControl": {
             "category": "services",
             "displayID": 2,
-            "hyperlink": "hardcode",
-            "hardcode": "<span class='location-data-value'><a href='{{outputFields2}}' target='_blank' title='Open to see details'>{{outputFields1}}</a></span>"           
+            "formatType": "building",
+            "name": "PARK",
+            "hyperlink": "field",
+            "hyperlinkFieldname": "PARK_WEBLI"
         }
     },
     {
@@ -165,11 +167,11 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -187,11 +189,11 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
-            "formatType":"building",
+            "formatType": "building",
             "hyperlink": "Google map",
             "distance": true,
-            "name":"BLDG_NAME",
-            "address":"ADDRESS"
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
         }
     },
     {
@@ -263,7 +265,6 @@
             "displayID": 8,
             "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><span>, {{outputFields3}}</span><a href='tel:{{outputFields4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields4}}'></i> </a></span>",
-            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -292,7 +293,6 @@
             "displayID": 7,
             "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
-            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -363,7 +363,6 @@
             "displayID": 2,
             "hyperlink": "hardcode",
             "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><a target='_blank' href='mailto:{{outputFields3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{outputFields3}}'></i> </a></span>",
-            
             "displayFormat": [
                 {
                     "id": "outputFields2",
@@ -384,7 +383,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 1,
-            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>" 
+            "hardcode": "<span class='location-data-value'><a href='' target='_blank' title='Open to see details' class='blue-icon '> {{outputFields}}</a></span>"
         }
     },
     {
