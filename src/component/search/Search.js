@@ -5,6 +5,9 @@ import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+
 
 export default class AddressSearch extends Component {
     constructor() {
@@ -13,6 +16,7 @@ export default class AddressSearch extends Component {
             isShowResult: false,
             Ref_ID: null,
             searchTerm: null,
+            searchReady: false,
         };
         this.handleDisplayResult = this.handleDisplayResult.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
@@ -61,7 +65,7 @@ export default class AddressSearch extends Component {
                     }).execute(new Query({
                         returnGeometry: true,
                         outFields: item.inputControl.outputFields,
-                        where:'1=1',
+                        where: '1=1',
                     }));
                 });
                 Promise.all(queryList).then((values) => {
@@ -82,7 +86,13 @@ export default class AddressSearch extends Component {
         this.getServiceZoneList(json_factorList);
     }
 
-    componentDidUpdate = () => {
+    componentDidUpdate = (prevProps) => {
+        debugger;
+        if (this.state['city-facility'] && this.state['parcel-data'] && this.state['service-zone']) {
+            if (!this.state.searchReady) {
+                this.setState({ searchReady: true });
+            }
+        }
     }
 
     handleDisplayResult(searchTerm, Ref_ID = null) {
@@ -109,18 +119,27 @@ export default class AddressSearch extends Component {
     render() {
         return (
             <div>
-                <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
-                {this.state.isShowResult &&
-                    (this.state.Ref_ID ?
-                        <Result RefID={this.state.Ref_ID} factorList={{
-                            'city-facility': this.state['city-facility'],
-                            'parcel-data': this.state['parcel-data'],
-                            'service-zone': this.state['service-zone'],
-                        }}
-                            parcelFields={this.state.parcelFields}
-                        />
-                        :
-                        <AddressNotFound searchTerm={this.state.searchTerm} />)}
+
+                {this.state.searchReady ?
+                    <>
+                        <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
+                        {this.state.isShowResult &&
+                            (this.state.Ref_ID ?
+                                <Result RefID={this.state.Ref_ID} factorList={{
+                                    'city-facility': this.state['city-facility'],
+                                    'parcel-data': this.state['parcel-data'],
+                                    'service-zone': this.state['service-zone'],
+                                }}
+                                    parcelFields={this.state.parcelFields}
+                                />
+                                :
+                                <AddressNotFound searchTerm={this.state.searchTerm} />)}
+                    </>
+                    :
+                    <>
+                        <LinearProgress />
+
+                    </>}
             </div>
         );
     }
