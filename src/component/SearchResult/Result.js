@@ -56,21 +56,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-// const Factor1 = (props) => {
-//   const classes = useStyles();
-//   return (<ListItem className={classes.nested}>
-//     <ListItemIcon className={classes.nestedIcon}>
-//       <StopSharpIcon className={classes.itemIcon} />
-//     </ListItemIcon>
-//     <ListItemText primary={props.name} />
-//     {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
-//         className={classes.top}
-//         size={25}
-//       />}
-//   </ListItem>)
-// }
-
-
 const Factor = (props) => {
   const classes = useStyles();
   return (

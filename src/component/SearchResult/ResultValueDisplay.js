@@ -1,4 +1,5 @@
 import React, { Component, } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
@@ -6,6 +7,29 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
+const useStyles = makeStyles((theme) => ({
+    primary:{
+        display: 'block',
+        fontSize: '1rem',
+        fontFamily: '"Roboto", "Helvetica", "Arial", "sans-serif"',
+        fontWeight: 400,
+        lineHeight: 1.5,
+        letterSpacing: '0.00938em',
+
+    },
+    secondary:{
+        display: 'block',        
+    color: 'rgba(0, 0, 0, 0.54)',
+    fontSize: '0.875rem',
+    fontFamily: '"Roboto", "Helvetica", "Arial", "sans-serif"',
+    fontWeight: 400,
+    lineHeight: 1.43,
+    letterSpacing: '0.01071em',
+
+    }
+  
+  }));
+  
 // name={name} address ={address} data={data}
 const Name = (props) => {
     if(props.data.outputControl.hyperlink&&props.data.outputControl.hyperlink==='Google map' ){
@@ -27,6 +51,7 @@ const Distance = (props) => {
     return <span> ({props.value} miles)</span>
 }
 const FactorValue_Building = (props) => {
+    const classes = useStyles();
     var data = props.data;
     var name=null, address=null, distance=null;
     if(data.outputControl.name){
@@ -46,10 +71,10 @@ const FactorValue_Building = (props) => {
     //             {distance && <Distance value={distance} />}
     //         </div>} />
     return (<div>
-        <div className='row'>
+        <div className={classes.primary}>
             {name && <Name  name={name} address ={address} data={data}/>}   
         </div>
-        <div className='row'>
+        <div  className={classes.secondary}>
             {<div>                
                 {address && <Address value={address} />}
                  {distance && <Distance value={distance} />}
