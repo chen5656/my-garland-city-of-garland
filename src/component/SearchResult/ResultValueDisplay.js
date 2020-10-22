@@ -40,13 +40,24 @@ const FactorValue_Building = (props) => {
     }
 
     console.log(data);
-    return (<ListItem>
-        <ListItemText primary={name && <Name  name={name} address ={address} data={data}/>}             
-            secondary={<div>                
+    // <ListItemText primary={name && <Name  name={name} address ={address} data={data}/>}             
+    //         secondary={<div>                
+    //             {address && <Address value={address} />}
+    //             {distance && <Distance value={distance} />}
+    //         </div>} />
+    return (<div>
+        <div className='row'>
+            {name && <Name  name={name} address ={address} data={data}/>}   
+        </div>
+        <div className='row'>
+            {<div>                
                 {address && <Address value={address} />}
-                {distance && <Distance value={distance} />}
-            </div>} />
-    </ListItem>)
+                 {distance && <Distance value={distance} />}
+             </div>} 
+
+        </div>
+        
+    </div>)
 }
 
 export default class ResultValueDisplay extends Component {
