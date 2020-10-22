@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
   nestedIcon: {
     minWidth: '40px',
   },
+  listHeight:{
+    minHeight:'64px',
+  },
   circularProgressWrap:{    
     paddingTop:'15px',
     paddingBottom:'18px',
@@ -64,11 +67,11 @@ const Factor = (props) => {
     <li className='row pl-5'>
       <div className='col-4 pt-3 ' >{props.name}
       </div>
-      <div className='col-8' >
-        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <div className={classes.circularProgressWrap}><CircularProgress
+      <div className={'col-8 ' + classes.listHeight} >
+        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
         className={classes.circularProgress}
         size={25}
-      /></div>} 
+      />} 
       </div>
     </li>)
 }
