@@ -13,14 +13,9 @@ export default function QueryParamsExample(props) {
   );
 }
 
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 //http://localhost:3000/?addressId=20606
 function QueryParamsDemo(props) {
-    let query = useQuery();
+    let query = new URLSearchParams(useLocation().search);
     let addressId=query.get("addressId");
     let searchTerm=query.get("searchTerm");
     props.displayResult(searchTerm, addressId);
