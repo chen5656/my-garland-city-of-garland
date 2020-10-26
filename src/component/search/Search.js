@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
+import MyRouter from './Router';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
@@ -12,7 +13,7 @@ import {
     Switch,
     Route,
     Link
-  } from "react-router-dom";
+} from "react-router-dom";
 
 export default class AddressSearch extends Component {
     constructor() {
@@ -122,24 +123,27 @@ export default class AddressSearch extends Component {
 
     render() {
         return (
-            <div style={{minHeight:'200px'}}>
-                {this.state.searchReady ?
-                    <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
-                    :
-                    <LinearProgress style={{top:'20px', background: '#c5c0c0'}}/>
-                }
-                {this.state.isShowResult &&
-                    (this.state.Ref_ID ?
-                        <Result RefID={this.state.Ref_ID} factorList={{
-                            'city-facility': this.state['city-facility'],
-                            'parcel-data': this.state['parcel-data'],
-                            'service-zone': this.state['service-zone'],
-                        }}
-                            parcelFields={this.state.parcelFields}
-                        />
+
+      
+                <div style={{ minHeight: '200px' }}>
+                    <MyRouter displayResult={this.handleDisplayResult} />
+                    {this.state.searchReady ?
+                        <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
                         :
-                        <AddressNotFound searchTerm={this.state.searchTerm} />)}
-            </div>
+                        <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />
+                    }
+                    {this.state.isShowResult &&
+                        (this.state.Ref_ID ?
+                            <Result RefID={this.state.Ref_ID} factorList={{
+                                'city-facility': this.state['city-facility'],
+                                'parcel-data': this.state['parcel-data'],
+                                'service-zone': this.state['service-zone'],
+                            }}
+                                parcelFields={this.state.parcelFields}
+                            />
+                            :
+                            <AddressNotFound searchTerm={this.state.searchTerm} />)}
+                </div>  
         );
     }
 }
