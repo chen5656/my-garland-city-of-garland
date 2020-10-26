@@ -7,7 +7,12 @@ import json_factorList from '../../data/factorList.json';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 export default class AddressSearch extends Component {
     constructor() {
