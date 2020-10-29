@@ -100,6 +100,12 @@ export default class AddressSearch extends Component {
         }
     }
 
+    handleGetInfoFromRouter(address, Ref_ID){
+        if(Ref_ID){
+
+        }
+    }
+
     handleDisplayResult(searchTerm, Ref_ID = null) {
         if (this.state.Ref_ID !== Ref_ID) {
             this.setState({ Ref_ID: Ref_ID });
@@ -128,7 +134,7 @@ export default class AddressSearch extends Component {
             <div style={{ minHeight: '200px' }}>
                 {this.state.searchReady ?
                     <>
-                        <MyRouter displayResult={this.handleDisplayResult} />
+                        <MyRouter displayResult={this.handleGetInfoFromRouter} />
                         <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
                     </>
 

@@ -16,10 +16,11 @@ export default function QueryParamsExample(props) {
 //http://localhost:3000/?addressId=20606
 function QueryParamsDemo(props) {
     let query = new URLSearchParams(useLocation().search);
-    let addressId=query.get("addressId");
-    let searchTerm=query.get("searchTerm");
-    props.displayResult(searchTerm, addressId);
-    debugger;
+    let addressId=query.get("id");
+    if(!addressId){
+        addressId=query.get("addressid");
+    }
+    props.displayResult('', addressId);
   
     return null;
   }
