@@ -5,55 +5,28 @@ import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
-import { Route, Redirect, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 
 
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-
-const AddresIDRoute = ({ component: Comp, refId, path, ...rest }) => {
-    return (
-        <Route
-            path={path}
-            {...rest}
-            render={(props) => {
-                //check refID
-                debugger;
-                return refId ? (
-                    <Redirect
-                        to={{
-                            pathname: "/",
-                            state: {
-                                prevLocation: path,
-                                error: "You need to login first!",
-                            },
-                        }}
-                    />
-                ) : (<Comp {...props} />)
-            }}
-        />
-    );
-};
+function NoMatch(props) {
+    return <div>{props.searchTerm}</div>;
+}
 
 function DisplaySearch(props) {
     console.log(props.addressId);
-    return <div>
-    {/* {this.state.isShowResult &&
-        (this.state.Ref_ID ?
-            <Result
-                RefID={this.state.Ref_ID}
-                factorList={{
-                    'city-facility': this.state['city-facility'],
-                    'parcel-data': this.state['parcel-data'],
-                    'service-zone': this.state['service-zone'],
-                }}
-                parcelFields={this.state.parcelFields}
-                wrongRefID={this.handleWrongRefID}
-            />
-            :
-            <AddressNotFound suggestTerm={this.state.suggestTerm} />)} */}</div>
-  
+    //check if addressId available in parcel layer.
+
+    return (
+    <Result
+        RefID={props.RefID}
+        factorList={props.factorList}
+        parcelFields={props.parcelFields}
+        wrongRefID={props.wrongRefID}
+    />)
+
 }
 
 export default class AddressSearch extends Component {
@@ -169,10 +142,7 @@ export default class AddressSearch extends Component {
 
     render() {
         return (
-
-
             <div style={{ minHeight: '200px' }}>
-
                 {this.state.searchReady ?
                     <>
                         <SearchWidget
@@ -180,17 +150,23 @@ export default class AddressSearch extends Component {
                             newSearch={this.handleNewSearch}
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
-                        {/* <QueryParamsDemo displayResult={this.handleDisplayResult} /> */}
                         <Switch>
-                            <Route exact path="/" >
-                                <div>Home</div>
+                            <Route exact path="/"  ><div></div></Route>
+                            <Route path="/nomatch" >
+                                <NoMatch searchTerm={this.state.suggestTerm} />
                             </Route>
-                            <Route path="/:addressId" component={<DisplaySearch addressId = {this.state.Ref_ID}/>}/>
-                            {/* <AddresIDRoute exact path="/" refId={this.state.Ref_ID} component={<div></div>} /> */}
-                            {/* <AddresIDRoute path="/id/:addressId" refId={this.state.Ref_ID} component={<div>1</div>} /> */}
-                            {/* <Route>
-                                <div>No match</div>
-                            </Route> */}
+                            <Route path="/:addressId">
+                                <DisplaySearch
+                                    RefID={this.state.Ref_ID}
+                                    factorList={{
+                                        'city-facility': this.state['city-facility'],
+                                        'parcel-data': this.state['parcel-data'],
+                                        'service-zone': this.state['service-zone'],
+                                    }}
+                                    parcelFields={this.state.parcelFields}
+                                    wrongRefID={this.handleWrongRefID}
+                                />
+                            </Route>
                         </Switch>
                     </>
                     :
