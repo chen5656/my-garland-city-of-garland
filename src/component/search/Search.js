@@ -42,6 +42,7 @@ export default class AddressSearch extends Component {
             searchReady: false,
         };
         this.handleDisplayResult = this.handleDisplayResult.bind(this);
+        this.handleDisplaySuggestion = this.handleDisplaySuggestion.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
@@ -119,6 +120,9 @@ export default class AddressSearch extends Component {
 
     handleDisplaySuggestion(suggestTerm){
         this.setState({ suggestTerm: suggestTerm });
+        if (!this.state.isShowResult&&suggestTerm) {
+            this.setState({ isShowResult: true });
+        }
     }
     handleDisplayResult(Ref_ID) {
 
@@ -129,7 +133,7 @@ export default class AddressSearch extends Component {
         if (this.state.Ref_ID !== Ref_ID) {
             this.setState({ Ref_ID: Ref_ID });
         }
-        if (!this.state.isShowResult) {
+        if (!this.state.isShowResult&&Ref_ID) {
             this.setState({ isShowResult: true });
         }
     }
