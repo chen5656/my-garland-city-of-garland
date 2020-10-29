@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { withRouter } from 'react-router-dom';
 
 const containerStyle = {
   margin: '2px',
@@ -8,8 +9,8 @@ const containerStyle = {
   background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
 }
 
-export default class SearchWidget extends Component {
-   componentDidMount = () => {
+class SearchWidget extends Component {
+  componentDidMount = () => {
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules(['esri/widgets/Search', 'esri/tasks/Locator'], { css: true })
@@ -35,7 +36,7 @@ export default class SearchWidget extends Component {
           locationEnabled: false,
           sources: [searchSource]
         });
-        searchWidget.on('search-start',function(e){
+        searchWidget.on('search-start', function (e) {
           that.props.newSearch();
         })
 
@@ -48,8 +49,10 @@ export default class SearchWidget extends Component {
         });
 
         searchWidget.on('select-result', function (e) {
+          console.log('select-result');
           if (e.result) {
-            that.props.displayResult(e.result.feature.attributes.Ref_ID);
+            // that.props.displayResult(e.result.feature.attributes.Ref_ID);
+            that.routingFunction(e.result.feature.attributes.Ref_ID);
           }
         });
 
@@ -61,21 +64,30 @@ export default class SearchWidget extends Component {
       });
   }
 
+
+  routingFunction = (Ref_ID) => {
+    debugger;
+    this.props.history.push( {
+      pathname: '/' +Ref_ID
+      // state: { fromSearchWidget: true }
+    });
+  }
+
   render() {
     return <Grid fluid style={containerStyle} >
-        <Row center="xs">
-          <Col xl={4} lg={6} md={8} xs={12}>
-            Enter a valid City of Garland Address to look up City data.
+      <Row center="xs">
+        <Col xl={4} lg={6} md={8} xs={12}>
+          Enter a valid City of Garland Address to look up City data.
             </Col>
-        </Row>
-        <Row center="xs">
-          <Col xl={4} lg={6} md={8} xs={12} style={{ marginTop: '10px' }}>
-            <div id='search-widget' className='searchwidget' />
-          </Col>
-        </Row>
+      </Row>
+      <Row center="xs">
+        <Col xl={4} lg={6} md={8} xs={12} style={{ marginTop: '10px' }}>
+          <div id='search-widget' className='searchwidget' />
+        </Col>
+      </Row>
     </Grid>
   }
 };
 
-
+export default withRouter(SearchWidget);
 

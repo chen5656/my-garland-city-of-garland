@@ -5,50 +5,55 @@ import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
-import { Route ,Redirect} from "react-router-dom";
+import { Route, Redirect, Switch, useHistory } from "react-router-dom";
 
 
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+
 const AddresIDRoute = ({ component: Comp, refId, path, ...rest }) => {
     return (
-      <Route
-        path={path}
-        {...rest}
-        render={(props) => {
-            //check refID
-            debugger;
-          return refId &&  (
-            <Redirect
-              to={{
-                pathname: "/",
-                state: {
-                  prevLocation: path,
-                  error: "You need to login first!",
-                },
-              }}
-            />
-          );
-        }}
-      />
+        <Route
+            path={path}
+            {...rest}
+            render={(props) => {
+                //check refID
+                debugger;
+                return refId ? (
+                    <Redirect
+                        to={{
+                            pathname: "/",
+                            state: {
+                                prevLocation: path,
+                                error: "You need to login first!",
+                            },
+                        }}
+                    />
+                ) : (<Comp {...props} />)
+            }}
+        />
     );
-  };
+};
 
 function DisplaySearch(props) {
-    const idFromSearch = props.refId;
-    const idFromURI = (props.match && props.match.params && props.match.params.addressId);
-    console.log(idFromSearch, idFromURI);
-    debugger;//<h1>{idFromSearch?idFromSearch:idFromURI}</h1>
-    return <Redirect
-        to={{
-            pathname: "/",
-            state: {
-                prevLocation: path,
-                error: "You need to login first!",
-            },
-        }}
-    />
+    console.log(props.addressId);
+    return <div>
+    {/* {this.state.isShowResult &&
+        (this.state.Ref_ID ?
+            <Result
+                RefID={this.state.Ref_ID}
+                factorList={{
+                    'city-facility': this.state['city-facility'],
+                    'parcel-data': this.state['parcel-data'],
+                    'service-zone': this.state['service-zone'],
+                }}
+                parcelFields={this.state.parcelFields}
+                wrongRefID={this.handleWrongRefID}
+            />
+            :
+            <AddressNotFound suggestTerm={this.state.suggestTerm} />)} */}</div>
+  
 }
 
 export default class AddressSearch extends Component {
@@ -145,10 +150,6 @@ export default class AddressSearch extends Component {
     }
     handleDisplayResult(Ref_ID) {
 
-        // loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
-        // .then(([Query, QueryTask]) => {
-        //   that.getAddressInfo(Query, QueryTask, that.props.RefID)
-        // });
         if (this.state.Ref_ID !== Ref_ID) {
             this.setState({ Ref_ID: Ref_ID });
         }
@@ -180,29 +181,17 @@ export default class AddressSearch extends Component {
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
                         {/* <QueryParamsDemo displayResult={this.handleDisplayResult} /> */}
-
-                        <Route exact path="/" component={(props) => {
-                            return <DisplaySearch refId={this.state.Ref_ID} match={props.match} />
-                        }} />
-                        <Route path="/id/:addressId" component={(props) => {
-                            return <DisplaySearch refId={this.state.Ref_ID} match={props.match} />
-                        }} />
-
-
-                        {/* {this.state.isShowResult &&
-                            (this.state.Ref_ID ?
-                                <Result
-                                    RefID={this.state.Ref_ID}
-                                    factorList={{
-                                        'city-facility': this.state['city-facility'],
-                                        'parcel-data': this.state['parcel-data'],
-                                        'service-zone': this.state['service-zone'],
-                                    }}
-                                    parcelFields={this.state.parcelFields}
-                                    wrongRefID={this.handleWrongRefID}
-                                />
-                                :
-                                <AddressNotFound suggestTerm={this.state.suggestTerm} />)} */}
+                        <Switch>
+                            <Route exact path="/" >
+                                <div>Home</div>
+                            </Route>
+                            <Route path="/:addressId" component={<DisplaySearch addressId = {this.state.Ref_ID}/>}/>
+                            {/* <AddresIDRoute exact path="/" refId={this.state.Ref_ID} component={<div></div>} /> */}
+                            {/* <AddresIDRoute path="/id/:addressId" refId={this.state.Ref_ID} component={<div>1</div>} /> */}
+                            {/* <Route>
+                                <div>No match</div>
+                            </Route> */}
+                        </Switch>
                     </>
                     :
                     <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />
