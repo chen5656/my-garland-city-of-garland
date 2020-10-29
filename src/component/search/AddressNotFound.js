@@ -40,7 +40,7 @@ export default class SuggestAddresses extends Component {
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
       .then(([Query, QueryTask]) => {
         var addr_road, addr_number;
-        var str = that.props.searchTerm.split(",")[0].trim().toUpperCase();
+        var str = that.props.suggestTerm.split(",")[0].trim().toUpperCase();
         var subStr = str.split(" ");
         if (subStr.length > 1) {
           var str1 = subStr[0];
@@ -147,7 +147,7 @@ export default class SuggestAddresses extends Component {
     this.doQuery();
   }
   componentDidUpdate = (prevProps) => {
-    if (this.props.searchTerm !== prevProps.searchTerm) {
+    if (this.props.suggestTerm !== prevProps.suggestTerm) {
       this.doQuery();
     }
   }

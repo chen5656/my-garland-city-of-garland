@@ -42,14 +42,14 @@ export default class SearchWidget extends Component {
         searchWidget.on('search-complete', function (e) {
 
           if (e.numResults === 0) {
-            that.props.displayResult(e.searchTerm,'');
+            that.props.displaySuggestion(e.searchTerm);
             //no address find from input, display suggestion.             
           }
         });
 
         searchWidget.on('select-result', function (e) {
           if (e.result) {
-            that.props.displayResult(e.result.name, e.result.feature.attributes.Ref_ID);
+            that.props.displayResult(e.result.feature.attributes.Ref_ID);
           }
         });
 

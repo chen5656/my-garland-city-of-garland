@@ -1,19 +1,36 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
-import MyRouter from './Router';
+import AddressIDRouter from './Router';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 import {
     BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
+    useLocation
 } from "react-router-dom";
+
+
+
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+function QueryParamsDemo(props) {
+    let query = new URLSearchParams(useLocation().search);
+    let id = null, searchTerm = null;
+    for (var pair of query.entries()) {
+        var key = pair[0].toLocaleLowerCase();
+        if (key === "id" || key === "addressid") {
+            id = pair[1];
+            break;
+        } 
+    }
+    if(id){
+        props.displayResult(searchTerm, id);
+
+    }
+    return null;
+}
 
 export default class AddressSearch extends Component {
     constructor() {
@@ -21,7 +38,7 @@ export default class AddressSearch extends Component {
         this.state = {
             isShowResult: false,
             Ref_ID: null,
-            searchTerm: null,
+            suggestTerm: '',
             searchReady: false,
         };
         this.handleDisplayResult = this.handleDisplayResult.bind(this);
@@ -100,21 +117,20 @@ export default class AddressSearch extends Component {
         }
     }
 
-    handleGetInfoFromRouter(address, Ref_ID){
-        if(Ref_ID){
-
-        }
+    handleDisplaySuggestion(suggestTerm){
+        this.setState({ suggestTerm: suggestTerm });
     }
+    handleDisplayResult(Ref_ID) {
 
-    handleDisplayResult(searchTerm, Ref_ID = null) {
+        // loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
+        // .then(([Query, QueryTask]) => {
+        //   that.getAddressInfo(Query, QueryTask, that.props.RefID)
+        // });
         if (this.state.Ref_ID !== Ref_ID) {
             this.setState({ Ref_ID: Ref_ID });
         }
         if (!this.state.isShowResult) {
             this.setState({ isShowResult: true });
-        }
-        if (this.state.searchTerm !== searchTerm) {
-            this.setState({ searchTerm: searchTerm });
         }
     }
 
@@ -134,8 +150,15 @@ export default class AddressSearch extends Component {
             <div style={{ minHeight: '200px' }}>
                 {this.state.searchReady ?
                     <>
-                        <MyRouter displayResult={this.handleGetInfoFromRouter} />
-                        <SearchWidget displayResult={this.handleDisplayResult} newSearch={this.handleNewSearch} ></SearchWidget>
+
+                        <Router>
+                            <QueryParamsDemo displayResult={this.handleDisplayResult} />
+                        </Router>
+                        <SearchWidget
+                            displayResult={this.handleDisplayResult}
+                            newSearch={this.handleNewSearch}
+                            displaySuggestion={this.handleDisplaySuggestion}
+                        />
                     </>
 
                     :
@@ -143,15 +166,18 @@ export default class AddressSearch extends Component {
                 }
                 {this.state.isShowResult &&
                     (this.state.Ref_ID ?
-                        <Result RefID={this.state.Ref_ID} factorList={{
-                            'city-facility': this.state['city-facility'],
-                            'parcel-data': this.state['parcel-data'],
-                            'service-zone': this.state['service-zone'],
-                        }}
+                        <Result
+                            RefID={this.state.Ref_ID}
+                            factorList={{
+                                'city-facility': this.state['city-facility'],
+                                'parcel-data': this.state['parcel-data'],
+                                'service-zone': this.state['service-zone'],
+                            }}
                             parcelFields={this.state.parcelFields}
+                            wrongRefID={this.handleWrongRefID}
                         />
                         :
-                        <AddressNotFound searchTerm={this.state.searchTerm} />)}
+                        <AddressNotFound suggestTerm={this.state.suggestTerm} />)}
             </div>
         );
     }

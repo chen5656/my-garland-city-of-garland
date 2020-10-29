@@ -158,9 +158,10 @@ export default class Result extends Component {
   }
 
   getFactorDataList() {
+    var that = this;
     loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
       .then(([Query, QueryTask]) => {
-        this.getAddressInfo(Query, QueryTask, this.props.RefID)
+        that.getAddressInfo(Query, QueryTask, that.props.RefID)
       });
   }
 
@@ -190,7 +191,6 @@ export default class Result extends Component {
         that.getLocatedServiceZoneList(result.features[0].geometry);
 
       }
-
     });
   }
   getInfoFromParcelTable(Query, QueryTask, parcelId, category = 'parcel-data') {
