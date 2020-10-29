@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import AddressNotFound from './AddressNotFound';
-import AddressIDRouter from './Router';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
@@ -23,10 +22,10 @@ function QueryParamsDemo(props) {
         if (key === "id" || key === "addressid") {
             id = pair[1];
             break;
-        } 
+        }
     }
-    if(id){
-        props.displayResult(searchTerm, id);
+    if (id) {
+        props.displayResult(id);
 
     }
     return null;
@@ -118,9 +117,9 @@ export default class AddressSearch extends Component {
         }
     }
 
-    handleDisplaySuggestion(suggestTerm){
+    handleDisplaySuggestion(suggestTerm) {
         this.setState({ suggestTerm: suggestTerm });
-        if (!this.state.isShowResult&&suggestTerm) {
+        if (!this.state.isShowResult && suggestTerm) {
             this.setState({ isShowResult: true });
         }
     }
@@ -133,7 +132,7 @@ export default class AddressSearch extends Component {
         if (this.state.Ref_ID !== Ref_ID) {
             this.setState({ Ref_ID: Ref_ID });
         }
-        if (!this.state.isShowResult&&Ref_ID) {
+        if (!this.state.isShowResult && Ref_ID) {
             this.setState({ isShowResult: true });
         }
     }
@@ -152,9 +151,9 @@ export default class AddressSearch extends Component {
 
 
             <div style={{ minHeight: '200px' }}>
+
                 {this.state.searchReady ?
                     <>
-
                         <Router>
                             <QueryParamsDemo displayResult={this.handleDisplayResult} />
                         </Router>
@@ -163,25 +162,26 @@ export default class AddressSearch extends Component {
                             newSearch={this.handleNewSearch}
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
-                    </>
 
+                        {this.state.isShowResult &&
+                            (this.state.Ref_ID ?
+                                <Result
+                                    RefID={this.state.Ref_ID}
+                                    factorList={{
+                                        'city-facility': this.state['city-facility'],
+                                        'parcel-data': this.state['parcel-data'],
+                                        'service-zone': this.state['service-zone'],
+                                    }}
+                                    parcelFields={this.state.parcelFields}
+                                    wrongRefID={this.handleWrongRefID}
+                                />
+                                :
+                                <AddressNotFound suggestTerm={this.state.suggestTerm} />)}
+                    </>
                     :
                     <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />
                 }
-                {this.state.isShowResult &&
-                    (this.state.Ref_ID ?
-                        <Result
-                            RefID={this.state.Ref_ID}
-                            factorList={{
-                                'city-facility': this.state['city-facility'],
-                                'parcel-data': this.state['parcel-data'],
-                                'service-zone': this.state['service-zone'],
-                            }}
-                            parcelFields={this.state.parcelFields}
-                            wrongRefID={this.handleWrongRefID}
-                        />
-                        :
-                        <AddressNotFound suggestTerm={this.state.suggestTerm} />)}
+
             </div>
         );
     }
