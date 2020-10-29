@@ -5,30 +5,50 @@ import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
-import {
-    BrowserRouter as Router,
-    useLocation
-} from "react-router-dom";
+import { Route ,Redirect} from "react-router-dom";
 
 
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-function QueryParamsDemo(props) {
-    let query = new URLSearchParams(useLocation().search);
-    let id = null, searchTerm = null;
-    for (var pair of query.entries()) {
-        var key = pair[0].toLocaleLowerCase();
-        if (key === "id" || key === "addressid") {
-            id = pair[1];
-            break;
-        }
-    }
-    if (id) {
-        props.displayResult(id);
+const AddresIDRoute = ({ component: Comp, refId, path, ...rest }) => {
+    return (
+      <Route
+        path={path}
+        {...rest}
+        render={(props) => {
+            //check refID
+            debugger;
+          return refId &&  (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: {
+                  prevLocation: path,
+                  error: "You need to login first!",
+                },
+              }}
+            />
+          );
+        }}
+      />
+    );
+  };
 
-    }
-    return null;
+function DisplaySearch(props) {
+    const idFromSearch = props.refId;
+    const idFromURI = (props.match && props.match.params && props.match.params.addressId);
+    console.log(idFromSearch, idFromURI);
+    debugger;//<h1>{idFromSearch?idFromSearch:idFromURI}</h1>
+    return <Redirect
+        to={{
+            pathname: "/",
+            state: {
+                prevLocation: path,
+                error: "You need to login first!",
+            },
+        }}
+    />
 }
 
 export default class AddressSearch extends Component {
@@ -154,16 +174,22 @@ export default class AddressSearch extends Component {
 
                 {this.state.searchReady ?
                     <>
-                        <Router>
-                            <QueryParamsDemo displayResult={this.handleDisplayResult} />
-                        </Router>
                         <SearchWidget
                             displayResult={this.handleDisplayResult}
                             newSearch={this.handleNewSearch}
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
+                        {/* <QueryParamsDemo displayResult={this.handleDisplayResult} /> */}
 
-                        {this.state.isShowResult &&
+                        <Route exact path="/" component={(props) => {
+                            return <DisplaySearch refId={this.state.Ref_ID} match={props.match} />
+                        }} />
+                        <Route path="/id/:addressId" component={(props) => {
+                            return <DisplaySearch refId={this.state.Ref_ID} match={props.match} />
+                        }} />
+
+
+                        {/* {this.state.isShowResult &&
                             (this.state.Ref_ID ?
                                 <Result
                                     RefID={this.state.Ref_ID}
@@ -176,7 +202,7 @@ export default class AddressSearch extends Component {
                                     wrongRefID={this.handleWrongRefID}
                                 />
                                 :
-                                <AddressNotFound suggestTerm={this.state.suggestTerm} />)}
+                                <AddressNotFound suggestTerm={this.state.suggestTerm} />)} */}
                     </>
                     :
                     <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />

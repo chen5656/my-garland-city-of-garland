@@ -5,15 +5,20 @@ import Footer from './component/home/Footer';
 import Search from './component/search/Search';
 import Container from '@material-ui/core/Container';
 
+import {
+  BrowserRouter as Router,
+} from "react-router-dom";
 
 
 function App() {
   return (
-    <Container maxWidth ={false} >
-      <Header />
-      <Search />
-      <Footer />
-    </Container>
+    <Router>
+      <Container maxWidth={false} >
+        <Header />
+        <Search />
+        <Footer />
+      </Container>
+    </Router>
   );
 }
 
