@@ -14,7 +14,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "1",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -36,7 +36,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "2",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -58,7 +58,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "3",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -80,7 +80,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "4",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -102,7 +102,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "5",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -124,7 +124,7 @@
         "outputControl": {
             "category": "nearest-city-facility",
             "displayID": "6",
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -167,7 +167,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 3,
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -189,7 +189,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 1,
-            "formatType": "singleValue",
+            "formatType": "name-address-distance",
             "hyperlink": "Google map",
             "distance": true,
             "name": "BLDG_NAME",
@@ -226,6 +226,8 @@
         "outputControl": {
             "category": "services",
             "displayID": 6,
+            "formatType": "ews-recycling-day",
+            "name": "ANCORE_DAY",
             "displayFunction": {
                 "functionParameter": [
                     "outputFields1"

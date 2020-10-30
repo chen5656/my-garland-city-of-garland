@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { PinDropSharp } from '@material-ui/icons';
 
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
@@ -37,21 +36,7 @@ const getEWSRecyclingDay = (value) => {
 
 
 const useStyles = makeStyles((theme) => ({
-    listItem_oneLine: {
-        paddingLeft: '12px',
-        paddingRight: '8px',
-        width: '100%',
-        position: 'relative',
-        boxSizing: 'border-box',
-        textAlign: 'left',
-        alignItems: 'center',
-        paddingTop: '20px',
-        paddingBottom: '10px',
-        justifyContent: 'flex-start',
-        textDecoration: 'none',
-
-    },
-    listItem_twoLine: {
+    listItem: {
         paddingLeft: '12px',
         paddingRight: '8px',
         width: '100%',
@@ -75,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     secondary: {
-        display: 'inline',
+        display: 'block',
         color: 'rgba(0, 0, 0, 0.54)',
         fontSize: '0.875rem',
         fontFamily: '"Roboto", "Helvetica", "Arial", "sans-serif"',
@@ -97,33 +82,54 @@ const fillNullInfo = (input) => {
     if (input) {
         return input
     } else {
-        return 'Null'
+        return 'NULL'
     }
 }
-
-const Link = (props) => {
-    if (props.url) {
-        return (
-            <a href={props.url} target='_blank' rel="noopener noreferrer"
-                title={props.title}>
-                {props.children}
-            </a>
-        )
-    }
-    return <span>{props.children}</span>;
+const GoogleMapLink = (props) => {
+    return (
+        <a href={'https://www.google.com/maps/dir/?api=1&origin=' + props.startPnt + '&destination=' + props.endPnt}
+            target='_blank' rel="noopener noreferrer" title='Open in Google Map'>
+            {props.children}
+        </a>
+    )
+}
+const FieldLink = (props) => {
+    return (
+        <a href={props.url} target='_blank' rel="noopener noreferrer"
+            title='Open to see details'>
+            {props.children}
+        </a>
+    )
 }
 const Name = (props) => {
-    const classes = useStyles();
-    return <div className={classes.primary}>{props.children}</div>;
+
+    if (props.data.outputControl.hyperlink) {
+        if (props.data.outputControl.hyperlink === 'Google map') {
+            return (
+                <GoogleMapLink startPnt={props.data.outputData.fullAddress} endPnt={props.data.outputData.attributeData[props.data.outputControl.address]}>
+                    {props.children}
+                </GoogleMapLink>
+            )
+        } else if (props.data.outputControl.hyperlink === 'field') {
+            return (
+                <FieldLink url={props.data.outputData.attributeData[props.data.outputControl.hyperlinkFieldname]}>
+                    {props.children}
+                </FieldLink>
+            )
+
+        }
+
+    } else {
+        return <span>{props.children}</span>;
+    }
+
 }
 
-const Address = (props) => {    
-    const classes = useStyles();
-    return <span  className={classes.secondary}>{props.children}</span>;
+const Address = (props) => {
+    return <span>{props.children}</span>;
 }
 const Distance = (props) => {
-    const classes = useStyles();
-    return <span  className={classes.secondary}> ({props.children} miles)</span>;
+    return <span> ({props.children} miles)</span>;
 }
 const Phone = (props) => {
 
@@ -132,15 +138,31 @@ const Email = (props) => {
 
 }
 const FactorValue_SingleValue = (props) => {
-    const classes = useStyles();
-    return <div className={classes.listItem_oneLine}> {props.children}</div>;
+    return <div> {props.children}</div>;
 }
 
 const FactorValue_NameAddressDistance = (props) => {
     const classes = useStyles();
+    var data = props.data;
+    var name = null, address = null;
+    if (data.outputControl.name) {
+        name = fillNullInfo(data.outputData.attributeData[data.outputControl.name]);
+    }
+    if (data.outputControl.address) {
+        address = data.outputData.attributeData[data.outputControl.address];
+    }
 
-    return (<div className={classes.listItem_twoLine}>
-        {props.children}
+    return (<div className={classes.listItem}>
+        <div className={classes.primary}>
+            {name && <Name data={data} >{name}</Name>}
+        </div>
+        <div className={classes.secondary}>
+            {<div>
+                {address && <Address>{address}</Address>}
+                {data.outputControl.distance && <Distance>{data.outputData.distance}</Distance>}
+            </div>}
+
+        </div>
 
     </div>)
 }
@@ -151,58 +173,40 @@ export default class ResultValueDisplay extends Component {
             address = null,
             distance = null,
             newValue = null,
-            url = null,
-            title = null;
+            link = null;
 
         if (data.outputControl.name) {
             name = fillNullInfo(data.outputData.attributeData[data.outputControl.name]);
         }
-        if (data.outputControl.address) {
-            address = data.outputData.attributeData[data.outputControl.address];
-        }
-        if (data.outputControl.distance) {
-            distance = data.outputData.distance
-        }
-
-        if (data.outputControl.hyperlink === 'field') {
-            url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
-            title = 'Open to see details';
-        } else if (data.outputControl.hyperlink === 'Google map') {
-            let startPnt = data.outputData.fullAddress;
-            let endPnt = data.outputData.attributeData[data.outputControl.address]
-            url = `https://www.google.com/maps/dir/?api=1&origin=${startPnt}&destination=${endPnt}`;
-            title = 'Open in Google Map';
-        }
 
         switch (category) {
             case 'name-address-distance':
-
-                return <FactorValue_NameAddressDistance >
-                    <Link url={url} title={title}>
-                        {name && <Name >{name}</Name>}
-                    </Link>
-                    {address && <Address>{address}</Address>}
-                    {distance && <Distance>{distance}</Distance>}
-                </FactorValue_NameAddressDistance>;
-
+                if (data.outputControl.address) {
+                    address = data.outputData.attributeData[data.outputControl.address];
+                }
+                if (data.outputControl.distance) {
+                    distance = data.outputData.distance
+                }
+                return <FactorValue_NameAddressDistance data={data}
+                    name={name} address={address} distance={distance}
+                />;
             case 'singleValue':
                 if (data.outputControl.hyperlink === 'field') {
-                    url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
-                    title = 'Open to see details'
+                    link = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
                 }
                 return <FactorValue_SingleValue  >
-                    <Link url={url} title={title}>
-                        {name && <Name >{name}</Name>}
+                    <Link type={data.outputControl.hyperlink} url={link}>
+                        <Name data={data}>
+                            {name}
+                        </Name>
                     </Link>
                 </FactorValue_SingleValue>;
             case 'name_phone_email':
                 return <div></div>
-            case 'ews-recycling-day':
+            case 'ews_recycling_day':
                 name = data.outputData.attributeData[data.outputControl.name];
                 newValue = getEWSRecyclingDay(name);
-                return <FactorValue_SingleValue  >
-                    {name && <Name >{name}</Name>}
-                </FactorValue_SingleValue>;
+                return <FactorValue_SingleValue name={newValue} />;
             default:
                 return <div></div>;
 

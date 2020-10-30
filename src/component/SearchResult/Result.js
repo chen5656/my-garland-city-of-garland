@@ -193,7 +193,7 @@ class Result extends Component {
 
       }else{
         //didn't return a result
-        that.routingFunction('404');
+        that.routingFunction('address-not-valid');
       }
     });
   }

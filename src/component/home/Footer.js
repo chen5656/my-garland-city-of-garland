@@ -1,10 +1,14 @@
 import React from 'react';
 
+const containerStyle = {
+  color: '#4e4e4e',
+  background: 'rgb(202 200 200)',
+  borderRadius: '3px',
+}
+
 export default function Footer() {
   return (
-    <footer className={'p-2'} style={{
-      color: '#4e4e4e', background: 'rgb(202 200 200)'
-    }}>
+    <footer className={'p-2'} style={containerStyle}>
       <p style={{ fontStyle: 'italic', lineHeight: '1.42857', fontSize: '14px' }} mb={2}> Copyright 2021. City of Garland. </p>
       <p style={{ 'fontSize': '70%', 'lineHeight': '1.4' }}>Texas Government Code § 2051.102 (2011): This product is for informational purposes
       and may not have been prepared for

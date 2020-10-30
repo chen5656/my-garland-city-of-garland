@@ -62,10 +62,10 @@ export default function Header() {
 
 
   return (
-    <div className='overflow-hidden position-relative'>
+    <header className='overflow-hidden position-relative'>
       <WebMapView />
       <TitlePng />
-    </div>
+    </header>
   );
 }
 

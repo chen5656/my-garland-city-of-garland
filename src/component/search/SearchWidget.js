@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
 import { withRouter } from 'react-router-dom';
 
-const searchContainerStyle = {
+const containerStyle = {
   margin: '2px',
   padding: '50px 5px 50px 5px',
   background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
+  borderRadius: '3px',
 }
 
 class SearchWidget extends Component {
@@ -39,7 +40,7 @@ class SearchWidget extends Component {
           sources: [searchSource]
         });
 
-        that.EsriSearchWidget=searchWidget;
+        that.EsriSearchWidget = searchWidget;
 
         searchWidget.on('search-start', function (e) {
           window.location.hash = "";
@@ -57,7 +58,7 @@ class SearchWidget extends Component {
         searchWidget.on('select-result', function (e) {
           console.log('select-result');
           if (e.result) {
-            that.routingFunction(`id/${e.result.feature.attributes.Ref_ID}` );
+            that.routingFunction(`id/${e.result.feature.attributes.Ref_ID}`);
           }
         });
 
@@ -69,8 +70,8 @@ class SearchWidget extends Component {
       });
   }
 
-  componentDidUpdate =(prevProps)=>{
-    if(this.EsriSearchWidget&&this.props.searchTerm&&this.props.searchTerm!==prevProps.searchTerm){
+  componentDidUpdate = (prevProps) => {
+    if (this.EsriSearchWidget && this.props.searchTerm && this.props.searchTerm !== prevProps.searchTerm) {
       this.EsriSearchWidget.search(this.props.searchTerm)
     }
   }
@@ -82,7 +83,8 @@ class SearchWidget extends Component {
   }
 
   render() {
-    return       <div className="row justify-content-md-center" style={searchContainerStyle}>
+    return (
+      <div className="row justify-content-md-center" style={containerStyle}>
         <div className=" col-lg-5 col-md-8 col-sm-12">
           <div className="m-3 col-12">
             Enter a valid City of Garland Address to look up City data.
@@ -91,6 +93,7 @@ class SearchWidget extends Component {
         </div>
 
       </div>
+    )
   }
 };
 
