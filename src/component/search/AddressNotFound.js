@@ -24,7 +24,6 @@ const OneAddress = (props) => {
   return <li><Button color="primary" onClick={searchAddress}>{props.num} {props.label}</Button ></li>;
 }
 
-
 export default class SuggestAddresses extends Component {
   constructor(props) {
     super(props);

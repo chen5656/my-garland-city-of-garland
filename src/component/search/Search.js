@@ -5,26 +5,25 @@ import SearchWidget from './SearchWidget';
 import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
 
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 function NoMatch(props) {
-    return <div>{props.searchTerm}</div>;
+    return <div>11111111</div>;
 }
 
 export default class AddressSearch extends Component {
     constructor() {
         super();
         this.state = {
-            isShowResult: false,
-            Ref_ID: null,
             suggestTerm: '',
             searchReady: false,
         };
         this.handleDisplaySuggestion = this.handleDisplaySuggestion.bind(this);
+        this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -98,12 +97,14 @@ export default class AddressSearch extends Component {
             }
         }
     }
+    handleNewSearch(){
+        this.setState({ suggestTerm: '' });
+    window.location.hash = "";
+
+    }
 
     handleDisplaySuggestion(suggestTerm) {
         this.setState({ suggestTerm: suggestTerm });
-        if (!this.state.isShowResult && suggestTerm) {
-            this.setState({ isShowResult: true });
-        }
     }
 
     render() {
@@ -113,11 +114,12 @@ export default class AddressSearch extends Component {
                     <>
                         <SearchWidget
                             displaySuggestion={this.handleDisplaySuggestion}
+                            newSearch={this.handleNewSearch}
+
                         />
-                        <Switch>
+                        <Switch> 
                             <Route exact path="/"  ><div></div></Route>
-                            <Route path="/nomatch" render={({ match }) => {
-                                debugger;
+                            <Route path="/id/:addressId" render={({ match }) => {                                
                                 return <Result
                                     RefID={match.params.addressId}
                                     factorList={{
@@ -129,22 +131,14 @@ export default class AddressSearch extends Component {
                                     wrongRefID={this.handleWrongRefID}
                                 />
                             }} />
-                                {/* <NoMatch searchTerm={this.state.suggestTerm} />
-                            </Route> */}
-                            <Route path="/:addressId" render={({ match }) => {
-                                return <Result
-                                    RefID={match.params.addressId}
-                                    factorList={{
-                                        'city-facility': this.state['city-facility'],
-                                        'parcel-data': this.state['parcel-data'],
-                                        'service-zone': this.state['service-zone'],
-                                    }}
-                                    parcelFields={this.state.parcelFields}
-                                    wrongRefID={this.handleWrongRefID}
+                            <Route path="/nomatch/*" render={({ match }) => {
+                                debugger;
+                                return       <NoMatch
+                                suggestTerm={match}
                                 />
                             }} />
 
-                        </Switch>
+                         </Switch> 
                     </>
                     :
                     <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />

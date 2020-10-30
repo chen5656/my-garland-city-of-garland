@@ -30,22 +30,22 @@ class SearchWidget extends Component {
         });
         const searchWidget = new Search({
           // view: view,
-          container: 'search-widget',
+          container: 'my-garland-search',
           includeDefaultSources: false,
           allPlaceholder: '.',
           locationEnabled: false,
           sources: [searchSource]
         });
         searchWidget.on('search-start', function (e) {
+          that.props.newSearch();
           that.routingFunction('');
         })
 
         searchWidget.on('search-complete', function (e) {
-
-          if (e.numResults === 0) {
-            // that.props.displaySuggestion(e.searchTerm);
-            //no address find from input, display suggestion.        
-            that.routingFunction('nomatch/' + e.searchTerm);
+          if (e.numResults === 0 && e.searchTerm) {
+            //no address find from input, display suggestion.  
+            that.props.displaySuggestion(e.searchTerm);
+            that.routingFunction('nomatch' + '/' + e.searchTerm);
 
           }
         });
@@ -53,7 +53,7 @@ class SearchWidget extends Component {
         searchWidget.on('select-result', function (e) {
           console.log('select-result');
           if (e.result) {
-            that.routingFunction(e.result.feature.attributes.Ref_ID);
+            that.routingFunction('id' + '/' + e.result.feature.attributes.Ref_ID);
           }
         });
 
@@ -67,8 +67,8 @@ class SearchWidget extends Component {
 
 
   routingFunction = (value) => {
-    this.props.history.push( {
-      pathname: '/' +value
+    this.props.history.push({
+      pathname: '/' + value
     });
   }
 
@@ -81,7 +81,7 @@ class SearchWidget extends Component {
       </Row>
       <Row center="xs">
         <Col xl={4} lg={6} md={8} xs={12} style={{ marginTop: '10px' }}>
-          <div id='search-widget' className='searchwidget' />
+          <div id='my-garland-search' className='searchwidget' />
         </Col>
       </Row>
     </Grid>

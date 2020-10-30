@@ -12,13 +12,15 @@ import {
 
 function App() {
   return (
-    <Router>
-      <Container maxWidth={false} >
+
+
+    <Container maxWidth={false} >
+      <Router>
         <Header />
         <Search />
         <Footer />
-      </Container>
-    </Router>
+      </Router>
+    </Container>
   );
 }
 

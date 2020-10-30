@@ -316,7 +316,6 @@ export default class Result extends Component {
       console.log('update', array)
       this.setState({ factorList: array });
     }
-    window.location.hash = "my-garland-result";
   }
 
   render() {
