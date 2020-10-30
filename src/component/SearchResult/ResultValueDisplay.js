@@ -15,7 +15,7 @@ const getEWSRecyclingDay = (value) => {
     var today = new Date();
     var dayDiff = Math.floor((today - ancoreDate) / (1000 * 60 * 60 * 24));
     var dayMod = dayDiff % 14;
-    var newRecyclingDay;
+    var newRecyclingDay = null;
     if (dayDiff >= 0) {
         newRecyclingDay = addDays(today, (14 - dayMod));
 
@@ -23,10 +23,9 @@ const getEWSRecyclingDay = (value) => {
         newRecyclingDay = ancoreDate;
     } else {
         newRecyclingDay = addDays(today, (-dayMod));
-
     }
     //format the new day
-    return newRecyclingDay.toDateString().concat("*");
+    return newRecyclingDay.toDateString() + "*";
 
     function addDays(date, days) {
         const copy = new Date(Number(date))
@@ -35,6 +34,15 @@ const getEWSRecyclingDay = (value) => {
     }
 }
 
+
+const formatPhoneNumber = (phoneNumberString) => {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    if (match) {
+        return '' + match[1] + '-' + match[2] + '-' + match[3]
+    }
+    return null
+}
 
 const useStyles = makeStyles((theme) => ({
     listItem_oneLine: {
@@ -117,26 +125,30 @@ const Name = (props) => {
     return <div className={classes.primary}>{props.children}</div>;
 }
 
-const Address = (props) => {    
+const Address = (props) => {
     const classes = useStyles();
-    return <span  className={classes.secondary}>{props.children}</span>;
+    return <span className={classes.secondary}>{props.children}</span>;
 }
 const Distance = (props) => {
     const classes = useStyles();
-    return <span  className={classes.secondary}> ({props.children} miles)</span>;
+    return <span className={classes.secondary}> ({props.children} miles)</span>;
 }
 const Phone = (props) => {
+    return <span>{props.children}</span>;
+    
+//"<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue4}}'></i> </a></span>",
+
 
 }
 const Email = (props) => {
 
 }
-const FactorValue_SingleValue = (props) => {
+const FactorValue_oneLine = (props) => {
     const classes = useStyles();
     return <div className={classes.listItem_oneLine}> {props.children}</div>;
 }
 
-const FactorValue_NameAddressDistance = (props) => {
+const FactorValue_twoLine = (props) => {
     const classes = useStyles();
 
     return (<div className={classes.listItem_twoLine}>
@@ -154,55 +166,64 @@ export default class ResultValueDisplay extends Component {
             url = null,
             title = null;
 
+        const attributes = data.outputData.attributeData;
+
         if (data.outputControl.name) {
-            name = fillNullInfo(data.outputData.attributeData[data.outputControl.name]);
+            name = fillNullInfo(attributes[data.outputControl.name]);
         }
         if (data.outputControl.address) {
-            address = data.outputData.attributeData[data.outputControl.address];
+            address = attributes[data.outputControl.address];
         }
         if (data.outputControl.distance) {
             distance = data.outputData.distance
         }
 
         if (data.outputControl.hyperlink === 'field') {
-            url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
+            url = attributes[data.outputControl.hyperlinkFieldname];
             title = 'Open to see details';
         } else if (data.outputControl.hyperlink === 'Google map') {
             let startPnt = data.outputData.fullAddress;
-            let endPnt = data.outputData.attributeData[data.outputControl.address]
+            let endPnt = attributes[data.outputControl.address]
             url = `https://www.google.com/maps/dir/?api=1&origin=${startPnt}&destination=${endPnt}`;
             title = 'Open in Google Map';
         }
 
         switch (category) {
             case 'name-address-distance':
-
-                return <FactorValue_NameAddressDistance >
+                return <FactorValue_twoLine >
                     <Link url={url} title={title}>
                         {name && <Name >{name}</Name>}
                     </Link>
                     {address && <Address>{address}</Address>}
                     {distance && <Distance>{distance}</Distance>}
-                </FactorValue_NameAddressDistance>;
+                </FactorValue_twoLine>;
 
-            case 'singleValue':
+            case 'single-value':
                 if (data.outputControl.hyperlink === 'field') {
                     url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
                     title = 'Open to see details'
                 }
-                return <FactorValue_SingleValue  >
+                return <FactorValue_oneLine >
                     <Link url={url} title={title}>
                         {name && <Name >{name}</Name>}
                     </Link>
-                </FactorValue_SingleValue>;
+                </FactorValue_oneLine>;
             case 'name_phone_email':
                 return <div></div>
             case 'ews-recycling-day':
-                name = data.outputData.attributeData[data.outputControl.name];
-                newValue = getEWSRecyclingDay(name);
-                return <FactorValue_SingleValue  >
-                    {name && <Name >{name}</Name>}
-                </FactorValue_SingleValue>;
+                return <FactorValue_oneLine  >
+                    {name && <Name >{ getEWSRecyclingDay(name)}</Name>}
+                </FactorValue_oneLine>;
+            case 'code-nuisance-districts':
+                debugger;
+                return <FactorValue_oneLine  >
+                    <Name >{attributes['INSPECTOR']}</Name>
+                    <Phone>{formatPhoneNumber(attributes['PHONE'])}</Phone>
+                    <Name >{attributes['INSPECTOR2']}</Name>
+                    <Phone>{formatPhoneNumber(attributes['PHONE2'])}</Phone>
+
+
+                </FactorValue_oneLine>;
             default:
                 return <div></div>;
 

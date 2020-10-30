@@ -146,7 +146,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 2,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "PARK",
             "hyperlink": "field",
             "hyperlinkFieldname": "PARK_WEBLI"
@@ -209,7 +209,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 5,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "COLOR"
         }
     },
@@ -227,13 +227,7 @@
             "category": "services",
             "displayID": 6,
             "formatType": "ews-recycling-day",
-            "name": "ANCORE_DAY",
-            "displayFunction": {
-                "functionParameter": [
-                    "outputFields1"
-                ],
-                "functionCode": "ews-recycling-day"
-            }
+            "name": "ANCORE_DAY"
         }
     },
     {
@@ -249,7 +243,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 4,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "T_DAY"
         }
     },
@@ -269,18 +263,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 8,
-            "hyperlink": "hardcode",
-            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><span>, {{outputFields3}}</span><a href='tel:{{outputFields4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields4}}'></i> </a></span>",
-            "displayFormat": [
-                {
-                    "id": "outputFields2",
-                    "value": "phone-number"
-                },
-                {
-                    "id": "outputFields4",
-                    "value": "phone-number"
-                }
-            ]
+            "formatType": "code-nuisance-districts"         
         }
     },
     {
@@ -320,7 +303,7 @@
         "outputControl": {
             "category": "neighborhoods",
             "displayID": 3,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "NAME"
         }
     },
@@ -337,7 +320,7 @@
         "outputControl": {
             "category": "neighborhoods",
             "displayID": 4,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "NAME"
         }
     },
@@ -354,7 +337,7 @@
         "outputControl": {
             "category": "planning-development-zoning",
             "displayID": 3,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "GDC_ZONING"
         }
     },
@@ -398,7 +381,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 1,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "DISTRICT_NUMBER",
             "hyperlink": "field",
             "hyperlinkFieldname": "HYPERLINIK"
@@ -416,7 +399,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 2,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "ZIP_CODE"
         }
     },
@@ -432,7 +415,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 3,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "MAPSCO"
         }
     },
@@ -448,7 +431,7 @@
         "outputControl": {
             "category": "reference",
             "displayID": 4,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "SCHOOL_DISTRICT"
         }
     },
@@ -464,7 +447,7 @@
         "outputControl": {
             "category": "planning-development-zoning",
             "displayID": 1,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "LANDUSE"
         }
     },
@@ -480,7 +463,7 @@
         "outputControl": {
             "category": "planning-development-zoning",
             "displayID": 2,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "ZONING"
         }
     },
@@ -496,7 +479,7 @@
         "outputControl": {
             "category": "neighborhoods",
             "displayID": 1,
-            "formatType": "singleValue",
+            "formatType": "single-value",
             "name": "NEIGHBORHOOD"
         }
     }

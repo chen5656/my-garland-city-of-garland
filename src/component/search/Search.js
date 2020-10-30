@@ -123,6 +123,10 @@ export default class AddressSearch extends Component {
                                 parcelFields={this.state.parcelFields}
                             />
                         }} />
+                        <Route exact path="/address-not-valid" >
+                            <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
+                        </Route>
+
                         <Route path="/nomatch/:searchTerm" render={({ match }) => {
                             return <AddressNotFound
                                 suggestTerm={match.params.searchTerm}
