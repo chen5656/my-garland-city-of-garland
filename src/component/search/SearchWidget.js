@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { withRouter } from 'react-router-dom';
 
 const containerStyle = {
@@ -36,8 +35,8 @@ class SearchWidget extends Component {
           locationEnabled: false,
           sources: [searchSource]
         });
-        searchWidget.on('search-start', function (e) {          
-    window.location.hash = "";
+        searchWidget.on('search-start', function (e) {
+          window.location.hash = "";
           that.routingFunction('');
         })
 
@@ -63,7 +62,6 @@ class SearchWidget extends Component {
       });
   }
 
-
   routingFunction = (value) => {
     this.props.history.push({
       pathname: '/' + value
@@ -71,18 +69,17 @@ class SearchWidget extends Component {
   }
 
   render() {
-    return <Grid fluid style={containerStyle} >
-      <Row center="xs">
-        <Col xl={4} lg={6} md={8} xs={12}>
-          Enter a valid City of Garland Address to look up City data.
-            </Col>
-      </Row>
-      <Row center="xs">
-        <Col xl={4} lg={6} md={8} xs={12} style={{ marginTop: '10px' }}>
+    return <div class="container-fluid" >
+      <div class="row justify-content-md-center">
+        <div class=" col-lg-5 col-md-8 col-sm-12 m-1">
+          <div class="m-3 col-12">
+            Enter a valid City of Garland Address to look up City data.
+            </div>
           <div id='my-garland-search' className='searchwidget' />
-        </Col>
-      </Row>
-    </Grid>
+        </div>
+
+      </div>
+    </div>
   }
 };
 
