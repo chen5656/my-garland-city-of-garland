@@ -72,7 +72,6 @@ export default class AddressSearch extends Component {
                     })
                 });
             });
-
     }
 
     componentDidMount = () => {
@@ -92,30 +91,28 @@ export default class AddressSearch extends Component {
     render() {
         return (
             <div style={{ minHeight: '200px' }}>
+                <SearchWidget />
                 {this.state.searchReady ?
-                    <>
-                        <SearchWidget />
-                        <Switch>
-                            <Route exact path="/"  ><div></div></Route>
-                            <Route path="/id/:addressId" render={({ match }) => {
-                                return <Result
-                                    RefID={match.params.addressId}
-                                    factorList={{
-                                        'city-facility': this.state['city-facility'],
-                                        'parcel-data': this.state['parcel-data'],
-                                        'service-zone': this.state['service-zone'],
-                                    }}
-                                    parcelFields={this.state.parcelFields}
-                                    wrongRefID={this.handleWrongRefID}
-                                />
-                            }} />
-                            <Route path="/nomatch/:searchTerm" render={({ match }) => {
-                                return <AddressNotFound suggestTerm={match.params.searchTerm} />
-                            }} />
-                        </Switch>
-                    </>
+                    <Switch>
+                        <Route exact path="/"  ><div></div></Route>
+                        <Route path="/id/:addressId" render={({ match }) => {
+                            return <Result
+                                RefID={match.params.addressId}
+                                factorList={{
+                                    'city-facility': this.state['city-facility'],
+                                    'parcel-data': this.state['parcel-data'],
+                                    'service-zone': this.state['service-zone'],
+                                }}
+                                parcelFields={this.state.parcelFields}
+                                wrongRefID={this.handleWrongRefID}
+                            />
+                        }} />
+                        <Route path="/nomatch/:searchTerm" render={({ match }) => {
+                            return <AddressNotFound suggestTerm={match.params.searchTerm} />
+                        }} />
+                    </Switch>
                     :
-                    <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />
+                    <LinearProgress style={{ margin: '20px', background: '#c5c0c0' }} />
                 }
 
             </div>
