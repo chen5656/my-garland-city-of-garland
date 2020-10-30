@@ -112,18 +112,13 @@ export default class AddressSearch extends Component {
                 {this.state.searchReady ?
                     <>
                         <SearchWidget
-                            newSearch={this.handleNewSearch}
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
                         <Switch>
                             <Route exact path="/"  ><div></div></Route>
-                            <Route path="/nomatch" >
-                                <NoMatch searchTerm={this.state.suggestTerm} />
-                            </Route>
-                            <Route path="/:addressId" render={({ match }) => {
-
+                            <Route path="/nomatch" render={({ match }) => {
+                                debugger;
                                 return <Result
-                                    // addressId={this.state.Ref_ID}
                                     RefID={match.params.addressId}
                                     factorList={{
                                         'city-facility': this.state['city-facility'],
@@ -133,7 +128,20 @@ export default class AddressSearch extends Component {
                                     parcelFields={this.state.parcelFields}
                                     wrongRefID={this.handleWrongRefID}
                                 />
-
+                            }} />
+                                {/* <NoMatch searchTerm={this.state.suggestTerm} />
+                            </Route> */}
+                            <Route path="/:addressId" render={({ match }) => {
+                                return <Result
+                                    RefID={match.params.addressId}
+                                    factorList={{
+                                        'city-facility': this.state['city-facility'],
+                                        'parcel-data': this.state['parcel-data'],
+                                        'service-zone': this.state['service-zone'],
+                                    }}
+                                    parcelFields={this.state.parcelFields}
+                                    wrongRefID={this.handleWrongRefID}
+                                />
                             }} />
 
                         </Switch>
