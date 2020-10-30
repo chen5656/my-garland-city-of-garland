@@ -12,18 +12,15 @@ import { Route, Switch } from "react-router-dom";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 function NoMatch(props) {
-    return <div>11111111</div>;
+    return <div>{props.searchTerm}</div>;
 }
 
 export default class AddressSearch extends Component {
     constructor() {
         super();
         this.state = {
-            suggestTerm: '',
             searchReady: false,
         };
-        this.handleDisplaySuggestion = this.handleDisplaySuggestion.bind(this);
-        this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -97,26 +94,13 @@ export default class AddressSearch extends Component {
             }
         }
     }
-    handleNewSearch(){
-        this.setState({ suggestTerm: '' });
-    window.location.hash = "";
-
-    }
-
-    handleDisplaySuggestion(suggestTerm) {
-        this.setState({ suggestTerm: suggestTerm });
-    }
 
     render() {
         return (
             <div style={{ minHeight: '200px' }}>
                 {this.state.searchReady ?
                     <>
-                        <SearchWidget
-                            displaySuggestion={this.handleDisplaySuggestion}
-                            newSearch={this.handleNewSearch}
-
-                        />
+                        <SearchWidget />
                         <Switch> 
                             <Route exact path="/"  ><div></div></Route>
                             <Route path="/id/:addressId" render={({ match }) => {                                
@@ -131,10 +115,10 @@ export default class AddressSearch extends Component {
                                     wrongRefID={this.handleWrongRefID}
                                 />
                             }} />
-                            <Route path="/nomatch/*" render={({ match }) => {
+                            <Route path="/nomatch/:searchTerm" render={({ match }) => {
                                 debugger;
                                 return       <NoMatch
-                                suggestTerm={match}
+                                searchTerm={match.params.searchTerm}
                                 />
                             }} />
 

@@ -36,17 +36,15 @@ class SearchWidget extends Component {
           locationEnabled: false,
           sources: [searchSource]
         });
-        searchWidget.on('search-start', function (e) {
-          that.props.newSearch();
+        searchWidget.on('search-start', function (e) {          
+    window.location.hash = "";
           that.routingFunction('');
         })
 
         searchWidget.on('search-complete', function (e) {
           if (e.numResults === 0 && e.searchTerm) {
             //no address find from input, display suggestion.  
-            that.props.displaySuggestion(e.searchTerm);
             that.routingFunction('nomatch' + '/' + e.searchTerm);
-
           }
         });
 
