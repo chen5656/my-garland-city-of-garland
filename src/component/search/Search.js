@@ -90,7 +90,7 @@ export default class AddressSearch extends Component {
 
     render() {
         return (
-            <div style={{ minHeight: '200px' }}>
+            <div  style={{ minHeight: '200px' }}>
                 <SearchWidget />
                 {this.state.searchReady ?
                     <Switch>

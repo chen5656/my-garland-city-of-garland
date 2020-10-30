@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { loadModules } from 'esri-loader';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 
 const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
 const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
@@ -139,7 +138,7 @@ export default class SuggestAddresses extends Component {
           }
         });
 
-      
+
       })
 
   }
@@ -152,7 +151,7 @@ export default class SuggestAddresses extends Component {
     }
   }
 
-  componentWillUnmount =()=>{
+  componentWillUnmount = () => {
 
   }
 
@@ -258,27 +257,25 @@ export default class SuggestAddresses extends Component {
   render() {
 
     return (
-      <Grid style={containerStyle} >
-        <Row center='xs'>
-          <Col lg={4} md={6} xs={12}>
-            <Card>
-              <CardHeader title="Address not found." />
-              <CardContent  style={{textAlign: 'left'}}>
-                {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
-                  <ul>
-                    {
-                      this.state.addressList.map((item) => {
-                        return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
-                      })
-                    }
-                  </ul>
-                </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+        <div className="row justify-content-md-center pt-4 relative" style={containerStyle} >
+            <div className="col-lg-4 col-md-8 col-sm-12">
+              <Card>
+                <CardHeader title="Address not found." />
+                <CardContent style={{ textAlign: 'left' }}>
+                  {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+                    <ul>
+                      {
+                        this.state.addressList.map((item) => {
+                          return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
+                        })
+                      }
+                    </ul>
+                  </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
 
-              </CardContent>
+                </CardContent>
               </Card>
-          </Col>
-        </Row>
-      </Grid>
+            </div>
+        </div>
     );
 
   }

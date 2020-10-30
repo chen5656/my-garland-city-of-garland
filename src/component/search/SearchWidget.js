@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { loadModules } from 'esri-loader';
 import { withRouter } from 'react-router-dom';
 
-const containerStyle = {
+const searchContainerStyle = {
   margin: '2px',
   padding: '50px 5px 50px 5px',
   background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
@@ -69,17 +69,15 @@ class SearchWidget extends Component {
   }
 
   render() {
-    return <div class="container-fluid" >
-      <div class="row justify-content-md-center">
-        <div class=" col-lg-5 col-md-8 col-sm-12 m-1">
-          <div class="m-3 col-12">
+    return       <div className="row justify-content-md-center" style={searchContainerStyle}>
+        <div className=" col-lg-5 col-md-8 col-sm-12">
+          <div className="m-3 col-12">
             Enter a valid City of Garland Address to look up City data.
             </div>
           <div id='my-garland-search' className='searchwidget' />
         </div>
 
       </div>
-    </div>
   }
 };
 

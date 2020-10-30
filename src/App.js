@@ -3,7 +3,6 @@ import React from 'react';
 import Header from './component/home/Header';
 import Footer from './component/home/Footer';
 import Search from './component/search/Search';
-import Container from '@material-ui/core/Container';
 
 import {
   BrowserRouter as Router,
@@ -12,15 +11,13 @@ import {
 
 function App() {
   return (
-
-
-    <Container maxWidth={false} >
-      <Router>
+    <Router>
+      <div className='container-fluid'>
         <Header />
         <Search />
         <Footer />
-      </Router>
-    </Container>
+      </div>
+    </Router>
   );
 }
 

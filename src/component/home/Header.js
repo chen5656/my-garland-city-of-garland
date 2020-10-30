@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
-import Box from '@material-ui/core/Box';
-
 
 const titleStyle = {
   fontWeight: '900',
@@ -64,10 +62,10 @@ export default function Header() {
 
 
   return (
-    <Box overflow='hidden' position='relative'>
+    <div className='overflow-hidden position-relative'>
       <WebMapView />
       <TitlePng />
-    </Box>
+    </div>
   );
 }
 
