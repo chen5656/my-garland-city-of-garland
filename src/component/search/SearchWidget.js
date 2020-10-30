@@ -37,7 +37,7 @@ class SearchWidget extends Component {
           sources: [searchSource]
         });
         searchWidget.on('search-start', function (e) {
-          that.props.newSearch();
+          that.routingFunction('');
         })
 
         searchWidget.on('search-complete', function (e) {
@@ -51,7 +51,6 @@ class SearchWidget extends Component {
         searchWidget.on('select-result', function (e) {
           console.log('select-result');
           if (e.result) {
-            // that.props.displayResult(e.result.feature.attributes.Ref_ID);
             that.routingFunction(e.result.feature.attributes.Ref_ID);
           }
         });
@@ -66,7 +65,6 @@ class SearchWidget extends Component {
 
 
   routingFunction = (Ref_ID) => {
-    debugger;
     this.props.history.push( {
       pathname: '/' +Ref_ID
       // state: { fromSearchWidget: true }

@@ -15,20 +15,6 @@ function NoMatch(props) {
     return <div>{props.searchTerm}</div>;
 }
 
-function DisplaySearch(props) {
-    console.log(props.addressId);
-    //check if addressId available in parcel layer.
-
-    return (
-    <Result
-        RefID={props.RefID}
-        factorList={props.factorList}
-        parcelFields={props.parcelFields}
-        wrongRefID={props.wrongRefID}
-    />)
-
-}
-
 export default class AddressSearch extends Component {
     constructor() {
         super();
@@ -38,9 +24,7 @@ export default class AddressSearch extends Component {
             suggestTerm: '',
             searchReady: false,
         };
-        this.handleDisplayResult = this.handleDisplayResult.bind(this);
         this.handleDisplaySuggestion = this.handleDisplaySuggestion.bind(this);
-        this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -121,24 +105,6 @@ export default class AddressSearch extends Component {
             this.setState({ isShowResult: true });
         }
     }
-    handleDisplayResult(Ref_ID) {
-
-        if (this.state.Ref_ID !== Ref_ID) {
-            this.setState({ Ref_ID: Ref_ID });
-        }
-        if (!this.state.isShowResult && Ref_ID) {
-            this.setState({ isShowResult: true });
-        }
-    }
-
-    handleNewSearch() {
-
-        this.setState({
-            isShowResult: false,
-            Ref_ID: null,
-            searchTerm: null,
-        });
-    }
 
     render() {
         return (
@@ -146,7 +112,6 @@ export default class AddressSearch extends Component {
                 {this.state.searchReady ?
                     <>
                         <SearchWidget
-                            displayResult={this.handleDisplayResult}
                             newSearch={this.handleNewSearch}
                             displaySuggestion={this.handleDisplaySuggestion}
                         />
@@ -155,9 +120,11 @@ export default class AddressSearch extends Component {
                             <Route path="/nomatch" >
                                 <NoMatch searchTerm={this.state.suggestTerm} />
                             </Route>
-                            <Route path="/:addressId">
-                                <DisplaySearch
-                                    RefID={this.state.Ref_ID}
+                            <Route path="/:addressId" render={({ match }) => {
+
+                                return <Result
+                                    // addressId={this.state.Ref_ID}
+                                    RefID={match.params.addressId}
                                     factorList={{
                                         'city-facility': this.state['city-facility'],
                                         'parcel-data': this.state['parcel-data'],
@@ -166,7 +133,9 @@ export default class AddressSearch extends Component {
                                     parcelFields={this.state.parcelFields}
                                     wrongRefID={this.handleWrongRefID}
                                 />
-                            </Route>
+
+                            }} />
+
                         </Switch>
                     </>
                     :

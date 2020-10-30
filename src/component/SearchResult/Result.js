@@ -316,11 +316,12 @@ export default class Result extends Component {
       console.log('update', array)
       this.setState({ factorList: array });
     }
+    window.location.hash = "my-garland-result";
   }
 
   render() {
     return (<article>
-      <div className= 'container-fluid' >
+      <div className= 'container-fluid' id='my-garland-result' >
         <div className='row ' >
           {
             json_sectionList.map((item) => {
