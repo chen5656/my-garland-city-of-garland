@@ -1,19 +1,13 @@
 import React, { Component } from 'react';
+import { Route, Switch } from "react-router-dom";
+
+import { loadModules } from 'esri-loader';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import AddressNotFound from './AddressNotFound';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
-import { loadModules } from 'esri-loader';
 import json_factorList from '../../data/factorList.json';
-
-import { Route, Switch } from "react-router-dom";
-
-
-
-import LinearProgress from '@material-ui/core/LinearProgress';
-
-function NoMatch(props) {
-    return <div>{props.searchTerm}</div>;
-}
 
 export default class AddressSearch extends Component {
     constructor() {
@@ -101,9 +95,9 @@ export default class AddressSearch extends Component {
                 {this.state.searchReady ?
                     <>
                         <SearchWidget />
-                        <Switch> 
+                        <Switch>
                             <Route exact path="/"  ><div></div></Route>
-                            <Route path="/id/:addressId" render={({ match }) => {                                
+                            <Route path="/id/:addressId" render={({ match }) => {
                                 return <Result
                                     RefID={match.params.addressId}
                                     factorList={{
@@ -116,13 +110,9 @@ export default class AddressSearch extends Component {
                                 />
                             }} />
                             <Route path="/nomatch/:searchTerm" render={({ match }) => {
-                                debugger;
-                                return       <NoMatch
-                                searchTerm={match.params.searchTerm}
-                                />
+                                return <AddressNotFound suggestTerm={match.params.searchTerm} />
                             }} />
-
-                         </Switch> 
+                        </Switch>
                     </>
                     :
                     <LinearProgress style={{ top: '20px', background: '#c5c0c0' }} />
