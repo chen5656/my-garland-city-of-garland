@@ -14,7 +14,10 @@ export default class AddressSearch extends Component {
         super();
         this.state = {
             searchReady: false,
+            searchTerm: '',
         };
+        this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
+        this.handleNewSearch = this.handleNewSearch.bind(this);
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -88,13 +91,30 @@ export default class AddressSearch extends Component {
         }
     }
 
+    handleWrongRefID() {
+
+    }
+
+    handleSearchFromAddress(address) {
+        this.setState({ searchTerm: address });
+    }
+    
+    handleNewSearch() {
+        if (this.state.searchTerm) {
+            this.setState({ searchTerm: '' });
+        }
+    }
+
     render() {
         return (
-            <div  style={{ minHeight: '200px' }}>
-                <SearchWidget />
+            <div style={{ minHeight: '200px' }}>
+                <SearchWidget
+                    searchTerm={this.state.searchTerm}
+                    newSearch={this.handleNewSearch}
+                />
                 {this.state.searchReady ?
                     <Switch>
-                        <Route exact path="/"  ><div></div></Route>
+                        <Route exact path="/" ><div></div></Route>
                         <Route path="/id/:addressId" render={({ match }) => {
                             return <Result
                                 RefID={match.params.addressId}
@@ -108,7 +128,10 @@ export default class AddressSearch extends Component {
                             />
                         }} />
                         <Route path="/nomatch/:searchTerm" render={({ match }) => {
-                            return <AddressNotFound suggestTerm={match.params.searchTerm} />
+                            return <AddressNotFound
+                                suggestTerm={match.params.searchTerm}
+                                search={this.handleSearchFromAddress}
+                            />
                         }} />
                     </Switch>
                     :

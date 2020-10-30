@@ -9,6 +9,9 @@ const searchContainerStyle = {
 }
 
 class SearchWidget extends Component {
+  // constructor(){
+  //   super()
+  // }
   componentDidMount = () => {
     const that = this;
     // lazy load the required ArcGIS API for JavaScript modules and CSS
@@ -35,8 +38,12 @@ class SearchWidget extends Component {
           locationEnabled: false,
           sources: [searchSource]
         });
+
+        that.EsriSearchWidget=searchWidget;
+
         searchWidget.on('search-start', function (e) {
           window.location.hash = "";
+          that.props.newSearch();
           that.routingFunction('');
         })
 
@@ -60,6 +67,12 @@ class SearchWidget extends Component {
           }
         };
       });
+  }
+
+  componentDidUpdate =(prevProps)=>{
+    if(this.EsriSearchWidget&&this.props.searchTerm&&this.props.searchTerm!==prevProps.searchTerm){
+      this.EsriSearchWidget.search(this.props.searchTerm)
+    }
   }
 
   routingFunction = (value) => {

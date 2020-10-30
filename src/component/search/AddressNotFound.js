@@ -4,6 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { loadModules } from 'esri-loader';
+import { withRouter } from 'react-router-dom';
 
 const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
 const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
@@ -17,13 +18,15 @@ const containerStyle = {
 }
 
 const OneAddress = (props) => {
-  function searchAddress() {
-    alert(props.label);
-  }
-  return <li><Button color="primary" onClick={searchAddress}>{props.num} {props.label}</Button ></li>;
+  // function search() {
+  //   props.search(props.address);
+  // }
+  return <li><Button color="primary" onClick={()=>{
+    props.search(props.address)
+  }}>{props.address}</Button ></li>;
 }
 
-export default class SuggestAddresses extends Component {
+ class SuggestAddresses extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +41,6 @@ export default class SuggestAddresses extends Component {
     loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
       .then(([Query, QueryTask]) => {
         var addr_road, addr_number;
-        debugger;
         var str = that.props.suggestTerm.split(",")[0].trim().toUpperCase();
         var subStr = str.split(" ");
         if (subStr.length > 1) {
@@ -254,6 +256,14 @@ export default class SuggestAddresses extends Component {
     });
     return str.join(" ").trim();
   }
+
+  
+  routingFunction = (value) => {
+    this.props.history.push({
+      pathname: '/' + value
+    });
+  }
+
   render() {
 
     return (
@@ -266,7 +276,8 @@ export default class SuggestAddresses extends Component {
                     <ul>
                       {
                         this.state.addressList.map((item) => {
-                          return <OneAddress key={' ' + item.streetNumber + ' ' + item.streetLabel} num={item.streetNumber} label={item.streetLabel} />
+                          let address = ''+item.streetNumber + ' ' + item.streetLabel;
+                          return <OneAddress key={address} address={address}  search={this.props.search}/>
                         })
                       }
                     </ul>
@@ -281,3 +292,4 @@ export default class SuggestAddresses extends Component {
   }
 }
 
+export default SuggestAddresses;
