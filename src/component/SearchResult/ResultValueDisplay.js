@@ -136,7 +136,7 @@ const Distance = (props) => {
     return <span className={classes.secondary}> ({props.children} miles)</span>;
 }
 const Phone = (props) => {
-    return <span><a href={`tel:${props.value}`} title={props.value}> <PhoneIcon /></a></span>;
+    return <Button  title={props.value}><a href={`tel:${props.value}`}> <PhoneIcon /></a></Button>;
 
 }
 const Email = (props) => {
@@ -216,11 +216,11 @@ export default class ResultValueDisplay extends Component {
                 return <FactorValue_twoLine  >
                     <Name >
                         {attributes['INSPECTOR']}
-                        <Button> <Phone value={formatPhoneNumber(attributes['PHONE'])} /> </Button>
+                        <Phone value={formatPhoneNumber(attributes['PHONE'])} /> 
                     </Name>
                     <Name >
                         {attributes['INSPECTOR2']}
-                        <Button> <Phone value={formatPhoneNumber(attributes['PHONE2'])} /> </Button>
+                         <Phone value={formatPhoneNumber(attributes['PHONE2'])} /> 
                     </Name>
                 </FactorValue_twoLine>;
 
@@ -229,9 +229,9 @@ export default class ResultValueDisplay extends Component {
                 return <FactorValue_oneLine  >
                     <Name >
                         {attributes['INSPECTOR']}
-                        <Button>
+                        
                             <Phone value={formatPhoneNumber(attributes['PHONE'])} />
-                        </Button> 
+                     
                     </Name>
                 </FactorValue_oneLine>;
             default:
