@@ -23,6 +23,7 @@ import json_categoryList from '../../data/categoryList.json';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   sectionPadding: { padding: '15px' },
@@ -142,7 +143,7 @@ const Section = (props) => {
 }
 
 
-export default class Result extends Component {
+class Result extends Component {
 
   constructor(props) {
     super(props);
@@ -190,6 +191,9 @@ export default class Result extends Component {
         that.getNearestCityFacilityList(result.features[0].geometry);
         that.getLocatedServiceZoneList(result.features[0].geometry);
 
+      }else{
+        //didn't return a result
+        that.routingFunction('404');
       }
     });
   }
@@ -318,6 +322,12 @@ export default class Result extends Component {
     }
   }
 
+  routingFunction = (value) => {
+    this.props.history.push({
+      pathname: '/' + value
+    });
+  }
+
   render() {
     return (<article>
       <div className= 'container-fluid' id='my-garland-result' >
@@ -336,3 +346,5 @@ export default class Result extends Component {
     )
   }
 }
+
+export default withRouter(Result);

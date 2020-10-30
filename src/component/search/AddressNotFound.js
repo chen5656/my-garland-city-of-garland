@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { loadModules } from 'esri-loader';
-import { withRouter } from 'react-router-dom';
 
 const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
 const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
@@ -18,15 +17,16 @@ const containerStyle = {
 }
 
 const OneAddress = (props) => {
-  // function search() {
-  //   props.search(props.address);
-  // }
-  return <li><Button color="primary" onClick={()=>{
-    props.search(props.address)
-  }}>{props.address}</Button ></li>;
+  return (<li>
+    <Button color="primary"
+      onClick={() => { props.search(props.address) }}
+    >
+      {props.address}
+    </Button >
+  </li>);
 }
 
- class SuggestAddresses extends Component {
+class SuggestAddresses extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -257,7 +257,7 @@ const OneAddress = (props) => {
     return str.join(" ").trim();
   }
 
-  
+
   routingFunction = (value) => {
     this.props.history.push({
       pathname: '/' + value
@@ -267,26 +267,26 @@ const OneAddress = (props) => {
   render() {
 
     return (
-        <div className="row justify-content-md-center pt-4 relative" style={containerStyle} >
-            <div className="col-lg-4 col-md-8 col-sm-12">
-              <Card>
-                <CardHeader title="Address not found." />
-                <CardContent style={{ textAlign: 'left' }}>
-                  {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
-                    <ul>
-                      {
-                        this.state.addressList.map((item) => {
-                          let address = ''+item.streetNumber + ' ' + item.streetLabel;
-                          return <OneAddress key={address} address={address}  search={this.props.search}/>
-                        })
-                      }
-                    </ul>
-                  </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
+      <div className="row justify-content-md-center pt-4 relative" style={containerStyle} >
+        <div className="col-lg-4 col-md-8 col-sm-12">
+          <Card>
+            <CardHeader title="Address not found." />
+            <CardContent style={{ textAlign: 'left' }}>
+              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+                <ul>
+                  {
+                    this.state.addressList.map((item) => {
+                      let address = '' + item.streetNumber + ' ' + item.streetLabel;
+                      return <OneAddress key={address} address={address} search={this.props.search} />
+                    })
+                  }
+                </ul>
+              </> : <><p>Couldn't find entered address. </p><p>Please check the address name.</p></>}
 
-                </CardContent>
-              </Card>
-            </div>
+            </CardContent>
+          </Card>
         </div>
+      </div>
     );
 
   }

@@ -50,14 +50,14 @@ class SearchWidget extends Component {
         searchWidget.on('search-complete', function (e) {
           if (e.numResults === 0 && e.searchTerm) {
             //no address find from input, display suggestion.  
-            that.routingFunction('nomatch' + '/' + e.searchTerm);
+            that.routingFunction(`nomatch/${e.searchTerm}`);
           }
         });
 
         searchWidget.on('select-result', function (e) {
           console.log('select-result');
           if (e.result) {
-            that.routingFunction('id' + '/' + e.result.feature.attributes.Ref_ID);
+            that.routingFunction(`id/${e.result.feature.attributes.Ref_ID}` );
           }
         });
 

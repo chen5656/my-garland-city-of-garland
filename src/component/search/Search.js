@@ -18,6 +18,7 @@ export default class AddressSearch extends Component {
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
+
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -91,14 +92,10 @@ export default class AddressSearch extends Component {
         }
     }
 
-    handleWrongRefID() {
-
-    }
-
     handleSearchFromAddress(address) {
         this.setState({ searchTerm: address });
     }
-    
+
     handleNewSearch() {
         if (this.state.searchTerm) {
             this.setState({ searchTerm: '' });
@@ -117,14 +114,13 @@ export default class AddressSearch extends Component {
                         <Route exact path="/" ><div></div></Route>
                         <Route path="/id/:addressId" render={({ match }) => {
                             return <Result
-                                RefID={match.params.addressId}
+                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
                                 factorList={{
                                     'city-facility': this.state['city-facility'],
                                     'parcel-data': this.state['parcel-data'],
                                     'service-zone': this.state['service-zone'],
                                 }}
                                 parcelFields={this.state.parcelFields}
-                                wrongRefID={this.handleWrongRefID}
                             />
                         }} />
                         <Route path="/nomatch/:searchTerm" render={({ match }) => {
