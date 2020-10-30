@@ -279,15 +279,8 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 7,
-            "hyperlink": "hardcode",
-            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
-            "displayFormat": [
-                {
-                    "id": "outputFields2",
-                    "value": "phone-number"
-                }
-            ]
+            "displayID": 7,            
+            "formatType": "code-commercial-districts"            
         }
     },
     {

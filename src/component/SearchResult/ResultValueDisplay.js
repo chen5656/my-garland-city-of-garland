@@ -1,48 +1,13 @@
 import React, { Component, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { PinDropSharp } from '@material-ui/icons';
+import PhoneIcon from '@material-ui/icons/Phone';
+import Button from '@material-ui/core/Button';
+
 
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
-const getEWSRecyclingDay = (value) => {
-    var ancore = value;
-    if (isNaN(ancore)) {
-        return "NULL".concat("*");
-    }
-    var ancoreDate = new Date(ancore);
-    var today = new Date();
-    var dayDiff = Math.floor((today - ancoreDate) / (1000 * 60 * 60 * 24));
-    var dayMod = dayDiff % 14;
-    var newRecyclingDay = null;
-    if (dayDiff >= 0) {
-        newRecyclingDay = addDays(today, (14 - dayMod));
-
-    } else if (dayDiff >= -14) {
-        newRecyclingDay = ancoreDate;
-    } else {
-        newRecyclingDay = addDays(today, (-dayMod));
-    }
-    //format the new day
-    return newRecyclingDay.toDateString() + "*";
-
-    function addDays(date, days) {
-        const copy = new Date(Number(date))
-        copy.setDate(date.getDate() + days)
-        return copy
-    }
-}
-
-
-const formatPhoneNumber = (phoneNumberString) => {
-    var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
-    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-    if (match) {
-        return '' + match[1] + '-' + match[2] + '-' + match[3]
-    }
-    return null
-}
 
 const useStyles = makeStyles((theme) => ({
     listItem_oneLine: {
@@ -109,11 +74,48 @@ const fillNullInfo = (input) => {
     }
 }
 
+const getEWSRecyclingDay = (value) => {
+    var ancore = value;
+    if (isNaN(ancore)) {
+        return "NULL".concat("*");
+    }
+    var ancoreDate = new Date(ancore);
+    var today = new Date();
+    var dayDiff = Math.floor((today - ancoreDate) / (1000 * 60 * 60 * 24));
+    var dayMod = dayDiff % 14;
+    var newRecyclingDay = null;
+    if (dayDiff >= 0) {
+        newRecyclingDay = addDays(today, (14 - dayMod));
+
+    } else if (dayDiff >= -14) {
+        newRecyclingDay = ancoreDate;
+    } else {
+        newRecyclingDay = addDays(today, (-dayMod));
+    }
+    //format the new day
+    return newRecyclingDay.toDateString() + "*";
+
+    function addDays(date, days) {
+        const copy = new Date(Number(date))
+        copy.setDate(date.getDate() + days)
+        return copy
+    }
+}
+
+
+const formatPhoneNumber = (phoneNumberString) => {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    if (match) {
+        return '' + match[1] + '-' + match[2] + '-' + match[3]
+    }
+    return null
+}
 const Link = (props) => {
     if (props.url) {
         return (
-            <a href={props.url} target='_blank' rel="noopener noreferrer"
-                title={props.title}>
+            <a href={props.url} target='_blank' rel='noopener noreferrer'
+                title={props.title} >
                 {props.children}
             </a>
         )
@@ -134,10 +136,7 @@ const Distance = (props) => {
     return <span className={classes.secondary}> ({props.children} miles)</span>;
 }
 const Phone = (props) => {
-    return <span>{props.children}</span>;
-    
-//"<span class='location-data-value'>{{displayValue1}}<a href='tel:{{displayValue2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue2}}'></i> </a><span>, {{displayValue3}}</span><a href='tel:{{displayValue4}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{displayValue4}}'></i> </a></span>",
-
+    return <span><a href={`tel:${props.value}`} title={props.value}> <PhoneIcon /></a></span>;
 
 }
 const Email = (props) => {
@@ -162,7 +161,6 @@ export default class ResultValueDisplay extends Component {
         let name = null,
             address = null,
             distance = null,
-            newValue = null,
             url = null,
             title = null;
 
@@ -212,17 +210,29 @@ export default class ResultValueDisplay extends Component {
                 return <div></div>
             case 'ews-recycling-day':
                 return <FactorValue_oneLine  >
-                    {name && <Name >{ getEWSRecyclingDay(name)}</Name>}
+                    {name && <Name >{getEWSRecyclingDay(name)}</Name>}
                 </FactorValue_oneLine>;
             case 'code-nuisance-districts':
-                debugger;
+                return <FactorValue_twoLine  >
+                    <Name >
+                        {attributes['INSPECTOR']}
+                        <Button> <Phone value={formatPhoneNumber(attributes['PHONE'])} /> </Button>
+                    </Name>
+                    <Name >
+                        {attributes['INSPECTOR2']}
+                        <Button> <Phone value={formatPhoneNumber(attributes['PHONE2'])} /> </Button>
+                    </Name>
+                </FactorValue_twoLine>;
+
+            // "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
+            case 'code-commercial-districts':
                 return <FactorValue_oneLine  >
-                    <Name >{attributes['INSPECTOR']}</Name>
-                    <Phone>{formatPhoneNumber(attributes['PHONE'])}</Phone>
-                    <Name >{attributes['INSPECTOR2']}</Name>
-                    <Phone>{formatPhoneNumber(attributes['PHONE2'])}</Phone>
-
-
+                    <Name >
+                        {attributes['INSPECTOR']}
+                        <Button>
+                            <Phone value={formatPhoneNumber(attributes['PHONE'])} />
+                        </Button> 
+                    </Name>
                 </FactorValue_oneLine>;
             default:
                 return <div></div>;
