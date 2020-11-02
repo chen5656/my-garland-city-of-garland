@@ -263,7 +263,17 @@
         "outputControl": {
             "category": "services",
             "displayID": 8,
-            "formatType": "code-nuisance-districts"         
+            "formatType": "name-with-phone-email",
+            "outputItems": [
+                {
+                    "name": "INSPECTOR",
+                    "phone": "PHONE"
+                },
+                {
+                    "name": "INSPECTOR2",
+                    "phone": "INSPECTOR2"
+                }
+            ]
         }
     },
     {
@@ -279,8 +289,14 @@
         },
         "outputControl": {
             "category": "services",
-            "displayID": 7,            
-            "formatType": "code-commercial-districts"            
+            "displayID": 7,
+            "formatType": "name-with-phone-email",
+            "outputItems": [
+                {
+                    "name": "INSPECTOR",
+                    "phone": "PHONE"
+                }
+            ]
         }
     },
     {
@@ -348,14 +364,13 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 2,         
-            "formatType": "neighborhood-police-officer" ,
-            "outputItems":[
+            "displayID": 2,
+            "formatType": "name-with-phone-email",
+            "outputItems": [
                 {
-                    "Name":"OFFICER",
-                    "Phone":"PHONE",
-                    "Email":"EMAIL"
-
+                    "name": "OFFICER",
+                    "phone": "PHONE",
+                    "email": "EMAIL"
                 }
             ]
         }
@@ -368,14 +383,13 @@
             "outputFields": [
                 "DISTRICT_NUMBER",
                 "HYPERLINIK"
-            ]  ,
+            ],
             "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/35"
-  
         },
         "outputControl": {
             "category": "reference",
             "displayID": 1,
-            "formatType": "single-value",
+            "formatType": "single-value-button",
             "name": "DISTRICT_NUMBER",
             "hyperlink": "field",
             "hyperlinkFieldname": "HYPERLINIK"

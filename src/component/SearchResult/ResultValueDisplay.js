@@ -201,46 +201,38 @@ export default class ResultValueDisplay extends Component {
                     {address && <Address>{address}</Address>}
                     {distance && <Distance>{distance}</Distance>}
                 </FactorValue_twoLine>;
-
             case 'single-value':
+                return <FactorValue_oneLine >
+                    {name && <Name >{name}</Name>}
+                </FactorValue_oneLine>;
+            case 'single-value-button':
                 if (data.outputControl.hyperlink === 'field') {
                     url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
                     title = 'Open to see details'
                 }
                 return <FactorValue_oneLine >
-                    <Link url={url} title={title}>
-                        {name && <Name >{name}</Name>}
-                    </Link>
+                    <Name >
+                        <SymbolButton tilte={title} href={url} icon={name } />
+                    </Name>
                 </FactorValue_oneLine>;
             case 'ews-recycling-day':
                 return <FactorValue_oneLine  >
                     {name && <Name >{getEWSRecyclingDay(name)}</Name>}
                 </FactorValue_oneLine>;
-            case 'code-nuisance-districts':
-                return <FactorValue_twoLine  >
-                    <Name >
-                        {attributes['INSPECTOR']}
-                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
-                    </Name>
-                    <Name >
-                        {attributes['INSPECTOR2']}
-                        <Phone value={formatPhoneNumber(attributes['PHONE2'])} />
-                    </Name>
-                </FactorValue_twoLine>;
-            case 'code-commercial-districts':
+            case 'name-with-phone-email':
                 return <FactorValue_oneLine  >
-                    <Name >
-                        {attributes['INSPECTOR']}
-                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
-                    </Name>
-                </FactorValue_oneLine>;
-            case 'neighborhood-police-officer':
-                return <FactorValue_oneLine  >
-                    <Name >
-                        {attributes['OFFICER']}
-                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
-                        <Email value={attributes['EMAIL']} />
-                    </Name>
+                    {data.outputControl.outputItems &&
+                        data.outputControl.outputItems.map((item) => {
+                            return (
+                                <Name>
+                                    {item.name ? attributes[item.name] : null}
+                                    {item.phone ? <Phone
+                                        value={formatPhoneNumber(attributes[item.phone])} /> : null}
+                                    {item.email ? <Email
+                                        value={attributes[item.email]} /> : null}
+                                </Name>
+                            )
+                        })}
                 </FactorValue_oneLine>;
             default:
                 return <div></div>;
