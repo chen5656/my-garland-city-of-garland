@@ -348,13 +348,14 @@
         },
         "outputControl": {
             "category": "neighborhoods",
-            "displayID": 2,
-            "hyperlink": "hardcode",
-            "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small' title='{{outputFields2}}'></i> </a><a target='_blank' href='mailto:{{outputFields3}}'> <i class='esri-icon-contact blue-icon blue-icon-small' title='{{outputFields3}}'></i> </a></span>",
-            "displayFormat": [
+            "displayID": 2,         
+            "formatType": "neighborhood-police-officer" ,
+            "outputItems":[
                 {
-                    "id": "outputFields2",
-                    "value": "phone-number"
+                    "Name":"OFFICER",
+                    "Phone":"PHONE",
+                    "Email":"EMAIL"
+
                 }
             ]
         }

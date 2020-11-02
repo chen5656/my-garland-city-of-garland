@@ -1,7 +1,9 @@
 import React, { Component, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import PhoneIcon from '@material-ui/icons/Phone';
+
 import Button from '@material-ui/core/Button';
+import PhoneIcon from '@material-ui/icons/Phone';
+import EmailIcon from '@material-ui/icons/Email';
 
 
 String.prototype.capitalize = function () {
@@ -136,11 +138,15 @@ const Distance = (props) => {
     return <span className={classes.secondary}> ({props.children} miles)</span>;
 }
 const Phone = (props) => {
-    return <Button  title={props.value}><a href={`tel:${props.value}`}> <PhoneIcon /></a></Button>;
-
+    return <SymbolButton title={props.value} href={`tel:${props.value}`} icon={<PhoneIcon />} />;
 }
 const Email = (props) => {
+    return <SymbolButton title={props.value} href={`mailto:${props.value}`} icon={<EmailIcon />} />;
 
+}
+
+const SymbolButton = (props) => {
+    return <Button title={props.title}><a href={props.href}> {props.icon} </a></Button>;
 }
 const FactorValue_oneLine = (props) => {
     const classes = useStyles();
@@ -206,8 +212,6 @@ export default class ResultValueDisplay extends Component {
                         {name && <Name >{name}</Name>}
                     </Link>
                 </FactorValue_oneLine>;
-            case 'name_phone_email':
-                return <div></div>
             case 'ews-recycling-day':
                 return <FactorValue_oneLine  >
                     {name && <Name >{getEWSRecyclingDay(name)}</Name>}
@@ -216,22 +220,26 @@ export default class ResultValueDisplay extends Component {
                 return <FactorValue_twoLine  >
                     <Name >
                         {attributes['INSPECTOR']}
-                        <Phone value={formatPhoneNumber(attributes['PHONE'])} /> 
+                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
                     </Name>
                     <Name >
                         {attributes['INSPECTOR2']}
-                         <Phone value={formatPhoneNumber(attributes['PHONE2'])} /> 
+                        <Phone value={formatPhoneNumber(attributes['PHONE2'])} />
                     </Name>
                 </FactorValue_twoLine>;
-
-            // "hardcode": "<span class='location-data-value'>{{outputFields1}}<a href='tel:{{outputFields2}}'> <i class='esri-icon-phone blue-icon blue-icon-small'title='{{outputFields2}}'></i> </a></span>",
             case 'code-commercial-districts':
                 return <FactorValue_oneLine  >
                     <Name >
                         {attributes['INSPECTOR']}
-                        
-                            <Phone value={formatPhoneNumber(attributes['PHONE'])} />
-                     
+                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
+                    </Name>
+                </FactorValue_oneLine>;
+            case 'neighborhood-police-officer':
+                return <FactorValue_oneLine  >
+                    <Name >
+                        {attributes['OFFICER']}
+                        <Phone value={formatPhoneNumber(attributes['PHONE'])} />
+                        <Email value={attributes['EMAIL']} />
                     </Name>
                 </FactorValue_oneLine>;
             default:
