@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
+import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png'
 
 const titleStyle = {
   fontWeight: '900',
@@ -52,15 +53,10 @@ const WebMapView = () => {
   return <div className='webmap' ref={mapRef} style={{ height: '350px' }} />;
 };
 const TitlePng = () => {
-  const iconUrl = 'https://maps.garlandtx.gov/garlandlogos/static/media/COLOR.rev.horz.NOtag.3999f798.png';
-
-  return <img className={'d-none d-sm-block' } src={iconUrl} style={titleStyle} alt='City of Garland' />;
+  return <img className={'d-none d-sm-block' } src={logo} style={titleStyle} alt='City of Garland' />;
 };
 
 export default function Header() {
-
-
-
   return (
     <header className='overflow-hidden position-relative'>
       <WebMapView />

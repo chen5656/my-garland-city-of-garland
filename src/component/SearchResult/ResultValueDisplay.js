@@ -148,6 +148,11 @@ const Email = (props) => {
 const SymbolButton = (props) => {
     return <Button title={props.title}><a href={props.href}> {props.icon} </a></Button>;
 }
+
+const PicButton =(props)=>{
+    return <div></div>
+}
+
 const FactorValue_oneLine = (props) => {
     const classes = useStyles();
     return <div className={classes.listItem_oneLine}> {props.children}</div>;
