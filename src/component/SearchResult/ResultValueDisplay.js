@@ -153,12 +153,12 @@ const PicButton =(props)=>{
     return <div></div>
 }
 
-const FactorValue_oneLine = (props) => {
+const FactorValueOneLine = (props) => {
     const classes = useStyles();
     return <div className={classes.listItem_oneLine}> {props.children}</div>;
 }
 
-const FactorValue_twoLine = (props) => {
+const FactorValueTwoLine = (props) => {
     const classes = useStyles();
 
     return (<div className={classes.listItem_twoLine}>
@@ -199,33 +199,33 @@ export default class ResultValueDisplay extends Component {
 
         switch (category) {
             case 'name-address-distance':
-                return <FactorValue_twoLine >
+                return <FactorValueTwoLine >
                     <Link url={url} title={title}>
-                        {name && <Name >{name}</Name>}
+                        {name && <Name >{name.capitalize()}</Name>}
                     </Link>
                     {address && <Address>{address}</Address>}
                     {distance && <Distance>{distance}</Distance>}
-                </FactorValue_twoLine>;
+                </FactorValueTwoLine>;
             case 'single-value':
-                return <FactorValue_oneLine >
+                return <FactorValueOneLine >
                     {name && <Name >{name}</Name>}
-                </FactorValue_oneLine>;
+                </FactorValueOneLine>;
             case 'single-value-button':
                 if (data.outputControl.hyperlink === 'field') {
                     url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
                     title = 'Open to see details'
                 }
-                return <FactorValue_oneLine >
+                return <FactorValueOneLine >
                     <Name >
                         <SymbolButton tilte={title} href={url} icon={name } />
                     </Name>
-                </FactorValue_oneLine>;
+                </FactorValueOneLine>;
             case 'ews-recycling-day':
-                return <FactorValue_oneLine  >
+                return <FactorValueOneLine  >
                     {name && <Name >{getEWSRecyclingDay(name)}</Name>}
-                </FactorValue_oneLine>;
+                </FactorValueOneLine>;
             case 'name-with-phone-email':
-                return <FactorValue_oneLine  >
+                return <FactorValueOneLine  >
                     {data.outputControl.outputItems &&
                         data.outputControl.outputItems.map((item) => {
                             return (
@@ -238,7 +238,7 @@ export default class ResultValueDisplay extends Component {
                                 </Name>
                             )
                         })}
-                </FactorValue_oneLine>;
+                </FactorValueOneLine>;
             default:
                 return <div></div>;
 
