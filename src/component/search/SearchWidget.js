@@ -58,7 +58,7 @@ class SearchWidget extends Component {
         searchWidget.on('select-result', function (e) {
           console.log('select-result');
           if (e.result) {
-            that.routingFunction(`id/${e.result.feature.attributes.Ref_ID}`);
+            that.routingFunction(e.result.feature.attributes.Ref_ID);
           }
         });
 
