@@ -112,17 +112,6 @@ export default class AddressSearch extends Component {
                 {this.state.searchReady ?
                     <Switch>
                         <Route exact path="/" ><div></div></Route>
-                        <Route path="/id/:addressId" render={({ match }) => {
-                            return <Result
-                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
-                                factorList={{
-                                    'city-facility': this.state['city-facility'],
-                                    'parcel-data': this.state['parcel-data'],
-                                    'service-zone': this.state['service-zone'],
-                                }}
-                                parcelFields={this.state.parcelFields}
-                            />
-                        }} />
                         <Route exact path="/address-not-valid" >
                             <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
                         </Route>
@@ -133,6 +122,18 @@ export default class AddressSearch extends Component {
                                 search={this.handleSearchFromAddress}
                             />
                         }} />
+                        <Route path="/:addressId" render={({ match }) => {
+                            return <Result
+                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
+                                factorList={{
+                                    'city-facility': this.state['city-facility'],
+                                    'parcel-data': this.state['parcel-data'],
+                                    'service-zone': this.state['service-zone'],
+                                }}
+                                parcelFields={this.state.parcelFields}
+                            />
+                        }} />
+                    
                     </Switch>
                     :
                     <LinearProgress style={{ margin: '20px', background: '#c5c0c0' }} />
