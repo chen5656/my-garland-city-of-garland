@@ -10,7 +10,6 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1).toLocaleLowerCase();
 }
 
-
 const useStyles = makeStyles((theme) => ({
     listItem_oneLine: {
         paddingLeft: '12px',
@@ -149,9 +148,6 @@ const SymbolButton = (props) => {
     return <Button title={props.title}><a href={props.href}> {props.icon} </a></Button>;
 }
 
-const PicButton =(props)=>{
-    return <div></div>
-}
 
 const FactorValueOneLine = (props) => {
     const classes = useStyles();

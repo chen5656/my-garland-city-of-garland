@@ -21,6 +21,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
+import staticButtons from '../../data/staticButton';
+
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
 import { withRouter } from 'react-router-dom';
@@ -44,12 +46,12 @@ const useStyles = makeStyles((theme) => ({
   nestedIcon: {
     minWidth: '40px',
   },
-  listHeight:{
-    minHeight:'64px',
+  listHeight: {
+    minHeight: '64px',
   },
-  circularProgressWrap:{    
-    paddingTop:'15px',
-    paddingBottom:'18px',
+  circularProgressWrap: {
+    paddingTop: '15px',
+    paddingBottom: '18px',
   },
   circularProgress: {
     color: 'rgb(0 122 163 / 74%)',
@@ -69,10 +71,10 @@ const Factor = (props) => {
       <div className='col-4 pt-3 ' >{props.name}
       </div>
       <div className={'col-8 ' + classes.listHeight} >
-        {(props.data.length) ? <ResultValueDisplay data={props.data}/> : <CircularProgress
-        className={classes.circularProgress}
-        size={25}
-      />} 
+        {(props.data.length) ? <ResultValueDisplay data={props.data} /> : <CircularProgress
+          className={classes.circularProgress}
+          size={25}
+        />}
       </div>
     </li>)
 }
@@ -92,19 +94,32 @@ const Category = (props) => {
       <ListItemText primary={props.name} />
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
-    {props.factorList.length>0&&
-    <Collapse in={open} timeout="auto" unmountOnExit>
-      <List component="ul" disablePadding>
-        {
-          props.factorList.sort((a,b)=>{return a.outputControl.displayID-b.outputControl.displayID}).map((item) => {
-            return <Factor key={item.id} name={item.name}
-              data={props.factorDataList.filter(data => {
-                return data.id === item.id;
-              })}  />
-          })
+    {props.factorList.length > 0 &&
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="ul" disablePadding>
+          {
+            props.factorList.sort((a, b) => { return a.outputControl.displayID - b.outputControl.displayID }).map((item) => {
+              return <Factor key={item.id} name={item.name}
+                data={props.factorDataList.filter(data => {
+                  return data.id === item.id;
+                })} />
+            })
+          }
+        </List>
+        {/* static items */}
+        {props.name === 'Services' &&
+          <div className='row  relative'>
+            {staticButtons.sort((a, b) => {
+              console.log(props.id)
+              return a.displayID - b.displayID
+            }).map((item) => {
+              return <div className='col' key={item.id} style={{margin:'20px'}}>
+               { item.component}
+                </div>
+            })}
+          </div>
         }
-      </List>
-    </Collapse>}
+      </Collapse>}
   </>
   )
 
@@ -115,7 +130,7 @@ const Section = (props) => {
   const classes = useStyles();
   const categoryList = json_categoryList.filter(item => item.category === props.category);
 
-  return (<div  className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
+  return (<div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
     <Paper elevation={3} >
       <List component="section"
         subheader={
@@ -127,11 +142,11 @@ const Section = (props) => {
         {
           categoryList.map((item, index) => {
             return <div key={item.id}>
-              <Category name={item.name} category={item.id} 
+              <Category name={item.name} category={item.id}
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
-              {index !== (categoryList.length - 1) ? <Divider variant="middle"/>:''  }
+              {index !== (categoryList.length - 1) ? <Divider variant="middle" /> : ''}
 
             </div>
           })
@@ -191,7 +206,7 @@ class Result extends Component {
         that.getNearestCityFacilityList(result.features[0].geometry);
         that.getLocatedServiceZoneList(result.features[0].geometry);
 
-      }else{
+      } else {
         //didn't return a result
         that.routingFunction('address-not-valid');
       }
@@ -212,9 +227,9 @@ class Result extends Component {
 
       //loop through keys of a object.
       var factorDataList = that.props.factorList[category].slice().map((factor) => {
-        let attributeData ={};
-         factor.inputControl.outputFields.forEach((field) => {
-          attributeData[field]=attr[field];
+        let attributeData = {};
+        factor.inputControl.outputFields.forEach((field) => {
+          attributeData[field] = attr[field];
         });
         return {
           id: factor.id,
@@ -240,7 +255,7 @@ class Result extends Component {
       .then(([geometryEngine]) => {
         var factorDataList = that.props.factorList[category].slice().map(function (factor) {
           var nearestFeature = factor.inputControl.features.map((feature) => {
-            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);           
+            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
             return {
               attributes: feature.attributes,
               distance: distance
@@ -280,10 +295,10 @@ class Result extends Component {
           var containerZone = factor.inputControl.features.find((feature) => {
             return geometryEngine.contains(feature.geometry, geometry);
           });
-          if(!containerZone){
-            containerZone={attributes:{}};
-            factor.inputControl.outputFields.forEach((field)=>{
-              containerZone.attributes[field]='';
+          if (!containerZone) {
+            containerZone = { attributes: {} };
+            factor.inputControl.outputFields.forEach((field) => {
+              containerZone.attributes[field] = '';
             })
           }
           return {
@@ -302,6 +317,7 @@ class Result extends Component {
 
   componentDidMount = () => {
     this.getFactorDataList();
+
     var array = [];
     for (const [key, value] of Object.entries(this.props.factorList)) {
       array.push(value);
@@ -330,7 +346,7 @@ class Result extends Component {
 
   render() {
     return (<article>
-      <div className= 'container-fluid' id='my-garland-result' >
+      <div className='container-fluid' id='my-garland-result' >
         <div className='row ' >
           {
             json_sectionList.map((item) => {
