@@ -8,15 +8,13 @@ const PicButton = (props) => {
   //url
   //imageUrl
   console.log(props)
-  return (<div style={{
-    backgroundImage: `url(${props.imageUrl})`,
-  }} className='pictureButtonStyle front'>
-    <h3>
-      <a href={props.url} title={props.title} target='_blank' rel='noopener noreferrer'>
-        {props.value}
-      </a>
-    </h3>
-  </div>)
+  return (
+    <a href={props.url} title={props.title} target='_blank' rel='noopener noreferrer'>
+      <div className='pictureButtonStyle 'style={{ backgroundImage: `url(${props.imageUrl})`}}>
+        <p> {props.value}</p>
+      </div>
+    </a>
+  )
 }
 
 const staticButtons = [{
@@ -28,7 +26,7 @@ const staticButtons = [{
   "id": "eassist-link",
   "displayID": 12,
   "component": <PicButton url={"https://iframe.publicstuff.com/#?client_id=417"}
-  value={"Report an issue and watch it get fixed."} title={"Report an issue and watch it get fixed."} imageUrl={eassist_jpg} />,
+    value={"Report an issue and watch it get fixed."} title={"Report an issue and watch it get fixed."} imageUrl={eassist_jpg} />,
 }]
 
 export default staticButtons;

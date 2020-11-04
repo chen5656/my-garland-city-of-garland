@@ -108,12 +108,12 @@ const Category = (props) => {
         </List>
         {/* static items */}
         {props.name === 'Services' &&
-          <div className='row  relative'>
+          <div className='row  relative p-4'>
             {staticButtons.sort((a, b) => {
               console.log(props.id)
               return a.displayID - b.displayID
             }).map((item) => {
-              return <div className='col' key={item.id} style={{margin:'20px'}}>
+              return <div className='col m-3' key={item.id} >
                { item.component}
                 </div>
             })}
