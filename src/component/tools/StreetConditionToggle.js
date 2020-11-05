@@ -55,14 +55,13 @@ const StreetConditionToggle = () => {
     />
     {checked &&
       <div>
-      <table>
+      <table style={{marginLeft:'45px'}}>
           <tbody>
             {
               LegendProperties.map((item) => {
                 return <LegendItem label={item.label} color={item.color} />
               })
             }
-
           </tbody>
         </table>
       </div>}

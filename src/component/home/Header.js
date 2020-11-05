@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { loadModules } from 'esri-loader';
-import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png'
+import React from 'react';
+import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
+import MapView from  '../mapViews/TitleBackground';
 
 const titleStyle = {
   fontWeight: '900',
@@ -15,43 +15,6 @@ const titleStyle = {
 
 }
 
-const WebMapView = () => {
-  const mapRef = useRef();
-  useEffect(
-    () => {
-      // lazy load the required ArcGIS API for JavaScript modules and CSS
-      loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/MapImageLayer'], { css: true })
-        .then(([ArcGISMap, MapView, MapImageLayer]) => {
-          const map = new ArcGISMap({
-            basemap: 'gray',
-            layers: [new MapImageLayer({
-              'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-              'sublayers': [{
-                'id': 1,
-                'visible': true
-              }]
-            })]
-          });
-
-          // load the map view at the ref's DOM node
-          const view = new MapView({
-            container: mapRef.current,
-            map: map,
-            center: [-96.636269, 32.91676],
-            zoom: 12
-          });
-
-          return () => {
-            if (view) {
-              // destroy the map view
-              view.destroy();
-            }
-          };
-        });
-    }
-  );
-  return <div className='webmap' ref={mapRef} style={{ height: '350px' }} />;
-};
 const TitlePng = () => {
   return <img className={'d-none d-sm-block' } src={logo} style={titleStyle} alt='City of Garland' />;
 };
@@ -59,7 +22,7 @@ const TitlePng = () => {
 export default function Header() {
   return (
     <header className='overflow-hidden position-relative'>
-      <WebMapView />
+      <MapView />
       <TitlePng />
     </header>
   );
