@@ -59,7 +59,7 @@ const StreetConditionToggle = () => {
           <tbody>
             {
               LegendProperties.map((item) => {
-                return <LegendItem label={item.label} color={item.color} />
+                return <LegendItem key={item.label} label={item.label} color={item.color} />
               })
             }
           </tbody>

@@ -236,7 +236,7 @@ export default class ResultValueDisplay extends PureComponent {
                     {data.outputControl.outputItems &&
                         data.outputControl.outputItems.map((item) => {
                             return (
-                                <Name>
+                                <Name key={item.name}>
                                     {item.name ? attributes[item.name] : null}
                                     {item.phone ? <Phone
                                         value={formatPhoneNumber(attributes[item.phone])} /> : null}

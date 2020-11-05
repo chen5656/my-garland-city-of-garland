@@ -17,13 +17,16 @@ const WebMapView = (props) => {
           if (props.layerList) {
             layers = props.layerList.map((layer) => {
               switch (layer.type) {
-                case 'feature-layer':
-                  return  new FeatureLayer({
-                    'url': layer.url,
-                    'outFields': ["*"],
-                    // 'popupTemplate': appSetting.subMap.crimeMap.popUpTemplate
-                });
-                case 'map-image-layer':
+                case 'feature':
+                  debugger;
+                  let featureLayer= new FeatureLayer({
+                    'url': layer.url
+                  });
+                  if(layer.template){
+                    featureLayer.popupTemplate=layer.template;
+                  }
+                  return featureLayer;
+                case 'map-image':
                   return new MapImageLayer({
                     'url': layer.url,
                     'sublayers': layer.sublayers,
@@ -32,14 +35,13 @@ const WebMapView = (props) => {
 
             });
           } else {
-            layers.push(new MapImageLayer({
-              'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-              'sublayers': [{ 'id': 1, 'visible': true }],
+            layers.push(new FeatureLayer({
+              url:'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1'
             }))
           }
-
+          // 79aad46c670740dea5f9e1acf1f3d540
           const map = new ArcGISMap({
-            basemap: props.basemap ? props.basemap : 'topo',
+            basemap: props.basemap ? props.basemap : 'gray-vector',
             layers: layers
           });
 
@@ -48,7 +50,7 @@ const WebMapView = (props) => {
             container: mapRef.current,
             map: map,
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
-            zoom: props.zoomLevel ? props.zoomLevel : 12,
+            zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
 
           return () => {

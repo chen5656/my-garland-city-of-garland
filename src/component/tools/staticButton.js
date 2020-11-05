@@ -5,9 +5,6 @@ import eassist_jpg from '../../images/eassist.jpg'
 
 
 const PicButton = (props) => {
-  //url
-  //imageUrl
-  console.log(props)
   return (
     <a href={props.url} title={props.title} target='_blank' rel='noopener noreferrer'>
       <div className='pictureButtonStyle 'style={{ backgroundImage: `url(${props.imageUrl})`}}>

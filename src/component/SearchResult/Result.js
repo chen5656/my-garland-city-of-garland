@@ -114,7 +114,6 @@ const Category = (props) => {
       {props.id === 'services' &&
         <div className='row  relative p-4'>
           {staticButtons.sort((a, b) => {
-            console.log(props.id)
             return a.displayID - b.displayID
           }).map((item) => {
             return <div className='col-sm-5 col-xs-12 m-3' key={item.id} >
@@ -130,17 +129,18 @@ const Category = (props) => {
       {/*Streets condition map*/}
       {(props.id === 'street-condition-map') &&
         <MapView
+          basemap='topo'
           zoomLevel={15}
           viewHeight={'300px'}
           layerList={[{
-            type: 'map-image-layer',
+            type: 'map-image',
             url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
             sublayers: [
               { "id": 5, "visible": true },
               { "id": 4, "visible": true }
             ],
-          },{
-            type: 'map-image-layer',
+          }, {
+            type: 'map-image',
             url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
             sublayers: [
               { "id": 37, "visible": true }
@@ -152,9 +152,29 @@ const Category = (props) => {
       {/*Crime map*/}
       {(props.id === 'crime-map') &&
         <MapView
-
+          basemap='topo'
           zoomLevel={15}
           viewHeight={'300px'}
+          layerList={[{
+            type: 'feature',
+            url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
+            template: {
+              "title":"<b>{OFFENSE}</b>",
+              "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
+              "<b>CASE ID: </b>{CASEID}<br>"+
+              "<b>OFFENSE: </b>{OFFENSE}<br>",
+              "fieldInfos": [
+                {
+                  "fieldName": "OCCURRED_O",
+                  "format": {
+                    "dateFormat": "short-date"
+                  }
+                }
+              ]
+          }
+              
+            
+          }]}
         />
       }
     </Collapse>
