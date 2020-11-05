@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -26,7 +26,7 @@ const OneAddress = (props) => {
   </li>);
 }
 
-class SuggestAddresses extends Component {
+class SuggestAddresses extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

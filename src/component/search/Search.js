@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Route, Switch } from "react-router-dom";
 
 import { loadModules } from 'esri-loader';
@@ -9,7 +9,7 @@ import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import json_factorList from '../../data/factorList.json';
 
-export default class AddressSearch extends Component {
+export default class AddressSearch extends PureComponent {
     constructor() {
         super();
         this.state = {

@@ -1,4 +1,4 @@
-import React, { Component, } from 'react';
+import React, { PureComponent, } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -163,7 +163,7 @@ const FactorValueTwoLine = (props) => {
     </div>)
 }
 
-export default class ResultValueDisplay extends Component {
+export default class ResultValueDisplay extends PureComponent {
     renderResult(category, data) {
         let name = null,
             address = null,

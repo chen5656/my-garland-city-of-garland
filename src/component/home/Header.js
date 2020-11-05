@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
-import MapView from '../mapViews/MapView';
+import MapView from '../mapRelated/MapView';
 
 const titleStyle = {
   fontWeight: '900',
@@ -22,13 +22,6 @@ export default function Header() {
     <header className='overflow-hidden position-relative'>
       <MapView
         basemap='gray'
-        layerUrl='https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer'
-        subLayerArray={[{
-          'id': 1,
-          'visible': true
-        }]}
-        mapCenter={[-96.636269, 32.91676]}
-        zoomLevel={12}
         viewHeight={'350px'}
       />
       <TitlePng />

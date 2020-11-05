@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { loadModules } from 'esri-loader';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -23,6 +23,7 @@ import json_categoryList from '../../data/categoryList.json';
 
 import staticButtons from '../tools/staticButton';
 import StreetConditionToggle from '../tools/StreetConditionToggle';
+import MapView from '../mapRelated/MapView';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
@@ -116,7 +117,7 @@ const Category = (props) => {
             console.log(props.id)
             return a.displayID - b.displayID
           }).map((item) => {
-            return <div className='col m-3' key={item.id} >
+            return <div className='col-sm-5 col-xs-12 m-3' key={item.id} >
               {item.component}
             </div>
           })}
@@ -125,6 +126,36 @@ const Category = (props) => {
       {/*Streets condition label*/}
       {(props.id === 'streets-condition') &&
         <div className='mx-5 my-3'> <StreetConditionToggle /></div>
+      }
+      {/*Streets condition map*/}
+      {(props.id === 'street-condition-map') &&
+        <MapView
+          zoomLevel={15}
+          viewHeight={'300px'}
+          layerList={[{
+            type: 'map-image-layer',
+            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+            sublayers: [
+              { "id": 5, "visible": true },
+              { "id": 4, "visible": true }
+            ],
+          },{
+            type: 'map-image-layer',
+            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
+            sublayers: [
+              { "id": 37, "visible": true }
+            ],
+          }]}
+
+        />
+      }
+      {/*Crime map*/}
+      {(props.id === 'crime-map') &&
+        <MapView
+
+          zoomLevel={15}
+          viewHeight={'300px'}
+        />
       }
     </Collapse>
   </>
@@ -165,7 +196,7 @@ const Section = (props) => {
 }
 
 
-class Result extends Component {
+class Result extends PureComponent {
 
   constructor(props) {
     super(props);

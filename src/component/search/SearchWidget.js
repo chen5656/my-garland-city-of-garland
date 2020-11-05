@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
 import { withRouter } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ const containerStyle = {
   borderRadius: '3px',
 }
 
-class SearchWidget extends Component {
+class SearchWidget extends PureComponent {
   // constructor(){
   //   super()
   // }
