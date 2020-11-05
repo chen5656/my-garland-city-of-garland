@@ -69,9 +69,9 @@ const Factor = (props) => {
   const classes = useStyles();
   return (
     <li className='row pl-5'>
-      <div className='col-md-4 col-sm-12 pt-3 ' >{props.name}
+      <div className='col-sm-4 col-xs-12 pt-3 ' >{props.name}
       </div>
-      <div className={'col-md-8 col-sm-12 ml-md-0 ml-sm-2' + classes.listHeight} >
+      <div className={'col-sm-8 col-xs-12 ml-sm-0 ml-xs-2' + classes.listHeight} >
         {(props.data.length) ? <ResultValueDisplay data={props.data} /> : <CircularProgress
           className={classes.circularProgress}
           size={25}
