@@ -206,6 +206,17 @@ export default class ResultValueDisplay extends Component {
                 return <FactorValueOneLine >
                     {name && <Name >{name}</Name>}
                 </FactorValueOneLine>;
+            case 'single-value-hyperlink':
+                if (data.outputControl.hyperlink === 'field') {
+                    url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
+                    title = 'Open to see details'
+                }
+                return <FactorValueOneLine >
+                    <Link url={url} title={title}>
+                        {name && <Name >{name.capitalize()}</Name>}
+                    </Link>
+                </FactorValueOneLine>;
+
             case 'single-value-button':
                 if (data.outputControl.hyperlink === 'field') {
                     url = data.outputData.attributeData[data.outputControl.hyperlinkFieldname];
@@ -213,7 +224,7 @@ export default class ResultValueDisplay extends Component {
                 }
                 return <FactorValueOneLine >
                     <Name >
-                        <SymbolButton tilte={title} href={url} icon={name } />
+                        <SymbolButton tilte={title} href={url} icon={name} />
                     </Name>
                 </FactorValueOneLine>;
             case 'ews-recycling-day':

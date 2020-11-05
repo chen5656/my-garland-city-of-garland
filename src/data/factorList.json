@@ -146,7 +146,7 @@
         "outputControl": {
             "category": "services",
             "displayID": 2,
-            "formatType": "single-value",
+            "formatType": "single-value-hyperlink",
             "name": "PARK",
             "hyperlink": "field",
             "hyperlinkFieldname": "PARK_WEBLI"

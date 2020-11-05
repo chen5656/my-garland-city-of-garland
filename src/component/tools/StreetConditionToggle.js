@@ -22,7 +22,6 @@ const LegendProperties = [{
 }];
 
 const LegendItem = (props) => {
-  debugger;
   return <tr>
     <td width='35'>
       <svg height='20' width='20'>
