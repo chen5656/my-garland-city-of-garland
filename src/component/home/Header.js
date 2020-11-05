@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
-import MapView from  '../mapViews/TitleBackground';
+import MapView from '../mapViews/MapView';
 
 const titleStyle = {
   fontWeight: '900',
@@ -12,17 +12,25 @@ const titleStyle = {
   background: 'linear-gradient(0.25turn,rgb(0 122 163 / 90%), rgb(0 122 163 / 64%), rgb(0 122 163 / 24%))',
   padding: '5px 55px 5px 20px ',
   borderRadius: '8px 0 0 8px',
-
 }
 
 const TitlePng = () => {
-  return <img className={'d-none d-sm-block' } src={logo} style={titleStyle} alt='City of Garland' />;
+  return <img className={'d-none d-sm-block'} src={logo} style={titleStyle} alt='City of Garland' />;
 };
-
 export default function Header() {
   return (
     <header className='overflow-hidden position-relative'>
-      <MapView />
+      <MapView
+        basemap='gray'
+        layerUrl='https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer'
+        subLayerArray={[{
+          'id': 1,
+          'visible': true
+        }]}
+        mapCenter={[-96.636269, 32.91676]}
+        zoomLevel={12}
+        viewHeight={'350px'}
+      />
       <TitlePng />
     </header>
   );
