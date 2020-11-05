@@ -1,6 +1,6 @@
 import React from 'react';
-import ews_png from '../images/ews.png'
-import eassist_jpg from '../images/eassist.jpg'
+import ews_png from '../../images/ews.png'
+import eassist_jpg from '../../images/eassist.jpg'
 
 
 

@@ -21,7 +21,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
-import staticButtons from '../../data/staticButton';
+import staticButtons from '../tools/staticButton';
+import StreetConditionToggle from '../tools/StreetConditionToggle';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
@@ -68,9 +69,9 @@ const Factor = (props) => {
   const classes = useStyles();
   return (
     <li className='row pl-5'>
-      <div className='col-4 pt-3 ' >{props.name}
+      <div className='col-md-4 col-sm-12 pt-3 ' >{props.name}
       </div>
-      <div className={'col-8 ' + classes.listHeight} >
+      <div className={'col-md-8 col-sm-12 ml-md-0 ml-sm-2' + classes.listHeight} >
         {(props.data.length) ? <ResultValueDisplay data={props.data} /> : <CircularProgress
           className={classes.circularProgress}
           size={25}
@@ -94,8 +95,9 @@ const Category = (props) => {
       <ListItemText primary={props.name} />
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
-    {props.factorList.length > 0 &&
-      <Collapse in={open} timeout="auto" unmountOnExit>
+    <Collapse in={open} timeout="auto" unmountOnExit>
+      {/*factorList*/}
+      {props.factorList.length > 0 &&
         <List component="ul" disablePadding>
           {
             props.factorList.sort((a, b) => { return a.outputControl.displayID - b.outputControl.displayID }).map((item) => {
@@ -106,20 +108,25 @@ const Category = (props) => {
             })
           }
         </List>
-        {/* static items */}
-        {props.name === 'Services' &&
-          <div className='row  relative p-4'>
-            {staticButtons.sort((a, b) => {
-              console.log(props.id)
-              return a.displayID - b.displayID
-            }).map((item) => {
-              return <div className='col m-3' key={item.id} >
-               { item.component}
-                </div>
-            })}
-          </div>
-        }
-      </Collapse>}
+      }
+      {/* static items */}
+      {props.id === 'services' &&
+        <div className='row  relative p-4'>
+          {staticButtons.sort((a, b) => {
+            console.log(props.id)
+            return a.displayID - b.displayID
+          }).map((item) => {
+            return <div className='col m-3' key={item.id} >
+              {item.component}
+            </div>
+          })}
+        </div>
+      }
+      {/*Streets condition label*/}
+      {(props.id === 'streets-condition') &&
+        <div className='mx-5 my-3'> <StreetConditionToggle /></div>
+      }
+    </Collapse>
   </>
   )
 
@@ -142,7 +149,7 @@ const Section = (props) => {
         {
           categoryList.map((item, index) => {
             return <div key={item.id}>
-              <Category name={item.name} category={item.id}
+              <Category name={item.name} id={item.id}
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
                 factorDataList={props.factorDataList.filter(data => data.outputControl.category === item.id)}
               />
