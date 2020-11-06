@@ -15,6 +15,7 @@ export default class AddressSearch extends PureComponent {
         this.state = {
             searchReady: false,
             searchTerm: '',
+            geometryWGS84:null,
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
@@ -92,6 +93,11 @@ export default class AddressSearch extends PureComponent {
         }
     }
 
+    getLocationInfoFromSearch(geometry){
+        debugger;
+        this.setState({ geometryWGS84: geometry });
+    }
+
     handleSearchFromAddress(address) {
         this.setState({ searchTerm: address });
     }
@@ -108,6 +114,7 @@ export default class AddressSearch extends PureComponent {
                 <SearchWidget
                     searchTerm={this.state.searchTerm}
                     newSearch={this.handleNewSearch}
+                    keepGeometry={this.getLocationInfoFromSearch}
                 />
                 {this.state.searchReady ?
                     <Switch>

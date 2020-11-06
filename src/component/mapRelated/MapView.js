@@ -18,7 +18,6 @@ const WebMapView = (props) => {
             layers = props.layerList.map((layer) => {
               switch (layer.type) {
                 case 'feature':
-                  debugger;
                   let featureLayer= new FeatureLayer({
                     'url': layer.url
                   });

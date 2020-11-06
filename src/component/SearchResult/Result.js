@@ -23,7 +23,7 @@ import json_categoryList from '../../data/categoryList.json';
 
 import staticButtons from '../tools/staticButton';
 import StreetConditionToggle from '../tools/StreetConditionToggle';
-import MapView from '../mapRelated/MapView';
+import ResultMapView from './ResultMapView';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
@@ -126,57 +126,8 @@ const Category = (props) => {
       {(props.id === 'streets-condition') &&
         <div className='mx-5 my-3'> <StreetConditionToggle /></div>
       }
-      {/*Streets condition map*/}
-      {(props.id === 'street-condition-map') &&
-        <MapView
-          basemap='topo'
-          zoomLevel={15}
-          viewHeight={'300px'}
-          layerList={[{
-            type: 'map-image',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-            sublayers: [
-              { "id": 5, "visible": true },
-              { "id": 4, "visible": true }
-            ],
-          }, {
-            type: 'map-image',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
-            sublayers: [
-              { "id": 37, "visible": true }
-            ],
-          }]}
 
-        />
-      }
-      {/*Crime map*/}
-      {(props.id === 'crime-map') &&
-        <MapView
-          basemap='topo'
-          zoomLevel={15}
-          viewHeight={'300px'}
-          layerList={[{
-            type: 'feature',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-            template: {
-              "title":"<b>{OFFENSE}</b>",
-              "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
-              "<b>CASE ID: </b>{CASEID}<br>"+
-              "<b>OFFENSE: </b>{OFFENSE}<br>",
-              "fieldInfos": [
-                {
-                  "fieldName": "OCCURRED_O",
-                  "format": {
-                    "dateFormat": "short-date"
-                  }
-                }
-              ]
-          }
-              
-            
-          }]}
-        />
-      }
+
     </Collapse>
   </>
   )
@@ -186,8 +137,9 @@ const Category = (props) => {
 
 const Section = (props) => {
   const classes = useStyles();
-  const categoryList = json_categoryList.filter(item => item.category === props.category);
+  const categoryList = json_categoryList.filter(item => item.category === props.sectionId);
 
+  console.log(props.sectionId)
   return (<div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
     <Paper elevation={3} >
       <List component="section"
@@ -198,6 +150,7 @@ const Section = (props) => {
         }
       >
         {
+          props.sectionId!=='map-data'?
           categoryList.map((item, index) => {
             return <div key={item.id}>
               <Category name={item.name} id={item.id}
@@ -207,7 +160,8 @@ const Section = (props) => {
               {index !== (categoryList.length - 1) ? <Divider variant="middle" /> : ''}
 
             </div>
-          })
+          }):
+          <ResultMapView />
         }
       </List>
 
@@ -408,7 +362,7 @@ class Result extends PureComponent {
         <div className='row ' >
           {
             json_sectionList.map((item) => {
-              return <Section name={item.name} category={item.id} key={item.id}
+              return <Section name={item.name} sectionId={item.id} key={item.id}
                 factorList={this.state.factorList}
                 factorDataList={this.state.factorDataList}
               />

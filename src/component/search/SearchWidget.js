@@ -59,6 +59,7 @@ class SearchWidget extends PureComponent {
           console.log('select-result');
           if (e.result) {
             that.routingFunction(e.result.feature.attributes.Ref_ID);
+            that.props.keepGeometry(e.result.feature.geometry);
           }
         });
 
