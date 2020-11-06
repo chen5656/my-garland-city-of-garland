@@ -19,6 +19,7 @@ export default class AddressSearch extends PureComponent {
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
+        this.getGeometryFromLocator = this.getGeometryFromLocator.bind(this);        
 
     }
 
@@ -93,8 +94,8 @@ export default class AddressSearch extends PureComponent {
         }
     }
 
-    getLocationInfoFromSearch(geometry){
-        debugger;
+    getGeometryFromLocator(geometry){
+        console.log('geometry', geometry)
         this.setState({ geometryWGS84: geometry });
     }
 
@@ -105,6 +106,7 @@ export default class AddressSearch extends PureComponent {
     handleNewSearch() {
         if (this.state.searchTerm) {
             this.setState({ searchTerm: '' });
+            this.setState({ geometryWGS84: null });            
         }
     }
 
@@ -114,7 +116,7 @@ export default class AddressSearch extends PureComponent {
                 <SearchWidget
                     searchTerm={this.state.searchTerm}
                     newSearch={this.handleNewSearch}
-                    keepGeometry={this.getLocationInfoFromSearch}
+                    getGeometryFromLocator={this.getGeometryFromLocator}
                 />
                 {this.state.searchReady ?
                     <Switch>
@@ -132,6 +134,7 @@ export default class AddressSearch extends PureComponent {
                         <Route path="/:addressId" render={({ match }) => {
                             return <Result
                                 RefID={match.params.addressId.replace(/[ ,.]/g, '')}
+                                geometryWGS84={this.state.geometryWGS84}
                                 factorList={{
                                     'city-facility': this.state['city-facility'],
                                     'parcel-data': this.state['parcel-data'],

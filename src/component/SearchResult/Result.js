@@ -4,25 +4,18 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 
-import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
-import staticButtons from '../tools/staticButton';
-import StreetConditionToggle from '../tools/StreetConditionToggle';
+import staticButtons from './staticButton';
+import StreetConditionToggle from './StreetConditionToggle';
+import ListCollapse from './ListCollapse';
 import ResultMapView from './ResultMapView';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
@@ -35,11 +28,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px 5px 0 0', color: 'white', fontWeight: 600,
     backgroundImage: 'linear-gradient(to right,rgb(0 122 163 / 90%), rgb(0 122 163 / 54%), rgb(0 122 163 / 24%))',
     margin: 0
-  },
-  categoryHead: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-    paddingBottom: 0,
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -88,15 +76,8 @@ const Category = (props) => {
     setOpen(!open);
   };
 
-  return (<>
-    <ListItem button onClick={handleClick} className={classes.categoryHead}>
-      <ListItemIcon>
-        {open ? <RemoveIcon /> : <AddIcon />}
-      </ListItemIcon>
-      <ListItemText primary={props.name} />
-      {open ? <ExpandLess /> : <ExpandMore />}
-    </ListItem>
-    <Collapse in={open} timeout="auto" unmountOnExit>
+  return (
+    <ListCollapse name={props.name}>
       {/*factorList*/}
       {props.factorList.length > 0 &&
         <List component="ul" disablePadding>
@@ -128,8 +109,7 @@ const Category = (props) => {
       }
 
 
-    </Collapse>
-  </>
+    </ListCollapse>
   )
 
 }
@@ -161,7 +141,7 @@ const Section = (props) => {
 
             </div>
           }):
-          <ResultMapView />
+          <ResultMapView  geometryWGS84={props.geometryWGS84} />
         }
       </List>
 
@@ -365,6 +345,7 @@ class Result extends PureComponent {
               return <Section name={item.name} sectionId={item.id} key={item.id}
                 factorList={this.state.factorList}
                 factorDataList={this.state.factorDataList}
+                geometryWGS84={this.props.geometryWGS84}
               />
             })
           }
