@@ -1,10 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
-//props.basemap
-//props.mapCenter
-//props.zoomLevel
-//props.viewHeight
-//props.layerList
+
 const WebMapView = (props) => {
   const mapRef = useRef();
   useEffect(

@@ -15,7 +15,7 @@ export default class AddressSearch extends PureComponent {
         this.state = {
             searchReady: false,
             searchTerm: '',
-            geometryWGS84:null,
+            geometryWGS84:{},
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
@@ -97,6 +97,7 @@ export default class AddressSearch extends PureComponent {
     getGeometryFromLocator(geometry){
         console.log('geometry', geometry)
         this.setState({ geometryWGS84: geometry });
+        this.props.setGeometryWGS84(geometry);
     }
 
     handleSearchFromAddress(address) {

@@ -17,11 +17,12 @@ const titleStyle = {
 const TitlePng = () => {
   return <img className={'d-none d-sm-block'} src={logo} style={titleStyle} alt='City of Garland' />;
 };
-export default function Header() {
+export default function Header(props) {
   return (
     <header className='overflow-hidden position-relative'>
       <MapView
-        viewHeight={'350px'}        
+        viewHeight={'350px'}     
+        geometryWGS84={props.geometryWGS84}
       />
       <TitlePng />
     </header>
