@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, PureComponent, Component } from 'react';
+import React, {  PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
 
 class AddPoint extends PureComponent {

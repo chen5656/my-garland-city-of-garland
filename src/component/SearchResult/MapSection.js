@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState, PureComponent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -9,6 +9,12 @@ import Paper from '@material-ui/core/Paper';
 import MapView from '../mapRelated/MapView';
 import ListCollapse from './ListCollapse';
 
+
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+import crimeLegend from '../../images/crimeLegend.jpg';
+
 const useStyles = makeStyles((theme) => ({
 
     sectionPadding: { padding: '15px' },
@@ -17,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundImage: 'linear-gradient(to right,rgb(0 122 163 / 90%), rgb(0 122 163 / 54%), rgb(0 122 163 / 24%))',
         margin: 0
     },
-
 
 }));
 
@@ -46,34 +51,63 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
         />
     }
 }
-class CrimeMap extends PureComponent  {
-    render() {
-    return <MapView
-        id='crime-map'
-        basemap='topo'
-        zoomLevel={15}
-        viewHeight={'300px'}
-        layerList={[{
-            type: 'feature',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-            template: {
-                "title": "<b>{OFFENSE}</b>",
-                "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-                    "<b>CASE ID: </b>{CASEID}<br>" +
-                    "<b>OFFENSE: </b>{OFFENSE}<br>",
-                "fieldInfos": [
-                    {
-                        "fieldName": "OCCURRED_O",
-                        "format": {
-                            "dateFormat": "short-date"
-                        }
-                    }
-                ]
+
+const CrimeMapLegendToggle = () => {
+    const [checked, setChecked] = React.useState(false);
+
+
+    const handleChange = () => {
+        setChecked((prev) => !prev);
+    };
+
+
+    return <div>
+        <FormControlLabel
+            control={
+                <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                    color='primary'
+                />
             }
+            label='Show Legend'
+        />
+        {checked &&
+            <div style={{ marginLeft: '45px' }}>
+                <img src={crimeLegend} alt="Crime legend"></img>
+            </div>}
+    </div>
+}
+
+class CrimeMap extends PureComponent {
+    render() {
+        return <MapView
+            id='crime-map'
+            basemap='topo'
+            zoomLevel={15}
+            viewHeight={'300px'}
+            layerList={[{
+                type: 'feature',
+                url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
+                template: {
+                    "title": "<b>{OFFENSE}</b>",
+                    "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
+                        "<b>CASE ID: </b>{CASEID}<br>" +
+                        "<b>OFFENSE: </b>{OFFENSE}<br>",
+                    "fieldInfos": [
+                        {
+                            "fieldName": "OCCURRED_O",
+                            "format": {
+                                "dateFormat": "short-date"
+                            }
+                        }
+                    ]
+                }
 
 
-        }]}
-    />}
+            }]}
+        />
+    }
 }
 const MapSection = (props) => {
     const classes = useStyles();
@@ -86,10 +120,15 @@ const MapSection = (props) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        <StreetConditionMap />
+                        <div className='px-2'>
+                            <StreetConditionMap />
+                        </div>
                     </ListCollapse>
                     <ListCollapse name='Crime Map'>
-                        <CrimeMap />
+                        <div className='px-2'>
+                            <CrimeMap />
+                            <CrimeMapLegendToggle />
+                        </div>
                     </ListCollapse>
                 </List>
 
