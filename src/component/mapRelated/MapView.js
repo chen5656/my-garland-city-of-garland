@@ -51,8 +51,8 @@ const WebMapView = (props) => {
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
 
-          window.mapViewList.push(view);
-          console.log( window.mapViewArray)
+          window.mapViewList.push({id:props.id,view:view});
+          console.log( window.mapViewList)
           return () => {
             if (view) {
               // destroy the map view

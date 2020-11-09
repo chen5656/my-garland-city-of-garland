@@ -2,24 +2,24 @@ import React, { PureComponent } from 'react';
 import { Route, Switch } from "react-router-dom";
 
 import { loadModules } from 'esri-loader';
-import LinearProgress from '@material-ui/core/LinearProgress';
 
 import AddressNotFound from './AddressNotFound';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
-import   MapSession from '../searchResult/MapSession';
+import MapSection from '../searchResult/MapSection';
 import json_factorList from '../../data/factorList.json';
 
 export default class AddressSearch extends PureComponent {
     constructor() {
         super();
         this.state = {
-            searchReady: false,
+            searchWidgetReady: false,
             searchTerm: '',
+            mapSectionVisible: false,
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
-        this.getGeometryFromLocator = this.getGeometryFromLocator.bind(this);
+        this.handleResultSelected = this.handleResultSelected.bind(this);
 
     }
 
@@ -88,31 +88,11 @@ export default class AddressSearch extends PureComponent {
 
     componentDidUpdate = () => {
         if (this.state['city-facility'] && this.state['parcel-data'] && this.state['service-zone']) {
-            if (!this.state.searchReady) {
-                this.setState({ searchReady: true });
+            if (!this.state.searchWidgetReady) {
+                this.setState({ searchWidgetReady: true });
             }
         }
-    }
-
-    getGeometryFromLocator(geometry) {
-        console.log('geometry', geometry)
-        //
-
-        // add points to mapViewArray
-
-        // if (props.geometryWGS84) {
-        //     var pnt = new Graphic({
-        //       geometry: props.geometryWGS84,
-        //       symbol: {
-        //         type: "simple-marker",
-        //         color: "#dc2533"
-        //       }
-        //     });
-
-        //     view.graphics.add(pnt);
-        //     view.center = [props.geometryWGS84.longitude, props.geometryWGS84.latitude];
-
-        //   }
+        console.log(1111)
     }
 
     handleSearchFromAddress(address) {
@@ -120,9 +100,15 @@ export default class AddressSearch extends PureComponent {
     }
 
     handleNewSearch() {
+        this.setState({ mapSectionVisible: false });
         if (this.state.searchTerm) {
             this.setState({ searchTerm: '' });
         }
+    }
+
+    handleResultSelected(geometry) {
+        if (!this.state.mapSectionVisible) { this.setState({ mapSectionVisible: true }); }
+        console.log('geometry', geometry)
     }
 
     render() {
@@ -131,9 +117,9 @@ export default class AddressSearch extends PureComponent {
                 <SearchWidget
                     searchTerm={this.state.searchTerm}
                     newSearch={this.handleNewSearch}
-                    getGeometryFromLocator={this.getGeometryFromLocator}
+                    onSearchResultSelected={this.handleResultSelected}
                 />
-                {this.state.searchReady ?
+                {this.state.searchWidgetReady ?
                     <article>
                         <div className='container-fluid' id='my-garland-result' >
                             <div className='row ' >
@@ -149,6 +135,7 @@ export default class AddressSearch extends PureComponent {
                                         />
                                     }} />
                                     <Route path="/:addressId" render={({ match }) => {
+                                        this.handleResultSelected();
                                         return <>
                                             <Result
                                                 RefID={match.params.addressId.replace(/[ ,.]/g, '')}
@@ -158,18 +145,18 @@ export default class AddressSearch extends PureComponent {
                                                     'service-zone': this.state['service-zone'],
                                                 }}
                                                 parcelFields={this.state.parcelFields}
-                                            />                                            
+                                            />
                                         </>
                                     }} />
                                 </Switch>
-       <MapSession />
-                            
-                                
+
+                                <MapSection isVisible={this.state.mapSectionVisible} />
+
                             </div>
                         </div>
                     </article>
                     :
-                    <LinearProgress style={{ margin: '20px', background: '#c5c0c0' }} />
+                    <></>
                 }
 
             </div>

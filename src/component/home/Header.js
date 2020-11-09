@@ -22,6 +22,7 @@ export default function Header(props) {
     <header className='overflow-hidden position-relative'>
       <MapView
         viewHeight={'350px'}     
+        id={'header'}
       />
       <TitlePng />
     </header>
