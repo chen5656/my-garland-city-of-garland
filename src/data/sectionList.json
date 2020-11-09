@@ -4,7 +4,5 @@
   }, {
     "id": "reference-data",
     "name": "Reference Data"
-  }, {
-    "id": "map-data",
-    "name": "Map Data"
-  }]
+  } 
+]

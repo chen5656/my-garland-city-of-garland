@@ -7,6 +7,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import AddressNotFound from './AddressNotFound';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
+import   MapSession from '../searchResult/MapSession';
 import json_factorList from '../../data/factorList.json';
 
 export default class AddressSearch extends PureComponent {
@@ -18,7 +19,7 @@ export default class AddressSearch extends PureComponent {
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
-        this.getGeometryFromLocator = this.getGeometryFromLocator.bind(this);        
+        this.getGeometryFromLocator = this.getGeometryFromLocator.bind(this);
 
     }
 
@@ -93,12 +94,12 @@ export default class AddressSearch extends PureComponent {
         }
     }
 
-    getGeometryFromLocator(geometry){
+    getGeometryFromLocator(geometry) {
         console.log('geometry', geometry)
         //
 
         // add points to mapViewArray
-        
+
         // if (props.geometryWGS84) {
         //     var pnt = new Graphic({
         //       geometry: props.geometryWGS84,
@@ -120,7 +121,7 @@ export default class AddressSearch extends PureComponent {
 
     handleNewSearch() {
         if (this.state.searchTerm) {
-            this.setState({ searchTerm: '' });           
+            this.setState({ searchTerm: '' });
         }
     }
 
@@ -133,31 +134,40 @@ export default class AddressSearch extends PureComponent {
                     getGeometryFromLocator={this.getGeometryFromLocator}
                 />
                 {this.state.searchReady ?
-                    <Switch>
-                        <Route exact path="/" ><div></div></Route>
-                        <Route exact path="/address-not-valid" >
-                            <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
-                        </Route>
-
-                        <Route path="/nomatch/:searchTerm" render={({ match }) => {
-                            return <AddressNotFound
-                                suggestTerm={match.params.searchTerm}
-                                search={this.handleSearchFromAddress}
-                            />
-                        }} />
-                        <Route path="/:addressId" render={({ match }) => {
-                            return <Result
-                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
-                                factorList={{
-                                    'city-facility': this.state['city-facility'],
-                                    'parcel-data': this.state['parcel-data'],
-                                    'service-zone': this.state['service-zone'],
-                                }}
-                                parcelFields={this.state.parcelFields}
-                            />
-                        }} />
-                    
-                    </Switch>
+                    <article>
+                        <div className='container-fluid' id='my-garland-result' >
+                            <div className='row ' >
+                                <Switch>
+                                    <Route exact path="/" ><div></div></Route>
+                                    <Route exact path="/address-not-valid" >
+                                        <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
+                                    </Route>
+                                    <Route path="/nomatch/:searchTerm" render={({ match }) => {
+                                        return <AddressNotFound
+                                            suggestTerm={match.params.searchTerm}
+                                            search={this.handleSearchFromAddress}
+                                        />
+                                    }} />
+                                    <Route path="/:addressId" render={({ match }) => {
+                                        return <>
+                                            <Result
+                                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
+                                                factorList={{
+                                                    'city-facility': this.state['city-facility'],
+                                                    'parcel-data': this.state['parcel-data'],
+                                                    'service-zone': this.state['service-zone'],
+                                                }}
+                                                parcelFields={this.state.parcelFields}
+                                            />                                            
+                                        </>
+                                    }} />
+                                </Switch>
+       <MapSession />
+                            
+                                
+                            </div>
+                        </div>
+                    </article>
                     :
                     <LinearProgress style={{ margin: '20px', background: '#c5c0c0' }} />
                 }

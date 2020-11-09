@@ -3,6 +3,9 @@ import { loadModules } from 'esri-loader';
 
 const WebMapView = (props) => {
   const mapRef = useRef();
+  if( !Array.isArray(window.mapViewList)){
+    window.mapViewList=[];
+  }
   useEffect(
     () => {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
@@ -48,7 +51,7 @@ const WebMapView = (props) => {
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
 
-          window. mapViewArray.push(view);
+          window.mapViewList.push(view);
           console.log( window.mapViewArray)
           return () => {
             if (view) {

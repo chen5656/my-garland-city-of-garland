@@ -16,7 +16,6 @@ import json_categoryList from '../../data/categoryList.json';
 import staticButtons from './staticButton';
 import StreetConditionToggle from './StreetConditionToggle';
 import ListCollapse from './ListCollapse';
-import ResultMapView from './ResultMapView';
 
 import ResultValueDisplay from '../searchResult/ResultValueDisplay';
 
@@ -119,7 +118,7 @@ const Section = (props) => {
   const classes = useStyles();
   const categoryList = json_categoryList.filter(item => item.category === props.sectionId);
 
-  console.log(props.sectionId)
+
   return (<div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
     <Paper elevation={3} >
       <List component="section"
@@ -127,11 +126,9 @@ const Section = (props) => {
           <ListSubheader component="h2" className={classes.sectionHead} >
             {props.name}
           </ListSubheader>
-        }
+        } 
       >
-        {
-          props.sectionId!=='map-data'?
-          categoryList.map((item, index) => {
+        {categoryList.map((item, index) => {
             return <div key={item.id}>
               <Category name={item.name} id={item.id}
                 factorList={props.factorList.filter(factor => factor.outputControl.category === item.id)}
@@ -140,8 +137,7 @@ const Section = (props) => {
               {index !== (categoryList.length - 1) ? <Divider variant="middle" /> : ''}
 
             </div>
-          }):
-          <ResultMapView />
+          })
         }
       </List>
 
@@ -337,9 +333,7 @@ class Result extends PureComponent {
   }
 
   render() {
-    return (<article>
-      <div className='container-fluid' id='my-garland-result' >
-        <div className='row ' >
+    return (<>
           {
             json_sectionList.map((item) => {
               return <Section name={item.name} sectionId={item.id} key={item.id}
@@ -348,9 +342,7 @@ class Result extends PureComponent {
               />
             })
           }
-        </div>
-      </div>
-    </article>
+          </>
     )
   }
 }
