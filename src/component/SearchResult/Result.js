@@ -141,7 +141,7 @@ const Section = (props) => {
 
             </div>
           }):
-          <ResultMapView  geometryWGS84={props.geometryWGS84} />
+          <ResultMapView />
         }
       </List>
 
@@ -345,7 +345,6 @@ class Result extends PureComponent {
               return <Section name={item.name} sectionId={item.id} key={item.id}
                 factorList={this.state.factorList}
                 factorDataList={this.state.factorDataList}
-                geometryWGS84={this.props.geometryWGS84}
               />
             })
           }

@@ -15,7 +15,6 @@ export default class AddressSearch extends PureComponent {
         this.state = {
             searchReady: false,
             searchTerm: '',
-            geometryWGS84:{},
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
@@ -96,8 +95,23 @@ export default class AddressSearch extends PureComponent {
 
     getGeometryFromLocator(geometry){
         console.log('geometry', geometry)
-        this.setState({ geometryWGS84: geometry });
-        this.props.setGeometryWGS84(geometry);
+        //
+
+        // add points to mapViewArray
+        
+        // if (props.geometryWGS84) {
+        //     var pnt = new Graphic({
+        //       geometry: props.geometryWGS84,
+        //       symbol: {
+        //         type: "simple-marker",
+        //         color: "#dc2533"
+        //       }
+        //     });
+
+        //     view.graphics.add(pnt);
+        //     view.center = [props.geometryWGS84.longitude, props.geometryWGS84.latitude];
+
+        //   }
     }
 
     handleSearchFromAddress(address) {
@@ -106,8 +120,7 @@ export default class AddressSearch extends PureComponent {
 
     handleNewSearch() {
         if (this.state.searchTerm) {
-            this.setState({ searchTerm: '' });
-            this.setState({ geometryWGS84: null });            
+            this.setState({ searchTerm: '' });           
         }
     }
 
@@ -135,7 +148,6 @@ export default class AddressSearch extends PureComponent {
                         <Route path="/:addressId" render={({ match }) => {
                             return <Result
                                 RefID={match.params.addressId.replace(/[ ,.]/g, '')}
-                                geometryWGS84={this.state.geometryWGS84}
                                 factorList={{
                                     'city-facility': this.state['city-facility'],
                                     'parcel-data': this.state['parcel-data'],

@@ -47,19 +47,9 @@ const WebMapView = (props) => {
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
-          if (props.geometryWGS84) {
-            var pnt = new Graphic({
-              geometry: props.geometryWGS84,
-              symbol: {
-                type: "simple-marker",
-                color: "#dc2533"
-              }
-            });
 
-            view.graphics.add(pnt);
-            view.center = [props.geometryWGS84.longitude, props.geometryWGS84.latitude];
-
-          }
+          window. mapViewArray.push(view);
+          console.log( window.mapViewArray)
           return () => {
             if (view) {
               // destroy the map view

@@ -1,5 +1,5 @@
 
-import React, {useState } from 'react';
+import React from 'react';
 import Header from './component/home/Header';
 import Footer from './component/home/Footer';
 import Search from './component/search/Search';
@@ -46,14 +46,16 @@ const ie11Polyfill = () => {
 
 }
 
+
 ie11Polyfill();
 function App() {
-  const [geometryWGS84, setGeometryWGS84] = useState({});
+  
+window. mapViewArray=[];
   return (
     <div className='container-fluid'>
       <Router>
-        <Header geometryWGS84={geometryWGS84} />
-        <Search geometryWGS84={geometryWGS84} setGeometryWGS84={setGeometryWGS84}/>
+        <Header />
+        <Search />
         <Footer />
       </Router>
     </div>

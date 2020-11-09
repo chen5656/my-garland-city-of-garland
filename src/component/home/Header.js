@@ -22,7 +22,6 @@ export default function Header(props) {
     <header className='overflow-hidden position-relative'>
       <MapView
         viewHeight={'350px'}     
-        geometryWGS84={props.geometryWGS84}
       />
       <TitlePng />
     </header>
