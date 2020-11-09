@@ -4,7 +4,7 @@ var multiSearch_displayFunctions = {
     if (isNaN(ancore)) {
       return "NULL".concat("*");
     }
-    ancoreDate = new Date(ancore);
+    var ancoreDate = new Date(ancore);
     var today = new Date();
     var dayDiff = Math.floor((today - ancoreDate) / (1000 * 60 * 60 * 24));
     var dayMod = dayDiff % 14;
