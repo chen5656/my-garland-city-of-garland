@@ -162,190 +162,189 @@ class Result extends PureComponent {
   }
 
   getFactorDataList() {
-  var that = this;
-  loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
-    .then(([Query, QueryTask]) => {
-      that.getAddressInfo(Query, QueryTask, that.props.RefID)
-    });
-}
-
-getAddressInfo(Query, QueryTask, addressId) {
-  var that = this;
-  var query = new Query();
-  var queryTask = new QueryTask({
-    url: this.addressUrl
-  });
-  query.where = "ADDRESSID =" + addressId;
-  //query.outSpatialReference = spatialReference2276;
-  query.returnGeometry = true;
-  query.outFields = ["*"];
-
-  queryTask.execute(query).then(function (result) {
-    if (result.features.length > 0) {
-      var attr = result.features[0].attributes;
-      that.getInfoFromParcelTable(Query, QueryTask, attr.PARCELID)
-
-      console.log({
-        'Parcel Id': attr.PARCELID,
-        'Address': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
-      })
-      that.fullAddress = ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE);
-      // result.features[0].geometry; //geometry in stateplane
-      that.getNearestCityFacilityList(result.features[0].geometry);
-      that.getLocatedServiceZoneList(result.features[0].geometry);
-
-    } else {
-      //didn't return a result
-      that.routingFunction('address-not-valid');
-    }
-  });
-}
-getInfoFromParcelTable(Query, QueryTask, parcelId, category = 'parcel-data') {
-  var that = this;
-  var query = new Query();
-  var queryTask = new QueryTask({
-    url: this.parcelUrl
-  });
-  query.where = "PARCELID  =" + parcelId;
-  //query.outSpatialReference = spatialReference2276;
-  query.returnGeometry = false;
-  query.outFields = ["*"];
-  queryTask.execute(query).then(function (results) {
-    var attr = results.features[0].attributes;
-
-    //loop through keys of a object.
-    var factorDataList = that.props.factorList[category].slice().map((factor) => {
-      let attributeData = {};
-      factor.inputControl.outputFields.forEach((field) => {
-        attributeData[field] = attr[field];
+    var that = this;
+    loadModules(['esri/tasks/support/Query', 'esri/tasks/QueryTask'])
+      .then(([Query, QueryTask]) => {
+        that.getAddressInfo(Query, QueryTask, that.props.RefID)
       });
-      return {
-        id: factor.id,
-        outputControl: factor.outputControl,
-        outputData: {
-          attributeData: attributeData,
-          fullAddress: that.fullAddress,
-        }
+  }
+
+  getAddressInfo(Query, QueryTask, addressId) {
+    var that = this;
+    var query = new Query();
+    var queryTask = new QueryTask({
+      url: this.addressUrl
+    });
+    query.where = "ADDRESSID =" + addressId;
+    //query.outSpatialReference = spatialReference2276;
+    query.returnGeometry = true;
+    query.outFields = ["*"];
+
+    queryTask.execute(query).then(function (result) {
+      if (result.features.length > 0) {
+        var attr = result.features[0].attributes;
+        that.getInfoFromParcelTable(Query, QueryTask, attr.PARCELID)
+
+        console.log({
+          'Parcel Id': attr.PARCELID,
+          'Address': ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE)
+        })
+        that.fullAddress = ("" + attr.STREETNUM + " " + attr.STREETLABEL + ", " + attr.CITY + ", " + attr.STATE + ", " + attr.ZIPCODE);
+        // result.features[0].geometry; //geometry in stateplane
+        that.getNearestCityFacilityList(result.features[0].geometry);
+        that.getLocatedServiceZoneList(result.features[0].geometry);
+        that.props.getGeometry(result.features[0].geometry);
+
+      } else {
+        //didn't return a result
+        that.routingFunction('address-not-valid');
       }
-    })
-    // factorDataList
-    that.setState({ factorDataList: that.state.factorDataList.concat(factorDataList) });
+    });
+  }
+  getInfoFromParcelTable(Query, QueryTask, parcelId, category = 'parcel-data') {
+    var that = this;
+    var query = new Query();
+    var queryTask = new QueryTask({
+      url: this.parcelUrl
+    });
+    query.where = "PARCELID  =" + parcelId;
+    //query.outSpatialReference = spatialReference2276;
+    query.returnGeometry = false;
+    query.outFields = ["*"];
+    queryTask.execute(query).then(function (results) {
+      var attr = results.features[0].attributes;
 
-  });
-}
-
-
-
-getNearestCityFacilityList(geometry, category = 'city-facility') {
-
-  var that = this;
-  loadModules(['esri/geometry/geometryEngine'])
-    .then(([geometryEngine]) => {
-      var factorDataList = that.props.factorList[category].slice().map(function (factor) {
-        var nearestFeature = factor.inputControl.features.map((feature) => {
-          var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
-          return {
-            attributes: feature.attributes,
-            distance: distance
-          };
-        }).reduce(function (a, b) {
-          if (a.distance < b.distance) {
-            return a;
-          } else {
-            return b;
-          }
+      //loop through keys of a object.
+      var factorDataList = that.props.factorList[category].slice().map((factor) => {
+        let attributeData = {};
+        factor.inputControl.outputFields.forEach((field) => {
+          attributeData[field] = attr[field];
         });
-
         return {
           id: factor.id,
           outputControl: factor.outputControl,
           outputData: {
-            attributeData: nearestFeature.attributes,
-            distance: nearestFeature.distance,
+            attributeData: attributeData,
             fullAddress: that.fullAddress,
           }
         }
-
-      });
+      })
+      // factorDataList
       that.setState({ factorDataList: that.state.factorDataList.concat(factorDataList) });
 
-    })
-
-}
-
-getLocatedServiceZoneList(geometry, category = 'service-zone') {
-  var that = this;
-  loadModules(['esri/geometry/geometryEngine'])
-    .then(([geometryEngine]) => {
-
-      var factorDataList = that.props.factorList[category].slice().map(function (factor) {
-
-        var containerZone = factor.inputControl.features.find((feature) => {
-          return geometryEngine.contains(feature.geometry, geometry);
-        });
-        if (!containerZone) {
-          containerZone = { attributes: {} };
-          factor.inputControl.outputFields.forEach((field) => {
-            containerZone.attributes[field] = '';
-          })
-        }
-        return {
-          id: factor.id,
-          outputControl: factor.outputControl,
-          outputData: {
-            attributeData: containerZone.attributes,
-            fullAddress: that.fullAddress,
-          }
-        }
-      });
-
-      that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
-    })
-}
-
-componentDidMount = () => {
-  this.getFactorDataList();
-  this.props.handleResultSelected();
-
-  var array = [];
-  for (const [key, value] of Object.entries(this.props.factorList)) {
-    array.push(value);
+    });
   }
-  array = array.flat();
-  this.setState({ factorList: array });
-}
 
-componentDidUpdate = (prevProps) => {
-  if (this.props.factorList.length > prevProps.factorList.length) {
+
+  getNearestCityFacilityList(geometry, category = 'city-facility') {
+
+    var that = this;
+    loadModules(['esri/geometry/geometryEngine'])
+      .then(([geometryEngine]) => {
+        var factorDataList = that.props.factorList[category].slice().map(function (factor) {
+          var nearestFeature = factor.inputControl.features.map((feature) => {
+            var distance = geometryEngine.distance(geometry, feature.geometry, "miles").toFixed(2);
+            return {
+              attributes: feature.attributes,
+              distance: distance
+            };
+          }).reduce(function (a, b) {
+            if (a.distance < b.distance) {
+              return a;
+            } else {
+              return b;
+            }
+          });
+
+          return {
+            id: factor.id,
+            outputControl: factor.outputControl,
+            outputData: {
+              attributeData: nearestFeature.attributes,
+              distance: nearestFeature.distance,
+              fullAddress: that.fullAddress,
+            }
+          }
+
+        });
+        that.setState({ factorDataList: that.state.factorDataList.concat(factorDataList) });
+
+      })
+
+  }
+
+  getLocatedServiceZoneList(geometry, category = 'service-zone') {
+    var that = this;
+    loadModules(['esri/geometry/geometryEngine'])
+      .then(([geometryEngine]) => {
+
+        var factorDataList = that.props.factorList[category].slice().map(function (factor) {
+
+          var containerZone = factor.inputControl.features.find((feature) => {
+            return geometryEngine.contains(feature.geometry, geometry);
+          });
+          if (!containerZone) {
+            containerZone = { attributes: {} };
+            factor.inputControl.outputFields.forEach((field) => {
+              containerZone.attributes[field] = '';
+            })
+          }
+          return {
+            id: factor.id,
+            outputControl: factor.outputControl,
+            outputData: {
+              attributeData: containerZone.attributes,
+              fullAddress: that.fullAddress,
+            }
+          }
+        });
+
+        that.setState({ factorDataList: this.state.factorDataList.concat(factorDataList) });
+      })
+  }
+
+  componentDidMount = () => {
+    this.getFactorDataList();
+
     var array = [];
     for (const [key, value] of Object.entries(this.props.factorList)) {
       array.push(value);
     }
     array = array.flat();
-    console.log('update', array)
     this.setState({ factorList: array });
   }
-}
 
-routingFunction = (value) => {
-  this.props.history.push({
-    pathname: '/' + value
-  });
-}
-
-render() {
-  return (<>
-    {
-      json_sectionList.map((item) => {
-        return <Section name={item.name} sectionId={item.id} key={item.id}
-          factorList={this.state.factorList}
-          factorDataList={this.state.factorDataList}
-        />
-      })
+  componentDidUpdate = (prevProps) => {
+    if (this.props.factorList.length > prevProps.factorList.length) {
+      var array = [];
+      for (const [key, value] of Object.entries(this.props.factorList)) {
+        array.push(value);
+      }
+      array = array.flat();
+      console.log('update', array)
+      this.setState({ factorList: array });
     }
-  </>
-  )
-}
+  }
+
+  routingFunction = (value) => {
+    this.props.history.push({
+      pathname: '/' + value
+    });
+  }
+
+  render() {
+    return (<>
+      {
+        json_sectionList.map((item) => {
+          return <Section name={item.name} sectionId={item.id} key={item.id}
+            factorList={this.state.factorList}
+            factorDataList={this.state.factorDataList}
+          />
+        })
+      }
+    </>
+    )
+  }
 }
 
 export default withRouter(Result);

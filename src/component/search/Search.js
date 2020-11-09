@@ -8,6 +8,7 @@ import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import MapSection from '../searchResult/MapSection';
 import json_factorList from '../../data/factorList.json';
+import AddPntToMap from '../mapRelated/AddPntToMap';
 
 export default class AddressSearch extends PureComponent {
     constructor() {
@@ -15,12 +16,12 @@ export default class AddressSearch extends PureComponent {
         this.state = {
             searchWidgetReady: false,
             searchTerm: '',
-            mapSectionVisible: false,
+            resultGeometry: false,
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
-        this.handleResultSelected = this.handleResultSelected.bind(this);
-
+        this.getGeometry = this.getGeometry.bind(this);
+        
     }
 
     getCityFacilityList(factorList, category = 'city-facility') {
@@ -99,16 +100,19 @@ export default class AddressSearch extends PureComponent {
     }
 
     handleNewSearch() {
-        this.setState({ mapSectionVisible: false });
+        this.setState({ resultGeometry: null });
         if (this.state.searchTerm) {
             this.setState({ searchTerm: '' });
         }
     }
 
-    handleResultSelected(geometry) {
-        if (!this.state.mapSectionVisible) { this.setState({ mapSectionVisible: true }); }
-        console.log('geometry', geometry)
+    getGeometry(geometry) {
+        debugger;
+        this.setState({
+            resultGeometry: geometry
+        });
     }
+
 
     render() {
         return (
@@ -116,7 +120,6 @@ export default class AddressSearch extends PureComponent {
                 <SearchWidget
                     searchTerm={this.state.searchTerm}
                     newSearch={this.handleNewSearch}
-                    onSearchResultSelected={this.handleResultSelected}
                 />
                 {this.state.searchWidgetReady ?
                     <article>
@@ -143,16 +146,18 @@ export default class AddressSearch extends PureComponent {
                                                     'service-zone': this.state['service-zone'],
                                                 }}
                                                 parcelFields={this.state.parcelFields}
-                                                handleResultSelected={ this.handleResultSelected}
+                                                getGeometry={this.getGeometry}
                                             />
                                         </>
                                     }} />
                                 </Switch>
 
-                                <MapSection isVisible={this.state.mapSectionVisible} />
+                                <MapSection isVisible={this.state.resultGeometry?true:false} />
 
                             </div>
                         </div>
+
+                        <AddPntToMap mapviews={window.mapViewList} geometry={this.state.resultGeometry} />
                     </article>
                     :
                     <></>
