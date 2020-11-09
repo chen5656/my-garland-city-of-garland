@@ -305,6 +305,7 @@ getLocatedServiceZoneList(geometry, category = 'service-zone') {
 
 componentDidMount = () => {
   this.getFactorDataList();
+  this.props.handleResultSelected();
 
   var array = [];
   for (const [key, value] of Object.entries(this.props.factorList)) {

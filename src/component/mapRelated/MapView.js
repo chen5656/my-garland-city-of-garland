@@ -52,7 +52,6 @@ const WebMapView = (props) => {
           });
 
           window.mapViewList.push({id:props.id,view:view});
-          console.log( window.mapViewList)
           return () => {
             if (view) {
               // destroy the map view

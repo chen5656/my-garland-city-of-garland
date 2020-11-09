@@ -92,7 +92,6 @@ export default class AddressSearch extends PureComponent {
                 this.setState({ searchWidgetReady: true });
             }
         }
-        console.log(1111)
     }
 
     handleSearchFromAddress(address) {
@@ -135,7 +134,6 @@ export default class AddressSearch extends PureComponent {
                                         />
                                     }} />
                                     <Route path="/:addressId" render={({ match }) => {
-                                        this.handleResultSelected();
                                         return <>
                                             <Result
                                                 RefID={match.params.addressId.replace(/[ ,.]/g, '')}
@@ -145,6 +143,7 @@ export default class AddressSearch extends PureComponent {
                                                     'service-zone': this.state['service-zone'],
                                                 }}
                                                 parcelFields={this.state.parcelFields}
+                                                handleResultSelected={ this.handleResultSelected}
                                             />
                                         </>
                                     }} />
