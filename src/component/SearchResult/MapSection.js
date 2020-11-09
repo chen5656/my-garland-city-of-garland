@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -10,41 +10,44 @@ import MapView from '../mapRelated/MapView';
 import ListCollapse from './ListCollapse';
 
 const useStyles = makeStyles((theme) => ({
-    
-  sectionPadding: { padding: '15px' },
+
+    sectionPadding: { padding: '15px' },
     sectionHead: {
         borderRadius: '5px 5px 0 0', color: 'white', fontWeight: 600,
         backgroundImage: 'linear-gradient(to right,rgb(0 122 163 / 90%), rgb(0 122 163 / 54%), rgb(0 122 163 / 24%))',
         margin: 0
     },
-    
+
 
 }));
 
-const StreetConditionMap = () => {
-    return <MapView    
-        id='street-codition' 
-        basemap='topo'
-        zoomLevel={15}
-        viewHeight={'300px'}
-        layerList={[{
-            type: 'map-image',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-            sublayers: [
-                { "id": 5, "visible": true },
-                { "id": 4, "visible": true }
-            ],
-        }, {
-            type: 'map-image',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
-            sublayers: [
-                { "id": 37, "visible": true }
-            ],
-        }]}
+class StreetConditionMap extends PureComponent {// use PureComponent to prevent rerender when nothing changed.
+    render() {
+        return <MapView
+            id='street-codition'
+            basemap='topo'
+            zoomLevel={15}
+            viewHeight={'300px'}
+            layerList={[{
+                type: 'map-image',
+                url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                sublayers: [
+                    { "id": 5, "visible": true },
+                    { "id": 4, "visible": true }
+                ],
+            }, {
+                type: 'map-image',
+                url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
+                sublayers: [
+                    { "id": 37, "visible": true }
+                ],
+            }]}
 
-    />
+        />
+    }
 }
-const CrimeMap = () => {
+class CrimeMap extends PureComponent  {
+    render() {
     return <MapView
         id='crime-map'
         basemap='topo'
@@ -70,13 +73,12 @@ const CrimeMap = () => {
 
 
         }]}
-    />
+    />}
 }
-
 const MapSection = (props) => {
-    const classes = useStyles();   
+    const classes = useStyles();
     return (
-        <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' + (props.isVisible?'':'d-none')}>
+        <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' + (props.isVisible ? '' : 'd-none')}>
             <Paper elevation={3} >
                 <List component="section"
                     subheader={
@@ -84,10 +86,10 @@ const MapSection = (props) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        <StreetConditionMap  />
+                        <StreetConditionMap />
                     </ListCollapse>
                     <ListCollapse name='Crime Map'>
-                        <CrimeMap/>
+                        <CrimeMap />
                     </ListCollapse>
                 </List>
 
