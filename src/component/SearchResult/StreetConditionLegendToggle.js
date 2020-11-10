@@ -20,6 +20,13 @@ const LegendProperties = [{
   'color': 'rgba(255,0,0,1)',
   'label': 'Failed',
 }];
+const layer= {
+  type: 'map-image',
+  url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
+  sublayers: [
+      { "id": 37, "visible": true }
+  ],
+}
 
 const LegendItem = (props) => {
   return <tr>
@@ -33,12 +40,28 @@ const LegendItem = (props) => {
     <td>{props.label}</td>
   </tr>
 }
-const StreetConditionLegendToggle = () => {
-  const [checked, setChecked] = React.useState(false);
+const StreetConditionLegendToggle = (props) => {
+  const [checked, setChecked] = React.useState(true);
 
 
   const handleChange = () => {
     setChecked((prev) => !prev);
+    const item=window.mapViewList.find((view) => {
+      return view.id==='pavement-condition';
+    });
+    if(item){
+      const map=item.view.map;
+      if(!checked){
+        //add layer
+        // map.add(layer);
+
+      }else{
+        //remove layer
+        // map.remove()
+      }
+
+    }
+    debugger
   };
 
 
@@ -51,7 +74,7 @@ const StreetConditionLegendToggle = () => {
           color='primary'
         />
       }
-      label='Show Legend'
+      label='Add Pavement Condition to the map'
     />
     {checked &&
       <div>

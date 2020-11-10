@@ -92,7 +92,6 @@ if (!Array.prototype.find) {
 ie11Polyfill();
 function App() {
 
-  window.mapViewArray = [];
   return (
     <div className='container-fluid'>
       <Router>

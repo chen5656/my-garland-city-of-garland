@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 
 import MapView from '../mapRelated/MapView';
 import ListCollapse from './ListCollapse';
+import LargeMapButton from '../mapRelated/LargeMapButton';
 
 
 import Switch from '@material-ui/core/Switch';
@@ -16,7 +17,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import crimeLegend from '../../images/crimeLegend.jpg';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 
-const crimeMapUrl = 'http://maps.garlandtx.gov/cogmap/apps/MapTools/index.html?appid=c40a513390e14f199f4b3953529c4f77';
+// const crimeMapUrl = 'http://maps.garlandtx.gov/cogmap/apps/MapTools/index.html?appid=c40a513390e14f199f4b3953529c4f77';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -29,18 +30,10 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const ShowStreetCondition = () => {
-
-}
-
-const ShowLargeMapButton = () => {
-
-}
-
 class StreetConditionMap extends PureComponent {// use PureComponent to prevent rerender when nothing changed.
     render() {
         return <MapView
-            id='street-codition'
+            id='pavement-condition'
             basemap='topo'
             zoomLevel={15}
             viewHeight={'300px'}
@@ -55,13 +48,12 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
                 type: 'map-image',
                 url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
                 sublayers: [
-                    { "id": 37, "visible": true }
+                    { "id": 37, "visible": true ,}
                 ],
             }]}
             showButton={
                 {
-                    'value': 'Show Large',
-                    'onClick': '11',
+                    'value': <LargeMapButton name='pavement-condition'/>,
                     'id': 'street-pci-show-large',
                 }
             }
@@ -119,9 +111,8 @@ class CrimeMap extends PureComponent {
             }]}
             showButton={
                 {
-                    'value': 'Show Large',
-                    'onClick': '11',
-                    'id': 'crime-map-show-large',
+                    'value': <LargeMapButton name='crime-map'/>,
+                    'id': 'crime-show-large',
                 }
             }
         />
@@ -140,8 +131,7 @@ const MapSection = (props) => {
                     <ListCollapse name='Pavement Condition'>
                         <div className='px-2'>
                             <StreetConditionMap />
-                            {/* <StreetConditionToggle /> */}
-                            <StreetConditionLegendToggle />
+                            <StreetConditionLegendToggle/>
                         </div>
                     </ListCollapse>
                     <ListCollapse name='Crime Map'>

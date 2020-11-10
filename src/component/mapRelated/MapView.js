@@ -1,15 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
-import Button from '@material-ui/core/Button';
-import Modal from '@material-ui/core/Modal';
-
-
-const ShowLargeMapButton=(props)=>{
-
-
-
-  return <Button variant="contained" size="small" color="primary" id={props.id } onClick={props.onClick}>{props.value}</Button>
-}
 const WebMapView = (props) => {
   const mapRef = useRef();
   if (!Array.isArray(window.mapViewList)) {
@@ -49,7 +39,10 @@ const WebMapView = (props) => {
               url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1'
             }))
           }
-          // 79aad46c670740dea5f9e1acf1f3d540
+
+    
+
+
           const map = new ArcGISMap({
             basemap: props.basemap ? props.basemap : 'gray-vector',
             layers: layers
@@ -62,7 +55,6 @@ const WebMapView = (props) => {
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
-
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
           }
@@ -80,7 +72,7 @@ const WebMapView = (props) => {
   
   return <>
     <div className='webmap' ref={mapRef} style={{ height: props.viewHeight ? props.viewHeight : '300px' }} />
-    {props.showButton ?<ShowLargeMapButton id={props.showButton.id} onClick={props.showButton.onClick} value={props.showButton.value} />:null}
+    {props.showButton ?<div id={props.showButton.id} >{props.showButton.value}</div>:null}
   </>
 };
 

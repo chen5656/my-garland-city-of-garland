@@ -26,6 +26,7 @@ class AddPoint extends PureComponent {
                         mapview.view.graphics.removeAll();
                         mapview.view.graphics.add(pnt);
                         mapview.view.center = [result[0].longitude, result[0].latitude];
+                    
                     });
                 });
 
