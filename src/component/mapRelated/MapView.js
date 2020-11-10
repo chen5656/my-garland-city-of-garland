@@ -4,7 +4,11 @@ const WebMapView = (props) => {
   const mapRef = useRef();
   if (!Array.isArray(window.mapViewList)) {
     window.mapViewList = [];
-  }
+  } 
+  if (!Array.isArray(window.layerViewList)) {
+    window.layerViewList = [];
+  } 
+
   useEffect(
     () => {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
@@ -55,6 +59,24 @@ const WebMapView = (props) => {
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
+          layers.forEach(layer=>{
+            view.whenLayerView(layer)
+            .then(function(layerView) {
+              // The layerview for the layer
+              console.log(layer,layerView)
+              debugger;
+              layer.type==='feature',,, layer.visible,,, layer.title,,,
+              layer.type==="map-image",,,layer.allSublayers.items[i].visible ,,,layer.allSublayers.items[i].title,
+              
+              window.layerViewList.push({layerView})
+            })
+            .catch(function(error) {
+              // An error occurred during the layerview creation
+            });
+          })
+       
+
+
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
           }

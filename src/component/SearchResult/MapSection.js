@@ -42,13 +42,8 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
                 url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
                 sublayers: [
                     { "id": 5, "visible": true },
-                    { "id": 4, "visible": true }
-                ],
-            }, {
-                type: 'map-image',
-                url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
-                sublayers: [
-                    { "id": 37, "visible": true ,}
+                    { "id": 4, "visible": true },
+                    { "id": 37, "visible": true,title:'pavement-condition' }
                 ],
             }]}
             showButton={
@@ -83,7 +78,8 @@ const CrimeMapLegendToggle = () => {
             </div>}
     </div>
 }
-
+//window.layerViewList[2].layerView.layer.allSublayers
+//layerViewList[1].layerView.layer.title ---"CRIME LAST MONTH"
 class CrimeMap extends PureComponent {
     render() {
         return <MapView
