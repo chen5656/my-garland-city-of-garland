@@ -14,6 +14,9 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import crimeLegend from '../../images/crimeLegend.jpg';
+import StreetConditionLegendToggle from './StreetConditionLegendToggle';
+
+const crimeMapUrl = 'http://maps.garlandtx.gov/cogmap/apps/MapTools/index.html?appid=c40a513390e14f199f4b3953529c4f77';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -25,6 +28,14 @@ const useStyles = makeStyles((theme) => ({
     },
 
 }));
+
+const ShowStreetCondition = () => {
+
+}
+
+const ShowLargeMapButton = () => {
+
+}
 
 class StreetConditionMap extends PureComponent {// use PureComponent to prevent rerender when nothing changed.
     render() {
@@ -47,20 +58,22 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
                     { "id": 37, "visible": true }
                 ],
             }]}
-
+            showButton={
+                {
+                    'value': 'Show Large',
+                    'onClick': '11',
+                    'id': 'street-pci-show-large',
+                }
+            }
         />
     }
 }
 
 const CrimeMapLegendToggle = () => {
     const [checked, setChecked] = useState(false);
-
-
     const handleChange = () => {
         setChecked((prev) => !prev);
     };
-
-
     return <div>
         <FormControlLabel
             control={
@@ -103,9 +116,14 @@ class CrimeMap extends PureComponent {
                         }
                     ]
                 }
-
-
             }]}
+            showButton={
+                {
+                    'value': 'Show Large',
+                    'onClick': '11',
+                    'id': 'crime-map-show-large',
+                }
+            }
         />
     }
 }
@@ -122,6 +140,8 @@ const MapSection = (props) => {
                     <ListCollapse name='Pavement Condition'>
                         <div className='px-2'>
                             <StreetConditionMap />
+                            {/* <StreetConditionToggle /> */}
+                            <StreetConditionLegendToggle />
                         </div>
                     </ListCollapse>
                     <ListCollapse name='Crime Map'>
@@ -138,3 +158,4 @@ const MapSection = (props) => {
     )
 }
 export default MapSection;
+

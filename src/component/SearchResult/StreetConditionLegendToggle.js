@@ -33,8 +33,8 @@ const LegendItem = (props) => {
     <td>{props.label}</td>
   </tr>
 }
-const StreetConditionToggle = () => {
-  const [checked, setChecked] = React.useState(true);
+const StreetConditionLegendToggle = () => {
+  const [checked, setChecked] = React.useState(false);
 
 
   const handleChange = () => {
@@ -51,7 +51,7 @@ const StreetConditionToggle = () => {
           color='primary'
         />
       }
-      label='Add street pavement to the map'
+      label='Show Legend'
     />
     {checked &&
       <div>
@@ -68,5 +68,5 @@ const StreetConditionToggle = () => {
   </div>
 }
 
-export default StreetConditionToggle;
+export default StreetConditionLegendToggle;
 

@@ -14,7 +14,6 @@ import json_sectionList from '../../data/sectionList.json';
 import json_categoryList from '../../data/categoryList.json';
 
 import staticButtons from './staticButton';
-import StreetConditionToggle from './StreetConditionToggle';
 import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
@@ -97,9 +96,9 @@ const Category = (props) => {
         </div>
       }
       {/*Streets condition label*/}
-      {(props.id === 'streets-condition') &&
+      {/* {(props.id === 'streets-condition') &&
         <div className='mx-5 my-3'> <StreetConditionToggle /></div>
-      }
+      } */}
     </ListCollapse>
   )
 

@@ -108,16 +108,12 @@ export default class AddressSearch extends PureComponent {
     }
 
     getGeometry(geometry) {
-        debugger;
         this.setState({
             resultGeometry: geometry
         });
     }
-
-
+    
     render() {
-
-        debugger;
         return (
             <div style={{ minHeight: '200px' }}>
                 <SearchWidget

@@ -1,17 +1,26 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
+import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
 
+
+const ShowLargeMapButton=(props)=>{
+
+
+
+  return <Button variant="contained" size="small" color="primary" id={props.id } onClick={props.onClick}>{props.value}</Button>
+}
 const WebMapView = (props) => {
   const mapRef = useRef();
-  if( !Array.isArray(window.mapViewList)){
-    window.mapViewList=[];
+  if (!Array.isArray(window.mapViewList)) {
+    window.mapViewList = [];
   }
   useEffect(
     () => {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
       loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/MapImageLayer',
-        'esri/layers/FeatureLayer', "esri/Graphic"], { css: true })
-        .then(([ArcGISMap, MapView, MapImageLayer, FeatureLayer, Graphic]) => {
+        'esri/layers/FeatureLayer'], { css: true })
+        .then(([ArcGISMap, MapView, MapImageLayer, FeatureLayer]) => {
           var layers = [];
           if (props.layerList) {
             layers = props.layerList.map((layer) => {
@@ -29,8 +38,8 @@ const WebMapView = (props) => {
                     'url': layer.url,
                     'sublayers': layer.sublayers,
                   })
-                   default:
-                    return null;
+                default:
+                  return null;
 
               }
 
@@ -54,7 +63,10 @@ const WebMapView = (props) => {
             zoom: props.zoomLevel ? props.zoomLevel : 11,
           });
 
-          window.mapViewList.push({id:props.id,view:view});
+          if (props.showButton ) {
+            view.ui.add(props.showButton.id , 'bottom-right');
+          }
+          window.mapViewList.push({ id: props.id, view: view });
           return () => {
             if (view) {
               // destroy the map view
@@ -64,7 +76,12 @@ const WebMapView = (props) => {
         });
     }
   );
-  return <div className='webmap' ref={mapRef} style={{ height: props.viewHeight ? props.viewHeight : '300px' }} />;
+  
+  
+  return <>
+    <div className='webmap' ref={mapRef} style={{ height: props.viewHeight ? props.viewHeight : '300px' }} />
+    {props.showButton ?<ShowLargeMapButton id={props.showButton.id} onClick={props.showButton.onClick} value={props.showButton.value} />:null}
+  </>
 };
 
 export default WebMapView;
