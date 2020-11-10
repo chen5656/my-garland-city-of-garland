@@ -90,7 +90,7 @@ class SearchWidget extends PureComponent {
           <div className="m-3 col-12">
             Enter a valid City of Garland Address to look up City data.
             </div>
-          <div id='my-garland-search' className='searchwidget' />
+          <div id='my-garland-search' className='searchwidget' style={{width:'100%'}} />
         </div>
 
       </div>

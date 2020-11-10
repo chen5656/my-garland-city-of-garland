@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react';
+import React, { PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -17,7 +17,7 @@ import staticButtons from './staticButton';
 import StreetConditionToggle from './StreetConditionToggle';
 import ListCollapse from './ListCollapse';
 
-import ResultValueDisplay from '../searchResult/ResultValueDisplay';
+import ResultValueDisplay from './ResultValueDisplay';
 
 import { withRouter } from 'react-router-dom';
 
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Factor = (props) => {
   const classes = useStyles();
+  
   return (
     <li className='row pl-5'>
       <div className='col-sm-4 col-xs-12 pt-3 ' >{props.name}
@@ -68,13 +69,6 @@ const Factor = (props) => {
     </li>)
 }
 const Category = (props) => {
-  const [open, setOpen] = useState(true);
-  const classes = useStyles();
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   return (
     <ListCollapse name={props.name}>
       {/*factorList*/}
@@ -106,8 +100,6 @@ const Category = (props) => {
       {(props.id === 'streets-condition') &&
         <div className='mx-5 my-3'> <StreetConditionToggle /></div>
       }
-
-
     </ListCollapse>
   )
 

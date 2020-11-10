@@ -29,6 +29,9 @@ const WebMapView = (props) => {
                     'url': layer.url,
                     'sublayers': layer.sublayers,
                   })
+                   default:
+                    return null;
+
               }
 
             });

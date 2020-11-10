@@ -53,7 +53,7 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
 }
 
 const CrimeMapLegendToggle = () => {
-    const [checked, setChecked] = React.useState(false);
+    const [checked, setChecked] = useState(false);
 
 
     const handleChange = () => {

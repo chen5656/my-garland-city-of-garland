@@ -10,6 +10,7 @@ import MapSection from '../searchResult/MapSection';
 import json_factorList from '../../data/factorList.json';
 import AddPntToMap from '../mapRelated/AddPntToMap';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
 export default class AddressSearch extends PureComponent {
     constructor() {
         super();
@@ -115,6 +116,8 @@ export default class AddressSearch extends PureComponent {
 
 
     render() {
+
+        debugger;
         return (
             <div style={{ minHeight: '200px' }}>
                 <SearchWidget
@@ -160,7 +163,7 @@ export default class AddressSearch extends PureComponent {
                         <AddPntToMap mapviews={window.mapViewList} geometry={this.state.resultGeometry} />
                     </article>
                     :
-                    <></>
+                    <><LinearProgress className=' p-1 m-4 'style={{width:'100%'}}/></>
                 }
 
             </div>
