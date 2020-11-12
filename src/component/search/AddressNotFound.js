@@ -45,7 +45,7 @@ class SuggestAddresses extends PureComponent {
         var subStr = str.split(" ");
         if (subStr.length > 1) {
           var str1 = subStr[0];
-          if (str1 != parseInt(str1, 10)) {
+          if (Number.isInteger(str1)) {
             //not a number, try to use it as street name
             addr_road = str;
             addr_number = 0;

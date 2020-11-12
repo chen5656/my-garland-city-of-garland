@@ -20,13 +20,7 @@ const LegendProperties = [{
   'color': 'rgba(255,0,0,1)',
   'label': 'Failed',
 }];
-const layer = {
-  type: 'map-image',
-  url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/',
-  sublayers: [
-    { "id": 37, "visible": true }
-  ],
-}
+
 
 const LegendItem = (props) => {
   return <tr>
@@ -40,7 +34,7 @@ const LegendItem = (props) => {
     <td>{props.label}</td>
   </tr>
 }
-const StreetConditionLegendToggle = (props) => {
+const StreetConditionLegendToggle = () => {
   const [checked, setChecked] = React.useState(true);
 
 
