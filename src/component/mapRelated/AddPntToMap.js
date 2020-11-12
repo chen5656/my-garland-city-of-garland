@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
-import { CodeSharp } from '@material-ui/icons';
 
 class AddPoint extends PureComponent {
 
     addPoint(mapviews, geometry, fullAddress) {
         console.log(mapviews)
-        loadModules(["esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService", "esri/geometry/SpatialReference", "esri/Graphic", "esri/widgets/Popup"])
-            .then(([ProjectParameters, GeometryService, SpatialReference, Graphic, Popup]) => {
+        loadModules(["esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService", "esri/geometry/SpatialReference", "esri/Graphic"])
+            .then(([ProjectParameters, GeometryService, SpatialReference, Graphic]) => {
                 var geomSer = new GeometryService("https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
                 const mapviewSpatialReference = new SpatialReference({ wkid: 3857 });
                 var params = new ProjectParameters({
@@ -33,18 +32,16 @@ class AddPoint extends PureComponent {
                         view.center = result[0];
 
                          if (mapview.id === 'header') {
-                            var popup = new Popup({
+                            view.popup={
                                 dockEnabled: false,
                                 dockOptions: {
                                     // Disables the dock button from the popup
                                     buttonEnabled: false,
                                     // Ignore the default sizes that trigger responsive docking
-                                    breakpoint: false,
-                                
+                                    breakpoint: false,                                
                                 },
                                 visible:true,
-                            })
-                            view.popup=popup;
+                            };
                             view.popup.open({
                                  content:fullAddress,
                                 location:  view.center,
