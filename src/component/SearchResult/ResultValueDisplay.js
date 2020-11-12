@@ -145,7 +145,7 @@ const Email = (props) => {
 }
 
 const SymbolButton = (props) => {
-    return <Button   color="primary" title={props.title}  onClick={()=>{window.open(props.href,'_blank','noopener')}}> {props.icon}</Button>;
+    return <Button color="primary" title={props.title} onClick={() => { window.open(props.href, '_blank', 'noopener') }}> {props.icon}</Button>;
 }
 
 

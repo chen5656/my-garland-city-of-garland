@@ -48,7 +48,7 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
             }]}
             showButton={
                 {
-                    'value': <LargeMapButton name='pavement-condition'/>,
+                    'value': <LargeMapButton name='pavement-condition' />,
                     'id': 'street-pci-show-large',
                 }
             }

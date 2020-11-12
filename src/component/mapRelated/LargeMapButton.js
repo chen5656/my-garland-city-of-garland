@@ -55,7 +55,7 @@ export default function SimpleModal(props) {
   );
 
   return (
-    <div>
+    <div className= ' d-none d-sm-block '>
       <Button size='small' variant='contained'  color="primary"  onClick={handleOpen}>
         Show Large
       </Button>

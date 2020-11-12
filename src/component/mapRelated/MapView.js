@@ -43,10 +43,7 @@ const WebMapView = (props) => {
               url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1'
             }))
           }
-
-    
-
-
+          
           const map = new ArcGISMap({
             basemap: props.basemap ? props.basemap : 'gray-vector',
             layers: layers
