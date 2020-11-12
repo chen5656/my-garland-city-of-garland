@@ -61,14 +61,29 @@ const WebMapView = (props) => {
           });
           layers.forEach(layer=>{
             view.whenLayerView(layer)
-            .then(function(layerView) {
+            .then(function() {
               // The layerview for the layer
-              console.log(layer,layerView)
+              console.log(layer)
               debugger;
-              layer.type==='feature',,, layer.visible,,, layer.title,,,
-              layer.type==="map-image",,,layer.allSublayers.items[i].visible ,,,layer.allSublayers.items[i].title,
+              if(layer.type==='feature'){
+                window.layerViewList.push({
+                  layer:layer,
+                  type:'feature'
+                });
+              } 
+              if(layer.type==='map-image'){
+                layer.allSublayers.items.forEach(item=>{
+                  window.layerViewList.push({
+                    layer:item,
+                    type:'map-image',
+                    parentLayer:layer,
+                  });  
+
+                })   
+                        
+              }
+
               
-              window.layerViewList.push({layerView})
             })
             .catch(function(error) {
               // An error occurred during the layerview creation
