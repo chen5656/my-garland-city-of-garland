@@ -1,12 +1,13 @@
-import React, {  PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { loadModules } from 'esri-loader';
+import { CodeSharp } from '@material-ui/icons';
 
 class AddPoint extends PureComponent {
 
-    addPoint(mapviews, geometry,fullAddress) {
+    addPoint(mapviews, geometry, fullAddress) {
         console.log(mapviews)
-        loadModules(["esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService", "esri/geometry/SpatialReference", "esri/Graphic"])
-            .then(([ProjectParameters, GeometryService, SpatialReference, Graphic]) => {
+        loadModules(["esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService", "esri/geometry/SpatialReference", "esri/Graphic", "esri/widgets/Popup"])
+            .then(([ProjectParameters, GeometryService, SpatialReference, Graphic, Popup]) => {
                 var geomSer = new GeometryService("https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
                 const mapviewSpatialReference = new SpatialReference({ wkid: 3857 });
                 var params = new ProjectParameters({
@@ -21,17 +22,37 @@ class AddPoint extends PureComponent {
                             color: "#dc2533"
                         }
                     });
-                    debugger
                     pnt.popupTemplate = {
-                        title:fullAddress,
-                         
-                       };
+                        content: fullAddress,
+                    };
 
                     mapviews.forEach(mapview => {
-                        mapview.view.graphics.removeAll();
-                        mapview.view.graphics.add(pnt);
-                        mapview.view.center = [result[0].longitude, result[0].latitude];
-                    
+                        let view=mapview.view;
+                        view.graphics.removeAll();
+                        view.graphics.add(pnt);
+                        view.center = result[0];
+
+                         if (mapview.id === 'header') {
+                            var popup = new Popup({
+                                dockEnabled: false,
+                                dockOptions: {
+                                    // Disables the dock button from the popup
+                                    buttonEnabled: false,
+                                    // Ignore the default sizes that trigger responsive docking
+                                    breakpoint: false,
+                                
+                                },
+                                visible:true,
+                            })
+                            view.popup=popup;
+                            view.popup.open({
+                                 content:fullAddress,
+                                location:  view.center,
+                            });
+
+                        }
+
+
                     });
                 });
 
@@ -48,14 +69,14 @@ class AddPoint extends PureComponent {
     componentDidMount() {
         console.log('mount', this.props.geometry)
         if (this.props.geometry) {
-            this.addPoint(this.props.mapviews, this.props.geometry,this.props.fullAddress);
+            this.addPoint(this.props.mapviews, this.props.geometry, this.props.fullAddress);
         }
     }
 
     componentDidUpdate() {
         console.log('update', this.props.geometry)
         if (this.props.geometry) {
-            this.addPoint(this.props.mapviews, this.props.geometry,this.props.fullAddress);
+            this.addPoint(this.props.mapviews, this.props.geometry, this.props.fullAddress);
         } else {
             this.removePoint(this.props.mapviews);
         }

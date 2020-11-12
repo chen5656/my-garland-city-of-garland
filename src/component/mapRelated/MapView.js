@@ -57,14 +57,11 @@ const WebMapView = (props) => {
             container: mapRef.current,
             map: map,
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
-            zoom: props.zoomLevel ? props.zoomLevel : 11,
+            zoom: props.zoomLevel ? props.zoomLevel : 11,        
           });
           layers.forEach(layer=>{
             view.whenLayerView(layer)
             .then(function() {
-              // The layerview for the layer
-              console.log(layer)
-              debugger;
               if(layer.type==='feature'){
                 window.layerViewList.push({
                   layer:layer,
