@@ -184,7 +184,7 @@ class Result extends PureComponent {
         // result.features[0].geometry; //geometry in stateplane
         that.getNearestCityFacilityList(result.features[0].geometry);
         that.getLocatedServiceZoneList(result.features[0].geometry);
-        that.props.getGeometry(result.features[0].geometry);
+        that.props.getGeometryAndFullAddress(result.features[0].geometry,that.fullAddress);
 
       } else {
         //didn't return a result

@@ -17,11 +17,12 @@ export default class AddressSearch extends PureComponent {
         this.state = {
             searchWidgetReady: false,
             searchTerm: '',
-            resultGeometry: false,
+            resultGeometry: null,
+            fullAddress:'',
         };
         this.handleSearchFromAddress = this.handleSearchFromAddress.bind(this);
         this.handleNewSearch = this.handleNewSearch.bind(this);
-        this.getGeometry = this.getGeometry.bind(this);
+        this.getGeometryAndFullAddress = this.getGeometryAndFullAddress.bind(this);
         
     }
 
@@ -107,9 +108,10 @@ export default class AddressSearch extends PureComponent {
         }
     }
 
-    getGeometry(geometry) {
+    getGeometryAndFullAddress(geometry, fullAddress) {
         this.setState({
-            resultGeometry: geometry
+            resultGeometry: geometry,
+            fullAddress:fullAddress,
         });
     }
     
@@ -118,7 +120,7 @@ export default class AddressSearch extends PureComponent {
             <div style={{ minHeight: '200px' }}>
                 <SearchWidget
                     searchTerm={this.state.searchTerm}
-                    newSearch={this.handleNewSearch}
+                    newSearch={this.handleNewSearch}                    
                 />
                 {this.state.searchWidgetReady ?
                     <article>
@@ -145,7 +147,7 @@ export default class AddressSearch extends PureComponent {
                                                     'service-zone': this.state['service-zone'],
                                                 }}
                                                 parcelFields={this.state.parcelFields}
-                                                getGeometry={this.getGeometry}
+                                                getGeometryAndFullAddress={this.getGeometryAndFullAddress}
                                             />
                                         </>
                                     }} />
@@ -156,7 +158,7 @@ export default class AddressSearch extends PureComponent {
                             </div>
                         </div>
 
-                        <AddPntToMap mapviews={window.mapViewList} geometry={this.state.resultGeometry} />
+                        <AddPntToMap mapviews={window.mapViewList} geometry={this.state.resultGeometry} fullAddress={this.state.fullAddress}/>
                     </article>
                     :
                     <><LinearProgress className=' p-1 m-4 'style={{width:'100%'}}/></>
