@@ -32,23 +32,33 @@ const useStyles = makeStyles((theme) => ({
 
 class StreetConditionMap extends PureComponent {// use PureComponent to prevent rerender when nothing changed.
     render() {
+        const layerList = [{
+            type: 'map-image',
+            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+            sublayers: [
+                { "id": 5, "visible": true, title: 'Parcels' },
+                { "id": 4, "visible": true,title: 'Address' },
+                { "id": 37, "visible": true, title: 'pavement-condition' }
+            ],
+        }];
         return <MapView
             id='pavement-condition'
             basemap='topo'
             zoomLevel={15}
             viewHeight={'300px'}
-            layerList={[{
-                type: 'map-image',
-                url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                sublayers: [
-                    { "id": 5, "visible": true },
-                    { "id": 4, "visible": true },
-                    { "id": 37, "visible": true,title:'pavement-condition' }
-                ],
-            }]}
+            layerList={layerList}
             showButton={
                 {
-                    'value': <LargeMapButton name='pavement-condition' />,
+                    'value': <LargeMapButton
+                        name='pavement-condition'
+                        body={<MapView
+                            id='pavement-condition-large'
+                            basemap='topo'
+                            zoomLevel={15}
+                            viewHeight={'100%'}
+                            layerList={layerList}
+                            widgets={['Legend', 'LayerList']} />}
+                    />,
                     'id': 'street-pci-show-large',
                 }
             }
@@ -81,33 +91,45 @@ const CrimeMapLegendToggle = () => {
 //window.layerViewList[2].layerView.layer.allSublayers
 //layerViewList[1].layerView.layer.title ---"CRIME LAST MONTH"
 class CrimeMap extends PureComponent {
+
     render() {
+        const layerList = [{
+            type: 'feature',
+            url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
+            template: {
+                "title": "<b>{OFFENSE}</b>",
+                "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
+                    "<b>CASE ID: </b>{CASEID}<br>" +
+                    "<b>OFFENSE: </b>{OFFENSE}<br>",
+                "fieldInfos": [
+                    {
+                        "fieldName": "OCCURRED_O",
+                        "format": {
+                            "dateFormat": "short-date"
+                        }
+                    }
+                ]
+            }
+        }];
         return <MapView
             id='crime-map'
             basemap='topo'
             zoomLevel={15}
             viewHeight={'300px'}
-            layerList={[{
-                type: 'feature',
-                url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-                template: {
-                    "title": "<b>{OFFENSE}</b>",
-                    "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-                        "<b>CASE ID: </b>{CASEID}<br>" +
-                        "<b>OFFENSE: </b>{OFFENSE}<br>",
-                    "fieldInfos": [
-                        {
-                            "fieldName": "OCCURRED_O",
-                            "format": {
-                                "dateFormat": "short-date"
-                            }
-                        }
-                    ]
-                }
-            }]}
+            layerList={layerList}
             showButton={
                 {
-                    'value': <LargeMapButton name='crime-map'/>,
+                    'value': <LargeMapButton
+                        name='crime-map'
+                        body={<MapView
+                            id='crime-map-large'
+                            basemap='topo'
+                            zoomLevel={15}
+                            viewHeight={'100%'}
+                            layerList={layerList}
+                            widgets={['Legend', 'LayerList']}
+                        />}
+                    />,
                     'id': 'crime-show-large',
                 }
             }
@@ -127,7 +149,7 @@ const MapSection = (props) => {
                     <ListCollapse name='Pavement Condition'>
                         <div className='px-2'>
                             <StreetConditionMap />
-                            <StreetConditionLegendToggle/>
+                            <StreetConditionLegendToggle />
                         </div>
                     </ListCollapse>
                     <ListCollapse name='Crime Map'>

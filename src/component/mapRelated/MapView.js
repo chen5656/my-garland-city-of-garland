@@ -13,8 +13,8 @@ const WebMapView = (props) => {
     () => {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
       loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/MapImageLayer',
-        'esri/layers/FeatureLayer'], { css: true })
-        .then(([ArcGISMap, MapView, MapImageLayer, FeatureLayer]) => {
+        'esri/layers/FeatureLayer',"esri/widgets/Legend","esri/widgets/LayerList"], { css: true })
+        .then(([ArcGISMap, MapView, MapImageLayer, FeatureLayer,Legend,LayerList]) => {
           var layers = [];
           if (props.layerList) {
             layers = props.layerList.map((layer) => {
@@ -88,6 +88,21 @@ const WebMapView = (props) => {
 
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
+          }
+          if(props.widgets&&Array.isArray(props.widgets)){
+            if(props.widgets.find(item=>{return item.toLowerCase()==='legend'})){
+              var legend = new Legend({
+                view: view
+              });            
+              view.ui.add(legend, "bottom-left");
+            }
+            if(props.widgets.find(item=>{return item.toLowerCase()==='layerlist'})){
+              var layerList = new LayerList({
+                view: view
+              });            
+              view.ui.add(layerList, "top-right");
+            }
+            
           }
           window.mapViewList.push({ id: props.id, view: view });
           return () => {
