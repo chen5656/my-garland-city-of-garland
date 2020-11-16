@@ -58,9 +58,18 @@ export default function SimpleModal(props) {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <Button onClick={handleClose} className={classes.closeBtn} >
+        <CloseIcon />
+      </Button>
+      {/* <p id="simple-modal-description">
+        
+      </p> */}
+      {props.body}
+    </div>
+  );
   return (
-    //className=' d-none d-sm-block '
     <div >
       {smScreen ?
         <Button  size='small' variant='contained' color="primary" onClick={handleOpen} >
@@ -77,13 +86,7 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <div style={modalStyle} className={classes.paper}>
-
-          <Button onClick={handleClose} className={classes.closeBtn} >
-            <CloseIcon />
-          </Button>
-          {props.body}
-        </div>
+          {body}
       </Modal>
     </div>
   );
