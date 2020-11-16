@@ -4,7 +4,6 @@ import { loadModules } from 'esri-loader';
 class AddPoint extends PureComponent {
 
     addPoint(mapviews, geometry, fullAddress) {
-        console.log(mapviews)
         loadModules(["esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService", "esri/geometry/SpatialReference", "esri/Graphic"])
             .then(([ProjectParameters, GeometryService, SpatialReference, Graphic]) => {
                 var geomSer = new GeometryService("https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
@@ -64,14 +63,12 @@ class AddPoint extends PureComponent {
         })
     }
     componentDidMount() {
-        console.log('mount', this.props.geometry)
         if (this.props.geometry) {
             this.addPoint(this.props.mapviews, this.props.geometry, this.props.fullAddress);
         }
     }
 
     componentDidUpdate() {
-        console.log('update', this.props.geometry)
         if (this.props.geometry) {
             this.addPoint(this.props.mapviews, this.props.geometry, this.props.fullAddress);
         } else {

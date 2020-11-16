@@ -34,17 +34,7 @@ export default function SimpleModal(props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const body = (
-    <div style={smScreen ?
-      { top: '0', left: '0', width: '100%', height: '100%', } :
-      { top: '5%', left: '5%', width: '85%', height: '85%', }}
-      className={classes.paper}>
-      <Button onClick={handleClose} className={classes.closeBtn} >
-        <CloseIcon />
-      </Button>
-      {props.body}
-    </div>
-  );
+  
   return (
     <div >
       {smScreen ?
@@ -62,7 +52,15 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        {body}
+            <div style={smScreen ?
+      { top: '0', left: '0', width: '100%', height: '100%', } :
+      { top: '5%', left: '5%', width: '85%', height: '85%', }}
+      className={classes.paper}>
+      <Button onClick={handleClose} className={classes.closeBtn} >
+        <CloseIcon />
+      </Button>
+      {props.body}
+    </div>
       </Modal>
     </div>
   );
