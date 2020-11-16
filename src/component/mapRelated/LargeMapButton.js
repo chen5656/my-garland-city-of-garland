@@ -5,28 +5,6 @@ import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 
-
-
-
-function getModalStyle(smScreen) {
-  if(smScreen){
-    return {
-      top: '0',
-      left: '0',
-      // transform: `translate(-${top}%, -${left}%)`,
-      width: '100%',
-      height: '100%',
-    };
-  }
-  return {
-    top: '5%',
-    left: '5%',
-    // transform: `translate(-${top}%, -${left}%)`,
-    width: '85%',
-    height: '85%',
-  };
-}
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
@@ -45,10 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleModal(props) {
-  const smScreen = (window.innerWidth<576);
+  const smScreen = (window.innerWidth < 576);
   const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle(smScreen));
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -59,20 +35,20 @@ export default function SimpleModal(props) {
     setOpen(false);
   };
   const body = (
-    <div style={modalStyle} className={classes.paper}>
+    <div style={smScreen ?
+      { top: '0', left: '0', width: '100%', height: '100%', } :
+      { top: '5%', left: '5%', width: '85%', height: '85%', }}
+      className={classes.paper}>
       <Button onClick={handleClose} className={classes.closeBtn} >
         <CloseIcon />
       </Button>
-      {/* <p id="simple-modal-description">
-        
-      </p> */}
       {props.body}
     </div>
   );
   return (
     <div >
       {smScreen ?
-        <Button  size='small' variant='contained' color="primary" onClick={handleOpen} >
+        <Button size='small' variant='contained' color="primary" onClick={handleOpen} >
           <ZoomOutMapIcon />
         </Button>
         :
@@ -86,7 +62,7 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-          {body}
+        {body}
       </Modal>
     </div>
   );
