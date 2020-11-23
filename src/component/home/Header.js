@@ -3,8 +3,6 @@ import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
 import MapView from '../mapRelated/MapView';
 
 const titleStyle = {
-  fontWeight: '900',
-  textShadow: '2px 2px DarkGray',
   top: '170px',
   right: 0,
   height: '85px',
@@ -15,7 +13,7 @@ const titleStyle = {
 }
 
 const TitlePng = () => {
-  return <img className={'d-none d-sm-block'} src={logo} style={titleStyle} alt='City of Garland' />;
+  return <img className='d-none d-sm-block ml-auto' src={logo} style={titleStyle} alt='City of Garland' />;
 };
 export default function Header(props) {
   return (
