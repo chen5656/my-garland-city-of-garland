@@ -13,7 +13,7 @@ const titleStyle = {
 }
 
 const TitlePng = () => {
-  return <img className='d-none d-sm-block ml-auto' src={logo} style={titleStyle} alt='City of Garland' />;
+  return <img className='d-none d-sm-block' src={logo} style={titleStyle} alt='City of Garland' />;
 };
 export default function Header(props) {
   return (
