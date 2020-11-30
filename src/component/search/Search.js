@@ -7,7 +7,7 @@ import AddressNotFound from './AddressNotFound';
 import Result from '../searchResult/Result';
 import SearchWidget from './SearchWidget';
 import MapSection from '../searchResult/MapSection';
-import json_factorList from '../../data/factorList.json';
+import {dataFactors} from '../../data/factorList';
 import AddPntToMap from '../mapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -84,9 +84,9 @@ export default class AddressSearch extends PureComponent {
     }
 
     componentDidMount = () => {
-        this.getCityFacilityList(json_factorList);
-        this.getParcelFieldList(json_factorList);
-        this.getServiceZoneList(json_factorList);
+        this.getCityFacilityList(dataFactors);
+        this.getParcelFieldList(dataFactors);
+        this.getServiceZoneList(dataFactors);
     }
 
     componentDidUpdate = () => {

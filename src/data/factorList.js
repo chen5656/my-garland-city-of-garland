@@ -1,4 +1,4 @@
-[
+export const dataFactors=[
     {
         "id": "city-hall",
         "name": "City Hall",
@@ -373,7 +373,7 @@
                     "email": "EMAIL"
                 }
             ]
-        }
+        } 
     },
     {
         "id": "council-dist",

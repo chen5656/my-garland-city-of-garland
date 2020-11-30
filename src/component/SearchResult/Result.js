@@ -10,8 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
 
-import json_sectionList from '../../data/sectionList.json';
-import json_categoryList from '../../data/categoryList.json';
+import {displayCategories,displaySections} from '../../data/categoryList';
 
 import staticButtons from './staticButton';
 import ListCollapse from './ListCollapse';
@@ -107,7 +106,7 @@ const Category = (props) => {
 
 const Section = (props) => {
   const classes = useStyles();
-  const categoryList = json_categoryList.filter(item => item.category === props.sectionId);
+  const categoryList = displayCategories.filter(item => item.category === props.sectionId);
 
 
   return (<div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12'}>
@@ -326,7 +325,7 @@ class Result extends PureComponent {
   render() {
     return (<>
       {
-        json_sectionList.map((item) => {
+        displaySections.map((item) => {
           return <Section name={item.name} sectionId={item.id} key={item.id}
             factorList={this.state.factorList}
             factorDataList={this.state.factorDataList}
