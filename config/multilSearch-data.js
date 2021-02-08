@@ -170,7 +170,7 @@ var multilSearch_settings = {
       "id": "nearest-city-facility-with-wifi",
       "name": "Nearest Public Wi-Fi",
       "addressValue": "ADDRESS",
-      "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
+      "url": "https://maps.garlandtx.gov/arcgis/rest/services/GarlandPublicWiFi/GarlandPublicWiFi/MapServer/0",
       "where": "WIFI ='Yes'",
       "displayControl": {
         "containerID": "service",
