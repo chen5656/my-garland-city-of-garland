@@ -43,6 +43,32 @@ var appSetting = {
     "streetCondition": {
       "map": {
         "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/ACTIVE_PROJECTS_SRV_10_5/MapServer",
+        sublayers: [{
+            id: 0,
+            visible: true,
+            popupTemplate: {     
+              title: `<b>PROJECT NUMBER:</b> {PROJECT_NUMBER} `,
+              content: `<b>Name:</b> {PROJECT}<br><b>Location:</b> {LOCATION}<br>`,
+            }
+          },
+          {
+            id: 1,
+            visible: true,
+            popupTemplate: {
+              title: `<b>PROJECT NUMBER:</b> {PROJECT_NUMBER} `,
+              content: `<b>Name:</b> {PROJECT}<br><b>Location:</b> {LOCATION}<br>`,
+            }
+          },
+          {
+            id: 2,
+            visible: true,
+           
+          },
+          {
+            id: 3,
+            visible: true,
+          }
+        ]
       },
       "sublayerToggle": [2],
       "legend": {
