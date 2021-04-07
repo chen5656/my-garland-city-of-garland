@@ -228,7 +228,7 @@ require([
             }
         );
     }
-
+ 
     function toggleSteetPCI(isOn) {
         var node = dom.byId("street-condition-legend");
         if (isOn) {
