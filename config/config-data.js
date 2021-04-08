@@ -42,39 +42,16 @@ var appSetting = {
     },
     "streetCondition": {
       "map": {
-        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/ACTIVE_PROJECTS_SRV_10_5/MapServer",
-        sublayers: [
-          {
-            id: 2,
-            visible: true,
-           
-          },
-          {
-            id: 3,
-            visible: true,
-          },
-          {
-            id: 0,
-            visible: true,
-            popupTemplate: {     
-              title: `<b>PROJECT NUMBER:</b> {PROJECT_NUMBER} `,
-              content: `<b>Name:</b> {PROJECT}<br><b>Location:</b> {LOCATION}<br>`,
-            }
-          },
-          {
-            id: 1,
-            visible: true,
-            popupTemplate: {
-              title: `<b>PROJECT NUMBER:</b> {PROJECT_NUMBER} `,
-              content: `<b>Name:</b> {PROJECT}<br><b>Location:</b> {LOCATION}<br>`,
-            }
-          }
-        ]
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/",
+        "sublayers": [{
+          "id": 37,
+          "visible": true
+        }]
       },
-      "sublayerToggle": [2],
+      
       "legend": {
         "title": "Street PCI Legend",
-        "renderer": [{
+        "renderer": [ {
           "color": "rgba(36,116,0,1)",
           "label": "Excellent",
           "type": "polyline",
@@ -103,20 +80,22 @@ var appSetting = {
 
       }
     },
-    "crimeMap": {
-      "featureLayerUrl": "https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",
-      "popUpTemplate": {
-        "title": "<b>{OFFENSE}</b>",
-        "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-          "<b>CASE ID: </b>{CASEID}<br>" +
-          "<b>OFFENSE: </b>{OFFENSE}<br>",
-        "fieldInfos": [{
-          "fieldName": "OCCURRED_O",
-          "format": {
-            "dateFormat": "short-date"
+    "crimeMap":{
+      "featureLayerUrl":"https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",
+      "popUpTemplate":{
+        "title":"<b>{OFFENSE}</b>",
+        "content":"<b>OCCURRED ON: </b>{OCCURRED_O}<br>"+
+        "<b>CASE ID: </b>{CASEID}<br>"+
+        "<b>OFFENSE: </b>{OFFENSE}<br>",
+        "fieldInfos": [
+          {
+            "fieldName": "OCCURRED_O",
+            "format": {
+              "dateFormat": "short-date"
+            }
           }
-        }]
-      }
+        ]
+    }
     }
   },
 

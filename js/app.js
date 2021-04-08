@@ -19,13 +19,12 @@ var template = new myGarland.templates();
 var saveToIndexDB = new myGarland.clientStorage();
 var recentUpdateTime = new Date(2020, 3, 1); //,1, means feb.
 
-var view, subMap, subView, crimeMap, crimeView, search, streetPCILayer;
+var view, subMap, subView, crimeMap, crimeView, search;
 
 var councilDistrict_Hyperlink;
 
-var months = [0, "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
+var months = [0,"January", "February", "March", "April", "May", "June", 
+           "July", "August", "September", "October", "November", "December" ];
 
 require([
     'dojo/dom',
@@ -231,24 +230,37 @@ require([
     }
  
     function toggleSteetPCI(isOn) {
-
-
-        if (!streetPCILayer) {
-            streetPCILayer = new MapImageLayer(appSetting.subMap.streetCondition.map);
-            subMap.layers.add(streetPCILayer);
-        } else {
-            appSetting.subMap.streetCondition.sublayerToggle.forEach(function (id) {
-                var sublayer = streetPCILayer.findSublayerById(parseInt(id));
-                sublayer.visible = isOn;
-            });
-        }
-
         var node = dom.byId("street-condition-legend");
         if (isOn) {
-            domClass.remove(node, 'd-none');
+
+            if (domClass.contains(node, "d-none")) {
+                domClass.remove(node, 'd-none');
+            }
+            var layer = new MapImageLayer(appSetting.subMap.streetCondition.map);
+            subMap.layers.add(layer);
         } else {
-            domClass.add(node, 'd-none');
+            if (domClass.contains(node, "d-none") == false) {
+                domClass.add(node, 'd-none');
+            }
+            var layers = subMap.layers.items.filter(function (layer) {
+
+                if (cleanUrl(layer.url) == cleanUrl(appSetting.subMap.streetCondition.map.url)) {
+
+                    for (var sublayer of layer.sublayers.items) {
+                        if (sublayer.id == appSetting.subMap.streetCondition.map.sublayers[0].id) {
+                            return true;
+                        }
+                    }
+                }
+            });
+            subMap.removeMany(layers);
+
+            function cleanUrl(url) {
+                return url.toLowerCase().split("/rest/")[1].split("/mapserver")[0];
+
+            }
         }
+
     }
 
     //init: map,submap, crimeMap,view
@@ -299,12 +311,12 @@ require([
                 rotationEnabled: false
             }
         });
-
-        featureLayer.queryFeatures().then(function (result) {
+        
+        featureLayer .queryFeatures().then(function(result){
             var fileLocation = result.features[0].attributes.IMPORTFROM.split('\\');
-            var year = fileLocation[4].split("_")[0];
+            var year= fileLocation[4].split("_")[0];
             var monthName = months[Number(fileLocation[4].split("_")[1])];
-            document.getElementById("crime_title_month").innerHTML = " – " + monthName + " " + year;
+            document.getElementById("crime_title_month").innerHTML=" – "+monthName +" " + year;
         });
 
         document.getElementById("crime-legend-checkbox").onclick = function () {
