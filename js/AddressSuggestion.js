@@ -141,7 +141,6 @@ define([
     
         function displayUniquleStreetList(features, AddrNumber) {
             //get unique value
-            debugger;
             var distinct = getUnique(features.map(function (feature) {
                 return feature.attributes.STREETLABEL;
             }));

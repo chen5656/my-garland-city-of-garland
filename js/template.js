@@ -13,14 +13,6 @@ function addClass(el, className) {
     }
 }
 
-function removeClass(el, className) {
-    if (el.classList)
-        el.classList.remove(className)
-    else if (hasClass(el, className)) {
-        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-        el.className = el.className.replace(reg, ' ');
-    }
-}
 
 function formatPhoneNumber(phoneNumberString) {
     var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
@@ -38,27 +30,6 @@ var arrayFrom = function (nodelist) {
 };
 
 var containerList = multilSearch_settings.containerList;
-
-var generateCrimeMapIframe = function (urlProp) {
-
-    var temp = document.querySelector('#crime-map-iframe').innerHTML;
-    temp = temp.replace(/{{lat1}}/g, urlProp.lat-0.12)
-        .replace(/{{long1}}/g, urlProp.long-0.05)
-        .replace(/{{lat2}}/g, urlProp.lat+0.12)
-        .replace(/{{long2}}/g, urlProp.long+0.05)
-        .replace(/{{lat0}}/g, urlProp.lat)
-        .replace(/{{long0}}/g, urlProp.long)
-
-
-
-    var temp1 = document.querySelector('#crime-map-title').innerHTML;
-    temp1 = temp1;
-
-    return {
-        title: temp1,
-        iframe: temp
-    };
-};
 
 var generateResultItem = function (item) {
     if (item.displayControl.displayFunction) {
@@ -219,7 +190,6 @@ var generateSuggestAddress = function (address) {
 };
 
 myGarland.templates.prototype = {
-    generateCrimeMapIframe: generateCrimeMapIframe,
     appendToPage: appendToPage,
     generateSuggestAddress: generateSuggestAddress
 };

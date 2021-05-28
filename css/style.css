@@ -17,15 +17,6 @@
     margin: 5px;
 }
 
-
-/* body {
-  font-family:publicSans, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Roboto", "Oxygen",s
-    "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-
-} */
-
 .grey-background {
   background-color: #fcfbfa;
 }
@@ -182,10 +173,6 @@ header .absolute {
   padding: 2px;
 }
 
-.r-subtitle {
-  color: rgb(29, 29, 65);
-  margin-left: 10px;
-}
 
 .location-data-tag {
   font-weight: 500;
@@ -196,10 +183,6 @@ header .absolute {
   font-size: 18px;
   text-transform: uppercase;
 
-}
-
-.btn-secondary-right {
-  float: right;
 }
 
 .font-grey {
@@ -219,9 +202,6 @@ header .absolute {
   line-height: 1.4;
 }
 
-/* .card-body {
-  text-transform: capitalize;
-} */
 
 .browser-compatibility-alert {
   padding: 20px;
@@ -263,12 +243,6 @@ header .absolute {
 
 }
 
-#open-crime-map {
-  color: #fff;
-    background-color: #207ff7;
-    border-color: #207ff7;
-    float: right;
-}
 
 .r-content .blue-icon {
   font-weight: 900;
