@@ -89,7 +89,7 @@ var prepareHtmlData = function (item, searchTerm) {
     newItem.displayControl = item.displayControl;
 
     if (item.queryPolygonCount == 0) {
-        newItem.displayValue1 = "NULL";
+        newItem.displayValue1 = "NONE";
         newItem.displayValue2 = "";
         return newItem;
     }
@@ -104,7 +104,11 @@ var prepareHtmlData = function (item, searchTerm) {
 
     ["displayValue1", "displayValue2", "displayValue3", "displayValue4"].forEach(function (val) {
         if (item.displayControl[val]) {
-            newItem[val] = item.feature[item.displayControl[val]];
+            if(item.feature[item.displayControl[val]]==""){
+                newItem[val] ="None";
+            }else{
+                newItem[val] = item.feature[item.displayControl[val]];
+            }
         } else {
             newItem[val] = "";
         }
