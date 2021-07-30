@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+  <meta name='author' content='Huajun Chen'>
+  <meta name='description'
+    content='My Address aims to provide residents information on nearest city facilities, service zones, neighborhoods and development information. And also provide a crime data map.'>
+  <title>My Garland</title>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6XPFZECHZW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6XPFZECHZW');
+</script>
+  <!-- iOS -->
+  <meta name="apple-mobile-web-app-title" content="My Garland">
+  <meta name="application-name" content="My Garland">
+
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon" sizes="60x60" href="images/icon-60x60.png">
+  <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="76x76" href="images/icon-76x76.png">
+  <!-- For iPhone with @2× display running iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="120x120" href="images/icon-120x120.png">
+  <!-- For iPad with @2× display running iOS ≥ 7: -->
+  <link rel="apple-touch-icon" sizes="152x152" href="images/icon-152x152.png">
+  <!-- For iPhone 6 Plus with @3× display: -->
+  <link rel="apple-touch-icon" sizes="180x180" href="images/icon-180x180.png">
+
+  <!-- Desktop Browsers -->
+  <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="images/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="images/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16">
+
+  <!-- Android: Chrome M31 and up, ignored if manifest is present-->
+  <!-- For Chrome for Android: -->
+  <link rel="icon" sizes="192x192" href="images/android-chrome-192x192.png">
+
+  <!--  <link href='images/favicon.ico' rel='icon' type='image/x-icon' /> -->
+  <link rel='stylesheet' href='css/style.css'>
+  <link rel='stylesheet' href='resources/bootstrap/bootstrap.4.3.1.min.css' />
+  <link rel='stylesheet' href='https://js.arcgis.com/4.11/esri/css/main.css'>
+</head>
+
+<body>
+  <div id='browser-check'>
+    <noscript>
+      <div class='browser-compatibility-alert d-block bg-danger text-white'>
+        <!-- <div class='col-lg-4 col-md-6 font-grey'> -->
+        <p class='browser-error'>Your browser's Javascript functionality is turned off. Please turn it on.</p>
+        <!-- </div> -->
+      </div>
+    </noscript>
+    <div class='browser-compatibility-alert d-block bg-danger text-white'>
+      <p>The web browser you are using right now may not be fully functional. Please use Chrome or Firefox instead.</p>
+    </div>
+  </div>
+
+  <header>
+    <div class='overflow-hidden relative' aria-hidden='true'>
+      <div id='viewDiv' style='width: 100%; height: 350px;'>
+      </div>
+      <div class='absolute'>
+        <h1 class='title'>My Garland</h1>
+      </div>
+    </div>
+  </header>
+  <!-- style='display:none;' -->
+  <main>
+
+    <div class='container-fluid'>
+      <div id='main-content' class='d-none'>
+
+        <div class='row justify-content-md-center r-search-box'>
+          <!-- search bar -->
+          <div class=' col-lg-4 col-md-6'>
+            <div class='mb-3 col-12'>
+              <p>Enter a valid City of Garland Address to look up City data.</p>
+            </div>
+            <div id='search'></div>
+
+          </div>
+        </div>
+        <article class='row grey-background py-4 d-none' id='nodeResult'>
+
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
+
+            <h2 class='r-title'>
+              Location Data
+            </h2>
+            <div class='r-content'>
+
+              <section class='card'>
+                <div class='card-header' id='headingOne'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseOne'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Nearby City Facilities
+                    </h3>
+                  </div>
+                </div>
+                <div id='collapseOne' class='card-body collapse show' aria-labelledby='headingOne'
+                  data-parent='#accordion'>
+                  <div id='nearestCityFacility'>
+                    <div class='spinner-grow' role='status'>
+                      <span class='sr-only'>Loading...</span>
+                    </div>
+                    <ul> </ul>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingTwo'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseTwo'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Services</h3>
+                  </div>
+                </div>
+                <div id='collapseTwo' class='card-body collapse show' aria-labelledby='headingTwo'
+                  data-parent='#accordion'>
+                  <div id='service'>
+                    <div class='spinner-grow' role='status'>
+                      <span class='sr-only'>Loading...</span></div>
+                    <ul></ul>
+                  </div>
+
+                  <div class='row' id = "service-hyperlinks" class="d-none">
+                    <div id="ews_link" class="col hyperlink-button">
+                      <a href="https://issuu.com/garlandtx/docs/ews_calendar_2021-web" target="_blank"
+                        title="goto Environmental Waste Services">* For Holiday Pickup Exceptions Click Here<br> <img
+                          src="images/Env-Waste-Svcs.png" alt="Environmental Waste Services Logo">
+                      </a>
+                    </div>
+                    <div id="eassist_link" class="col  hyperlink-button">
+                      <a href="https://iframe.publicstuff.com/#?client_id=417" target="_blank"
+                        title="Report an issue and watch it get fixed">Report an issue and watch it get fixed.<br> <img
+                          src="images/eassist.jpg" alt="Garland E Assist Logo">
+                      </a>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </section>
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card'>
+            <h2 class='r-title'>
+              Reference Data
+            </h2>
+            <div class='r-content'>
+              <section class='card'>
+                <div class='card-header' id='headingFour'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFour'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Reference</h3>
+                  </div>
+                </div>
+                <div id='collapseFour' class='card-body collapse show' aria-labelledby='headingFour'
+                  data-parent='#accordion'>
+                  <div id='parcelInfo'>
+                    <div class='spinner-grow' role='status'>
+                      <span class='sr-only'>Loading...</span>
+                    </div>
+                    <ul></ul>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingFive'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseFive'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Neighborhoods</h3>
+                  </div>
+                </div>
+                <div id='collapseFive' class='card-body collapse show' aria-labelledby='headingFive'
+                  data-parent='#accordion'>
+                  <div id='neighborhoods'>
+                    <div class='spinner-grow' role='status'>
+                      <span class='sr-only'>Loading...</span></div>
+                    <ul></ul>
+                    
+                  <div class='row' id = "construction-hyperlinks" class="d-none">
+                    <div id="construction_link" class="col hyperlink-button">
+                      <a href="https://maps.garlandtx.gov/cogmap/apps/webappviewer/index.html?id=f0e66ce6ecec4d728e7cb4ef0471b2ff" target="_blank"
+                        title="Construction sites">Find out about construction and infrastructure projects<br> <img
+                          src="images/under-construction.png" alt="Construction Logo">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class='card-header' id='headingThree'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseThree'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Planning &amp; Development &#47; Zoning
+                    </h3>
+                  </div>
+                </div>
+                <div id='collapseThree' class='card-body collapse show' aria-labelledby='headingThree'
+                  data-parent='#accordion'>
+                  <div id='planning_development-zoning'>
+                    <div class='spinner-grow' role='status'>
+                      <span class='sr-only'>Loading...</span></div>
+                    <ul></ul>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <!--If want to make it default as hidden. Remove show in the card-body class, and change esri-icon-minus to esri-icon-plus -->
+                <div class='card-header' id='headingEight'>
+                  <div class='mb-0 btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseEight'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Streets Condition
+                    </h3>
+                  </div>
+                </div>
+                <div id='collapseEight' class='card-body collapse show' aria-labelledby='headingEight'
+                  data-parent='#accordion'>
+                  <div id='street-condition'>
+
+                    <div id='street-condition-toggle' class="ios-toggle">
+                      <label>
+                        <span class='mb-2 pl-4'>Add Street PCI to the map</span><br>
+                        <input type='checkbox' class='ios-switch' id='street-condition-checkbox' />
+                        <span class='switch'></span>
+                      </label>
+                    </div>
+                    <div class='p-2 mt-3 d-none black-border' id='street-condition-legend'>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section class='col-lg-4 col-md-12 col-sm-12 r-card' aria-hidden='true'>
+            <h2 class='r-title'>
+              Map Data
+            </h2>
+            <div class='r-content'>
+              <section class='card'>
+                <div class='card-header' id='headingSeven'>
+                  <div class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSeven'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Street Condition</h3>
+                  </div>
+                </div>
+                <div id='collapseSeven' class='card-body collapse show' aria-labelledby='headingSeven'
+                  data-parent='#accordion'>
+                  <div id='subMap'>
+                    <div id='subMapView' style='width: 100%; height: 350px;'></div>
+                  </div>
+                </div>
+              </section>
+              <section class='card'>
+                <div class="card-header" id="headingSix">
+                  <div class='btn btn-link collapsed' data-toggle='collapse' aria-controls='collapseSix'>
+                    <i class='esri-icon-minus blue-icon'></i>
+                    <h3>Monthly Crime Map<span id="crime_title_month"></span></h3>
+                  </div>
+                </div>
+                <div id="collapseSix" class="card-body collapse show" aria-labelledby="headingSix"
+                  data-parent="#accordion">
+                  <h4>
+                     <!-- class='btn btn-primary float-right'  -->
+                  <a 
+                   
+                     href='https://garlandtx.gov/396/Crime-Statistics-Maps'
+          target='_blank' title='Crime-Statistics-Maps'> Link to more reports/resources</a></h4>
+                  <div id='crimeMap'>
+                    <div id='crimeView' style='width: 100%; height: 350px;'></div>
+                  </div>
+                  <div id='crime-legend-toggle' class="ios-toggle">
+                    <label>
+                      <span class='mb-2 pl-4'>Show Legend</span><br>
+                      <input type='checkbox' class='ios-switch' id='crime-legend-checkbox' />
+                      <span class='switch'></span>
+                    </label>
+                  </div>
+                  <div id="crime-legend" class=' d-none '>
+                    <img src="images/crime-legend.jpg" alt="Crime legend">
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </section>
+
+        </article>
+        <article class='row justify-content-md-center pt-4 d-none grey-background relative' id='suggestedAddresses'>
+          <div class='col-lg-4 col-md-8 col-sm-12'>
+            <div class='card'>
+              <div class='card-body '>
+                <h2 class='card-title pb-3'>
+                  Address not found. </h2>
+                <div class='absolute float-right'>
+                  <abbr title='Close this card'>
+                    <button type="button" class="close closeButton" aria-controls='suggestedAddresses'
+                      aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </abbr>
+                </div>
+                <div class='card-text' id='address-links'>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+    <div class='grey-background py-4' id='nodeLinks'>
+      <!-- FAQs, Open Data -->
+    </div>
+  </main>
+  <footer class='pt-2 px-3 font-grey'>
+    <!--facebook twitter info -->
+    <p class='copyright mb-2'> Copyright 2018. City of Garland. </p>
+    <p class='copyright-content'>Texas Government Code § 2051.102 (2011): This product is for informational purposes
+      and may not have been prepared for
+      or be suitable for legal, engineering, or surveying purposes. It does not represent an on-the-ground survey and
+      represents
+      only the approximate relative location of property boundaries.</p>
+  </footer>
+
+  <script id='search-result-display' type='text/template'>
+    <li index='{{index}}' id='{{id}}'>
+      <span class='location-data-tag'>{{name}}: </span>
+      <span class='location-data-value'>{{displayValue1}}</span>
+      <span class='location-data-distance'> {{distance}}</span>
+      <span class='location-data-value'><a href='{{link}}'
+          target='_blank' title='{{linkTitle}}'> {{displayValue2}}</a></span>
+    </li>
+  </script>
+
+  <script id='search-result-display-hardcode' type='text/template'>
+    <li index='{{index}}' id='{{id}}'>
+      <span class='location-data-tag'>{{name}}: </span>
+      {{hardcode}}
+    </li>
+  </script>
+
+  <script id='suggest-address' type='text/template'>
+    <li><button class="btn btn-link">{{streetNumber}} {{streetLabel}}</button></li>
+  </script>
+
+  <script>
+    //check if IE 7
+    (function () {
+      var ie = IeVersion();
+      console.log('IsIE: ' + ie.IsIE + '||' + 'TrueVersion: ' + ie.TrueVersion + '||' + 'ActingVersion: ' + ie
+        .ActingVersion);
+      if (ie.IsIE == true && (ie.TrueVersion < 11 || ie.ActingVersion < 11)) {
+        document.getElementById('browser-check').style.display = 'block';
+      } else {
+        document.getElementById('browser-check').style.display = 'none';
+      }
+
+      function IeVersion() {
+        //Set defaults
+        var value = {
+          IsIE: false,
+          TrueVersion: 0,
+          ActingVersion: 0,
+          CompatibilityMode: false
+        };
+
+        //Try to find the Trident version number
+        var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+        if (trident) {
+          value.IsIE = true;
+          //Convert from the Trident version number to the IE version number
+          value.TrueVersion = parseInt(trident[1], 10) + 4;
+        }
+
+        //Try to find the MSIE number
+        var msie = navigator.userAgent.match(/MSIE (\d+)/);
+        if (msie) {
+          value.IsIE = true;
+          //Find the IE version number from the user agent string
+          value.ActingVersion = parseInt(msie[1]);
+        } else {
+          //Must be IE 11 in 'edge' mode
+          value.ActingVersion = value.TrueVersion;
+        }
+
+        //If we have both a Trident and MSIE version number, see if they're different
+        if (value.IsIE && value.TrueVersion > 0 && value.ActingVersion > 0) {
+          //In compatibility mode if the trident number doesn't match up with the MSIE number
+          value.CompatibilityMode = value.TrueVersion != value.ActingVersion;
+        }
+        return value;
+      }
+
+    })();
+  </script>
+
+  <script src='config/multilSearch-data.js'></script>
+  <script src='config/config-data.js'></script>
+
+  <script src="resources/localforage/localforage.min.js"></script>
+
+  <script src='https://js.arcgis.com/4.11/'></script>
+
+  <script src='js/clientStorage.js'></script>
+  <script src='js/template.js'></script>
+  <script src='js/app.js'></script>
+</body>
+
+</html>
