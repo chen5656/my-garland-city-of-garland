@@ -1,0 +1,30 @@
+export const displayCategories=[{
+      "id": "nearest-city-facility",
+      "name": "Nearby City Facilities",
+      "category": "location-data"
+    }, {
+      "id": "services",
+      "name": "Services",
+      "category": "location-data"
+    }, {
+      "id": "reference",
+      "name": "Reference",
+      "category": "reference-data"
+    }, {
+      "id": "neighborhoods",
+      "name": "Neighborhoods",
+      "category": "reference-data"
+    }, {
+      "id": "planning-development-zoning",
+      "name": "Planning & Development / Zoing",
+      "category": "reference-data"
+    }];
+
+export const displaySections= [{
+      "id": "location-data",
+      "name": "Location Data"
+    }, {
+      "id": "reference-data",
+      "name": "Reference Data"
+    } 
+  ];
