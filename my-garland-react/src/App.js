@@ -5,7 +5,7 @@ import Footer from './component/home/Footer';
 import Search from './component/Search/Search';
 
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
 } from "react-router-dom";
 const ie11Polyfill = () => {
   // Also polyfill Array.isArray:

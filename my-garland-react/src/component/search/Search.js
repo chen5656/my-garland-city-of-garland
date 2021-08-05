@@ -13,7 +13,7 @@ import {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 
-// import AddressNotFound from '.AddressNotFound';
+import AddressNotFound from './NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import MapSection from '../SearchResult/MapSection';
@@ -126,7 +126,7 @@ const AddressSearch = (props) => {
                                     }} />
                                     <Route path="/:addressId" render={({ match }) => {
                                         return <>
-                                            <Result
+                                            {/* <Result
                                                 RefID={match.params.addressId.replace(/[ ,.]/g, '')}
                                                 factorList={{
                                                     // 'city-facility': this.state['city-facility'],
@@ -135,7 +135,7 @@ const AddressSearch = (props) => {
                                                 }}
                                                 parcelFields={parcelFieldParameter}
                                                 // getGeometryAndFullAddress={this.getGeometryAndFullAddress}
-                                            />
+                                            /> */}
                                         </>
                                     }} />
                             </Switch>
