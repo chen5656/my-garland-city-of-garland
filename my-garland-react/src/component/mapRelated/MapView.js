@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { loadModules } from 'esri-loader';
+
+import MapView from "@arcgis/core/views/MapView";
+import Map from "@arcgis/core/Map";
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Legend from '@arcgis/core/widgets/Legend';
+import LayerList from '@arcgis/core/widgets/LayerList';
+
 const WebMapView = (props) => {
-  const mapRef = useRef();
+  const mapDiv = useRef(null);
   if (!Array.isArray(window.mapViewList)) {
     window.mapViewList = [];
   } 
@@ -9,12 +16,8 @@ const WebMapView = (props) => {
     window.layerViewList = [];
   } 
 
-  useEffect(
-    () => {
-      // lazy load the required ArcGIS API for JavaScript modules and CSS
-      loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/MapImageLayer',
-        'esri/layers/FeatureLayer',"esri/widgets/Legend","esri/widgets/LayerList"], { css: true })
-        .then(([ArcGISMap, MapView, MapImageLayer, FeatureLayer,Legend,LayerList]) => {
+  useEffect(() => {
+      if(mapDiv.current){
           var layers = [];
           if (props.layerList) {
             layers = props.layerList.map((layer) => {
@@ -44,14 +47,14 @@ const WebMapView = (props) => {
             }))
           }
           
-          const map = new ArcGISMap({
+          const map = new Map({
             basemap: props.basemap ? props.basemap : 'gray-vector',
             layers: layers
           });
 
           // load the map view at the ref's DOM node
           const view = new MapView({
-            container: mapRef.current,
+            container: mapDiv.current,
             map: map,
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
             zoom: props.zoomLevel ? props.zoomLevel : 11,        
@@ -71,21 +74,12 @@ const WebMapView = (props) => {
                     layer:item,
                     type:'map-image',
                     parentLayer:layer,
-                  });  
+                  }); 
 
-                })   
-                        
+                })      
               }
-
-              
             })
-            .catch(function(error) {
-              // An error occurred during the layerview creation
-            });
           })
-       
-
-
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
           }
@@ -105,19 +99,13 @@ const WebMapView = (props) => {
             
           }
           window.mapViewList.push({ id: props.id, view: view });
-          return () => {
-            if (view) {
-              // destroy the map view
-              view.destroy();
-            }
-          };
-        });
-    }
+        }
+    },[]
   );
   
   
   return <>
-    <div className='webmap' ref={mapRef} style={{ height: props.viewHeight ? props.viewHeight : '300px' }} />
+    <div className='webmap' ref={mapDiv} style={{ height: props.viewHeight ? props.viewHeight : '300px' }} />
     {props.showButton ?<div id={props.showButton.id} >{props.showButton.value}</div>:null}
   </>
 };

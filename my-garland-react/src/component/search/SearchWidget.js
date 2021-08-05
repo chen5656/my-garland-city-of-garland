@@ -44,7 +44,7 @@ class SearchWidget extends PureComponent {
 
         searchWidget.on('search-start', function (e) {
           window.location.hash = "";
-          that.props.newSearch();
+          that.props.resetSearch();
           that.routingFunction('');
         })
 

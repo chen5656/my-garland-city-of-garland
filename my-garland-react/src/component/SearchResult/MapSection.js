@@ -6,9 +6,9 @@ import List from '@material-ui/core/List';
 
 import Paper from '@material-ui/core/Paper';
 
-import MapView from '../mapRelated/MapView';
+import MapView from '../MapRelated/MapView';
 import ListCollapse from './ListCollapse';
-import LargeMapButton from '../mapRelated/LargeMapButton';
+import LargeMapButton from '../MapRelated/LargeMapButton';
 
 
 import Switch from '@material-ui/core/Switch';

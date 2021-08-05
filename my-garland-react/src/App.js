@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from './component/home/Header';
 import Footer from './component/home/Footer';
-import Search from './component/search/Search';
+import Search from './component/Search/Search';
 
 import {
   HashRouter as Router,

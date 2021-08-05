@@ -1,6 +1,6 @@
-import React from 'react';
+import React  from 'react';
 import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
-import MapView from '../mapRelated/MapView';
+import MapView from '../MapRelated/MapView';
 
 const titleStyle = {
   top: '170px',
