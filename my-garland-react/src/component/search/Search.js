@@ -10,6 +10,10 @@ import {
 
 } from "react-router-dom";
 
+import {
+    HashRouter as Router,
+  } from "react-router-dom";
+
 // import { loadModules } from 'esri-loader';
 
 import Query from '@arcgis/core/tasks/support/Query';
@@ -82,8 +86,6 @@ const ServiceZoneList = (props) => {
                 return item;
             });
             props.setPara(result);
-
-
         });
     }, []);
     return null;
@@ -95,7 +97,6 @@ const SearchContent=(props)=>{
     return    ( <Switch>
         <Route path="/match">
             <Result
-                RefID={query.get("addressid").replace(/[ ,.]/g, '')}
                 factorList={{
                     'city-facility': props.cityFacilityParameter,
                     'parcel-data': props.parcelFieldParameter.parameters,
@@ -107,12 +108,13 @@ const SearchContent=(props)=>{
         <Route path="/nomatch">
             <AddressNotFound suggestTerm={query.get("searchTerm")}/>
         </Route>
-        <Route path="/wrong-input">
-        <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
+        <Route path="/address-error">
+            <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
         </Route>
         <Route path="/">
+            <div>.</div>
         </Route>
-    </Switch> 
+    </Switch>
     );
 }
 
@@ -129,7 +131,7 @@ const AddressSearch = (props) => {
         setResultGeometry(null);
     }
 
-    return <div style={{ minHeight: '200px' }}>
+    return (<Router><div style={{ minHeight: '200px' }}>
         <SearchWidget searchTerm={searchTerm} resetSearch={resetSearch}/>
         <CityFacilityList factorList = {dataFactors} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {dataFactors}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
@@ -153,6 +155,7 @@ const AddressSearch = (props) => {
            <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
         }
     </div>
+    </Router>)
 }
 
 export default AddressSearch;

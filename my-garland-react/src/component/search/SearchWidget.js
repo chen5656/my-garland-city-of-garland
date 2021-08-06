@@ -52,7 +52,7 @@ const SearchContainer=(props)=>{
       searchWidget.on('select-result', function (e) {
         console.log('select-result');
         if (e.result) {
-          routingFunction(`match/?addressid=${e.result.feature.attributes.Ref_ID}`);
+          routingFunction(`match?addressid=${e.result.feature.attributes.Ref_ID}`);
         }
       });
     }
