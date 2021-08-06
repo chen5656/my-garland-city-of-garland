@@ -45,14 +45,14 @@ const SearchContainer=(props)=>{
       searchWidget.on('search-complete', function (e) {
         if (e.numResults === 0 && e.searchTerm) {
           //no address find from input, display suggestion.  
-          routingFunction(`?status=nomatch`);///${e.searchTerm}
+          routingFunction(`nomatch?searchTerm=${e.searchTerm}`);///${e.searchTerm}
         }
       });
 
       searchWidget.on('select-result', function (e) {
         console.log('select-result');
         if (e.result) {
-          routingFunction(`?status=match&addressid=${e.result.feature.attributes.Ref_ID}`);
+          routingFunction(`match/?addressid=${e.result.feature.attributes.Ref_ID}`);
         }
       });
     }

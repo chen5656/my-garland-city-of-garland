@@ -188,7 +188,7 @@ class Result extends PureComponent {
       } else {
         //didn't return a result
         debugger
-        that.routingFunction('?status=address-not-valid');
+        that.routingFunction('wrong-input');
       }
     });
   }

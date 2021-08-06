@@ -6,6 +6,7 @@ import React, {
 import {
     Route,
     useLocation,
+    Switch,
 
 } from "react-router-dom";
 
@@ -14,7 +15,7 @@ import {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 
-import AddressNotFound from './NoResult';
+import AddressNotFound from '../SearchResult/NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import MapSection from '../SearchResult/MapSection';
@@ -90,20 +91,32 @@ const ServiceZoneList = (props) => {
 };
 
 const SearchContent=(props)=>{
-    console.log(props)
-    if(props.status==='nomatch'){
-        return (<AddressNotFound suggestTerm={'1111 66'}/>)// search={setSearchTerm}
-    }
-    if(props.status==='address-not-valid'){
-        return  <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
-    }
-    return    <div>111 {props.status}</div>
-
+    let query = useQuery();
+    return    ( <Switch>
+        <Route path="/match">
+            <Result
+                RefID={query.get("addressid").replace(/[ ,.]/g, '')}
+                factorList={{
+                    'city-facility': props.cityFacilityParameter,
+                    'parcel-data': props.parcelFieldParameter.parameters,
+                    'service-zone': props.serviceZoneParameter,
+                }}
+                parcelFields={props.parcelFieldParameter.fields}
+            />
+        </Route>
+        <Route path="/nomatch">
+            <AddressNotFound suggestTerm={query.get("searchTerm")}/>
+        </Route>
+        <Route path="/wrong-input">
+        <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
+        </Route>
+        <Route path="/">
+        </Route>
+    </Switch> 
+    );
 }
 
 const AddressSearch = (props) => {
-    let query = useQuery();
-
     const [searchTerm, setSearchTerm] = useState(null);
     const [resultGeometry, setResultGeometry] = useState(null);
     const [fullAddress, setFullAddress] = useState(null);
@@ -126,7 +139,11 @@ const AddressSearch = (props) => {
            <article>
                <div className='container-fluid' id='my-garland-result' >
                     <div className='row ' >
-                        <SearchContent status={query.get("status")} />
+                        <SearchContent
+                            cityFacilityParameter={cityFacilityParameter}
+                            parcelFieldParameter={parcelFieldParameter}
+                            serviceZoneParameter={serviceZoneParameter}
+                        />
                     </div>
                 </div>
 
