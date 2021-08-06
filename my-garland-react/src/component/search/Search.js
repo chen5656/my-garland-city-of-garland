@@ -5,7 +5,8 @@ import React, {
 } from 'react';
 import {
     Route,
-    Switch
+    useLocation,
+
 } from "react-router-dom";
 
 // import { loadModules } from 'esri-loader';
@@ -24,6 +25,9 @@ import AddPntToMap from '../MapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const CityFacilityList = (props) => {
     useEffect(() => {
@@ -59,7 +63,6 @@ const ParcelFieldList = (props) => {
     }, [])
     return null;
 };
-
 const ServiceZoneList = (props) => {
     useEffect(() => {
         let factors = props.factorList.filter(item => item.inputControl.category === props.category);
@@ -81,12 +84,25 @@ const ServiceZoneList = (props) => {
 
 
         });
-    }, [])
+    }, []);
     return null;
 
 };
 
+const SearchContent=(props)=>{
+    console.log(props)
+    if(props.status==='nomatch'){
+        return (<AddressNotFound suggestTerm={'1111 66'}/>)// search={setSearchTerm}
+    }
+    if(props.status==='address-not-valid'){
+        return  <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
+    }
+    return    <div>111 {props.status}</div>
+
+}
+
 const AddressSearch = (props) => {
+    let query = useQuery();
 
     const [searchTerm, setSearchTerm] = useState(null);
     const [resultGeometry, setResultGeometry] = useState(null);
@@ -101,10 +117,7 @@ const AddressSearch = (props) => {
     }
 
     return <div style={{ minHeight: '200px' }}>
-        <SearchWidget
-                    searchTerm={searchTerm}
-                    resetSearch={resetSearch}                    
-                />
+        <SearchWidget searchTerm={searchTerm} resetSearch={resetSearch}/>
         <CityFacilityList factorList = {dataFactors} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {dataFactors}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {dataFactors}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
@@ -113,39 +126,14 @@ const AddressSearch = (props) => {
            <article>
                <div className='container-fluid' id='my-garland-result' >
                     <div className='row ' >
-                            <Switch>
-                                    <Route exact path="/" ><div></div></Route>
-                                    <Route exact path="/address-not-valid" >
-                                        <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
-                                    </Route>
-                                    <Route path="/nomatch/:searchTerm" render={({ match }) => {
-                                        return <AddressNotFound
-                                            suggestTerm={match.params.searchTerm}
-                                            search={setSearchTerm}
-                                        />
-                                    }} />
-                                    <Route path="/:addressId" render={({ match }) => {
-                                        return <>
-                                            {/* <Result
-                                                RefID={match.params.addressId.replace(/[ ,.]/g, '')}
-                                                factorList={{
-                                                    // 'city-facility': this.state['city-facility'],
-                                                    // 'parcel-data': this.state['parcel-data'],
-                                                    // 'service-zone': this.state['service-zone'],
-                                                }}
-                                                parcelFields={parcelFieldParameter}
-                                                // getGeometryAndFullAddress={this.getGeometryAndFullAddress}
-                                            /> */}
-                                        </>
-                                    }} />
-                            </Switch>
+                        <SearchContent status={query.get("status")} />
                     </div>
                 </div>
 
                 <AddPntToMap mapviews={window.mapViewList} geometry={resultGeometry} fullAddress={fullAddress}/>
             </article>
            : 
-           <LinearProgress className=' p-1 m-4 'style={{width:'100%'}}/>
+           <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
         }
     </div>
 }

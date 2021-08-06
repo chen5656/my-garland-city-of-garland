@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
-import { loadModules } from 'esri-loader';
+import React, { useEffect ,useRef,useState} from 'react';
 import { withRouter } from 'react-router-dom';
+import Search from '@arcgis/core/widgets/Search';
+import Locator from '@arcgis/core/tasks/Locator';
 
 const containerStyle = {
   margin: '2px',
@@ -8,94 +9,75 @@ const containerStyle = {
   background: 'linear-gradient(rgb(190, 188, 188), #e4e4e4, #fcfbfa)',
   borderRadius: '3px',
 }
+const SearchContainer=(props)=>{
+  const searchDiv = useRef(null);
+  const [esriSearchWidget, setSearchWidget] = useState(null);
 
-class SearchWidget extends PureComponent {
-  // constructor(){
-  //   super()
-  // }
-  componentDidMount = () => {
-    const that = this;
-    // lazy load the required ArcGIS API for JavaScript modules and CSS
-    loadModules(['esri/widgets/Search', 'esri/tasks/Locator'], { css: true })
-      .then(([Search, Locator]) => {
-
-        const searchSource = {
-          'outFields': ['Ref_ID'],
-          'singleLineFieldName': 'Single Line Input',
-          'name': 'GARLAND_ADDRESS_LOCATOR',
-          'placeholder': 'Enter a City of Garland Address',
-          'suggestionsEnabled': true,
-          'maxSuggestions': 6,
-          'minSuggestCharacters': 6
-        };
-        searchSource.locator = new Locator({
-          url: 'https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer'
-        });
-        const searchWidget = new Search({
-          // view: view,
-          container: 'my-garland-search',
-          includeDefaultSources: false,
-          allPlaceholder: '.',
-          locationEnabled: false,
-          sources: [searchSource]
-        });
-
-        that.EsriSearchWidget = searchWidget;
-
-        searchWidget.on('search-start', function (e) {
-          window.location.hash = "";
-          that.props.resetSearch();
-          that.routingFunction('');
-        })
-
-        searchWidget.on('search-complete', function (e) {
-          if (e.numResults === 0 && e.searchTerm) {
-            //no address find from input, display suggestion.  
-            that.routingFunction(`nomatch/${e.searchTerm}`);
-          }
-        });
-
-        searchWidget.on('select-result', function (e) {
-          console.log('select-result');
-          if (e.result) {
-            that.routingFunction(e.result.feature.attributes.Ref_ID);
-          }
-        });
-
-        return () => {
-          if (searchWidget) {
-            searchWidget.destroy();
-          }
-        };
+  useEffect(() => {
+    if (searchDiv.current) {
+      const searchSource = {
+        'outFields': ['Ref_ID'],
+        'singleLineFieldName': 'Single Line Input',
+        'name': 'GARLAND_ADDRESS_LOCATOR',
+        'placeholder': 'Enter a City of Garland Address',
+        'suggestionsEnabled': true,
+        'maxSuggestions': 6,
+        'minSuggestCharacters': 6
+      };
+      searchSource.locator = new Locator({
+        url: 'https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer'
       });
-  }
+      const searchWidget = new Search({
+        // view: view,
+        container: searchDiv.current,
+        includeDefaultSources: false,
+        allPlaceholder: '.',
+        locationEnabled: false,
+        sources: [searchSource]
+      });
 
-  componentDidUpdate = (prevProps) => {
-    if (this.EsriSearchWidget && this.props.searchTerm && this.props.searchTerm !== prevProps.searchTerm) {
-      this.EsriSearchWidget.search(this.props.searchTerm)
+      setSearchWidget(searchWidget);
+
+      searchWidget.on('search-start', function (e) {
+        props.resetSearch();
+      })
+
+      searchWidget.on('search-complete', function (e) {
+        if (e.numResults === 0 && e.searchTerm) {
+          //no address find from input, display suggestion.  
+          routingFunction(`?status=nomatch`);///${e.searchTerm}
+        }
+      });
+
+      searchWidget.on('select-result', function (e) {
+        console.log('select-result');
+        if (e.result) {
+          routingFunction(`?status=match&addressid=${e.result.feature.attributes.Ref_ID}`);
+        }
+      });
     }
-  }
 
-  routingFunction = (value) => {
-    this.props.history.push({
+  }, []);
+
+  const routingFunction = (value) => {
+    props.history.push({
       pathname: '/' + value
     });
   }
-
-  render() {
-    return (
-      <div className="row justify-content-md-center" style={containerStyle}>
-        <div className=" col-lg-5 col-md-8 col-sm-12">
-          <div className="m-3 col-12">
-            Enter a valid City of Garland Address to look up City data.
-            </div>
-          <div id='my-garland-search' className='searchwidget' style={{width:'100%'}} />
+  return  (
+    <div className="row justify-content-md-center" style={containerStyle}>
+    <div className=" col-lg-5 col-md-8 col-sm-12">
+      <div className="m-3 col-12">
+        Enter a valid City of Garland Address to look up City data.
         </div>
+        <div className="searchwidget" ref={searchDiv} style={{width:'100%'}}></div>
+    </div>
 
-      </div>
-    )
-  }
-};
+  </div>
 
-export default withRouter(SearchWidget);
+  ) ;
+
+}
+
+export default withRouter(SearchContainer);
 
