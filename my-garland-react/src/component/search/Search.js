@@ -10,9 +10,6 @@ import {
 
 } from "react-router-dom";
 
-import {
-    HashRouter as Router,
-  } from "react-router-dom";
 
 // import { loadModules } from 'esri-loader';
 
@@ -97,6 +94,7 @@ const SearchContent=(props)=>{
     return    ( <Switch>
         <Route path="/match">
             <Result
+                RefID={query.get("addressid").replace(/[ ,.]/g, '')}
                 factorList={{
                     'city-facility': props.cityFacilityParameter,
                     'parcel-data': props.parcelFieldParameter.parameters,
@@ -105,7 +103,7 @@ const SearchContent=(props)=>{
                 parcelFields={props.parcelFieldParameter.fields}
             />
         </Route>
-        <Route path="/nomatch">
+        <Route path="/unmatch">
             <AddressNotFound suggestTerm={query.get("searchTerm")}/>
         </Route>
         <Route path="/address-error">
@@ -131,7 +129,7 @@ const AddressSearch = (props) => {
         setResultGeometry(null);
     }
 
-    return (<Router><div style={{ minHeight: '200px' }}>
+    return (<div style={{ minHeight: '200px' }}>
         <SearchWidget searchTerm={searchTerm} resetSearch={resetSearch}/>
         <CityFacilityList factorList = {dataFactors} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {dataFactors}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
@@ -154,8 +152,7 @@ const AddressSearch = (props) => {
            : 
            <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
         }
-    </div>
-    </Router>)
+    </div>)
 }
 
 export default AddressSearch;

@@ -4,6 +4,10 @@ import Header from './component/home/Header';
 import Footer from './component/home/Footer';
 import Search from './component/Search/Search';
 
+import {
+  HashRouter as Router,
+} from "react-router-dom";
+
 const ie11Polyfill = () => {
   // Also polyfill Array.isArray:
   if (!Array.isArray) {
@@ -98,11 +102,13 @@ ie11Polyfill();
 function App() {
 
   return (
+    <Router>
     <div className='container-fluid'>
         <Header />
         <Search />
         <Footer />
     </div>
+    </Router>
   );
 }
 

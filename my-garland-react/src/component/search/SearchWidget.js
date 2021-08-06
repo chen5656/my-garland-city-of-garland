@@ -1,7 +1,7 @@
 import React, { useEffect ,useRef,useState} from 'react';
-import { withRouter } from 'react-router-dom';
 import Search from '@arcgis/core/widgets/Search';
 import Locator from '@arcgis/core/tasks/Locator';
+import { useHistory } from 'react-router-dom';
 
 const containerStyle = {
   margin: '2px',
@@ -11,7 +11,7 @@ const containerStyle = {
 }
 const SearchContainer=(props)=>{
   const searchDiv = useRef(null);
-  const [esriSearchWidget, setSearchWidget] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     if (searchDiv.current) {
@@ -36,8 +36,6 @@ const SearchContainer=(props)=>{
         sources: [searchSource]
       });
 
-      setSearchWidget(searchWidget);
-
       searchWidget.on('search-start', function (e) {
         props.resetSearch();
       })
@@ -45,25 +43,20 @@ const SearchContainer=(props)=>{
       searchWidget.on('search-complete', function (e) {
         if (e.numResults === 0 && e.searchTerm) {
           //no address find from input, display suggestion.  
-          routingFunction(`nomatch?searchTerm=${e.searchTerm}`);///${e.searchTerm}
+          history.push(`/unmatch?searchTerm=${e.searchTerm}`)
         }
       });
 
       searchWidget.on('select-result', function (e) {
         console.log('select-result');
         if (e.result) {
-          routingFunction(`match?addressid=${e.result.feature.attributes.Ref_ID}`);
+          history.push(`/match?addressid=${e.result.feature.attributes.Ref_ID}`)
         }
       });
     }
 
   }, []);
 
-  const routingFunction = (value) => {
-    props.history.push({
-      pathname: '/' + value
-    });
-  }
   return  (
     <div className="row justify-content-md-center" style={containerStyle}>
     <div className=" col-lg-5 col-md-8 col-sm-12">
@@ -79,5 +72,5 @@ const SearchContainer=(props)=>{
 
 }
 
-export default withRouter(SearchContainer);
+export default SearchContainer;
 

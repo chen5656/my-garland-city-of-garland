@@ -24,6 +24,7 @@ import ListCollapse from './ListCollapse';
 import ResultValueDisplay from './ResultValueDisplay';
 
 import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
 const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
@@ -59,19 +60,6 @@ const useStyles = makeStyles((theme) => ({
   }
 
 }));
-
-const  getURLQueryVariable=(url_search,variable)=> {
-  var query =url_search;
-  var vars = query.replace('?','').split('&');
-  for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split('=');
-      if (pair[0].toLowerCase() == variable) {
-          return pair[1];
-      }
-  }
-  return ('');
-}
-
 
 const Factor = (props) => {
   const classes = useStyles();
@@ -260,6 +248,7 @@ const ParcelTableInfo = (props) => {
 }
 const AddressInfo = (props) => {
   
+  const history = useHistory();
   useEffect(() => {
     var query = new Query();
     var queryTask = new QueryTask({
@@ -280,8 +269,7 @@ const AddressInfo = (props) => {
         // result.features[0].geometry; //geometry in stateplane
       } else {
         //didn't return a result
-        debugger
-        // props.routingFunction('address-error');
+        history.push('/address-error' );
       }
     });
   }, [props.addressId]);
@@ -289,7 +277,6 @@ const AddressInfo = (props) => {
 }
 
 const Result = (props) => {
-  // const [factorDataList, setFactorDataList] = useState([]);
   const [factorList, setFactorList] = useState([]);
   const [fullAddress, setFullAddress] = useState(null);
   const [resultGeometry, setGeometry] = useState(null);
@@ -297,9 +284,7 @@ const Result = (props) => {
   const [parcelDataResult, setParcelDataResult] = useState([]);
   const [nearestCityFacilityResult, setCityFacilityResult] = useState([]);
   const [serviceZoneResult, setServiceZone] = useState([]);
-  const RefID=getURLQueryVariable(props.location.search,'addressid')
-  debugger
-
+  
   useEffect(() => {
     var array = [];
     for (const [key, value] of Object.entries(props.factorList)) {
@@ -309,16 +294,8 @@ const Result = (props) => {
     setFactorList(array)  ;
   }, []);
 
-  const   routingFunction = (value) => {
-    props.history.push({
-      pathname: '/' + value
-    });
-  }
-
-  return <div>{ RefID}</div>
-
   return (<>  
-  <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} routingFunction={routingFunction}/>    
+  <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} />    
   {fullAddress&&
     <>
       <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
