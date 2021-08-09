@@ -299,7 +299,7 @@ const Result = (props) => {
   {fullAddress&&
     <>
       <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
-        factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />}
+        factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />
   
       
           <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 

@@ -8,7 +8,7 @@ import {
     useLocation,
     Switch,
 
-} from "react-router-dom";
+} from 'react-router-dom';
 
 
 // import { loadModules } from 'esri-loader';
@@ -92,9 +92,11 @@ const ServiceZoneList = (props) => {
 const SearchContent=(props)=>{
     let query = useQuery();
     return    ( <Switch>
-        <Route path="/match">
+        <Route path='/match'>
             <Result
-                RefID={query.get("addressid").replace(/[ ,.]/g, '')}
+                RefID={
+                    query.get('addressid')&& query.get('addressid').replace(/[ ,.]/g, '')
+                }
                 factorList={{
                     'city-facility': props.cityFacilityParameter,
                     'parcel-data': props.parcelFieldParameter.parameters,
@@ -103,14 +105,14 @@ const SearchContent=(props)=>{
                 parcelFields={props.parcelFieldParameter.fields}
             />
         </Route>
-        <Route path="/unmatch">
-            <AddressNotFound suggestTerm={query.get("searchTerm")}/>
+        <Route path='/unmatch'>
+            <AddressNotFound suggestTerm={query.get('searchTerm')}/>
         </Route>
-        <Route path="/address-error">
+        <Route path='/address-error'>
             <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
         </Route>
-        <Route path="/">
-            <div>.</div>
+        <Route path='/'>
+            <div style={{minHeight:'55px'}}></div>
         </Route>
     </Switch>
     );
