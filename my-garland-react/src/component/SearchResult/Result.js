@@ -22,8 +22,8 @@ import staticButtons from './staticButton';
 import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
+import MapSection from './MapSection';
 
-import { withRouter } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 
 const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
@@ -295,30 +295,31 @@ const Result = (props) => {
   }, []);
 
   return (<>  
-  <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} />    
-  {fullAddress&&
-    <>
-      <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
-        factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />
-  
-      
-          <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
-            fullAddress={fullAddress} />
-          <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
-      
-      
-    </>
-  }
+    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} />    
+    {fullAddress&&
+      <>
+        <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
+          factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />
+    
+        
+            <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
+              fullAddress={fullAddress} />
+            <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
+        
+        
+      </>
+    }
 
     {//category = 'city-facility'.factorList[category]
-        displaySections.map((item) => {
-          return <Section name={item.name} sectionId={item.id} key={item.id}
-            factorList={factorList}
-            factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
-          />
-        })
-      }
+          displaySections.map((item) => {
+            return <Section name={item.name} sectionId={item.id} key={item.id}
+              factorList={factorList}
+              factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
+            />
+          })
+    }    
+    <MapSection />
   </>);
 }
 
-export default withRouter(Result);
+export default Result;

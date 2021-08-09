@@ -17,7 +17,7 @@ const PicButton = (props) => {
 const staticButtons = [{
   "id": "ews-link",
   "displayID": 11,
-  "component": <PicButton url={"https://issuu.com/garlandtx/docs/ews_calendar_2020_web"}
+  "component": <PicButton url={"https://issuu.com/garlandtx/docs/ews_calendar_2021-web"}
     value={"* For Holiday Pickup Exceptions Click Here"} title={"goto Environmental Waste Services"} imageUrl={ews_png} />,
 }, {
   "id": "eassist-link",

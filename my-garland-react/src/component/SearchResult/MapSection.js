@@ -139,7 +139,7 @@ class CrimeMap extends PureComponent {
 const MapSection = (props) => {
     const classes = useStyles();
     return (
-        <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' + (props.isVisible ? '' : 'd-none')}>
+        <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' }>
             <Paper elevation={3} >
                 <List component="section"
                     subheader={

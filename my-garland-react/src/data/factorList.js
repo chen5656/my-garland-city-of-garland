@@ -174,28 +174,28 @@ export const dataFactors=[
             "address": "ADDRESS"
         }
     },
-    // {
-    //     "id": "nearest-city-facility-with-wifi",
-    //     "name": "Public Wi-Fi",
-    //     "inputControl": {
-    //         "category": "city-facility",
-    //         "outputFields": [
-    //             "ADDRESS",
-    //             "BLDG_NAME"
-    //         ],
-    //         "url": "https://services2.arcgis.com/g3rbttPStUJTjAz2/ArcGIS/rest/services/WiFi_Locations/FeatureServer/0",
-    //         "where": "WIFI ='Yes'"
-    //     },
-    //     "outputControl": {
-    //         "category": "services",
-    //         "displayID": 1,
-    //         "formatType": "name-address-distance",
-    //         "hyperlink": "Google map",
-    //         "distance": true,
-    //         "name": "BLDG_NAME",
-    //         "address": "ADDRESS"
-    //     }
-    // },
+    {
+        "id": "nearest-city-facility-with-wifi",
+        "name": "Public Wi-Fi",
+        "inputControl": {
+            "category": "city-facility",
+            "outputFields": [
+                "ADDRESS",
+                "BLDG_NAME"
+            ],
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/GarlandPublicWiFi/GarlandPublicWiFi/MapServer/0",
+            "where": "WIFI ='Yes'"
+        },
+        "outputControl": {
+            "category": "services",
+            "displayID": 1,
+            "formatType": "name-address-distance",
+            "hyperlink": "Google map",
+            "distance": true,
+            "name": "BLDG_NAME",
+            "address": "ADDRESS"
+        }
+    },
     {
         "id": "ews-recycling",
         "name": "EWS Recycling Pickup Week",
