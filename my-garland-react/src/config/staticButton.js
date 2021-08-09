@@ -2,7 +2,11 @@ import React from 'react';
 import ews_png from '/images/ews.png'
 import eassist_jpg from '../../images/eassist.jpg'
 
+export const ss=[
+  {
 
+  }
+]
 
 const PicButton = (props) => {
   return (
@@ -25,5 +29,3 @@ const staticButtons = [{
   "component": <PicButton url={"https://iframe.publicstuff.com/#?client_id=417"}
     value={"Report an issue and watch it get fixed."} title={"Report an issue and watch it get fixed."} imageUrl={eassist_jpg} />,
 }]
-
-export default staticButtons;

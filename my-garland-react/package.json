@@ -2,7 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://storymaps.garlandtx.gov/imageroot/gis/test_chen/mygarland/",
+  "homepage": "https://maps.garlandtx.gov/maps/mygarland_new/",
   "dependencies": {
     "@arcgis/core": "^4.20.2",
     "@material-ui/core": "^4.11.0",
