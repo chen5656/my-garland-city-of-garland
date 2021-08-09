@@ -16,7 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
 
-import { displayCategories, displaySections } from '../../data/categoryList';
+import { displayCategories, displaySections } from '../../config/categoryList';
 
 import staticButtons from './staticButton';
 import ListCollapse from './ListCollapse';

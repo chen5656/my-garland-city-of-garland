@@ -21,8 +21,8 @@ import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import MapSection from '../SearchResult/MapSection';
 import {
-    dataFactors
-} from '../../data/factorList';
+    factorList
+} from '../../config/factorList.json';
 import AddPntToMap from '../MapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -133,9 +133,9 @@ const AddressSearch = (props) => {
 
     return (<div style={{ minHeight: '200px' }}>
         <SearchWidget searchTerm={searchTerm} resetSearch={resetSearch}/>
-        <CityFacilityList factorList = {dataFactors} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
-        <ParcelFieldList factorList = {dataFactors}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
-        <ServiceZoneList  factorList = {dataFactors}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
+        <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
+        <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
+        <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
         {
            serviceZoneParameter&& cityFacilityParameter&&parcelFieldParameter?
            <article>
