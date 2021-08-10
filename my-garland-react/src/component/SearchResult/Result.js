@@ -326,7 +326,8 @@ const Result = (props) => {
             />
           })
     }    
-    <MapSection />
+    
+    <MapSection /> 
   </>);
 }
 

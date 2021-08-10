@@ -19,7 +19,6 @@ import QueryTask from '@arcgis/core/tasks/QueryTask';
 import AddressNotFound from '../SearchResult/NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
-import MapSection from '../SearchResult/MapSection';
 import {
     factorList
 } from '../../config/data.json';
@@ -119,20 +118,12 @@ const SearchContent=(props)=>{
 }
 
 const AddressSearch = (props) => {
-    const [searchTerm, setSearchTerm] = useState(null);
-    const [resultGeometry, setResultGeometry] = useState(null);
-    const [fullAddress, setFullAddress] = useState(null);
     const [cityFacilityParameter, setCityFacilityParameter] = useState(null);
     const [parcelFieldParameter, setParcelFieldParameter] = useState(null);
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
     
-    const resetSearch=()=>{
-        setSearchTerm(null);
-        setResultGeometry(null);
-    }
-
     return (<div style={{ minHeight: '200px' }}>
-        <SearchWidget searchTerm={searchTerm} resetSearch={resetSearch}/>
+        <SearchWidget />
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
@@ -149,11 +140,13 @@ const AddressSearch = (props) => {
                     </div>
                 </div>
 
-                <AddPntToMap mapviews={window.mapViewList} geometry={resultGeometry} fullAddress={fullAddress}/>
+                {/* <AddPntToMap mapviews={window.mapViewList} geometry={resultGeometry} fullAddress={fullAddress}/> */}
+                 
             </article>
            : 
            <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
         }
+        
     </div>)
 }
 

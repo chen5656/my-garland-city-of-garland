@@ -511,7 +511,7 @@
         "name":"construction-link",
         "inputControl": {
             "url":"https://issuu.com/garlandtx/docs/ews_calendar_2021-web",
-            "image":"./images/ews.png",
+            "image":"./images/under-construction.png",
             "caption":"Find out about construction and infrastructure projects",
             "title":"Construction Site"
         },

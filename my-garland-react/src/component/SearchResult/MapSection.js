@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -29,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-class StreetConditionMap extends PureComponent {// use PureComponent to prevent rerender when nothing changed.
-    render() {
+const StreetConditionMap =(props) => {// use PureComponent to prevent rerender when nothing changed.
+    
         const layerList = [{
             type: 'map-image',
             url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
@@ -62,7 +63,7 @@ class StreetConditionMap extends PureComponent {// use PureComponent to prevent 
                 }
             }
         />
-    }
+    
 }
 
 const CrimeMapLegendToggle = () => {
@@ -151,8 +152,13 @@ const MapSection = (props) => {
                             <StreetConditionLegendToggle />
                         </div>
                     </ListCollapse>
-                    <ListCollapse name='Crime Map'>
+                    <Divider variant='middle' />
+                    <ListCollapse name='Monthly Crime Map'>
                         <div className='px-2'>
+                            <p>
+                                <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
+                                title="Crime-Statistics-Maps"> Link to more reports/resources</a>
+                            </p>
                             <CrimeMap />
                             <CrimeMapLegendToggle />
                         </div>

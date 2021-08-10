@@ -71,14 +71,14 @@ const fillNullInfo = (input) => {
     if (input) {
         return input
     } else {
-        return 'Null'
+        return 'NONE'
     }
 }
 
 const getEWSRecyclingDay = (value) => {
     var ancore = value;
     if (isNaN(ancore)) {
-        return "NULL".concat("*");
+        return "NONE".concat("*");
     }
     var ancoreDate = new Date(ancore);
     var today = new Date();

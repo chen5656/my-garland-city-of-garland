@@ -36,9 +36,6 @@ const SearchContainer=(props)=>{
         sources: [searchSource]
       });
 
-      searchWidget.on('search-start', function (e) {
-        props.resetSearch();
-      })
 
       searchWidget.on('search-complete', function (e) {
         if (e.numResults === 0 && e.searchTerm) {
