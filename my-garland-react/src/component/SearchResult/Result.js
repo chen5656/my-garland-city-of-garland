@@ -15,10 +15,9 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
-
 import { displayCategories, displaySections } from '../../config/categoryList';
 
-import staticButtons from './staticButton';
+import {  staticButtonList} from '../../config/data.json';
 import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
@@ -61,6 +60,15 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const PicButton = (props) => {
+  return (
+    <a href={props.url} title={props.title} target='_blank' rel='noopener noreferrer'>
+      <div className='pictureButtonStyle 'style={{ backgroundImage: `url(${props.imageUrl})`}}>
+        <p> {props.value}</p>
+      </div>
+    </a>
+  )
+}
 const Factor = (props) => {
   const classes = useStyles();
 
@@ -93,21 +101,21 @@ const Category = (props) => {
         </List>
       }
       {/* static items */}
-      {props.id === 'services' &&
-        <div className='row  relative p-4'>
-          {staticButtons.sort((a, b) => {
-            return a.displayID - b.displayID
-          }).map((item) => {
+      <div className='row  relative p-4'> {
+        staticButtonList
+          .filter(item=>item.outputControl.category===props.id)
+          .sort((a, b) => {
+          return a.outputControl.displayID - b.outputControl.displayID
+          }).map(item=>{
             return <div className='col-sm-5 col-xs-12 m-3' key={item.id} >
-              {item.component}
+              <PicButton url={item.inputControl.url}
+                value={item.inputControl.caption} title={item.inputControl.title} 
+                imageUrl={item.inputControl.image} />
             </div>
-          })}
-        </div>
-      }
-      {/*Streets condition label*/}
-      {/* {(props.id === 'streets-condition') &&
-        <div className='mx-5 my-3'> <StreetConditionToggle /></div>
-      } */}
+
+          })
+      }</div>
+  
     </ListCollapse>
   )
 

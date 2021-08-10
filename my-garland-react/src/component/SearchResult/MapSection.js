@@ -14,7 +14,6 @@ import LargeMapButton from '../MapRelated/LargeMapButton';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import crimeLegend from '../../images/crimeLegend.jpg';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 
 // const crimeMapUrl = 'http://maps.garlandtx.gov/cogmap/apps/MapTools/index.html?appid=c40a513390e14f199f4b3953529c4f77';
@@ -84,7 +83,7 @@ const CrimeMapLegendToggle = () => {
         />
         {checked &&
             <div style={{ marginLeft: '45px' }}>
-                <img src={crimeLegend} alt="Crime legend"></img>
+                <img src='./images/crimeLegend.jpg' alt="Crime legend"></img>
             </div>}
     </div>
 }

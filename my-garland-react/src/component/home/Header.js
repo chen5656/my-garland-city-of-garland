@@ -1,5 +1,4 @@
 import React  from 'react';
-import logo from '../../images/COLOR.rev.horz.NOtag.3999f798.png';
 import MapView from '../MapRelated/MapView';
 
 const titleStyle = {
@@ -13,7 +12,7 @@ const titleStyle = {
 }
 
 const TitlePng = () => {
-  return <img className='d-none d-sm-block' src={logo} style={titleStyle} alt='City of Garland' />;
+  return <img className='d-none d-sm-block' src='./images/COLOR.rev.horz.NOtag.3999f798.png' style={titleStyle} alt='City of Garland' />;
 };
 export default function Header(props) {
   return (

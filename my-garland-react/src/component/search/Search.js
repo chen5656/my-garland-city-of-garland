@@ -22,7 +22,7 @@ import SearchWidget from './SearchWidget';
 import MapSection from '../SearchResult/MapSection';
 import {
     factorList
-} from '../../config/factorList.json';
+} from '../../config/data.json';
 import AddPntToMap from '../MapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';

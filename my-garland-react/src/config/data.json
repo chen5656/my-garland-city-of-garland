@@ -492,5 +492,47 @@
                 "name": "NEIGHBORHOOD"
             }
         }
+    ],
+    "staticButtonList":[{
+        "id": "ews-link",
+        "name":"ews-link",
+        "inputControl": {
+            "url":"https://issuu.com/garlandtx/docs/ews_calendar_2021-web",
+            "image":"./images/ews.png",
+            "caption":"* For Holiday Pickup Exceptions Click Here",
+            "title":"goto Environmental Waste Services"
+        },
+        "outputControl": {
+              "category": "services",
+              "displayID": 1
+          }
+      }, {
+        "id": "construction-link",
+        "name":"construction-link",
+        "inputControl": {
+            "url":"https://issuu.com/garlandtx/docs/ews_calendar_2021-web",
+            "image":"./images/ews.png",
+            "caption":"Find out about construction and infrastructure projects",
+            "title":"Construction Site"
+        },
+        "outputControl": {
+              "category": "reference",
+              "displayID": 1
+          }
+      },{
+        "id": "eassist-link",
+        "name":"eassist-link",
+        "inputControl": {
+            "url":"https://iframe.publicstuff.com/#?client_id=417",
+            "image":"./images/eassist.jpg",
+            "caption":"Report an issue and watch it get fixed.",
+            "title":"Report an issue and watch it get fixed."
+        },
+        "outputControl": {
+              "category": "services",
+              "displayID": 2
+          }
+      }
+
     ]
 }
