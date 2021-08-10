@@ -1,4 +1,4 @@
-import React, { useState, PureComponent } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const StreetConditionMap =(props) => {// use PureComponent to prevent rerender when nothing changed.
+const StreetConditionMap =({mapPoint}) => {// use PureComponent to prevent rerender when nothing changed.
     
         const layerList = [{
             type: 'map-image',
@@ -41,12 +41,14 @@ const StreetConditionMap =(props) => {// use PureComponent to prevent rerender w
                 { "id": 37, "visible": true, title: 'pavement-condition' }
             ],
         }];
-        return <MapView
+        return    (<div className='px-2'>
+        <MapView
             id='pavement-condition'
             basemap='topo'
             zoomLevel={15}
             viewHeight={'300px'}
-            layerList={layerList}
+            layerList={layerList}            
+            mapPoint={mapPoint}
             showButton={
                 {
                     'value': <LargeMapButton
@@ -55,7 +57,8 @@ const StreetConditionMap =(props) => {// use PureComponent to prevent rerender w
                             id='pavement-condition-large'
                             basemap='topo'
                             zoomLevel={15}
-                            viewHeight={'100%'}
+                            viewHeight={'100%'}     
+                            mapPoint={mapPoint}
                             layerList={layerList}
                             widgets={['Legend', 'LayerList']} />}
                     />,
@@ -63,6 +66,9 @@ const StreetConditionMap =(props) => {// use PureComponent to prevent rerender w
                 }
             }
         />
+        <StreetConditionLegendToggle />
+    </div>)
+        
     
 }
 
@@ -88,35 +94,37 @@ const CrimeMapLegendToggle = () => {
             </div>}
     </div>
 }
-//window.layerViewList[2].layerView.layer.allSublayers
-//layerViewList[1].layerView.layer.title ---"CRIME LAST MONTH"
-class CrimeMap extends PureComponent {
-
-    render() {
-        const layerList = [{
-            type: 'feature',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-            template: {
-                "title": "<b>{OFFENSE}</b>",
-                "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-                    "<b>CASE ID: </b>{CASEID}<br>" +
-                    "<b>OFFENSE: </b>{OFFENSE}<br>",
-                "fieldInfos": [
-                    {
-                        "fieldName": "OCCURRED_O",
-                        "format": {
-                            "dateFormat": "short-date"
-                        }
+const CrimeMap =( {mapPoint}) =>{ 
+    const layerList = [{
+        type: 'feature',
+        url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
+        template: {
+            "title": "<b>{OFFENSE}</b>",
+            "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
+                "<b>CASE ID: </b>{CASEID}<br>" +
+                "<b>OFFENSE: </b>{OFFENSE}<br>",
+            "fieldInfos": [
+                {
+                    "fieldName": "OCCURRED_O",
+                    "format": {
+                        "dateFormat": "short-date"
                     }
-                ]
-            }
-        }];
-        return <MapView
+                }
+            ]
+        }
+    }];
+    return ( <div className='px-2'>
+        <p>
+            <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
+            title="Crime-Statistics-Maps"> Link to more reports/resources</a>
+        </p>
+        <MapView
             id='crime-map'
             basemap='topo'
             zoomLevel={15}
             viewHeight={'300px'}
             layerList={layerList}
+            mapPoint={mapPoint}
             showButton={
                 {
                     'value': <LargeMapButton
@@ -125,7 +133,8 @@ class CrimeMap extends PureComponent {
                             id='crime-map-large'
                             basemap='topo'
                             zoomLevel={15}
-                            viewHeight={'100%'}
+                            viewHeight={'100%'}        
+                            mapPoint={mapPoint}
                             layerList={layerList}
                             widgets={['Legend', 'LayerList']}
                         />}
@@ -134,9 +143,12 @@ class CrimeMap extends PureComponent {
                 }
             }
         />
-    }
+        <CrimeMapLegendToggle />
+    </div>
+    )
+
 }
-const MapSection = (props) => {
+const MapSection = ({mapPoint}) => {
     const classes = useStyles();
     return (
         <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' }>
@@ -147,21 +159,11 @@ const MapSection = (props) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        <div className='px-2'>
-                            <StreetConditionMap />
-                            <StreetConditionLegendToggle />
-                        </div>
+                        <StreetConditionMap  mapPoint={mapPoint}/>
                     </ListCollapse>
                     <Divider variant='middle' />
-                    <ListCollapse name='Monthly Crime Map'>
-                        <div className='px-2'>
-                            <p>
-                                <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
-                                title="Crime-Statistics-Maps"> Link to more reports/resources</a>
-                            </p>
-                            <CrimeMap />
-                            <CrimeMapLegendToggle />
-                        </div>
+                    <ListCollapse name='Monthly Crime Map'>                       
+                        <CrimeMap   mapPoint={mapPoint}/>                            
                     </ListCollapse>
                 </List>
 

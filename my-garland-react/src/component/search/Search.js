@@ -7,11 +7,7 @@ import {
     Route,
     useLocation,
     Switch,
-
 } from 'react-router-dom';
-
-
-// import { loadModules } from 'esri-loader';
 
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
@@ -19,9 +15,7 @@ import QueryTask from '@arcgis/core/tasks/QueryTask';
 import AddressNotFound from '../SearchResult/NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
-import {
-    factorList
-} from '../../config/data.json';
+import {factorList} from '../../config/data.json';
 import AddPntToMap from '../MapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';

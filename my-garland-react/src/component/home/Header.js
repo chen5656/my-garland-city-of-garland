@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useEffect ,useRef,useState}   from 'react';
 import MapView from '../MapRelated/MapView';
 
 const titleStyle = {
@@ -14,7 +14,8 @@ const titleStyle = {
 const TitlePng = () => {
   return <img className='d-none d-sm-block' src='./images/COLOR.rev.horz.NOtag.3999f798.png' style={titleStyle} alt='City of Garland' />;
 };
-export default function Header(props) {
+const Header=(props)=> {
+
   return (
     <header className='overflow-hidden position-relative'>
       <MapView
@@ -25,4 +26,6 @@ export default function Header(props) {
     </header>
   );
 }
+
+export default Header;
 

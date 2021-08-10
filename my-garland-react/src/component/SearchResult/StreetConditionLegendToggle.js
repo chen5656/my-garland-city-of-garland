@@ -39,15 +39,15 @@ const StreetConditionLegendToggle = () => {
 
 
   const handleChange = () => {
-    setChecked((prev) => !prev);
-    const targetLayer = 'pavement-condition';
-    const layer = window.layerViewList.find((layer) => {
-      return layer.layer.title === targetLayer;
-    })
+    // setChecked((prev) => !prev);
+    // const targetLayer = 'pavement-condition';
+    // const layer = window.layerViewList.find((layer) => {
+    //   return layer.layer.title === targetLayer;
+    // })
 
-    if (layer&&layer.type === 'map-image' ) {
-        layer.parentLayer.findSublayerById(layer.layer.id).visible=!checked;             
-    }
+    // if (layer&&layer.type === 'map-image' ) {
+    //     layer.parentLayer.findSublayerById(layer.layer.id).visible=!checked;             
+    // }
   };
 
 

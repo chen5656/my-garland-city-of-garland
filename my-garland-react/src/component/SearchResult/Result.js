@@ -6,6 +6,11 @@ import React, {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import ProjectParameters from '@arcgis/core/tasks/support/ProjectParameters';
+import GeometryService from '@arcgis/core/tasks/GeometryService';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Graphic from '@arcgis/core/Graphic';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -27,6 +32,8 @@ import { useHistory } from 'react-router-dom';
 
 const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
 const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
+const geometryServiceUrl='https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
+const outSR={wkid: 3857};
 
 const useStyles = makeStyles((theme) => ({
   sectionPadding: { padding: '15px' },
@@ -268,19 +275,29 @@ const AddressInfo = (props) => {
     query.returnGeometry = true;
     query.outFields = ['*'];
     queryTask.execute(query).then(function (result) {
-      console.log('address1')
       if (result.features.length > 0) {
         var attr = result.features[0].attributes;
         props.setParcelId(attr.PARCELID);
-        props.setGeometry(result.features[0].geometry);
+        props.setGeometry(result.features[0].geometry);//geometry in stateplane
         props.setFullAddress('' + attr.STREETNUM + ' ' + attr.STREETLABEL + ', ' + attr.CITY + ', ' + attr.STATE + ', ' + attr.ZIPCODE);
-        // result.features[0].geometry; //geometry in stateplane
+        //get latitude, longitude
+        getMapviewGeometry(result.features[0].geometry,props.setMapviewGeometry)
       } else {
         //didn't return a result
         history.push('/address-error' );
       }
     });
   }, [props.addressId]);
+  const getMapviewGeometry=(inputGeometry,setOutputGeometry)=>{
+    var geomSer = new GeometryService(geometryServiceUrl);
+    var params = new ProjectParameters({
+      geometries: [inputGeometry],
+      outSpatialReference: new SpatialReference(outSR),
+    });
+    geomSer.project(params).then((result) => {
+      setOutputGeometry(result[0]);      
+    });
+  }
   return null;
 }
 
@@ -288,6 +305,7 @@ const Result = (props) => {
   const [factorList, setFactorList] = useState([]);
   const [fullAddress, setFullAddress] = useState(null);
   const [resultGeometry, setGeometry] = useState(null);
+  const [mapviewGeometry, setMapviewGeometry] = useState(null);
   const [parcelId, setParcelId] = useState(null);
   const [parcelDataResult, setParcelDataResult] = useState([]);
   const [nearestCityFacilityResult, setCityFacilityResult] = useState([]);
@@ -301,33 +319,28 @@ const Result = (props) => {
     array = array.flat();
     setFactorList(array)  ;
   }, []);
-
+ 
   return (<>  
-    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} />    
+    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} setMapviewGeometry={setMapviewGeometry}/>    
     {fullAddress&&
       <>
         <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
-          factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />
-    
-        
-            <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
-              fullAddress={fullAddress} />
-            <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
-        
-        
+          factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />            
+        <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
+          fullAddress={fullAddress} />
+        <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
       </>
     }
 
-    {//category = 'city-facility'.factorList[category]
-          displaySections.map((item) => {
-            return <Section name={item.name} sectionId={item.id} key={item.id}
-              factorList={factorList}
-              factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
-            />
-          })
+    {displaySections.map((item) => {
+      return <Section name={item.name} sectionId={item.id} key={item.id}
+        factorList={factorList}
+        factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
+        />
+      })
     }    
     
-    <MapSection /> 
+    <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}} /> 
   </>);
 }
 

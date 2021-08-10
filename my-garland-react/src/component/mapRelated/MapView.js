@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef ,useState} from 'react';
 
 import MapView from "@arcgis/core/views/MapView";
 import Map from "@arcgis/core/Map";
@@ -6,16 +6,13 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Legend from '@arcgis/core/widgets/Legend';
 import LayerList from '@arcgis/core/widgets/LayerList';
+import Graphic from '@arcgis/core/Graphic';
 
-const WebMapView = (props) => {
+const CustomMapView = (props) => {
   const mapDiv = useRef(null);
-  if (!Array.isArray(window.mapViewList)) {
-    window.mapViewList = [];
-  } 
-  if (!Array.isArray(window.layerViewList)) {
-    window.layerViewList = [];
-  } 
+  const [mapView, setView] = useState(null);
 
+//mapPoint
   useEffect(() => {
       if(mapDiv.current){
           var layers = [];
@@ -59,27 +56,10 @@ const WebMapView = (props) => {
             center: props.mapCenter ? props.mapCenter : [-96.636269, 32.91676],
             zoom: props.zoomLevel ? props.zoomLevel : 11,        
           });
-          layers.forEach(layer=>{
-            view.whenLayerView(layer)
-            .then(function() {
-              if(layer.type==='feature'){
-                window.layerViewList.push({
-                  layer:layer,
-                  type:'feature'
-                });
-              } 
-              if(layer.type==='map-image'){
-                layer.allSublayers.items.forEach(item=>{
-                  window.layerViewList.push({
-                    layer:item,
-                    type:'map-image',
-                    parentLayer:layer,
-                  }); 
-
-                })      
-              }
-            })
-          })
+          setView(view);
+          if(props.id==='header'){
+            window.HeaderMapView=view;
+          }
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
           }
@@ -98,10 +78,30 @@ const WebMapView = (props) => {
             }
             
           }
-          window.mapViewList.push({ id: props.id, view: view });
         }
     },[]
   );
+
+  
+  useEffect(() => {
+    if(props.mapPoint&&mapView){   
+      var pnt = new Graphic({
+          geometry: props.mapPoint.geometry,
+          symbol: {
+              type: "simple-marker",
+              color: "#dc2533"
+          }
+      });
+      pnt.popupTemplate = {
+          content: props.mapPoint.fullAddress,
+      };
+      mapView.graphics.removeAll();
+      mapView.graphics.add(pnt);
+      mapView.center = props.mapPoint.geometry;
+    }
+  },[props.mapPoint,mapView]
+);
+
   
   
   return <>
@@ -110,4 +110,4 @@ const WebMapView = (props) => {
   </>
 };
 
-export default WebMapView;
+export default CustomMapView;
