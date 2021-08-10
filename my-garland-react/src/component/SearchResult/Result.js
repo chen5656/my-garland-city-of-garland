@@ -26,7 +26,7 @@ import {  staticButtonList} from '../../config/data.json';
 import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
-import MapSection from './MapSection';
+import MapSection from './MapResult/MapSection';
 
 import { useHistory } from 'react-router-dom';
 

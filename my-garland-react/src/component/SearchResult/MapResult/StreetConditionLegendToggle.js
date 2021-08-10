@@ -34,35 +34,23 @@ const LegendItem = (props) => {
     <td>{props.label}</td>
   </tr>
 }
-const StreetConditionLegendToggle = () => {
-  const [checked, setChecked] = React.useState(true);
-
-
+const StreetConditionLegendToggle = ({layerOn,setLayerOn}) => {
   const handleChange = () => {
-    // setChecked((prev) => !prev);
-    // const targetLayer = 'pavement-condition';
-    // const layer = window.layerViewList.find((layer) => {
-    //   return layer.layer.title === targetLayer;
-    // })
-
-    // if (layer&&layer.type === 'map-image' ) {
-    //     layer.parentLayer.findSublayerById(layer.layer.id).visible=!checked;             
-    // }
+    setLayerOn((prev) => !prev);
   };
-
 
   return <div>
     <FormControlLabel
       control={
         <Switch
-          checked={checked}
+          checked={layerOn}
           onChange={handleChange}
           color='primary'
         />
       }
       label='Add Pavement Condition to the map'
     />
-    {checked &&
+    {layerOn &&
       <div>
         <table style={{ marginLeft: '45px' }}>
           <tbody>

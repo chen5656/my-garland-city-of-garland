@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useRef, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -7,17 +7,16 @@ import Divider from '@material-ui/core/Divider';
 
 import Paper from '@material-ui/core/Paper';
 
-import MapView from '../MapRelated/MapView';
-import ListCollapse from './ListCollapse';
-import LargeMapButton from '../MapRelated/LargeMapButton';
+import MapView from '../../MapRelated/MapView';
+import ListCollapse from '../ListCollapse';
+import LargeMapButton from '../../MapRelated/LargeMapButton';
 
 
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import StreetConditionLegendToggle from './StreetConditionLegendToggle';
+import PavementMap from './PavementMap';
 
-// const crimeMapUrl = 'http://maps.garlandtx.gov/cogmap/apps/MapTools/index.html?appid=c40a513390e14f199f4b3953529c4f77';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -30,47 +29,67 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const StreetConditionMap =({mapPoint}) => {// use PureComponent to prevent rerender when nothing changed.
+// const StreetConditionMap =({mapPoint}) => {// use PureComponent to prevent rerender when nothing changed.
+//     const [layerOn,setLayerOn]=useState(true);
+//     const [layerList, setLayerList] = useState([{
+//         type: 'map-image',
+//         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+//         sublayers: [
+//             { "id": 5, "visible": true, title: 'Parcels' },
+//             { "id": 4, "visible": true,title: 'Address' },
+//         ],
+//     },{
+//         type: 'map-image',
+//         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+//         sublayers: [
+//             { "id": 37, "visible": true, title: 'pavement-condition' }
+//         ],
+//     }]);
     
-        const layerList = [{
-            type: 'map-image',
-            url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-            sublayers: [
-                { "id": 5, "visible": true, title: 'Parcels' },
-                { "id": 4, "visible": true,title: 'Address' },
-                { "id": 37, "visible": true, title: 'pavement-condition' }
-            ],
-        }];
-        return    (<div className='px-2'>
-        <MapView
-            id='pavement-condition'
-            basemap='topo'
-            zoomLevel={15}
-            viewHeight={'300px'}
-            layerList={layerList}            
-            mapPoint={mapPoint}
-            showButton={
-                {
-                    'value': <LargeMapButton
-                        name='pavement-condition'
-                        body={<MapView
-                            id='pavement-condition-large'
-                            basemap='topo'
-                            zoomLevel={15}
-                            viewHeight={'100%'}     
-                            mapPoint={mapPoint}
-                            layerList={layerList}
-                            widgets={['Legend', 'LayerList']} />}
-                    />,
-                    'id': 'street-pci-show-large',
-                }
-            }
-        />
-        <StreetConditionLegendToggle />
-    </div>)
-        
+//     // useEffect(() => {
+//     //     let layerList = [{
+//     //         type: 'map-image',
+//     //         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+//     //         sublayers: [
+//     //             { "id": 5, "visible": true, title: 'Parcels' },
+//     //             { "id": 4, "visible": true,title: 'Address' },
+//     //             { "id": 37, "visible": layerOn, title: 'pavement-condition' }
+//     //         ],
+//     //     }];
+//     //     setLayerList(layerList);
+
+//     // }, [layerOn]);
+
+//     return    (<div className='px-2'>
+//     <MapView
+//         id='pavement-condition'
+//         basemap='topo'
+//         zoomLevel={15}
+//         viewHeight={'300px'}
+//         layerList={layerList}            
+//         mapPoint={mapPoint}
+//         showButton={
+//             {
+//                 'value': <LargeMapButton
+//                     name='pavement-condition'
+//                     body={<MapView
+//                         id='pavement-condition-large'
+//                         basemap='topo'
+//                         zoomLevel={15}
+//                         viewHeight={'100%'}     
+//                         mapPoint={mapPoint}
+//                         layerList={layerList}
+//                         widgets={['Legend', 'LayerList']} />}
+//                 />,
+//                 'id': 'street-pci-show-large',
+//             }
+//         }
+//     />
+//     <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
+// </div>)
     
-}
+
+// }
 
 const CrimeMapLegendToggle = () => {
     const [checked, setChecked] = useState(false);
@@ -159,7 +178,7 @@ const MapSection = ({mapPoint}) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        <StreetConditionMap  mapPoint={mapPoint}/>
+                        <PavementMap  mapPoint={mapPoint}/>
                     </ListCollapse>
                     <Divider variant='middle' />
                     <ListCollapse name='Monthly Crime Map'>                       

@@ -57,20 +57,17 @@ const CustomMapView = (props) => {
             zoom: props.zoomLevel ? props.zoomLevel : 11,        
           });
           setView(view);
-          if(props.id==='header'){
-            window.HeaderMapView=view;
-          }
           if (props.showButton ) {
             view.ui.add(props.showButton.id , 'bottom-right');
           }
           if(props.widgets&&Array.isArray(props.widgets)){
-            if(props.widgets.find(item=>{return item.toLowerCase()==='legend'})){
+            if(props.widgets.find(item=>{return item==='Legend'})){
               var legend = new Legend({
                 view: view
               });            
               view.ui.add(legend, "bottom-left");
             }
-            if(props.widgets.find(item=>{return item.toLowerCase()==='layerlist'})){
+            if(props.widgets.find(item=>{return item==='LayerList'})){
               var layerList = new LayerList({
                 view: view
               });            
@@ -79,8 +76,7 @@ const CustomMapView = (props) => {
             
           }
         }
-    },[]
-  );
+    },[]  );
 
   
   useEffect(() => {
@@ -99,8 +95,7 @@ const CustomMapView = (props) => {
       mapView.graphics.add(pnt);
       mapView.center = props.mapPoint.geometry;
     }
-  },[props.mapPoint,mapView]
-);
+  },[props.mapPoint,mapView]);
 
   
   
