@@ -14,21 +14,20 @@ const PavementMap = (props) => {
     const mapDiv = useRef(null);
     const [layerOn,setLayerOn]=useState(true);
     const [mapView, setView] = useState(null);
+    const [thisMap, setMap] = useState(null);
   
     useEffect(() => {   
-        if(mapDiv.current&&props.mapPoint){
-            const layers=[
-                 new MapImageLayer({
+        if(mapDiv.current){
+            const layers= [new MapImageLayer({
                     'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                    'sublayers':  [
+                    'sublayers': [
                         { "id": 5, "visible": true, title: 'Parcels' },
-                        { "id": 4, "visible": true,title: 'Address' },
-                        { "id": 37, "visible": layerOn, title: 'pavement-condition' }
+                        { "id": 4, "visible": true, title: 'Address' },
+                        { "id": 37, "visible": true, title: 'pavement-condition' }
                     ],
-                  })
-            ];
+                })];
             const map = new Map({
-                basemap:  'topo',
+                basemap: 'topo',
                 layers: layers
             });
             const view = new MapView({
@@ -37,7 +36,23 @@ const PavementMap = (props) => {
                 center: props.mapPoint.geometry,
                 zoom: 15,
             });
-
+            setMap(map);
+            setView(view);
+        }
+     },[]  );
+    useEffect(() => {   
+        if(mapView&&props.mapPoint){
+            let layer=
+                 new MapImageLayer({
+                    'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                    'sublayers':  [
+                        { "id": 5, "visible": true, title: 'Parcels' },
+                        { "id": 4, "visible": true,title: 'Address' },
+                        { "id": 37, "visible": layerOn, title: 'pavement-condition' }
+                    ],
+                  });
+            thisMap.removeAll();
+            thisMap.add(layer)
             var pnt = new Graphic({
                 geometry: props.mapPoint.geometry,
                 symbol: {
@@ -48,16 +63,12 @@ const PavementMap = (props) => {
             pnt.popupTemplate = {
                 content: props.mapPoint.fullAddress,
             };
-            view.graphics.removeAll();
-            view.graphics.add(pnt);
-            view.center = props.mapPoint.geometry;
+            mapView.graphics.removeAll();
+            mapView.graphics.add(pnt);
+            mapView.center = props.mapPoint.geometry;
         }
 
      },[props.mapPoint,layerOn]  );
-
-
-  
-    
     
     return (<div className='px-2'>
       <div className='webmap' ref={mapDiv} style={{ height:  '300px' }} />

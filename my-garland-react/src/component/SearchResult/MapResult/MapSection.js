@@ -29,68 +29,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-// const StreetConditionMap =({mapPoint}) => {// use PureComponent to prevent rerender when nothing changed.
-//     const [layerOn,setLayerOn]=useState(true);
-//     const [layerList, setLayerList] = useState([{
-//         type: 'map-image',
-//         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-//         sublayers: [
-//             { "id": 5, "visible": true, title: 'Parcels' },
-//             { "id": 4, "visible": true,title: 'Address' },
-//         ],
-//     },{
-//         type: 'map-image',
-//         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-//         sublayers: [
-//             { "id": 37, "visible": true, title: 'pavement-condition' }
-//         ],
-//     }]);
-    
-//     // useEffect(() => {
-//     //     let layerList = [{
-//     //         type: 'map-image',
-//     //         url: 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-//     //         sublayers: [
-//     //             { "id": 5, "visible": true, title: 'Parcels' },
-//     //             { "id": 4, "visible": true,title: 'Address' },
-//     //             { "id": 37, "visible": layerOn, title: 'pavement-condition' }
-//     //         ],
-//     //     }];
-//     //     setLayerList(layerList);
-
-//     // }, [layerOn]);
-
-//     return    (<div className='px-2'>
-//     <MapView
-//         id='pavement-condition'
-//         basemap='topo'
-//         zoomLevel={15}
-//         viewHeight={'300px'}
-//         layerList={layerList}            
-//         mapPoint={mapPoint}
-//         showButton={
-//             {
-//                 'value': <LargeMapButton
-//                     name='pavement-condition'
-//                     body={<MapView
-//                         id='pavement-condition-large'
-//                         basemap='topo'
-//                         zoomLevel={15}
-//                         viewHeight={'100%'}     
-//                         mapPoint={mapPoint}
-//                         layerList={layerList}
-//                         widgets={['Legend', 'LayerList']} />}
-//                 />,
-//                 'id': 'street-pci-show-large',
-//             }
-//         }
-//     />
-//     <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
-// </div>)
-    
-
-// }
-
 const CrimeMapLegendToggle = () => {
     const [checked, setChecked] = useState(false);
     const handleChange = () => {
