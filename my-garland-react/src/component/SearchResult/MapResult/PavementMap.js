@@ -32,7 +32,7 @@ const PavementMap = (props) => {
             var toggleableLayers=[];
             props. layers.forEach(layer=>{
                 map.add(layer.layer);
-                if(layer.enableToggle){toggleableLayers.push(toggleableLayers)};                
+                if(layer.enableToggle){toggleableLayers.push(layer.layer)};                
             });
             if(props.setToggleableLayers)props.setToggleableLayers(toggleableLayers);
 
@@ -132,7 +132,8 @@ const PavementDiv = (props) => {
         },
     ];
     return (<div className='px-2'>
-        <PavementMap layerOn={layerOn} setLayerOn={setLayerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}/>
+        <PavementMap layerOn={layerOn} setLayerOn={setLayerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
+        toggleableLayers={toggleableLayers}/>
         <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
        
     </div>)
