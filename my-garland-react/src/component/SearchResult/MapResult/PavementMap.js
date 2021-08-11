@@ -7,8 +7,8 @@ import Legend from '@arcgis/core/widgets/Legend';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Graphic from '@arcgis/core/Graphic';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
+import LargeMapButton from '../../MapRelated/LargeMapButton';
 
-import LargeMapButton from '../../MapRelated/LargeMapButton1';
 const PavementMap = (props) => {
     const mapDiv = useRef(null);
     const showLargeBtn=useRef(null);
@@ -17,17 +17,8 @@ const PavementMap = (props) => {
   
     useEffect(() => {   
         if(mapDiv.current){
-            const layers= [new MapImageLayer({
-                    'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                    'sublayers': [
-                        { "id": 5, "visible": true, title: 'Parcels' },
-                        { "id": 4, "visible": true, title: 'Address' },
-                        { "id": 37, "visible": true, title: 'pavement-condition' }
-                    ],
-                })];
             const map = new Map({
                 basemap: 'topo',
-                layers: layers
             });
             const view = new MapView({
                 container: mapDiv.current,
@@ -37,6 +28,14 @@ const PavementMap = (props) => {
             });            
             setMap(map);
             setView(view);
+
+            var toggleableLayers=[];
+            props. layers.forEach(layer=>{
+                map.add(layer.layer);
+                if(layer.enableToggle){toggleableLayers.push(toggleableLayers)};                
+            });
+            if(props.setToggleableLayers)props.setToggleableLayers(toggleableLayers);
+
             if(props.largerVersion){
                 showLargeBtn.current.style.display='none';
                 mapDiv.current.style.height='100%';
@@ -67,21 +66,11 @@ const PavementMap = (props) => {
 
      
     useEffect(() => {   
-        if(mapView){
-            let layer=
-                 new MapImageLayer({
-                    'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                    'sublayers':  [
-                        { "id": 5, "visible": true, title: 'Parcels' },
-                        { "id": 4, "visible": true,title: 'Address' },
-                        { "id": 37, "visible": props.layerOn, title: 'pavement-condition' }
-                    ],
-                  });
-            thisMap.removeAll();
-            thisMap.add(layer)
-
+        let toggleableLayers=props.toggleableLayers;
+        if(toggleableLayers&&toggleableLayers.length){
+            toggleableLayers.forEach(layer=>layer.visible = props.layerOn)
         }
-    },[props.mapPoint,props.layerOn]  );
+    },[props.layerOn]  );
 
     const addSearchPnt=(geometry,popupContent,view)=>{
         var pnt = new Graphic({
@@ -107,7 +96,7 @@ const PavementMap = (props) => {
             body={<PavementMap 
                 mapPoint={props.mapPoint} 
                 largerVersion={true}
-
+                layers={props.layers}
                 />}
         /></div>
     </>
@@ -117,8 +106,33 @@ const PavementMap = (props) => {
 
 const PavementDiv = (props) => {
     const [layerOn,setLayerOn]=useState(true);
+    const [toggleableLayers,setToggleableLayers]=useState([]);
+    const layers = [
+        {
+            layer: new MapImageLayer({
+                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                'title': 'Baselayers',
+                'sublayers': [
+                    { "id": 5, "visible": true, title: 'Parcels' },
+                    { "id": 4, "visible": true, title: 'Address' },
+                ],
+            }),
+            enableToggle:false
+        },
+        {
+            layer: new MapImageLayer({
+                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                'title': 'Pavement Condition',
+                'sublayers': [
+                    { "id": 37, "visible": true, title: 'pavement-condition' }
+                ],
+            }),
+            enableToggle:true
+
+        },
+    ];
     return (<div className='px-2'>
-        <PavementMap layerOn={layerOn} setLayerOn={setLayerOn} mapPoint={ props.mapPoint}/>
+        <PavementMap layerOn={layerOn} setLayerOn={setLayerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}/>
         <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
        
     </div>)
