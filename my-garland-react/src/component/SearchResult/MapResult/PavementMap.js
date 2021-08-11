@@ -9,11 +9,10 @@ import Graphic from '@arcgis/core/Graphic';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 import LargeMapButton from '../../MapRelated/LargeMapButton';
 
-const PavementMap = (props) => {
+const GarlandMapView = (props) => {
     const mapDiv = useRef(null);
     const showLargeBtn=useRef(null);
     const [mapView, setView] = useState(null);
-    const [thisMap, setMap] = useState(null);
   
     useEffect(() => {   
         if(mapDiv.current){
@@ -26,17 +25,12 @@ const PavementMap = (props) => {
                 center: props.mapPoint.geometry,
                 zoom: 15,
             });            
-            setMap(map);
             setView(view);
 
-            var toggleableLayers=[];
-            props. layers.forEach(layer=>{
-                map.add(layer.layer);
-                if(layer.enableToggle){toggleableLayers.push(layer.layer)};                
-            });
-            if(props.setToggleableLayers)props.setToggleableLayers(toggleableLayers);
-
             if(props.largerVersion){
+                props.layers.forEach(layer=>{
+                    map.add(layer.layer);                
+                });
                 showLargeBtn.current.style.display='none';
                 mapDiv.current.style.height='100%';
                 var legend = new Legend({
@@ -49,6 +43,12 @@ const PavementMap = (props) => {
                   view.ui.add(layerList, "top-right");
 
             }else{
+                var toggleableLayers=[];
+                props.layers.forEach(layer=>{
+                    map.add(layer.layer);
+                    if(layer.enableToggle){toggleableLayers.push(layer.layer)};                
+                });
+                if(props.setToggleableLayers)props.setToggleableLayers(toggleableLayers);
                 view.ui.add(showLargeBtn.current , 'bottom-right');
             }
             if(props.mapPoint){
@@ -92,10 +92,9 @@ const PavementMap = (props) => {
     <div className='webmap' ref={mapDiv} style={{ height:  '300px' }} />
     <div  ref={showLargeBtn} >
         <LargeMapButton>
-            <PavementMap 
-                mapPoint={props.mapPoint} 
+            <GarlandMapView 
+                {...props}
                 largerVersion={true}
-                layers={props.layers}
             />
         </LargeMapButton>    
         </div>
@@ -132,7 +131,7 @@ const PavementDiv = (props) => {
         },
     ];
     return (<div className='px-2'>
-        <PavementMap layerOn={layerOn} setLayerOn={setLayerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
+        <GarlandMapView layerOn={layerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
         toggleableLayers={toggleableLayers}/>
         <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
        
