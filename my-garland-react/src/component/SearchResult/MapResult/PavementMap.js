@@ -91,14 +91,14 @@ const PavementMap = (props) => {
     return <>
     <div className='webmap' ref={mapDiv} style={{ height:  '300px' }} />
     <div  ref={showLargeBtn} >
-        <LargeMapButton
-            name='crime-map'
-            body={<PavementMap 
+        <LargeMapButton>
+            <PavementMap 
                 mapPoint={props.mapPoint} 
                 largerVersion={true}
                 layers={props.layers}
-                />}
-        /></div>
+            />
+        </LargeMapButton>    
+        </div>
     </>
       
   

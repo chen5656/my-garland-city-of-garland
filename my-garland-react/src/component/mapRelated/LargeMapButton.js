@@ -59,7 +59,7 @@ export default function SimpleModal(props) {
       <Button onClick={handleClose} className={classes.closeBtn} >
         <CloseIcon />
       </Button>
-      {props.body}
+      {props.children }
     </div>
       </Modal>
     </div>
