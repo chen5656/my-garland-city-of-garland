@@ -16,7 +16,6 @@ import AddressNotFound from '../SearchResult/NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import {factorList} from '../../config/data.json';
-import AddPntToMap from '../MapRelated/AddPntToMap';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -133,9 +132,7 @@ const AddressSearch = (props) => {
                         />
                     </div>
                 </div>
-
-                {/* <AddPntToMap mapviews={window.mapViewList} geometry={resultGeometry} fullAddress={fullAddress}/> */}
-                 
+    
             </article>
            : 
            <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>

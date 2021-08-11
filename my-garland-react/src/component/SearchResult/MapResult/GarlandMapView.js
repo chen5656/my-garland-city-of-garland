@@ -5,7 +5,7 @@ import Map from "@arcgis/core/Map";
 import Legend from '@arcgis/core/widgets/Legend';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Graphic from '@arcgis/core/Graphic';
-import LargeMapButton from '../../MapRelated/LargeMapButton';
+import LargeMapButton from './LargeMapButton';
 
 const GarlandMapView = (props) => {
     const mapDiv = useRef(null);
@@ -13,18 +13,26 @@ const GarlandMapView = (props) => {
     const [mapView, setView] = useState(null);
   
     useEffect(() => {   
+        
+        
         if(mapDiv.current){
-            const map = new Map({
-                basemap: 'topo',
-            });
+            
+            const map = new Map({ basemap: 'topo'});
             const view = new MapView({
                 container: mapDiv.current,
                 map: map,
-                center: props.mapPoint.geometry,
                 zoom: 15,
-            });            
+            });
+            if(props.mapPoint){
+                view.center=props.mapPoint.geometry;
+            }
+            if(props.id==='header'){
+                map.basemap='gray';
+                view.center=[-96.636269, 32.91676];
+                view.zoom=12;
+            }
+                        
             setView(view);
-
             if(props.largerVersion){
                 props.layers.forEach(layer=>{
                     map.add(layer.layer);                
@@ -49,6 +57,7 @@ const GarlandMapView = (props) => {
                 if(props.setToggleableLayers)props.setToggleableLayers(toggleableLayers);
                 view.ui.add(showLargeBtn.current , 'bottom-right');
             }
+            
             if(props.mapPoint){
                 addSearchPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,view);
             }
@@ -87,15 +96,15 @@ const GarlandMapView = (props) => {
     }
     
     return <>
-    <div className='webmap' ref={mapDiv} style={{ height:  '300px' }} />
+    <div className='webmap' ref={mapDiv} style={props.id==='header'?{ height:  '350px' }:{ height:  '300px' }} />
     <div  ref={showLargeBtn} >
-        <LargeMapButton>
+    {props.id!=='header'&&    <LargeMapButton>
             <GarlandMapView 
                 {...props}
                 largerVersion={true}
             />
-        </LargeMapButton>    
-        </div>
+        </LargeMapButton>   } 
+    </div>
     </>
       
   
