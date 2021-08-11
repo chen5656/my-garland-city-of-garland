@@ -65,8 +65,12 @@ const GarlandMapView = (props) => {
         }
      },[]  );
     useEffect(() => {   
-        if(mapView&&props.mapPoint){
-            addSearchPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,mapView);    
+        if(mapView){
+            if(props.mapPoint){
+                addSearchPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,mapView);    
+            }else{
+                mapView.graphics.removeAll();
+            }
         }
 
      },[props.mapPoint]  );

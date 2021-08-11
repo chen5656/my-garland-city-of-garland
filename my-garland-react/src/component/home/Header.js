@@ -25,6 +25,7 @@ const Header=(props)=> {
       <GarlandMapView
         layers={layers}     
         id={'header'}
+        mapPoint={props.mapPoint}
       />
       <TitlePng />
     </header>

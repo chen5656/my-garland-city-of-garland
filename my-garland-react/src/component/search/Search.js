@@ -95,6 +95,7 @@ const SearchContent=(props)=>{
                     'service-zone': props.serviceZoneParameter,
                 }}
                 parcelFields={props.parcelFieldParameter.fields}
+                setMapPoint={props.setMapPoint}
             />
         </Route>
         <Route path='/unmatch'>
@@ -116,7 +117,7 @@ const AddressSearch = (props) => {
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
     
     return (<div style={{ minHeight: '200px' }}>
-        <SearchWidget />
+        <SearchWidget   setMapPoint={props.setMapPoint}/>
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
@@ -129,6 +130,7 @@ const AddressSearch = (props) => {
                             cityFacilityParameter={cityFacilityParameter}
                             parcelFieldParameter={parcelFieldParameter}
                             serviceZoneParameter={serviceZoneParameter}
+                            setMapPoint={props.setMapPoint}
                         />
                     </div>
                 </div>

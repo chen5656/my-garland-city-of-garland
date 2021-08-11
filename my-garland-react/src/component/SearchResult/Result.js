@@ -277,26 +277,31 @@ const AddressInfo = (props) => {
     queryTask.execute(query).then(function (result) {
       if (result.features.length > 0) {
         var attr = result.features[0].attributes;
+        var fullAddress='' + attr.STREETNUM + ' ' + attr.STREETLABEL + ', ' + attr.CITY + ', ' + attr.STATE + ', ' + attr.ZIPCODE;
         props.setParcelId(attr.PARCELID);
         props.setGeometry(result.features[0].geometry);//geometry in stateplane
-        props.setFullAddress('' + attr.STREETNUM + ' ' + attr.STREETLABEL + ', ' + attr.CITY + ', ' + attr.STATE + ', ' + attr.ZIPCODE);
+        props.setFullAddress(fullAddress);
         //get latitude, longitude
         getMapviewGeometry(result.features[0].geometry,props.setMapviewGeometry)
+
+        getMapviewGeometry(result.features[0].geometry).then((result) => {
+          props.setMapviewGeometry(result[0]);   
+          props.setMapPoint({geometry:result[0],fullAddress:fullAddress})   
+        });
+
       } else {
         //didn't return a result
         history.push('/address-error' );
       }
     });
   }, [props.addressId]);
-  const getMapviewGeometry=(inputGeometry,setOutputGeometry)=>{
+  const getMapviewGeometry=(inputGeometry)=>{
     var geomSer = new GeometryService(geometryServiceUrl);
     var params = new ProjectParameters({
       geometries: [inputGeometry],
       outSpatialReference: new SpatialReference(outSR),
     });
-    geomSer.project(params).then((result) => {
-      setOutputGeometry(result[0]);      
-    });
+    return geomSer.project(params);
   }
   return null;
 }
@@ -321,7 +326,9 @@ const Result = (props) => {
   }, []);
  
   return (<>  
-    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} setParcelId={setParcelId} setMapviewGeometry={setMapviewGeometry}/>    
+    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} 
+    setParcelId={setParcelId} setMapviewGeometry={setMapviewGeometry}
+    setMapPoint={props.setMapPoint}/>    
     {fullAddress&&
       <>
         <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
@@ -340,7 +347,8 @@ const Result = (props) => {
       })
     }    
     
-    <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}} /> 
+    <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}} 
+                            /> 
   </>);
 }
 

@@ -1,5 +1,7 @@
 
-import React from 'react';
+import React, {
+  useState
+} from 'react';
 import Header from './component/home/Header';
 import Footer from './component/home/Footer';
 import Search from './component/Search/Search';
@@ -100,12 +102,14 @@ const ie11Polyfill = () => {
 
 ie11Polyfill();
 function App() {
+  const [mapPoint,setMapPoint]=useState(null);
+
 
   return (
     <Router>
     <div className='container-fluid'>
-        <Header />
-        <Search />
+        <Header mapPoint={mapPoint}/>
+        <Search setMapPoint={setMapPoint}/>
         <Footer />
     </div>
     </Router>

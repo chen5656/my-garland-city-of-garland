@@ -114,7 +114,7 @@ const CrimeMapDiv=(props)=>{
 }
 
 
-const MapSection = ({mapPoint}) => {
+const MapSection = (props) => {
     const classes = useStyles();
     return (
         <div className={classes.sectionPadding + ' col-lg-4 col-md-12 col-sm-12 ' }>
@@ -126,11 +126,11 @@ const MapSection = ({mapPoint}) => {
                 >
                     <ListCollapse name='Pavement Condition'>
                         
-                        <PavementDiv  mapPoint={mapPoint}/>
+                        <PavementDiv  mapPoint={props.mapPoint}/>
                     </ListCollapse>
                     <Divider variant='middle' />
                     <ListCollapse name='Monthly Crime Map'>                       
-                        <CrimeMapDiv   mapPoint={mapPoint}/>                            
+                        <CrimeMapDiv   mapPoint={props.mapPoint}/>                            
                     </ListCollapse>
                 </List>
 

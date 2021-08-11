@@ -38,6 +38,7 @@ const SearchContainer=(props)=>{
 
 
       searchWidget.on('search-complete', function (e) {
+        props.setMapPoint(null)
         if (e.numResults === 0 && e.searchTerm) {
           //no address find from input, display suggestion.  
           history.push(`/unmatch?searchTerm=${e.searchTerm}`)
