@@ -1,22 +1,19 @@
 import React, {useRef, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-
-import Paper from '@material-ui/core/Paper';
-
-import MapView from '../../MapRelated/MapView';
-import ListCollapse from '../ListCollapse';
-import LargeMapButton from '../../MapRelated/LargeMapButton';
-
-
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Paper from '@material-ui/core/Paper';
 
-import PavementMap from './PavementMap';
-
+import ListCollapse from '../ListCollapse';
+import StreetConditionLegendToggle from './StreetConditionLegendToggle';
+import GarlandMapView from './GarlandMapView';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -51,60 +48,72 @@ const CrimeMapLegendToggle = () => {
             </div>}
     </div>
 }
-const CrimeMap =( {mapPoint}) =>{ 
-    const layerList = [{
-        type: 'feature',
-        url: 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-        template: {
-            "title": "<b>{OFFENSE}</b>",
-            "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-                "<b>CASE ID: </b>{CASEID}<br>" +
-                "<b>OFFENSE: </b>{OFFENSE}<br>",
-            "fieldInfos": [
-                {
-                    "fieldName": "OCCURRED_O",
-                    "format": {
-                        "dateFormat": "short-date"
-                    }
-                }
-            ]
-        }
-    }];
-    return ( <div className='px-2'>
-        <p>
-            <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
-            title="Crime-Statistics-Maps"> Link to more reports/resources</a>
-        </p>
-        <MapView
-            id='crime-map'
-            basemap='topo'
-            zoomLevel={15}
-            viewHeight={'300px'}
-            layerList={layerList}
-            mapPoint={mapPoint}
-            showButton={
-                {
-                    'value': <LargeMapButton
-                        name='crime-map'
-                        body={<MapView
-                            id='crime-map-large'
-                            basemap='topo'
-                            zoomLevel={15}
-                            viewHeight={'100%'}        
-                            mapPoint={mapPoint}
-                            layerList={layerList}
-                            widgets={['Legend', 'LayerList']}
-                        />}
-                    />,
-                    'id': 'crime-show-large',
-                }
-            }
-        />
-        <CrimeMapLegendToggle />
-    </div>
-    )
 
+const PavementDiv = (props) => {
+    const [layerOn,setLayerOn]=useState(true);
+    const [toggleableLayers,setToggleableLayers]=useState([]);
+    const layers = [
+        {
+            layer: new MapImageLayer({
+                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                'title': 'Baselayers',
+                'sublayers': [
+                    { "id": 5, "visible": true, title: 'Parcels' },
+                    { "id": 4, "visible": true, title: 'Address' },
+                ],
+            }),
+            enableToggle:false
+        },
+        {
+            layer: new MapImageLayer({
+                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
+                'title': 'Pavement Condition',
+                'sublayers': [
+                    { "id": 37, "visible": true, title: 'pavement-condition' }
+                ],
+            }),
+            enableToggle:true
+
+        },
+    ];
+    return (<div className='px-2'>
+        <GarlandMapView layerOn={layerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
+        toggleableLayers={toggleableLayers}/>
+        <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>       
+    </div>)
 }
+
+const CrimeMapDiv=(props)=>{
+    const layers = [{
+        layer:new FeatureLayer({
+            'url': 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
+            popupTemplate:{
+                "title": "<b>{OFFENSE}</b>",
+                "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
+                    "<b>CASE ID: </b>{CASEID}<br>" +
+                    "<b>OFFENSE: </b>{OFFENSE}<br>",
+                "fieldInfos": [
+                    {
+                        "fieldName": "OCCURRED_O",
+                        "format": {
+                            "dateFormat": "short-date"
+                        }
+                    }
+                ]
+            }
+          })
+    }];
+    return (<div className='px-2'>
+    <p>
+        <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
+        title="Crime-Statistics-Maps"> Link to more reports/resources</a>
+    </p>
+    <GarlandMapView   mapPoint={ props.mapPoint} layers={layers}   />
+     <CrimeMapLegendToggle />
+    </div>)
+}
+
+
 const MapSection = ({mapPoint}) => {
     const classes = useStyles();
     return (
@@ -116,11 +125,12 @@ const MapSection = ({mapPoint}) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        <PavementMap  mapPoint={mapPoint}/>
+                        
+                        <PavementDiv  mapPoint={mapPoint}/>
                     </ListCollapse>
                     <Divider variant='middle' />
                     <ListCollapse name='Monthly Crime Map'>                       
-                        <CrimeMap   mapPoint={mapPoint}/>                            
+                        <CrimeMapDiv   mapPoint={mapPoint}/>                            
                     </ListCollapse>
                 </List>
 

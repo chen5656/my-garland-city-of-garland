@@ -2,11 +2,9 @@ import React, { useEffect, useRef ,useState} from 'react';
 
 import MapView from "@arcgis/core/views/MapView";
 import Map from "@arcgis/core/Map";
-import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import Legend from '@arcgis/core/widgets/Legend';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Graphic from '@arcgis/core/Graphic';
-import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 import LargeMapButton from '../../MapRelated/LargeMapButton';
 
 const GarlandMapView = (props) => {
@@ -103,41 +101,5 @@ const GarlandMapView = (props) => {
   
 };
 
-const PavementDiv = (props) => {
-    const [layerOn,setLayerOn]=useState(true);
-    const [toggleableLayers,setToggleableLayers]=useState([]);
-    const layers = [
-        {
-            layer: new MapImageLayer({
-                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                'title': 'Baselayers',
-                'sublayers': [
-                    { "id": 5, "visible": true, title: 'Parcels' },
-                    { "id": 4, "visible": true, title: 'Address' },
-                ],
-            }),
-            enableToggle:false
-        },
-        {
-            layer: new MapImageLayer({
-                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                'title': 'Pavement Condition',
-                'sublayers': [
-                    { "id": 37, "visible": true, title: 'pavement-condition' }
-                ],
-            }),
-            enableToggle:true
-
-        },
-    ];
-    return (<div className='px-2'>
-        <GarlandMapView layerOn={layerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
-        toggleableLayers={toggleableLayers}/>
-        <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>
-       
-    </div>)
-
-}
-
   
-  export default PavementDiv;
+  export default GarlandMapView;
