@@ -12,7 +12,9 @@ const containerStyle = {
 }
 const SearchContainer=(props)=>{
   const searchDiv = useRef(null);
+  const [searchWidget,setSearch]=useState(null);
   const history = useHistory();
+  
 
   useEffect(() => {
     if (searchDiv.current) {
@@ -28,7 +30,7 @@ const SearchContainer=(props)=>{
       searchSource.locator = new Locator({
         url: locatorUrl
       });
-      const searchWidget = new Search({
+      const search = new Search({
         // view: view,
         container: searchDiv.current,
         includeDefaultSources: false,
@@ -38,24 +40,33 @@ const SearchContainer=(props)=>{
       });
 
 
-      searchWidget.on('search-complete', function (e) {
-        props.setMapPoint(null)
+      search.on('search-complete', function (e) {
+        props.setMapPoint(null);
+        props.setInputAddress(null);
         if (e.numResults === 0 && e.searchTerm) {
           //no address find from input, display suggestion.  
           history.push(`/unmatch?searchTerm=${e.searchTerm}`)
         }
       });
 
-      searchWidget.on('select-result', function (e) {
+      search.on('select-result', function (e) {
         console.log('select-result');
         if (e.result) {
           history.push(`/match?addressid=${e.result.feature.attributes.Ref_ID}`)
         }
       });
+
+      setSearch(search);
     }
 
   }, []);
 
+  useEffect(() => {
+    if(props.inputAddress){
+      searchWidget.search(props.inputAddress)
+    }
+
+  }, [props.inputAddress]);
   return  (
     <div className="row justify-content-md-center" style={containerStyle}>
     <div className=" col-lg-5 col-md-8 col-sm-12">

@@ -80,9 +80,16 @@ const ServiceZoneList = (props) => {
     return null;
 
 };
+const SearchWithInput=(props)=>{
+    useEffect(()=>{        
+        props.setInputAddress(props.address);
+    },[props.address])
+    return null
+}
 
 const SearchContent=(props)=>{
-    let query = useQuery();
+    const query = useQuery();
+
     return    ( <Switch>
         <Route path='/match'>
             <Result
@@ -99,7 +106,10 @@ const SearchContent=(props)=>{
             />
         </Route>
         <Route path='/unmatch'>
-            <SuggestAddresses suggestTerm={query.get('searchTerm')}/>
+            <SuggestAddresses searchTerm={query.get('searchTerm')}/>
+        </Route>
+        <Route path='/search'>
+            <SearchWithInput address={query.get('address')} setInputAddress={props.setInputAddress}/>
         </Route>
         <Route path='/address-error'>
             <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
@@ -112,12 +122,13 @@ const SearchContent=(props)=>{
 }
 
 const AddressSearch = (props) => {
+    const [inputAddress,setInputAddress]=useState(null);
     const [cityFacilityParameter, setCityFacilityParameter] = useState(null);
     const [parcelFieldParameter, setParcelFieldParameter] = useState(null);
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
     
     return (<div style={{ minHeight: '200px' }}>
-        <SearchWidget   setMapPoint={props.setMapPoint}/>
+        <SearchWidget   setMapPoint={props.setMapPoint} inputAddress={inputAddress} setInputAddress={setInputAddress}/>
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
@@ -131,6 +142,7 @@ const AddressSearch = (props) => {
                             parcelFieldParameter={parcelFieldParameter}
                             serviceZoneParameter={serviceZoneParameter}
                             setMapPoint={props.setMapPoint}
+                            setInputAddress={setInputAddress}
                         />
                     </div>
                 </div>

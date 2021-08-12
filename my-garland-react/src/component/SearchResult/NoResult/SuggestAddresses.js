@@ -1,9 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { 
+  useRef,
+  useEffect,
+  useState } from 'react';
+
+  import Query from '@arcgis/core/tasks/support/Query';
+  import QueryTask from '@arcgis/core/tasks/QueryTask';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import { loadModules } from 'esri-loader';
+
+import { useHistory } from 'react-router-dom';
+
 import {addressUrl,streetUrl,streetAliasUrl} from '../../../config/mapService.json'
 
 
@@ -15,147 +24,135 @@ const containerStyle = {
 }
 
 const OneAddress = (props) => {
+  const history = useHistory();
+  const handleSearchAddress=()=>{
+    history.push(`/search?address=${props.address}`)
+  }
   return (<li>
-    <Button color="primary"
-      onClick={() => { props.search(props.address) }}
-    >
+    <Button color="primary"onClick={handleSearchAddress}>
       {props.address}
     </Button >
   </li>);
 }
 
-class SuggestAddresses extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      addressList: {},
-    };
-  }
+const SuggestAddresses =(props)=>{
+  const [addressList, setAddressList]=useState([]);
 
-  doQuery() {
+  const queryAliasTable = () => {
 
-    const that = this;
-    // lazy load the required ArcGIS API for JavaScript modules and CSS
-    loadModules(["esri/tasks/support/Query", "esri/tasks/QueryTask"], { css: true })
-      .then(([Query, QueryTask]) => {
-        var addr_road, addr_number;
-        var str = that.props.suggestTerm.split(",")[0].trim().toUpperCase();
-        var subStr = str.split(" ");
-        if (subStr.length > 1) {
-          var str1 = subStr[0];
-          if (Number.isInteger(str1)) {
-            //not a number, try to use it as street name
-            addr_road = str;
-            addr_number = 0;
-          } else {
-            subStr.shift();
-            addr_road = subStr.join(" ");
-            addr_number = str1;
+    if (!props.searchTerm) {
+      setAddressList({ addressList: [] });
+      return;
+    }
+    var addr_road, addr_number;
+    var str = props.searchTerm.split(",")[0].trim().toUpperCase();
+    var subStr = str.split(" ");
+    if (subStr.length > 1) {
+      var str1 = subStr[0];
+      if (Number.isInteger(str1)) {
+        //not a number, try to use it as street name
+        addr_road = str;
+        addr_number = 0;
+      } else {
+        subStr.shift();
+        addr_road = subStr.join(" ");
+        addr_number = str1;
+      }
+    } else {
+      // try to use it as street name
+      addr_road = str;
+      addr_number = 0;
+    }
+    addr_road = findArrayInAliasExtend(addr_road);
+
+    var query = new Query({
+      where: "STREETLABEL LIKE '%" + addr_road + "%'",
+      returnGeometry: false,
+      outFields: ["*"]
+    });
+    var queryTask = new QueryTask({
+      url: addressUrl
+    });
+
+    queryTask.execute(query).then(function (results) {
+      var addr_list = [];
+      if (results.features.length > 0) {
+        //street entered correct
+        console.log("correct street label, wrong address number");
+        addr_list = results.features.map(function (val) {
+          return {
+            streetNumber: val.attributes.STREETNUM,
+            streetLabel: val.attributes.STREETLABEL
+          };
+        }).sort(function (a, b) {
+          return a.streetNumber - b.streetNumber;
+        });
+        //find close nums display data
+        var addrList = nearestNums(addr_number, addr_list);
+        setAddressList(addrList);
+
+      } else {
+        //street wrong        
+        var str = addr_road.split(" ");
+
+        var longestStr = str[0];
+        for (var i = 1; i < str.length; i++) {
+          if (longestStr.length < str[i].length) {
+            longestStr = str[i];
           }
-        } else {
-          // try to use it as street name
-          addr_road = str;
-          addr_number = 0;
         }
-
-        addr_road = this.findArrayInAliasExtend(addr_road);
-
         var query = new Query({
-          where: "STREETLABEL LIKE '%" + addr_road + "%'",
+          where: "STREETLABEL LIKE '%" + longestStr + "%'",
           returnGeometry: false,
           outFields: ["*"]
         });
         var queryTask = new QueryTask({
-          url: addressUrl
+          url: streetUrl
         });
-
         queryTask.execute(query).then(function (results) {
-          var addr_list = [];
           if (results.features.length > 0) {
-            //street entered correct
-            console.log("correct street label, wrong address number");
-            addr_list = results.features.map(function (val) {
-              return {
-                streetNumber: val.attributes.STREETNUM,
-                streetLabel: val.attributes.STREETLABEL
-              };
-            }).sort(function (a, b) {
-              return a.streetNumber - b.streetNumber;
-            });
-            //find close nums display data
-            var addrList = that.nearestNums(addr_number, addr_list);
-            that.setState({ addressList: addrList });
+            console.log("wrong street label. find street name in road table");
+            var addrList = displayUniquleStreetList(results.features, addr_number);
+            setAddressList(addrList);
 
           } else {
-            //street wrong        
-            var str = addr_road.split(" ");
-
-            var longestStr = str[0];
-            for (var i = 1; i < str.length; i++) {
-              if (longestStr.length < str[i].length) {
-                longestStr = str[i];
-              }
-            }
+            //check alias table
             var query = new Query({
-              where: "STREETLABEL LIKE '%" + longestStr + "%'",
+              where: "STREETNAME LIKE '%" + longestStr + "%'",
               returnGeometry: false,
               outFields: ["*"]
             });
             var queryTask = new QueryTask({
-              url: streetUrl
+              url: streetAliasUrl
             });
             queryTask.execute(query).then(function (results) {
               if (results.features.length > 0) {
-                console.log("wrong street label. find street name in road table");
-                var addrList = that.displayUniquleStreetList(results.features, addr_number);
-                that.setState({ addressList: addrList });
+
+                console.log("wrong street label. find street name in alias table");
+                var addrList = displayUniquleStreetList(results.features, addr_number);
+                setAddressList(addrList);
 
               } else {
-                //check alias table
-                var query = new Query({
-                  where: "STREETNAME LIKE '%" + longestStr + "%'",
-                  returnGeometry: false,
-                  outFields: ["*"]
-                });
-                var queryTask = new QueryTask({
-                  url: streetAliasUrl
-                });
-                queryTask.execute(query).then(function (results) {
-                  if (results.features.length > 0) {
+                console.log("wrong street label. Can't find it anywhere")
+                setAddressList({ addressList: [] });
 
-                    console.log("wrong street label. find street name in alias table");
-                    var addrList = that.displayUniquleStreetList(results.features, addr_number);
-                    that.setState({ addressList: addrList });
-
-                  } else {
-                    console.log("wrong street label. Can't find it anywhere")
-                    that.setState({ addressList: [] });
-
-                  }
-                });
               }
             });
           }
         });
+      }
 
 
-      })
 
-  }
-  componentDidMount = () => {
-    this.doQuery();
-  }
-  componentDidUpdate = (prevProps) => {
-    if (this.props.suggestTerm !== prevProps.suggestTerm) {
-      this.doQuery();
-    }
-  }
-
-  componentWillUnmount = () => {
+    })
 
   }
 
-  getUnique(array) {
+  useEffect(()=>{
+    queryAliasTable()
+  },[props.searchTerm])
+  
+  const getUnique=(array) =>{
     //get unique value
     var unique = {};
     var distinct = [];
@@ -167,7 +164,7 @@ class SuggestAddresses extends PureComponent {
     }
     return distinct;
   }
-  nearestNums(num, arr) {
+  const nearestNums=(num, arr) =>{
     var numsIndex = arr.length - 1;
     if (arr.length > 5) {
       for (var i = 0; i < arr.length; i++) {
@@ -190,9 +187,9 @@ class SuggestAddresses extends PureComponent {
     }
   }
 
-  displayUniquleStreetList(features, addr_number) {
+  const  displayUniquleStreetList=(features, addr_number)=> {
     //get unique value
-    var distinct = this.getUnique(features.map(function (feature) {
+    var distinct = getUnique(features.map(function (feature) {
       return feature.attributes.STREETLABEL;
     }));
     var tempAddrNum = "";
@@ -210,8 +207,10 @@ class SuggestAddresses extends PureComponent {
 
   }
 
-  findArrayInAliasExtend(AddrRoad) {
+  const findArrayInAliasExtend=(AddrRoad)=> {
     const aliasExtend = {
+
+
       "1ST": "FIRST",
       "2ND": "SECOND",
       "3RD": "THIRD",
@@ -256,26 +255,18 @@ class SuggestAddresses extends PureComponent {
   }
 
 
-  routingFunction = (value) => {
-    this.props.history.push({
-      pathname: '/' + value
-    });
-  }
-
-  render() {
-
-    return (
+  return (
       <div className="row justify-content-md-center pt-4 relative" style={containerStyle} >
         <div className="col-lg-4 col-md-8 col-sm-12">
           <Card>
             <CardHeader title="Address not found." />
             <CardContent style={{ textAlign: 'left' }}>
-              {this.state.addressList.length > 0 ? <><p>Did you mean?</p>
+              {addressList.length > 0 ? <><p>Did you mean?</p>
                 <ul>
                   {
-                    this.state.addressList.map((item) => {
+                    addressList.map((item) => {
                       let address = '' + item.streetNumber + ' ' + item.streetLabel;
-                      return <OneAddress key={address} address={address} search={this.props.search} />
+                      return <OneAddress key={address} address={address} />
                     })
                   }
                 </ul>
@@ -285,9 +276,9 @@ class SuggestAddresses extends PureComponent {
           </Card>
         </div>
       </div>
-    );
+  );
 
-  }
+  
 }
 
 export default SuggestAddresses;
