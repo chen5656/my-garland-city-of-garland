@@ -102,7 +102,6 @@ const SearchContent=(props)=>{
                     'service-zone': props.serviceZoneParameter,
                 }}
                 parcelFields={props.parcelFieldParameter.fields}
-                setMapPoint={props.setMapPoint}
             />
         </Route>
         <Route path='/unmatch'>
@@ -128,28 +127,21 @@ const AddressSearch = (props) => {
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
     
     return (<div style={{ minHeight: '200px' }}>
-        <SearchWidget   setMapPoint={props.setMapPoint} inputAddress={inputAddress} setInputAddress={setInputAddress}/>
+        <SearchWidget     inputAddress={inputAddress} setInputAddress={setInputAddress}/>
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
         {
-           serviceZoneParameter&& cityFacilityParameter&&parcelFieldParameter?
-           <article>
-               <div className='container-fluid' id='my-garland-result' >
-                    <div className='row ' >
-                        <SearchContent
-                            cityFacilityParameter={cityFacilityParameter}
-                            parcelFieldParameter={parcelFieldParameter}
-                            serviceZoneParameter={serviceZoneParameter}
-                            setMapPoint={props.setMapPoint}
-                            setInputAddress={setInputAddress}
-                        />
-                    </div>
-                </div>
-    
-            </article>
-           : 
-           <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
+           serviceZoneParameter&& cityFacilityParameter&&parcelFieldParameter?              
+            <SearchContent
+                cityFacilityParameter={cityFacilityParameter}
+                parcelFieldParameter={parcelFieldParameter}
+                serviceZoneParameter={serviceZoneParameter}
+                    
+                setInputAddress={setInputAddress}
+            />     
+            : 
+            <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>
         }
         
     </div>)

@@ -14,7 +14,6 @@ import Paper from '@material-ui/core/Paper';
 import ListCollapse from '../ListCollapse';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 import GarlandMapView from './GarlandMapView';
-
 import {pavementLayer,crimeLayer} from '../../../config/mapService.json'
 
 const useStyles = makeStyles((theme) => ({
@@ -99,17 +98,15 @@ const MapSection = (props) => {
                 >
                     <ListCollapse name='Pavement Condition'>
                         
-                        <PavementDiv  mapPoint={props.mapPoint}/>
+                        <PavementDiv  mapPoint={props.mapPoint} className='sectionMap'/>
                     </ListCollapse>
                     <Divider variant='middle' />
                     <ListCollapse name='Monthly Crime Map'>                       
-                        <CrimeMapDiv   mapPoint={props.mapPoint}/>                            
+                        <CrimeMapDiv   mapPoint={props.mapPoint} className='sectionMap' />                            
                     </ListCollapse>
                 </List>
-
-            </Paper>
+            </Paper>      
         </div>
-
     )
 }
 export default MapSection;

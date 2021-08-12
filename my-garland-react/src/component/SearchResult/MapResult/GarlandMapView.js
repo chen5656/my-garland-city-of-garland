@@ -12,9 +12,7 @@ const GarlandMapView = (props) => {
     const showLargeBtn=useRef(null);
     const [mapView, setView] = useState(null);
   
-    useEffect(() => {   
-        
-        
+    useEffect(() => {        
         if(mapDiv.current){
             
             const map = new Map({ basemap: 'topo'});
@@ -26,7 +24,7 @@ const GarlandMapView = (props) => {
             if(props.mapPoint){
                 view.center=props.mapPoint.geometry;
             }
-            if(props.id==='header'){
+            if(props.className==='headMap'){
                 map.basemap='gray';
                 view.center=[-96.636269, 32.91676];
                 view.zoom=12;
@@ -100,9 +98,9 @@ const GarlandMapView = (props) => {
     }
     
     return <>
-    <div className='webmap' ref={mapDiv} style={props.id==='header'?{ height:  '350px' }:{ height:  '300px' }} />
+    <div className='webmap' ref={mapDiv}  className={props.className} style={{minHeight:'300px'}}/>
     <div  ref={showLargeBtn} >
-    {props.id!=='header'&&    <LargeMapButton>
+    {props.className!=='headMap'&&    <LargeMapButton>
             <GarlandMapView 
                 {...props}
                 largerVersion={true}

@@ -27,6 +27,7 @@ import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
 import MapSection from './MapResult/MapSection';
+import HeaderMap from './MapResult/HeaderMap';
 
 import { useHistory } from 'react-router-dom';
 
@@ -281,7 +282,6 @@ const AddressInfo = (props) => {
 
         getMapviewGeometry(result.features[0].geometry).then((result) => {
           props.setMapviewGeometry(result[0]);   
-          props.setMapPoint({geometry:result[0],fullAddress:fullAddress})   
         });
 
       } else {
@@ -320,31 +320,41 @@ const Result = (props) => {
     setFactorList(array)  ;
   }, []);
  
-  return (<>  
-    <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} 
-    setParcelId={setParcelId} setMapviewGeometry={setMapviewGeometry}
-    setMapPoint={props.setMapPoint}/>    
-    {fullAddress&&
-      <>
-        <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
-          factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />            
-        <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
-          fullAddress={fullAddress} />
-        <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
-      </>
-    }
+  return (
+    <article>
+      <div className='container-fluid' id='my-garland-result' >      
+        <div className='row ' >
+          <AddressInfo addressId={props.RefID} setFullAddress={setFullAddress} setGeometry={setGeometry} 
+          setParcelId={setParcelId} setMapviewGeometry={setMapviewGeometry} />    
+          {fullAddress&&
+            <>
+              <ParcelTableInfo parcelId ={parcelId} setResult={setParcelDataResult} 
+                factorList={props.factorList['parcel-data']} fullAddress={fullAddress} />            
+              <NearestCityFacilities geometry ={resultGeometry} setResult={setCityFacilityResult} factorList={props.factorList['city-facility']} 
+                fullAddress={fullAddress} />
+              <ServiceZoneList geometry={resultGeometry} factorList={props.factorList['service-zone']} fullAddress={fullAddress} setResult={setServiceZone}/>
+            </>
+          }
 
-    {displaySections.map((item) => {
-      return <Section name={item.name} sectionId={item.id} key={item.id}
-        factorList={factorList}
-        factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
-        />
-      })
-    }    
-    
-    <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}} 
-                            /> 
-  </>);
+          {displaySections.map((item) => {
+            return <Section name={item.name} sectionId={item.id} key={item.id}
+              factorList={factorList}
+              factorDataList={[].concat(parcelDataResult,nearestCityFacilityResult,serviceZoneResult)}
+              />
+            })
+          }   
+          {mapviewGeometry&&
+            <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}}/> 
+          }
+        </div>   
+          {mapviewGeometry&& <HeaderMap  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}}/>
+
+          }             
+      </div>
+
+    </article>);
 }
+
+
 
 export default Result;

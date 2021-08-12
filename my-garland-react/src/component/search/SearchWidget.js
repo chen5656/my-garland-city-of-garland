@@ -41,8 +41,7 @@ const SearchContainer=(props)=>{
 
 
       search.on('search-complete', function (e) {
-        props.setMapPoint(null);
-        props.setInputAddress(null);
+       resetSearch();
         if (e.numResults === 0 && e.searchTerm) {
           //no address find from input, display suggestion.  
           history.push(`/unmatch?searchTerm=${e.searchTerm}`)
@@ -67,6 +66,9 @@ const SearchContainer=(props)=>{
     }
 
   }, [props.inputAddress]);
+  const resetSearch=()=>{
+    props.setInputAddress(null);
+  }
   return  (
     <div className="row justify-content-md-center" style={containerStyle}>
     <div className=" col-lg-5 col-md-8 col-sm-12">

@@ -101,14 +101,13 @@ const ie11Polyfill = () => {
 
 
 ie11Polyfill();
-function App() {
-  const [mapPoint,setMapPoint]=useState(null);
+function App() { 
 
   return (
     <Router>
     <div className='container-fluid'>
-        <Header mapPoint={mapPoint}/>
-        <Search setMapPoint={setMapPoint}/>
+        <Header />
+        <Search />
         <Footer />
     </div>
     </Router>

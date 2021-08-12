@@ -11,6 +11,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.headMap {
+ height:350px;
+ left:0;
+ top:0;
+ position: absolute;
+
+ width: 100%;
+
+
+}
+
+
 input:focus{
   outline: none;
 }
