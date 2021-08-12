@@ -41,11 +41,11 @@ const SuggestAddresses =(props)=>{
   const queryAliasTable = () => {
 
     if (!props.searchTerm) {
-      setAddressList({ addressList: [] });
+      setAddressList(  [] );
       return;
     }
     var addr_road, addr_number;
-    var str = props.searchTerm.split(",")[0].trim().toUpperCase();
+    var str = props.searchTerm.split(",")[0].replace(/\s\s+/g, ' ').trim().toUpperCase();
     var subStr = str.split(" ");
     if (subStr.length > 1) {
       var str1 = subStr[0];
@@ -125,8 +125,7 @@ const SuggestAddresses =(props)=>{
               url: streetAliasUrl
             });
             queryTask.execute(query).then(function (results) {
-              if (results.features.length > 0) {
-
+              if (results.features.length > 0) {debugger
                 console.log("wrong street label. find street name in alias table");
                 var addrList = displayUniquleStreetList(results.features, addr_number);
                 setAddressList(addrList);
@@ -193,7 +192,7 @@ const SuggestAddresses =(props)=>{
     }));
     var tempAddrNum = "";
     if (addr_number !== 0) {
-      tempAddrNum = "" + addr_number + " ";
+      tempAddrNum = "" + addr_number ;
     }
 
     var addrList = distinct.slice(0, 5).map(function (val) {
