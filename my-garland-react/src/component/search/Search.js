@@ -127,9 +127,10 @@ const SearchContent=(props)=>{
             />
         </Route>
         <Route path='/unmatch'>
-            <SuggestAddresses searchTerm={query.get('searchTerm')}/>
+            <SuggestAddresses searchTerm={query.get('searchTerm')} setInputAddress={props.setInputAddress}/>
         </Route>
-        <Route path='/search'>
+        <Route path='/search'>            
+        {/* // history.push(`/search?address=${props.address}`) */}
             <SearchWithInput address={query.get('address')} setInputAddress={props.setInputAddress}/>
         </Route>
         <Route path='/address-error'>

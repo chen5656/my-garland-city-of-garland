@@ -26,7 +26,7 @@ const containerStyle = {
 const OneAddress = (props) => {
   const history = useHistory();
   const handleSearchAddress=()=>{
-    history.push(`/search?address=${props.address}`)
+      props.setInputAddress(props.address);
   }
   return (<li>
     <Button color="primary"onClick={handleSearchAddress}>
@@ -202,10 +202,7 @@ const SuggestAddresses =(props)=>{
       };
     })
     return addrList;
-
   }
-
-
 
   return (
       <div className="row justify-content-md-center pt-4 relative" style={containerStyle} >
@@ -218,7 +215,7 @@ const SuggestAddresses =(props)=>{
                   {
                     addressList.map((item) => {
                       let address = '' + item.streetNumber + ' ' + item.streetLabel;
-                      return <OneAddress key={address} address={address} />
+                      return <OneAddress key={address} address={address} setInputAddress={props.setInputAddress}/>
                     })
                   }
                 </ul>
