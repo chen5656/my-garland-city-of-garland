@@ -63,7 +63,6 @@ const SuggestAddresses =(props)=>{
       addr_road = str;
       addr_number = 0;
     }
-    addr_road = findArrayInAliasExtend(addr_road);
 
     var query = new Query({
       where: "STREETLABEL LIKE '%" + addr_road + "%'",
@@ -207,52 +206,6 @@ const SuggestAddresses =(props)=>{
 
   }
 
-  const findArrayInAliasExtend=(AddrRoad)=> {
-    const aliasExtend = {
-
-
-      "1ST": "FIRST",
-      "2ND": "SECOND",
-      "3RD": "THIRD",
-      "4TH": "FOURTH",
-      "5TH": "FIFTH",
-      "6TH": "SIXTH",
-      "7TH": "SEVENTH",
-      "9TH": "NINTH",
-      "10TH": "TENTH",
-      "11TH": "ELEVENTH",
-      "12TH": "TWELFTH",
-      "13TH": "THIRTEENTH",
-      "15TH": "FIFTEENTH",
-      "16TH": "SIXTEENTH",
-      "17TH": "SEVENTEENTH",
-      "1": "FIRST",
-      "2": "SECOND",
-      "3": "THIRD",
-      "4": "FOURTH",
-      "5": "FIFTH",
-      "6": "SIXTH",
-      "7": "SEVENTH",
-      "9": "NINTH",
-      "10": "TENTH",
-      "11": "ELEVENTH",
-      "12": "TWELFTH",
-      "13": "THIRTEENTH",
-      "15": "FIFTEENTH",
-      "16": "SIXTEENTH",
-      "17": "SEVENTEENTH"
-    }
-    var str = AddrRoad.split(" ");
-    str = str.map(function (val) {
-      if (aliasExtend[val]) {
-        return aliasExtend[val];
-      } else {
-        return val;
-      }
-
-    });
-    return str.join(" ").trim();
-  }
 
 
   return (

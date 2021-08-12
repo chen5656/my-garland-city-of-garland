@@ -318,8 +318,11 @@ const Result = (props) => {
     }
     array = array.flat();
     setFactorList(array)  ;
+    
+
   }, []);
- 
+
+
   return (
     <article>
       <div className='container-fluid' id='my-garland-result' >      

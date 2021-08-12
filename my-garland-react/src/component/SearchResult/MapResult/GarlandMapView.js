@@ -57,7 +57,7 @@ const GarlandMapView = (props) => {
             }
             
             if(props.mapPoint){
-                addSearchPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,view);
+                addResultPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,view);
             }
             
         }
@@ -65,7 +65,7 @@ const GarlandMapView = (props) => {
     useEffect(() => {   
         if(mapView){
             if(props.mapPoint){
-                addSearchPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,mapView);    
+                addResultPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,mapView);    
             }else{
                 mapView.graphics.removeAll();
             }
@@ -81,7 +81,7 @@ const GarlandMapView = (props) => {
         }
     },[props.layerOn]  );
 
-    const addSearchPnt=(geometry,popupContent,view)=>{
+    const addResultPnt=(geometry,popupContent,view)=>{
         var pnt = new Graphic({
             geometry: geometry,
             symbol: {
@@ -95,12 +95,20 @@ const GarlandMapView = (props) => {
         view.graphics.removeAll();
         view.graphics.add(pnt);
         view.center = geometry;
+        if(props.className==='headMap'){
+            view.popup.close()
+            view.popup.open({
+                features: [pnt]  ,
+                updateLocationEnabled:true
+              })
+
+        }
     }
     
     return <>
     <div className='webmap' ref={mapDiv}  className={props.className} style={{minHeight:'300px'}}/>
     <div  ref={showLargeBtn} >
-    {props.className!=='headMap'&&    <LargeMapButton>
+    {props.className!=='headMap'&&<LargeMapButton>
             <GarlandMapView 
                 {...props}
                 largerVersion={true}

@@ -12,15 +12,37 @@ import {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { useRouteMatch } from "react-router-dom";
+
+
 import SuggestAddresses from '../SearchResult/NoResult/SuggestAddresses';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import {factorList} from '../../config/data.json';
 
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 function useQuery() {
   return new URLSearchParams(useLocation().search);
+}
+
+const DocumentTitle=()=>{
+    const query = useQuery();
+    let match = useRouteMatch("/match");
+    let addressId=null;
+    if(match){
+        addressId=query.get('addressid')&& query.get('addressid').replace(/[ ,.]/g, '');
+    }
+
+    useEffect(()=>{    
+        if(addressId)    {
+            document.title=`My Garland - ${addressId}`
+        }else{
+            document.title=`My Garland - error`
+        }
+    },[addressId])
+
+    return null
+    
 }
 
 const CityFacilityList = (props) => {
@@ -127,6 +149,7 @@ const AddressSearch = (props) => {
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
     
     return (<div style={{ minHeight: '200px' }}>
+        <DocumentTitle />
         <SearchWidget     inputAddress={inputAddress} setInputAddress={setInputAddress}/>
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
