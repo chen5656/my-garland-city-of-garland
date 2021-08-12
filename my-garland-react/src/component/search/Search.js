@@ -12,7 +12,7 @@ import {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 
-import AddressNotFound from '../SearchResult/NoResult/NoResult';
+import SuggestAddresses from '../SearchResult/NoResult/SuggestAddresses';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import {factorList} from '../../config/data.json';
@@ -99,7 +99,7 @@ const SearchContent=(props)=>{
             />
         </Route>
         <Route path='/unmatch'>
-            <AddressNotFound suggestTerm={query.get('searchTerm')}/>
+            <SuggestAddresses suggestTerm={query.get('searchTerm')}/>
         </Route>
         <Route path='/address-error'>
             <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
