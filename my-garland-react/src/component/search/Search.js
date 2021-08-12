@@ -12,7 +12,7 @@ import {
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
 
-import AddressNotFound from '../SearchResult/NoResult';
+import AddressNotFound from '../SearchResult/NoResult/NoResult';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import {factorList} from '../../config/data.json';

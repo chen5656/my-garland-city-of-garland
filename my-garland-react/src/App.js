@@ -104,7 +104,6 @@ ie11Polyfill();
 function App() {
   const [mapPoint,setMapPoint]=useState(null);
 
-
   return (
     <Router>
     <div className='container-fluid'>

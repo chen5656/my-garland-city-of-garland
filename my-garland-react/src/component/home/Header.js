@@ -1,6 +1,7 @@
 import React, { useEffect ,useRef,useState}   from 'react';
 import GarlandMapView from '../SearchResult/MapResult/GarlandMapView';
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import {cityLimitUrl} from '../../config/mapService.json'
 const titleStyle = {
   top: '170px',
   right: 0,
@@ -17,7 +18,7 @@ const TitlePng = () => {
 const Header=(props)=> {
   const layers = [{
     layer:new FeatureLayer({
-        'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1',       
+        'url': cityLimitUrl,       
       })
 }];
   return (

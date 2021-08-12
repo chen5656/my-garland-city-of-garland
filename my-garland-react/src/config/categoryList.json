@@ -1,4 +1,6 @@
-export const displayCategories=[{
+{
+  "displayCategories": [
+    {
       "id": "nearest-city-facility",
       "name": "Nearby City Facilities",
       "category": "location-data"
@@ -18,13 +20,16 @@ export const displayCategories=[{
       "id": "planning-development-zoning",
       "name": "Planning & Development / Zoing",
       "category": "reference-data"
-    }];
+    }
+  ],
 
-export const displaySections= [{
+    "displaySections": [
+      {
       "id": "location-data",
       "name": "Location Data"
     }, {
       "id": "reference-data",
       "name": "Reference Data"
-    } 
-  ];
+    }
+  ]
+  }

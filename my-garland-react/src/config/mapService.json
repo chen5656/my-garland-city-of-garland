@@ -1,0 +1,44 @@
+{
+    "mapPointSpatialReference": {
+        "wkid": 3857
+    },
+    "locatorUrl":"https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer",
+    "cityLimitUrl": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/1",
+    "addressUrl": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4",
+    "parcelUrl": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5",
+    "geometryServiceUrl": "https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer",
+    "streetUrl": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3",
+    "streetAliasUrl": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16",
+    "pavementLayer":{
+        "layer_toggle":{
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
+            "title": "Pavement Condition",
+            "sublayers": [
+                { "id": 37, "visible": true, "title": "pavement-condition" }
+            ]
+        },
+        "layer_no_toggle":{
+            "url": "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer",
+            "title": "Baselayers",
+            "sublayers": [
+                { "id": 5, "visible": true, "title": "Parcels" },
+                { "id": 4, "visible": true, "title": "Address" }
+            ]
+        }
+    },
+    "crimeLayer":{
+        "url": "https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0",
+        "popupTemplate":{
+            "title": "<b>{OFFENSE}</b>",
+            "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br><b>CASE ID: </b>{CASEID}<br><b>OFFENSE: </b>{OFFENSE}<br>",
+            "fieldInfos": [
+                {
+                    "fieldName": "OCCURRED_O",
+                    "format": {
+                        "dateFormat": "short-date"
+                    }
+                }
+            ]
+        }
+      }
+}

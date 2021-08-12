@@ -9,7 +9,6 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import ProjectParameters from '@arcgis/core/tasks/support/ProjectParameters';
 import GeometryService from '@arcgis/core/tasks/GeometryService';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import Graphic from '@arcgis/core/Graphic';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -20,20 +19,16 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 
-import { displayCategories, displaySections } from '../../config/categoryList';
+import { displayCategories, displaySections } from '../../config/categoryList.json';
 
-import {  staticButtonList} from '../../config/data.json';
+import {  staticButtonList,} from '../../config/data.json';
+import {  addressUrl,parcelUrl,geometryServiceUrl, mapPointSpatialReference as outSR}  from '../../config/mapService.json';
 import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
 import MapSection from './MapResult/MapSection';
 
 import { useHistory } from 'react-router-dom';
-
-const addressUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4';
-const parcelUrl = 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/5';
-const geometryServiceUrl='https://maps.garlandtx.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer';
-const outSR={wkid: 3857};
 
 const useStyles = makeStyles((theme) => ({
   sectionPadding: { padding: '15px' },

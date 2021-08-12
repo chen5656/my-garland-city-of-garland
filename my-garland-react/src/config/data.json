@@ -493,7 +493,8 @@
             }
         }
     ],
-    "staticButtonList":[{
+    "staticButtonList":[
+        {
         "id": "ews-link",
         "name":"ews-link",
         "inputControl": {

@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
@@ -14,6 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import ListCollapse from '../ListCollapse';
 import StreetConditionLegendToggle from './StreetConditionLegendToggle';
 import GarlandMapView from './GarlandMapView';
+
+import {pavementLayer,crimeLayer} from '../../../config/mapService.json'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -54,24 +56,11 @@ const PavementDiv = (props) => {
     const [toggleableLayers,setToggleableLayers]=useState([]);
     const layers = [
         {
-            layer: new MapImageLayer({
-                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                'title': 'Baselayers',
-                'sublayers': [
-                    { "id": 5, "visible": true, title: 'Parcels' },
-                    { "id": 4, "visible": true, title: 'Address' },
-                ],
-            }),
+            layer: new MapImageLayer(pavementLayer.layer_no_toggle),
             enableToggle:false
         },
         {
-            layer: new MapImageLayer({
-                'url': 'https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer',
-                'title': 'Pavement Condition',
-                'sublayers': [
-                    { "id": 37, "visible": true, title: 'pavement-condition' }
-                ],
-            }),
+            layer: new MapImageLayer(pavementLayer.layer_toggle),
             enableToggle:true
 
         },
@@ -85,23 +74,7 @@ const PavementDiv = (props) => {
 
 const CrimeMapDiv=(props)=>{
     const layers = [{
-        layer:new FeatureLayer({
-            'url': 'https://maps.garlandtx.gov/arcgis/rest/services/dept_POLICE/Crime/MapServer/0',
-            popupTemplate:{
-                "title": "<b>{OFFENSE}</b>",
-                "content": "<b>OCCURRED ON: </b>{OCCURRED_O}<br>" +
-                    "<b>CASE ID: </b>{CASEID}<br>" +
-                    "<b>OFFENSE: </b>{OFFENSE}<br>",
-                "fieldInfos": [
-                    {
-                        "fieldName": "OCCURRED_O",
-                        "format": {
-                            "dateFormat": "short-date"
-                        }
-                    }
-                ]
-            }
-          })
+        layer:new FeatureLayer(crimeLayer)
     }];
     return (<div className='px-2'>
     <p>

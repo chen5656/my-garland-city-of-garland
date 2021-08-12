@@ -4,10 +4,8 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { loadModules } from 'esri-loader';
+import {addressUrl,streetUrl,streetAliasUrl} from '../../../config/mapService.json'
 
-const addressURL = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/4";
-const streetUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/3";
-const streetAliasUrl = "https://maps.garlandtx.gov/arcgis/rest/services/WebApps/MyGarland/MapServer/16";
 
 const containerStyle = {
   margin: '2px',
@@ -68,7 +66,7 @@ class SuggestAddresses extends PureComponent {
           outFields: ["*"]
         });
         var queryTask = new QueryTask({
-          url: addressURL
+          url: addressUrl
         });
 
         queryTask.execute(query).then(function (results) {

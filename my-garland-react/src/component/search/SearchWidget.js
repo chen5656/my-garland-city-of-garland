@@ -2,6 +2,7 @@ import React, { useEffect ,useRef,useState} from 'react';
 import Search from '@arcgis/core/widgets/Search';
 import Locator from '@arcgis/core/tasks/Locator';
 import { useHistory } from 'react-router-dom';
+import {locatorUrl} from '../../config/mapService.json';
 
 const containerStyle = {
   margin: '2px',
@@ -25,7 +26,7 @@ const SearchContainer=(props)=>{
         'minSuggestCharacters': 6
       };
       searchSource.locator = new Locator({
-        url: 'https://maps.garlandtx.gov/arcgis/rest/services/Locator/GARLAND_ADDRESS_LOCATOR/GeocodeServer'
+        url: locatorUrl
       });
       const searchWidget = new Search({
         // view: view,
