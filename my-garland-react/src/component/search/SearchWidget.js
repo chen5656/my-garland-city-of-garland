@@ -50,7 +50,7 @@ const SearchContainer=(props)=>{
 
       search.on('select-result', function (e) {
         if (e.result) {
-          history.push(`/match?addressid=${e.result.feature.attributes.Ref_ID}`)
+          history.push(`/match?addressid=${e.result.feature.attributes.Ref_ID}`)        
         }
       });
 

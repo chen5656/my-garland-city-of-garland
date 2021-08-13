@@ -104,8 +104,19 @@ const ServiceZoneList = (props) => {
 };
 const SearchWithInput=(props)=>{
     useEffect(()=>{        
-        props.setInputAddress(props.address);
-    },[props.address])
+        if(props.address){
+            props.setInputAddress(props.address);
+        }else if(props.location[0]&&props.location[1]){
+            props.setInputAddress(null);
+            props.setInputLocation(props.location);
+
+        }else{
+            props.setInputLocation(null);
+            props.setInputAddress(null);
+
+        }
+    },[props.address,props.location])
+
     return null
 }
 
@@ -129,9 +140,10 @@ const SearchContent=(props)=>{
         <Route path='/unmatch'>
             <SuggestAddresses searchTerm={query.get('searchTerm')} setInputAddress={props.setInputAddress}/>
         </Route>
-        <Route path='/search'>            
-        {/* // history.push(`/search?address=${props.address}`) */}
-            <SearchWithInput address={query.get('address')} setInputAddress={props.setInputAddress}/>
+        <Route path='/search'>        
+            <SearchWithInput address={query.get('address')} setInputAddress={props.setInputAddress}
+             location={[query.get('long'),query.get('lat')]}
+            />
         </Route>
         <Route path='/address-error'>
             <div className='alert alert-warning'>The address you entered does not return any information. Please make sure it is a valid address.</div>
@@ -151,7 +163,9 @@ const AddressSearch = (props) => {
     
     return (<div style={{ minHeight: '200px' }}>
         <DocumentTitle />
-        <SearchWidget     inputAddress={inputAddress} setInputAddress={setInputAddress}/>
+        <SearchWidget    
+         inputAddress={inputAddress} setInputAddress={setInputAddress}
+         />
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
         <ServiceZoneList  factorList = {factorList}   category = 'service-zone'  setPara = {setServiceZoneParameter}/>
