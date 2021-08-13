@@ -112,11 +112,11 @@ const SearchWithInput=(props)=>{
     },[props.address])
     useEffect(()=>{        
         var parameter={};
-        if(props.location[0]&&props.location[1]){
-            parameter.location=props.location;
+        if(props.longitude&&props.latitude){
+            parameter.location=[props.latitude,props.longitude];
             props.setInput(parameter);
         }       
-    },[props.location])
+    },[props.longitude])
 
     return null
 }
@@ -142,8 +142,8 @@ const SearchContent=(props)=>{
             <SuggestAddresses searchTerm={query.get('searchTerm')} setInput={props.setInput}/>
         </Route>
         <Route path='/search'>        
-            <SearchWithInput address={query.get('address')} setInput={props.setInput}
-             location={[query.get('long'),query.get('lat')]}
+            <SearchWithInput address={query.get('address')} longitude={query.get('long')} latitude={query.get('lat')}
+            setInput={props.setInput}             
             />
         </Route>
         <Route path='/address-error'>

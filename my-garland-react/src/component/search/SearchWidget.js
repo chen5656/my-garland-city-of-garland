@@ -1,6 +1,8 @@
 import React, { useEffect ,useRef,useState} from 'react';
 import Search from '@arcgis/core/widgets/Search';
 import Locator from '@arcgis/core/tasks/Locator';
+import * as restLocator from "@arcgis/core/rest/locator";
+
 import { useHistory } from 'react-router-dom';
 import {locatorUrl} from '../../config/mapService.json';
 
@@ -15,6 +17,9 @@ const SearchContainer=(props)=>{
   const [searchWidget,setSearch]=useState(null);
   const history = useHistory();
   
+      //reverse locator
+      const serviceUrl = locatorUrl;
+      
 
   useEffect(() => {
     if (searchDiv.current) {
@@ -30,6 +35,7 @@ const SearchContainer=(props)=>{
       searchSource.locator = new Locator({
         url: locatorUrl
       });
+      console.log( searchSource.locator)
       const search = new Search({
         // view: view,
         container: searchDiv.current,
@@ -55,6 +61,7 @@ const SearchContainer=(props)=>{
       });
 
       setSearch(search);
+
     }
 
   }, []);
@@ -63,11 +70,23 @@ const SearchContainer=(props)=>{
     if(props.searchInput&&props.searchInput.address){
       searchWidget.search(props.searchInput.address)
     }
+    if(props.searchInput&&props.searchInput.  location){
+      let params = {
+        location: props.searchInput.  location
+      };
 
+      restLocator.locationToAddress(serviceUrl, params)
+      .then(function(response) { // Show the address found
+        searchWidget.search(response.address)
+      }, function(err) { // Show no address found
+      });
+    }
   }, [props.searchInput ]);
+
   const resetSearch=()=>{
     props.setInput(null);
   }
+
   return  (
     <div className="row justify-content-md-center" style={containerStyle}>
     <div className=" col-lg-5 col-md-8 col-sm-12">
