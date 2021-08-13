@@ -104,18 +104,19 @@ const ServiceZoneList = (props) => {
 };
 const SearchWithInput=(props)=>{
     useEffect(()=>{        
+        var parameter={};
         if(props.address){
-            props.setInputAddress(props.address);
-        }else if(props.location[0]&&props.location[1]){
-            props.setInputAddress(null);
-            props.setInputLocation(props.location);
-
-        }else{
-            props.setInputLocation(null);
-            props.setInputAddress(null);
-
-        }
-    },[props.address,props.location])
+            parameter.address=props.address;
+            props.setInput(parameter);
+        }       
+    },[props.address])
+    useEffect(()=>{        
+        var parameter={};
+        if(props.location[0]&&props.location[1]){
+            parameter.location=props.location;
+            props.setInput(parameter);
+        }       
+    },[props.location])
 
     return null
 }
@@ -138,10 +139,10 @@ const SearchContent=(props)=>{
             />
         </Route>
         <Route path='/unmatch'>
-            <SuggestAddresses searchTerm={query.get('searchTerm')} setInputAddress={props.setInputAddress}/>
+            <SuggestAddresses searchTerm={query.get('searchTerm')} setInput={props.setInput}/>
         </Route>
         <Route path='/search'>        
-            <SearchWithInput address={query.get('address')} setInputAddress={props.setInputAddress}
+            <SearchWithInput address={query.get('address')} setInput={props.setInput}
              location={[query.get('long'),query.get('lat')]}
             />
         </Route>
@@ -156,7 +157,7 @@ const SearchContent=(props)=>{
 }
 
 const AddressSearch = (props) => {
-    const [inputAddress,setInputAddress]=useState(null);
+    const [searchInput,setInput]=useState(null);
     const [cityFacilityParameter, setCityFacilityParameter] = useState(null);
     const [parcelFieldParameter, setParcelFieldParameter] = useState(null);
     const [serviceZoneParameter, setServiceZoneParameter] = useState(null);
@@ -164,7 +165,7 @@ const AddressSearch = (props) => {
     return (<div style={{ minHeight: '200px' }}>
         <DocumentTitle />
         <SearchWidget    
-         inputAddress={inputAddress} setInputAddress={setInputAddress}
+         searchInput={searchInput} setInput={setInput}
          />
         <CityFacilityList factorList = {factorList} category = 'city-facility'    setPara = {setCityFacilityParameter}/>
         <ParcelFieldList factorList = {factorList}    category = 'parcel-data'    setPara = {setParcelFieldParameter}/>
@@ -175,8 +176,7 @@ const AddressSearch = (props) => {
                 cityFacilityParameter={cityFacilityParameter}
                 parcelFieldParameter={parcelFieldParameter}
                 serviceZoneParameter={serviceZoneParameter}
-                    
-                setInputAddress={setInputAddress}
+                setInput={setInput}   
             />     
             : 
             <LinearProgress className='p-1 m-4'style={{width:'100%'}}/>

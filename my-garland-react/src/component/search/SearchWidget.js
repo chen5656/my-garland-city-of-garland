@@ -60,13 +60,13 @@ const SearchContainer=(props)=>{
   }, []);
 
   useEffect(() => {
-    if(props.inputAddress){
-      searchWidget.search(props.inputAddress)
+    if(props.searchInput&&props.searchInput.address){
+      searchWidget.search(props.searchInput.address)
     }
 
-  }, [props.inputAddress]);
+  }, [props.searchInput ]);
   const resetSearch=()=>{
-    props.setInputAddress(null);
+    props.setInput(null);
   }
   return  (
     <div className="row justify-content-md-center" style={containerStyle}>
