@@ -37,7 +37,7 @@ const DocumentTitle=()=>{
         if(addressId)    {
             document.title=`My Garland - ${addressId}`
         }else{
-            document.title=`My Garland - error`
+            document.title=`My Garland`
         }
     },[addressId])
 
