@@ -2,6 +2,7 @@ import React, { useEffect, useRef ,useState} from 'react';
 
 import MapView from "@arcgis/core/views/MapView";
 import Map from "@arcgis/core/Map";
+import WebMap from "@arcgis/core/WebMap";
 import Legend from '@arcgis/core/widgets/Legend';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Graphic from '@arcgis/core/Graphic';
