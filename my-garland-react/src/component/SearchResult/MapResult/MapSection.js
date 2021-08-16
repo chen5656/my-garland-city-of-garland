@@ -34,7 +34,7 @@ const MapSection = (props) => {
                     }
                 >
                     <ListCollapse name='Pavement Condition'>
-                        
+                         
                         <PavementMap  mapPoint={props.mapPoint} className='sectionMap'/>
                     </ListCollapse>
                     <Divider variant='middle' />

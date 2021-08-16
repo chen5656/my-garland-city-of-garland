@@ -55,9 +55,7 @@ const GarlandMapView = (props) => {
             view.ui.add(showLargeBtn.current, 'bottom-right');
         }
 
-        if (props.mapPoint) {
-            addResultPnt(props.mapPoint.geometry, props.mapPoint.fullAddress, view);
-        }
+     
 
 
     }, []);
@@ -70,7 +68,7 @@ const GarlandMapView = (props) => {
             }
         }
 
-     },[props.mapPoint]  );
+     },[props.mapPoint, !mapView]  );
 
      
     useEffect(() => {   

@@ -67,7 +67,7 @@ const SearchContainer=(props)=>{
   }, []);
 
   useEffect(() => {
-    if(props.searchInput&&props.searchInput.address){
+    if(props.searchInput){
       searchWidget.search(props.searchInput.address)
     }
     if(props.searchInput&&props.searchInput.  location){

@@ -26,7 +26,7 @@ const containerStyle = {
 const OneAddress = (props) => {
   const history = useHistory();
   const handleSearchAddress=()=>{
-      props.setInputAddress(props.address);
+      props.setInput({address:props.address});
   }
   return (<li>
     <Button color="primary"onClick={handleSearchAddress}>
@@ -215,7 +215,7 @@ const SuggestAddresses =(props)=>{
                   {
                     addressList.map((item) => {
                       let address = '' + item.streetNumber + ' ' + item.streetLabel;
-                      return <OneAddress key={address} address={address} setInputAddress={props.setInputAddress}/>
+                      return <OneAddress key={address} address={address} setInput={props.setInput}/>
                     })
                   }
                 </ul>
