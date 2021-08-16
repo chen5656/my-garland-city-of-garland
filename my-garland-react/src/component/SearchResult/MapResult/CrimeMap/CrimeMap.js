@@ -5,6 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GarlandMapView from '../GarlandMapView';
 import {crimeLayer} from '../../../../config/mapService.json';
+import {crimeLink} from '../../../../config/data.json';
 
 
 const CrimeMapLegendToggle = () => {
@@ -37,7 +38,7 @@ const CrimeMapDiv=(props)=>{
     }];
     return (<div className='px-2'>
     <p>
-        <a href="https://garlandtx.gov/396/Crime-Statistics-Maps" target="_blank" 
+        <a href={crimeLink} target="_blank" 
         title="Crime-Statistics-Maps"> Link to more reports/resources</a>
     </p>
     <GarlandMapView   mapPoint={ props.mapPoint} layers={layers}   />
