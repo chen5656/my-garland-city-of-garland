@@ -41,7 +41,7 @@ const CrimeMapDiv=(props)=>{
         <a href={crimeLink} target="_blank" 
         title="Crime-Statistics-Maps"> Link to more reports/resources</a>
     </p>
-    <GarlandMapView   mapPoint={ props.mapPoint} layers={layers}   />
+    <GarlandMapView    layers={layers}   />
      <CrimeMapLegendToggle />
     </div>)
 }

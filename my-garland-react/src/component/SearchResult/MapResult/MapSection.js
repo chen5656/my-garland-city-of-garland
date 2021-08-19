@@ -35,11 +35,11 @@ const MapSection = (props) => {
                 >
                     <ListCollapse name='Pavement Condition'>
                          
-                        <PavementMap  mapPoint={props.mapPoint} className='sectionMap'/>
+                        <PavementMap  className='sectionMap'/>
                     </ListCollapse>
                     <Divider variant='middle' />
                     <ListCollapse name='Monthly Crime Map'>                       
-                        <CrimeMap   mapPoint={props.mapPoint} className='sectionMap' />                            
+                        <CrimeMap   className='sectionMap' />                            
                     </ListCollapse>
                 </List>
             </Paper>      

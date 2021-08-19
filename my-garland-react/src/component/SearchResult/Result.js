@@ -1,7 +1,7 @@
 import React, {
-  useRef,
   useEffect,
-  useState
+  useState,
+  useContext,
 } from 'react';
 import Query from '@arcgis/core/tasks/support/Query';
 import QueryTask from '@arcgis/core/tasks/QueryTask';
@@ -27,7 +27,7 @@ import ListCollapse from './ListCollapse';
 
 import ResultValueDisplay from './ResultValueDisplay';
 import MapSection from './MapResult/MapSection';
-import HeaderMap from './MapResult/HeaderMap';
+import { SearchContext } from '../../context/GlobalState';
 
 import { useHistory } from 'react-router-dom';
 
@@ -310,7 +310,8 @@ const Result = (props) => {
   const [parcelDataResult, setParcelDataResult] = useState([]);
   const [nearestCityFacilityResult, setCityFacilityResult] = useState([]);
   const [serviceZoneResult, setServiceZone] = useState([]);
-  
+  const {setMapPoint} = useContext(SearchContext);
+
   useEffect(() => {
     var array = [];
     for (const [key, value] of Object.entries(props.factorList)) {
@@ -321,7 +322,11 @@ const Result = (props) => {
     
 
   }, []);
-
+  useEffect(() => {
+    if (mapviewGeometry && fullAddress) {
+      setMapPoint({ geometry: mapviewGeometry, fullAddress: fullAddress });
+    }
+  }, [mapviewGeometry, fullAddress]);
 
   return (
     <article>
@@ -347,12 +352,9 @@ const Result = (props) => {
             })
           }   
           {mapviewGeometry&&
-            <MapSection  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}}/> 
+            <MapSection /> 
           }
-        </div>   
-          {mapviewGeometry&& <HeaderMap  mapPoint={{geometry:mapviewGeometry,fullAddress:fullAddress}}/>
-
-          }             
+        </div>           
       </div>
 
     </article>);

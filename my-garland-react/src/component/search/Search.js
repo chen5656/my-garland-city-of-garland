@@ -1,5 +1,4 @@
-import React, {
-    useRef,
+import React, {    
     useEffect,
     useState
 } from 'react';
@@ -20,6 +19,7 @@ import SuggestAddresses from '../SearchResult/NoResult/SuggestAddresses';
 import Result from '../SearchResult/Result';
 import SearchWidget from './SearchWidget';
 import {factorList} from '../../config/data.json';
+
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

@@ -24,7 +24,6 @@ const containerStyle = {
 }
 
 const OneAddress = (props) => {
-  const history = useHistory();
   const handleSearchAddress=()=>{
       props.setInput({address:props.address});
   }

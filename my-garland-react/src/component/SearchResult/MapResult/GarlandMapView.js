@@ -1,4 +1,4 @@
-import React, { useEffect, useRef ,useState} from 'react';
+import React, { useEffect, useRef ,useState, useContext} from 'react';
 
 import MapView from "@arcgis/core/views/MapView";
 import Map from "@arcgis/core/Map";
@@ -7,10 +7,14 @@ import LayerList from '@arcgis/core/widgets/LayerList';
 import Graphic from '@arcgis/core/Graphic';
 import LargeMapButton from './LargeMapButton';
 
+
+import { SearchContext } from '../../../context/GlobalState';
+
 const GarlandMapView = (props) => {
     const mapDiv = useRef(null);
     const showLargeBtn = useRef(null);
-    const [mapView, setView] = useState(null);
+    const [mapView, setView] = useState(null);  
+    const {mapPoint} = useContext(SearchContext);
 
     useEffect(() => {
 
@@ -20,8 +24,8 @@ const GarlandMapView = (props) => {
             map: map,
             zoom: 15,
         });
-        if (props.mapPoint) {
-            view.center = props.mapPoint.geometry;
+        if (mapPoint) {
+            view.center = mapPoint.geometry;
         }
         if (props.className === 'headMap') {
             map.basemap = 'gray';
@@ -61,14 +65,15 @@ const GarlandMapView = (props) => {
     }, []);
     useEffect(() => {   
         if(mapView){
-            if(props.mapPoint){
-                addResultPnt(props.mapPoint.geometry,props.mapPoint.fullAddress,mapView);    
+            if(mapPoint){
+                addResultPnt(mapPoint.geometry,mapPoint.fullAddress,mapView);    
             }else{
                 mapView.graphics.removeAll();
+                mapView.popup .close();
             }
         }
 
-     },[props.mapPoint, !mapView]  );
+     },[mapPoint, !mapView]  );
 
      
     useEffect(() => {   

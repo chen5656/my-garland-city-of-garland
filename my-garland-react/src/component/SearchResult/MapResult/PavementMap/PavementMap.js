@@ -20,7 +20,7 @@ const PavementDiv = (props) => {
         },
     ];
     return (<div className='px-2'>
-        <GarlandMapView layerOn={layerOn} mapPoint={ props.mapPoint} layers={layers} setToggleableLayers={setToggleableLayers}
+        <GarlandMapView layerOn={layerOn}   layers={layers} setToggleableLayers={setToggleableLayers}
         toggleableLayers={toggleableLayers}/>
         <StreetConditionLegendToggle layerOn={layerOn} setLayerOn={setLayerOn}/>       
     </div>)

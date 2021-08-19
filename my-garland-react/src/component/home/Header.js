@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import GarlandMapView from '../SearchResult/MapResult/GarlandMapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { useRouteMatch } from "react-router-dom";
+// import { useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+
 
 import { cityLimitUrl } from '../../config/mapService.json'
 const useStyles = makeStyles((theme) => ({
@@ -22,15 +23,14 @@ const TitlePng = () => {
   const classes = useStyles();
   return <img className='d-none d-sm-block' src='./images/COLOR.rev.horz.NOtag.3999f798.png' className={classes.title} alt='City of Garland' />;
 };
-const Header = (props) => {
-  let match = useRouteMatch("/match");
+const Header = () => { 
   const layers = [{
     layer: new FeatureLayer({
       'url': cityLimitUrl,
     })
   }];
   return (<div style={{height:'350px'}}>
-     <div style={{visible:!match}}> <GarlandMapView layers={layers} className='headMap'/></div>
+     <GarlandMapView layers={layers} className='headMap'/>
     <TitlePng />
   </div>
   );

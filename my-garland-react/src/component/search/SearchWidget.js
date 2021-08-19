@@ -1,10 +1,12 @@
-import React, { useEffect ,useRef,useState} from 'react';
+import React, { useEffect ,useRef,useState,useContext} from 'react';
 import Search from '@arcgis/core/widgets/Search';
 import Locator from '@arcgis/core/tasks/Locator';
 import * as restLocator from "@arcgis/core/rest/locator";
 
 import { useHistory } from 'react-router-dom';
 import {locatorUrl} from '../../config/mapService.json';
+
+import { SearchContext } from '../../context/GlobalState';
 
 const containerStyle = {
   margin: '2px',
@@ -17,9 +19,11 @@ const SearchContainer=(props)=>{
   const [searchWidget,setSearch]=useState(null);
   const history = useHistory();
   
-      //reverse locator
-      const serviceUrl = locatorUrl;
+  //reverse locator
+  const serviceUrl = locatorUrl;
       
+  
+  const {setMapPoint} = useContext(SearchContext);
 
   useEffect(() => {
     if (searchDiv.current) {
@@ -85,6 +89,7 @@ const SearchContainer=(props)=>{
 
   const resetSearch=()=>{
     props.setInput(null);
+    setMapPoint(null);
   }
 
   return  (
